@@ -3,226 +3,226 @@
 
   <!-- Core pages -->
   <url>
-    <loc>https://nidwolf.io/design-toolkit.html</loc>
+    <loc>https://nidwolf.com/design-toolkit.html</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/index.html</loc>
+    <loc>https://nidwolf.com/articles/index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/about.html</loc>
+    <loc>https://nidwolf.com/about.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/privacy.html</loc>
+    <loc>https://nidwolf.com/privacy.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <!-- Design tips (30) -->
   <url>
-    <loc>https://nidwolf.io/articles/tip-01-golden-ratio.html</loc>
+    <loc>https://nidwolf.com/articles/tip-01-golden-ratio.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-02-60-30-10-rule.html</loc>
+    <loc>https://nidwolf.com/articles/tip-02-60-30-10-rule.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-03-f-pattern.html</loc>
+    <loc>https://nidwolf.com/articles/tip-03-f-pattern.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-04-type-scale-ratio.html</loc>
+    <loc>https://nidwolf.com/articles/tip-04-type-scale-ratio.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-05-whitespace.html</loc>
+    <loc>https://nidwolf.com/articles/tip-05-whitespace.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-06-shadow-consistency.html</loc>
+    <loc>https://nidwolf.com/articles/tip-06-shadow-consistency.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-07-color-psychology.html</loc>
+    <loc>https://nidwolf.com/articles/tip-07-color-psychology.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-08-8pt-grid.html</loc>
+    <loc>https://nidwolf.com/articles/tip-08-8pt-grid.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-09-touch-target.html</loc>
+    <loc>https://nidwolf.com/articles/tip-09-touch-target.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-10-contrast-emphasis.html</loc>
+    <loc>https://nidwolf.com/articles/tip-10-contrast-emphasis.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-11-font-limit.html</loc>
+    <loc>https://nidwolf.com/articles/tip-11-font-limit.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-12-mobile-first.html</loc>
+    <loc>https://nidwolf.com/articles/tip-12-mobile-first.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-13-single-cta.html</loc>
+    <loc>https://nidwolf.com/articles/tip-13-single-cta.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-14-analogous-complementary.html</loc>
+    <loc>https://nidwolf.com/articles/tip-14-analogous-complementary.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-15-less-is-more.html</loc>
+    <loc>https://nidwolf.com/articles/tip-15-less-is-more.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-16-wcag-contrast.html</loc>
+    <loc>https://nidwolf.com/articles/tip-16-wcag-contrast.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-17-easing.html</loc>
+    <loc>https://nidwolf.com/articles/tip-17-easing.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-18-hover-state.html</loc>
+    <loc>https://nidwolf.com/articles/tip-18-hover-state.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-19-grid-break.html</loc>
+    <loc>https://nidwolf.com/articles/tip-19-grid-break.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-20-icon-label.html</loc>
+    <loc>https://nidwolf.com/articles/tip-20-icon-label.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-21-dark-mode-surface.html</loc>
+    <loc>https://nidwolf.com/articles/tip-21-dark-mode-surface.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-22-text-on-image.html</loc>
+    <loc>https://nidwolf.com/articles/tip-22-text-on-image.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-23-proximity.html</loc>
+    <loc>https://nidwolf.com/articles/tip-23-proximity.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-24-self-evident-ui.html</loc>
+    <loc>https://nidwolf.com/articles/tip-24-self-evident-ui.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-25-z-pattern.html</loc>
+    <loc>https://nidwolf.com/articles/tip-25-z-pattern.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-26-warm-cool-colors.html</loc>
+    <loc>https://nidwolf.com/articles/tip-26-warm-cool-colors.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-27-performance-design.html</loc>
+    <loc>https://nidwolf.com/articles/tip-27-performance-design.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-28-pattern-library.html</loc>
+    <loc>https://nidwolf.com/articles/tip-28-pattern-library.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-29-error-message.html</loc>
+    <loc>https://nidwolf.com/articles/tip-29-error-message.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/tip-30-microinteraction-timing.html</loc>
+    <loc>https://nidwolf.com/articles/tip-30-microinteraction-timing.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Design history (10) -->
   <url>
-    <loc>https://nidwolf.io/articles/history-01-art-nouveau.html</loc>
+    <loc>https://nidwolf.com/articles/history-01-art-nouveau.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-02-bauhaus.html</loc>
+    <loc>https://nidwolf.com/articles/history-02-bauhaus.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-03-art-deco.html</loc>
+    <loc>https://nidwolf.com/articles/history-03-art-deco.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-04-swiss-style.html</loc>
+    <loc>https://nidwolf.com/articles/history-04-swiss-style.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-05-pop-art.html</loc>
+    <loc>https://nidwolf.com/articles/history-05-pop-art.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-06-macintosh-ui.html</loc>
+    <loc>https://nidwolf.com/articles/history-06-macintosh-ui.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-07-skeuomorphism.html</loc>
+    <loc>https://nidwolf.com/articles/history-07-skeuomorphism.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-08-flat-design.html</loc>
+    <loc>https://nidwolf.com/articles/history-08-flat-design.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-09-material-design.html</loc>
+    <loc>https://nidwolf.com/articles/history-09-material-design.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nidwolf.io/articles/history-10-neumorphism-glassmorphism.html</loc>
+    <loc>https://nidwolf.com/articles/history-10-neumorphism-glassmorphism.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -6,7 +6,7 @@
 
 ## 프로젝트 개요
 
-- **도메인**: `https://nidwolf.io`
+- **도메인**: `https://nidwolf.com`
 - **워크스페이스**: `H:\Dev\html\NoNameProject\`
 - **목적**: 디자이너·기획자를 위한 무료 통합 도구 사이트 (AdSense 수익화 목표)
 - **상세 문서**: `doc/DesignToolKit/🏠 Home.md` (Obsidian 볼트)
@@ -133,7 +133,7 @@ NoNameProject/
 | `nw-dark` localStorage | 존재 여부로 판단 |
 | `TRIGGER_PX` (ladder) | `72` px |
 | `_vspd` (ladder 기본) | `420 * speed` px/s |
-| `BASE_URL` (build.py) | `https://nidwolf.io` |
+| `BASE_URL` (build.py) | `https://nidwolf.com` |
 
 ---
 

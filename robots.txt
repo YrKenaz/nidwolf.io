@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nidwolf.io/sitemap.xml
+Sitemap: https://nidwolf.com/sitemap.xml

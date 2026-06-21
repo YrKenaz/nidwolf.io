@@ -25,7 +25,7 @@
 ```
 User-agent: *
 Allow: /
-Sitemap: https://nidwolf.io/sitemap.xml
+Sitemap: https://nidwolf.com/sitemap.xml
 ```
 
 ### JSON-LD (Schema.org Article)
@@ -38,12 +38,12 @@ Sitemap: https://nidwolf.io/sitemap.xml
   "@type": "Article",
   "headline": "...",
   "description": "...",
-  "url": "https://nidwolf.io/articles/slug.html",
+  "url": "https://nidwolf.com/articles/slug.html",
   "inLanguage": "ko",
   "publisher": {
     "@type": "Organization",
     "name": "Nidwolf Design Toolkit",
-    "url": "https://nidwolf.io"
+    "url": "https://nidwolf.com"
   },
   "datePublished": "2026-01-01",
   "dateModified": "2026-06-13"
@@ -53,7 +53,7 @@ Sitemap: https://nidwolf.io/sitemap.xml
 ### Canonical Tag
 
 ```html
-<link rel="canonical" href="https://nidwolf.io/articles/{slug}.html"/>
+<link rel="canonical" href="https://nidwolf.com/articles/{slug}.html"/>
 ```
 
 `head()` 함수에서 `page_url` 인자가 있을 때만 출력.
@@ -65,9 +65,9 @@ Sitemap: https://nidwolf.io/sitemap.xml
 <meta property="og:description" content="{desc}"/>
 <meta property="og:type"        content="article"/>
 <meta property="og:url"         content="{page_url}"/>
-<meta property="og:image"       content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta property="og:image"       content="https://nidwolf.com/nidwolf-logo.png"/>
 <meta name="twitter:card"       content="summary"/>
-<meta name="twitter:image"      content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:image"      content="https://nidwolf.com/nidwolf-logo.png"/>
 ```
 
 ---

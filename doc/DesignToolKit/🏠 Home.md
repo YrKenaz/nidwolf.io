@@ -1,6 +1,6 @@
 # Nidwolf Design Toolkit — 개발 문서
 
-> **도메인**: `https://nidwolf.io`
+> **도메인**: `https://nidwolf.com`
 > **워크스페이스**: `H:\Dev\html\NoNameProject\`
 > **최종 업데이트**: 2026-06-20
 
@@ -70,6 +70,6 @@ Storage    localStorage (언어·다크모드 설정 영속화)
 |----|------|----|
 | `nw-lang` | localStorage | `'ko'` \| `'en'` |
 | `nw-dark` | localStorage | 존재 여부로 판단 |
-| `BASE_URL` | build.py | `https://nidwolf.io` |
+| `BASE_URL` | build.py | `https://nidwolf.com` |
 | `TRIGGER_PX` | ladder.html | `72` px (바 트리거 윈도우 반경) |
 | `_vspd` | ladder.html | `420 * speed` px/s (×1 기본) |
