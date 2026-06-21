@@ -981,8 +981,9 @@ class AnimCtrl {
 //  UI  — sequential flow manager
 // ═══════════════════════════════════════════════════════
 const UI = (() => {
-  let pps  = ['민준','지우','서연','하준'];
-  let rr   = ['발표 진행','회의 기록','간식 담당','면제!'];
+  const _initEn = document.documentElement.lang === 'en';
+  let pps  = _initEn ? ['Alice','Bob','Carol','David'] : ['민준','지우','서연','하준'];
+  let rr   = _initEn ? ['Presenter','Notetaker','Snack duty','Free pass!'] : ['발표 진행','회의 기록','간식 담당','면제!'];
   let spd  = 1;
   let eng  = null, anim = null, running = false;
 
