@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술 | Nidwolf Design Toolkit</title>
+<meta name="description" content="색상환을 기준으로 유사색·보색 조합을 설계하는 방법과 다색 사용 시 톤 통일 원칙을 설명합니다."/>
+<meta property="og:title" content="무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술"/>
+<meta property="og:description" content="색상환을 기준으로 유사색·보색 조합을 설계하는 방법과 다색 사용 시 톤 통일 원칙을 설명합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-14-analogous-complementary.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-14-analogous-complementary.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술",
+  "description": "색상환을 기준으로 유사색·보색 조합을 설계하는 방법과 다색 사용 시 톤 통일 원칙을 설명합니다.",
+  "url": "https://nidwolf.io/articles/tip-14-analogous-complementary.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🌈</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+    <h1><span class="ko">무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술</span><span class="en">Analogous vs. Complementary Color Schemes: When to Use Each</span></h1>
+    <p class="lead"><span class="ko">색상환을 기준으로 유사색·보색 조합을 설계하는 방법과 다색 사용 시 톤 통일 원칙을 설명합니다.</span><span class="en">The difference between analogous and complementary color relationships, and practical guidance for choosing the right scheme for your UI.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>유사색: 안전하고 조화로운 선택</li><li>보색: 강렬한 대비가 필요할 때</li><li>여러 색이 꼭 필요하다면: 톤을 통일하라</li><li>HSL로 배색을 설계하는 법</li><li>이 사이트의 팔레트로 연습하기</li></ul>
+  <ul class="en"><li>Analogous: harmony and cohesion</li><li>Complementary: energy and contrast</li><li>Split-complementary as a middle ground</li></ul>
+</div>
+    <div class="ko"><p>열정적으로 만든 화면이 어딘가 유치해 보인다면 색상 수를 세어 보세요. 빨강, 주황, 노랑, 초록, 파랑이 제각각의 채도로 흩어져 있다면 원인은 거기에 있습니다. 무지개식 배색이 혼란스러운 이유는 색들 사이에 관계가 없기 때문입니다. 좋은 배색은 색상환 위의 기하학에서 나옵니다.</p>
+<h2>유사색: 안전하고 조화로운 선택</h2>
+<p>색상환에서 서로 이웃한 색들(예: 파랑-청록-초록)을 유사색이라 합니다. 색상(Hue) 차이가 30~60도 이내라 자연스럽게 어우러지고, 차분하고 통일된 분위기를 만듭니다. 브랜드 색이 파랑이라면 보조색을 청록이나 남색에서 고르는 식입니다. 단점은 대비가 약해 강조점이 묻힐 수 있다는 것인데, 이때는 명도 차이를 크게 벌려 해결합니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-02-60-30-10-rule.html"><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></a>
+</div>
+<h2>보색: 강렬한 대비가 필요할 때</h2>
+<p>색상환의 정반대(180도)에 있는 색이 보색입니다. 파랑-주황, 보라-노랑 같은 조합은 서로를 가장 돋보이게 만듭니다. 다만 보색을 5:5로 쓰면 시각적 충돌이 일어나므로, 한쪽을 지배색으로 깔고 반대색은 강조에만 소량 쓰는 것이 정석입니다. 파란 화면 속의 주황 버튼이 강력한 이유가 바로 이것입니다. 충돌이 부담스럽다면 정반대 대신 양옆의 색을 쓰는 분할 보색(Split Complementary)이 안전한 대안입니다.</p>
+<h2>여러 색이 꼭 필요하다면: 톤을 통일하라</h2>
+<p>차트나 카테고리 구분처럼 다색이 불가피한 화면도 있습니다. 이때의 규칙은 색상은 다양하게, 채도와 명도는 통일되게입니다. 모든 색을 파스텔 톤으로, 혹은 모두 깊고 어두운 톤으로 맞추면 색상이 달라도 한 가족처럼 보입니다. HSL 값으로 표현하면 S와 L을 고정하고 H만 바꾸는 방식입니다.</p>
+<p>색을 고를 때는 항상 색상환 위에서 지금 고른 색들이 어떤 도형을 그리는지 상상해 보세요. 이웃해 있거나, 마주 보거나, 일정한 간격이거나. 관계가 보이면 조화도 따라옵니다.</p>
+<h2>HSL로 배색을 설계하는 법</h2>
+<p>색상환 이론을 코드로 옮기면 HSL 색 공간이 됩니다. hsl(220, 80%, 50%)라는 파랑이 기준이라면, 유사색은 H를 ±30 움직인 hsl(190…)과 hsl(250…)이고, 보색은 H에 180을 더한 hsl(40…)의 주황 계열입니다. 16진수 코드로는 보이지 않던 색의 관계가 HSL에서는 숫자의 연산이 됩니다. 팔레트를 만들 때 HSL로 사고하는 습관을 들이면 '감으로 고른 색'이 '설계된 색'으로 바뀝니다.</p>
+<h2>이 사이트의 팔레트로 연습하기</h2>
+<p>이론은 직접 만져 봐야 몸에 붙습니다. Nidwolf 디자인 위자드의 컬러 팔레트 카테고리에는 유사색 중심의 차분한 팔레트(Sage, Teal Mint)와 보색 대비가 강한 팔레트(Solar Gold, Neon 계열)가 함께 들어 있습니다. 같은 레이아웃에 두 유형의 팔레트를 번갈아 적용해 보면, 유사색의 안정감과 보색의 긴장감이 화면 전체의 인상을 어떻게 바꾸는지 즉시 확인할 수 있습니다. 색 이론 공부의 마지막 단계는 언제나 자신의 눈으로 차이를 확인하는 것입니다.</p>
+
+<p>배색 감각은 타고나는 것이 아니라 관계를 보는 훈련의 결과입니다. 좋아 보이는 사이트를 만나면 색을 추출해 색상환 위에 놓아 보세요. 그 색들이 그리는 도형을 읽을 수 있게 되는 순간, 배색은 운이 아니라 기술이 됩니다.</p>
+</div>
+    <div class="en"><p>Random color selection produces random results. Color theory gives you geometric relationships on the color wheel that have proven emotional and compositional effects. The two most useful for UI work are analogous and complementary schemes.</p>
+<h2>Analogous: harmony and cohesion</h2>
+<p>Analogous colors are neighbors on the color wheel — three to four hues within a 60–90° arc (e.g., blue, blue-green, green). They share undertones, so they feel naturally harmonious and unified. Analogous palettes work well for calm, professional interfaces where you want a sense of visual continuity — dashboards, productivity tools, healthcare apps. The risk: without a clear accent, analogous schemes can feel monotonous. A small dose of a contrasting hue as accent prevents this.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-02-60-30-10-rule.html"><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></a>
+</div>
+<h2>Complementary: energy and contrast</h2>
+<p>Complementary colors sit directly opposite each other on the color wheel (e.g., blue and orange, purple and yellow). The natural contrast makes each color appear more vivid alongside its complement. This vibrancy is great for CTAs, badges, and highlights — anywhere you need maximum attention. The risk: full-saturation complementary pairs can vibrate optically and be hard on the eyes. Desaturating one member of the pair — using a muted orange against a vivid blue — gives contrast without visual fatigue.</p>
+<h2>Split-complementary as a middle ground</h2>
+<p>Split-complementary (a base hue plus the two hues adjacent to its complement) gives contrast similar to complementary but with more variety and less tension. It's a practical starting point for three-color UI systems.</p>
+<p>Color sense is built through practice, not talent. When you encounter a palette you find beautiful, extract the colors and map them on a color wheel. Being able to read the geometric relationship that made it work is when color selection shifts from guesswork to craft.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-13-single-cta.html">← <span class="ko">CTA 버튼은 한 화면에 하나만 주인공으로</span><span class="en">One Primary CTA Per Screen: The Paradox of Choice in UI</span></a><a class="next" href="tip-15-less-is-more.html"><span class="ko">완성은 더할 것이 없을 때가 아니라 뺄 것이 없을 때</span><span class="en">Less Is More: The Case for Restraint in UI Design</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

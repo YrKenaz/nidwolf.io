@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>패턴 라이브러리: 재사용이 일관성을 만든다 | Nidwolf Design Toolkit</title>
+<meta name="description" content="컴포넌트 기반 패턴 라이브러리 구축의 이점과 시작 방법, 디자인 시스템과의 관계를 설명합니다."/>
+<meta property="og:title" content="패턴 라이브러리: 재사용이 일관성을 만든다"/>
+<meta property="og:description" content="컴포넌트 기반 패턴 라이브러리 구축의 이점과 시작 방법, 디자인 시스템과의 관계를 설명합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-28-pattern-library.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-28-pattern-library.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "패턴 라이브러리: 재사용이 일관성을 만든다",
+  "description": "컴포넌트 기반 패턴 라이브러리 구축의 이점과 시작 방법, 디자인 시스템과의 관계를 설명합니다.",
+  "url": "https://nidwolf.io/articles/tip-28-pattern-library.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🧩</span><span class="cat"><span class="ko">디자인 시스템</span><span class="en">Design System</span></span></div>
+    <h1><span class="ko">패턴 라이브러리: 재사용이 일관성을 만든다</span><span class="en">Design Pattern Libraries: Build Once, Use Everywhere</span></h1>
+    <p class="lead"><span class="ko">컴포넌트 기반 패턴 라이브러리 구축의 이점과 시작 방법, 디자인 시스템과의 관계를 설명합니다.</span><span class="en">What a design pattern library is, why it's different from a component library, and how to build one that actually gets used.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>왜 일관성이 사용성인가</li><li>작게 시작하는 법</li><li>운영이 구축보다 어렵다</li><li>도구: 피그마에서 스토리북까지</li><li>토큰: 라이브러리의 헌법</li></ul>
+  <ul class="en"><li>Pattern vs. component</li><li>What to include</li><li>Making patterns get used</li></ul>
+</div>
+    <div class="ko"><p>버튼을 매번 새로 그리는 팀과 만들어 둔 버튼을 가져다 쓰는 팀의 격차는 시간이 지날수록 벌어집니다. 패턴 라이브러리는 자주 쓰는 UI 요소(버튼, 입력란, 카드, 모달, 테이블)를 표준화해 모아 둔 재사용 가능한 부품 창고입니다. 일관성과 속도를 동시에 얻는, 비용 대비 효과가 가장 확실한 투자입니다.</p>
+<h2>왜 일관성이 사용성인가</h2>
+<p>같은 기능이 화면마다 다르게 생기면 사용자는 매번 다시 학습해야 합니다. 어떤 화면에서는 파란 버튼이 저장이고 다른 화면에서는 초록 버튼이 저장이라면, 제품 전체가 낯선 곳이 됩니다. 패턴이 통일되면 한 번의 학습이 제품 전체에 적용되고, 사용자는 인터페이스가 아니라 자신의 일에 집중할 수 있습니다. 개발 측면에서도 같은 컴포넌트의 재사용은 버그 감소와 유지보수 비용 절감으로 직결됩니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>작게 시작하는 법</h2>
+<p>거창한 디자인 시스템부터 시작할 필요는 없습니다. 1단계는 인벤토리입니다. 현재 제품의 모든 버튼을 캡처해 한 페이지에 모아 보세요. 미묘하게 다른 버튼이 수십 종 발견될 것입니다. 2단계는 통합입니다. 그중 살아남을 표준형을 정하고(주요/보조/위험, 3가지 크기 정도) 나머지를 폐기합니다. 3단계는 토큰화입니다. 색상, 간격, 모서리, 그림자를 변수로 정의해 컴포넌트들이 같은 기초 위에 서게 합니다. 버튼, 입력란, 카드 세 가지만 표준화해도 화면의 80%가 정돈됩니다.</p>
+<h2>운영이 구축보다 어렵다</h2>
+<p>라이브러리는 만든 날부터 낡기 시작합니다. 새 패턴이 필요할 때 기존 패턴으로 해결할 수 없는지 먼저 검토하는 절차, 예외를 허용하는 기준, 변경 사항을 전파하는 채널이 없으면 라이브러리는 곧 장식이 됩니다. 도구보다 합의가 중요합니다. 디자이너와 개발자가 같은 이름으로 같은 부품을 부르는 것, 그것이 살아 있는 패턴 라이브러리의 징표입니다.</p>
+<p>오늘 할 수 있는 일은 하나입니다. 제품의 버튼 인벤토리를 만들어 보세요. 그 한 장의 충격적인 스크린샷이 시스템화의 가장 강력한 설득 자료가 됩니다.</p>
+<h2>도구: 피그마에서 스토리북까지</h2>
+<p>패턴 라이브러리의 양대 거점은 디자인과 코드입니다. 디자인 쪽에서는 피그마의 컴포넌트와 배리언트로 상태(기본/호버/비활성)와 크기 변형을 한 부품에 담고, 팀 라이브러리로 게시해 모두가 같은 부품을 쓰게 합니다. 코드 쪽의 표준은 스토리북(Storybook)입니다. 컴포넌트를 독립된 환경에서 모든 상태로 열람·테스트할 수 있어, 디자이너와 개발자가 '살아 있는 카탈로그'를 공유하게 됩니다. 두 거점의 컴포넌트 이름을 일치시키는 것이 협업 효율의 핵심입니다.</p>
+<h2>토큰: 라이브러리의 헌법</h2>
+<p>컴포넌트가 패턴 라이브러리의 시민이라면 디자인 토큰은 헌법입니다. 색(--color-accent), 간격(--space-4), 모서리(--radius-md), 그림자(--shadow-2), 폰트 크기(--text-lg)를 변수로 정의하고 모든 컴포넌트가 이를 참조하게 만들면, 브랜드 색 변경이나 다크 모드 같은 전면적 변화가 변수 몇 줄의 수정으로 끝납니다. 이 사이트의 디자인 위자드가 내보내는 CSS 변수·JSON 토큰이 바로 이 구조의 출발점입니다. 작게 시작하더라도 토큰부터 시작하세요.</p>
+</div>
+    <div class="en"><p>A design pattern library is a documented collection of reusable solutions to recurring UI problems. Not just components (a button), but patterns (a form validation flow, an empty state, a pagination control). It answers the question: "what's the right way to do X in our product?" — so every designer and developer doesn't have to answer it from scratch.</p>
+<h2>Pattern vs. component</h2>
+<p>Components are the atoms: button, input, badge, avatar. Patterns are the molecules: how a button and input combine in a search bar; how a badge and avatar combine in a notification item; how multiple components combine to solve a specific user need. Component libraries answer "what building blocks do we have?" Pattern libraries answer "how do we build this kind of experience?"</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>What to include</h2>
+<p>Start with the highest-frequency, highest-variance patterns in your product — the ones where designers currently make different choices. Common candidates: empty states (no data, no results, no connection), error and success feedback, loading states, form layouts, modal/sheet usage rules, data table patterns. Document: the pattern name, when to use it, when not to use it, the component recipe, an example, and accessibility notes.</p>
+<h2>Making patterns get used</h2>
+<p>A pattern library that isn't consulted is shelfware. Embed patterns in the workflow: link to the relevant pattern directly in design review, reference patterns in code review, update patterns when you discover a better solution. The goal is that "check the pattern library first" becomes team reflex, not extra work.</p>
+<p>Pattern libraries reduce decision fatigue, onboarding time, and consistency failures simultaneously. The ROI compounds — every pattern you document pays dividends every time someone would otherwise have reinvented it.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-27-performance-design.html">← <span class="ko">로딩 1초가 전환율 7%를 좌우한다: 성능도 디자인이다</span><span class="en">Performance-Aware Design: How Design Decisions Affect Core Web Vitals</span></a><a class="next" href="tip-29-error-message.html"><span class="ko">좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게</span><span class="en">좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

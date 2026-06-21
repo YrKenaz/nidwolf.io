@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>호버 없는 버튼은 사용자를 불안하게 만든다 | Nidwolf Design Toolkit</title>
+<meta name="description" content="인터랙티브 요소의 상태(호버·포커스·액티브·비활성) 설계가 사용성에 미치는 영향을 다룹니다."/>
+<meta property="og:title" content="호버 없는 버튼은 사용자를 불안하게 만든다"/>
+<meta property="og:description" content="인터랙티브 요소의 상태(호버·포커스·액티브·비활성) 설계가 사용성에 미치는 영향을 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-18-hover-state.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-18-hover-state.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "호버 없는 버튼은 사용자를 불안하게 만든다",
+  "description": "인터랙티브 요소의 상태(호버·포커스·액티브·비활성) 설계가 사용성에 미치는 영향을 다룹니다.",
+  "url": "https://nidwolf.io/articles/tip-18-hover-state.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🖱️</span><span class="cat"><span class="ko">인터랙션</span><span class="en">Interaction</span></span></div>
+    <h1><span class="ko">호버 없는 버튼은 사용자를 불안하게 만든다</span><span class="en">호버 없는 버튼은 사용자를 불안하게 만든다</span></h1>
+    <p class="lead"><span class="ko">인터랙티브 요소의 상태(호버·포커스·액티브·비활성) 설계가 사용성에 미치는 영향을 다룹니다.</span><span class="en">인터랙티브 요소의 상태(호버·포커스·액티브·비활성) 설계가 사용성에 미치는 영향을 다룹니다.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>설계해야 할 다섯 가지 상태</li><li>포커스 상태를 지우지 마세요</li><li>터치 환경에서의 호버 문제</li><li>상태 스타일의 코드 패턴</li><li>호버에 정보를 숨기지 말라는 원칙의 예외</li></ul>
+  <ul class="en"><li>설계해야 할 다섯 가지 상태</li><li>포커스 상태를 지우지 마세요</li><li>터치 환경에서의 호버 문제</li><li>상태 스타일의 코드 패턴</li><li>호버에 정보를 숨기지 말라는 원칙의 예외</li></ul>
+</div>
+    <div class="ko"><p>커서를 버튼 위에 올렸는데 아무 변화가 없다면, 사용자는 무의식적으로 의심합니다. 이거 눌리는 거 맞나? 호버 효과는 장식이 아니라 '여기는 클릭할 수 있는 곳'이라는 시스템의 응답입니다. 인터랙티브 요소의 상태 설계는 UI의 신뢰도를 결정합니다.</p>
+<h2>설계해야 할 다섯 가지 상태</h2>
+<p>모든 클릭 가능한 요소는 최소 다섯 상태를 가집니다. 기본(default), 호버(hover), 포커스(focus), 누름(active), 비활성(disabled). 호버는 배경 밝기 변화·살짝 떠오름·색 진해짐 등으로 '반응함'을 알리고, 액티브는 눌리는 순간 살짝 가라앉는 느낌으로 '입력됨'을 확정합니다. 비활성은 투명도를 낮추되, 왜 비활성인지 알 수 있는 단서(툴팁, 안내문)를 함께 제공해야 합니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>포커스 상태를 지우지 마세요</h2>
+<p>키보드로 웹을 탐색하는 사용자에게 포커스 링은 마우스 커서와 같습니다. outline: none으로 포커스 표시를 지우는 것은 커서를 숨기는 것과 같은 일입니다. 기본 파란 테두리가 디자인과 안 맞는다면 지우는 대신 브랜드에 맞는 포커스 스타일로 교체하세요. :focus-visible을 쓰면 키보드 사용자에게만 포커스 링을 보여줄 수 있어 마우스 사용자의 시각적 잡음도 막을 수 있습니다.</p>
+<h2>터치 환경에서의 호버 문제</h2>
+<p>모바일에는 호버가 없습니다. 따라서 호버에만 의존해 정보를 숨기는 패턴(호버 시에만 보이는 버튼, 호버 툴팁 속 필수 정보)은 모바일에서 기능 실종으로 이어집니다. 호버는 어디까지나 보조 피드백으로 쓰고, 핵심 정보와 행동은 항상 노출하세요. 터치에서는 액티브 상태(눌림 피드백)가 호버의 역할을 대신하므로 :active 스타일과 적절한 터치 피드백이 더 중요해집니다.</p>
+<p>컴포넌트를 만들 때 기본 상태 하나만 그리고 끝내지 마세요. 다섯 상태가 모두 정의된 버튼과 그렇지 않은 버튼의 차이가, 완성된 제품과 시안의 차이입니다.</p>
+<h2>상태 스타일의 코드 패턴</h2>
+<p>다섯 상태를 CSS로 정리하면 이렇습니다. 기본 상태에 transition: background .15s, transform .15s를 깔아 두고, :hover에서 배경을 한 단계 진하게(또는 transform: translateY(-1px)), :active에서 transform: scale(.98)로 살짝 눌리게, :focus-visible에서 outline: 2px solid와 outline-offset: 2px로 포커스 링을, :disabled에서 opacity: .5와 cursor: not-allowed를 줍니다. 이 다섯 줄의 패턴을 버튼 컴포넌트 하나에 넣어 두면 제품의 모든 버튼이 살아 있는 것처럼 느껴집니다.</p>
+<h2>호버에 정보를 숨기지 말라는 원칙의 예외</h2>
+<p>호버 노출이 허용되는 경우도 있습니다. 행 위에 올렸을 때 나타나는 보조 액션(복사, 편집 아이콘)은 화면의 시각적 잡음을 줄이는 유효한 패턴입니다. 단, 조건이 있습니다. 같은 기능에 도달하는 다른 경로(우클릭 메뉴, 상세 화면의 버튼)가 존재해야 하고, 터치 기기에서는 해당 액션이 항상 노출되거나 탭으로 접근 가능해야 합니다. 호버는 지름길로 쓰고, 유일한 길로 쓰지 마세요.</p>
+</div>
+    <div class="en"></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-17-easing.html">← <span class="ko">애니메이션의 자연스러움은 ease에서 나온다</span><span class="en">Easing Functions: The Difference Between Cheap and Polished Animation</span></a><a class="next" href="tip-19-grid-break.html"><span class="ko">그리드를 알아야 그리드를 깰 수 있다</span><span class="en">Breaking the Grid: How to Make Rule Violations Feel Intentional</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

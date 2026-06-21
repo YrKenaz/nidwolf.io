@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>매킨토시 UI: GUI 시대를 연 1984년의 혁명 | Nidwolf Design Toolkit</title>
+<meta name="description" content="제록스 PARC에서 애플 매킨토시로 이어진 그래픽 사용자 인터페이스의 탄생과 수전 케어의 아이콘 디자인을 다룹니다."/>
+<meta property="og:title" content="매킨토시 UI: GUI 시대를 연 1984년의 혁명"/>
+<meta property="og:description" content="제록스 PARC에서 애플 매킨토시로 이어진 그래픽 사용자 인터페이스의 탄생과 수전 케어의 아이콘 디자인을 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/history-06-macintosh-ui.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/history-06-macintosh-ui.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "매킨토시 UI: GUI 시대를 연 1984년의 혁명",
+  "description": "제록스 PARC에서 애플 매킨토시로 이어진 그래픽 사용자 인터페이스의 탄생과 수전 케어의 아이콘 디자인을 다룹니다.",
+  "url": "https://nidwolf.io/articles/history-06-macintosh-ui.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 역사</span><span class="en">Design History</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🖥️</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span> <span class="era">1984</span></div>
+    <h1><span class="ko">매킨토시 UI: GUI 시대를 연 1984년의 혁명</span><span class="en">The Macintosh GUI: Inventing the Language of the Desktop</span></h1>
+    <p class="lead"><span class="ko">제록스 PARC에서 애플 매킨토시로 이어진 그래픽 사용자 인터페이스의 탄생과 수전 케어의 아이콘 디자인을 다룹니다.</span><span class="en">How Apple's 1984 Macintosh introduced the desktop metaphor, WIMP interface, and the design conventions that still govern every computer UI today.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>제록스 PARC라는 원천</li><li>수전 케어: 픽셀에 인격을 불어넣다</li><li>데스크톱 메타포의 유산</li><li>1984년 화면에서 지금도 배울 것들</li><li>GUI 연대기 한눈에 보기</li></ul>
+  <ul class="en"><li>The desktop metaphor</li><li>WIMP: Windows, Icons, Menus, Pointer</li><li>The Mac's visual designers</li></ul>
+</div>
+    <div class="ko"><p>1984년 1월, 애플이 매킨토시를 공개했을 때 컴퓨터 화면에는 처음 보는 것들이 있었습니다. 겹쳐지는 창, 클릭할 수 있는 아이콘, 풀다운 메뉴, 그리고 화면 위를 미끄러지는 화살표. 명령어를 외워 타이핑하던 시대에, 보고 가리키면 되는 컴퓨터의 등장이었습니다. WIMP(Window, Icon, Menu, Pointer)라 불리는 이 패러다임은 이후 모든 개인용 컴퓨터 인터페이스의 원형이 됩니다.</p>
+<h2>제록스 PARC라는 원천</h2>
+<p>GUI의 발명자는 애플이 아닙니다. 비트맵 화면, 창, 마우스 기반 상호작용은 1970년대 제록스 팰로앨토 연구소(PARC)의 알토(Alto)에서 이미 구현되어 있었습니다. 1979년 이곳을 견학한 스티브 잡스가 그 가능성을 직감했고, 애플은 리사(Lisa)를 거쳐 매킨토시에서 GUI를 '연구실의 데모'에서 '대중의 제품'으로 바꿔 냈습니다. 발명과 제품화는 다른 재능이라는 것을 보여주는 디자인사의 고전적 사례입니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="history-01-art-nouveau.html"><span class="ko">아르누보: 자연의 곡선이 디자인이 되다</span><span class="en">Art Nouveau: When Nature Became Design</span></a>
+</div>
+<h2>수전 케어: 픽셀에 인격을 불어넣다</h2>
+<p>매킨토시 UI의 인간미는 그래픽 디자이너 수전 케어(Susan Kare)의 작품입니다. 32×32픽셀의 흑백 격자 안에서 그는 쓰레기통, 폴더, 시계, 폭탄, 그리고 웃는 컴퓨터(Happy Mac)를 그렸습니다. 명령 키의 ⌘ 기호를 스웨덴 캠핑장 표지에서 찾아낸 것도 그였습니다. 케어의 아이콘들은 기술을 친근한 사물의 은유로 번역했고, 이 은유의 전통은 오늘날의 이모지와 앱 아이콘까지 이어집니다.</p>
+<h2>데스크톱 메타포의 유산</h2>
+<p>매킨토시가 정립한 데스크톱 메타포(책상, 서류, 폴더, 휴지통)는 컴퓨터를 사무실의 은유로 이해하게 만들었습니다. 이 은유는 너무 성공해서 40년이 지난 지금도 우리는 파일을 폴더에 넣고 휴지통을 비웁니다. 더블클릭, 드래그 앤 드롭, 실행 취소(Undo) 같은 인터랙션 관례도 이 시기에 굳어졌습니다. 오늘 디자이너가 당연하게 쓰는 UI 어휘의 사전이 1984년에 출판된 셈입니다.</p>
+<p>매킨토시의 교훈은 분명합니다. 기술의 혁신은 그것을 보통 사람이 쓸 수 있게 만드는 인터페이스 디자인을 만났을 때 비로소 세상을 바꿉니다.</p>
+<h2>1984년 화면에서 지금도 배울 것들</h2>
+<p>매킨토시의 초기 UI를 다시 보면 제약이 만든 명료함이 보입니다. 흑백 픽셀뿐이었기에 아이콘은 형태만으로 의미를 전달해야 했고, 9인치 화면이었기에 모든 요소는 존재 이유를 증명해야 했습니다. 오늘날 고해상도와 무한한 색이 주어진 디자이너가 오히려 배워야 할 감각입니다. 아이콘을 디자인할 때 '흑백 32픽셀로도 알아볼 수 있는가'를 자문해 보세요. 그 답이 형태의 본질이 잡혔는지를 알려 줍니다.</p>
+<h2>GUI 연대기 한눈에 보기</h2>
+<p>매킨토시 전후의 흐름을 알면 1984년의 위치가 보입니다. 1968년 더글러스 엥겔바트의 '모든 데모의 어머니'(마우스·하이퍼텍스트 최초 시연) → 1973년 제록스 알토(최초의 GUI 컴퓨터) → 1981년 제록스 스타(상용화 시도, 고가로 실패) → 1983년 애플 리사(역시 고가) → 1984년 매킨토시(2,495달러, 대중화 성공) → 1985년 윈도우 1.0 → 1995년 윈도우 95(GUI의 완전한 보편화). 혁신은 발명(1968)에서 대중화(1984)까지 16년이 걸렸습니다. 기술의 성숙과 가격, 그리고 디자인이 만나는 시점이 혁명의 시점입니다.</p>
+</div>
+    <div class="en"><p>On January 24, 1984, Apple introduced the Macintosh — and with it, a set of user interface conventions that have governed personal computing for 40 years. The Mac didn't invent the graphical user interface (researchers at Xerox PARC had built the Alto in 1973), but it was the first to bring it to mass-market consumers and the first whose interface conventions became universal standards.</p>
+<h2>The desktop metaphor</h2>
+<p>The Macintosh interface was built around a physical metaphor: the desktop. Files lived in folders; unwanted files went to the Trash. The metaphor made the abstract concrete. Users approaching a computer for the first time could apply knowledge from the physical world — folders contain documents, trash holds discarded items — to navigate an entirely new kind of object. This metaphor-as-interface-design strategy became the dominant approach to UI for the next three decades.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="history-01-art-nouveau.html"><span class="ko">아르누보: 자연의 곡선이 디자인이 되다</span><span class="en">Art Nouveau: When Nature Became Design</span></a>
+</div>
+<h2>WIMP: Windows, Icons, Menus, Pointer</h2>
+<p>The Mac standardized WIMP interaction — Windows, Icons, Menus, Pointer. Every application lived in resizable, overlapping windows. Every function was accessible through a consistent menu bar at the top of the screen. Every object was represented by a pictographic icon. These conventions, established in 1984, remain so deeply ingrained that violating them still creates confusion. The Mac's Human Interface Guidelines, the first comprehensive document of its kind, established that UI design had rules — learnable, consistent, and testable ones.</p>
+<h2>The Mac's visual designers</h2>
+<p>Susan Kare designed the original Mac icons and typefaces — including the Chicago font and the iconic Command key symbol. Her work established that digital graphic design was a distinct discipline, not just programming with pictures. The playfulness and personality of her icon set — the bomb for system crashes, the dog-eared page for documents — showed that utilitarian UI could also be expressive.</p>
+<p>The Macintosh GUI's legacy is the hardest kind to see: invisible. We no longer notice the conventions it established because they've become the unquestioned grammar of every screen interface we use.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="history-05-pop-art.html">← <span class="ko">팝 아트: 대중문화가 예술이 된 순간</span><span class="en">Pop Art: When Mass Culture Became High Art</span></a><a class="next" href="history-07-skeuomorphism.html"><span class="ko">스큐어모피즘: 현실을 모방한 UI의 시대</span><span class="en">Skeuomorphism: When Digital Pretended to Be Physical</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="history-01-art-nouveau.html">
+      <div class="card-top"><span class="icon">🌿</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1890–1910</span></div>
+      <h3><span class="ko">아르누보: 자연의 곡선이 디자인이 되다</span><span class="en">Art Nouveau: When Nature Became Design</span></h3>
+      <p><span class="ko">1890년대 유럽을 휩쓴 아르누보 운동의 배경, 알폰스 무하와 클림트의 작업, 현대 디자인에 남긴 유산을 정리합니다.</span><span class="en">The origins of Art Nouveau in 1890s Europe, Alphonse Mucha and Klimt's defining works, and the movement's lasting influence on modern visual culture.</span></p>
+    </a><a class="card" href="history-02-bauhaus.html">
+      <div class="card-top"><span class="icon">⬛</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1919–1933</span></div>
+      <h3><span class="ko">바우하우스: 형태는 기능을 따른다</span><span class="en">Bauhaus: Form Follows Function</span></h3>
+      <p><span class="ko">독일 바우하우스 학교의 철학과 교육 방식, 그리고 현대 그래픽·제품·UI 디자인에 미친 결정적 영향을 다룹니다.</span><span class="en">The philosophy and pedagogy of Germany's Bauhaus school, and its decisive influence on modern graphic design, product design, and UI.</span></p>
+    </a><a class="card" href="history-03-art-deco.html">
+      <div class="card-top"><span class="icon">💎</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1920–1940</span></div>
+      <h3><span class="ko">아르데코: 기계 시대의 화려한 기하학</span><span class="en">Art Deco: The Glamorous Geometry of the Machine Age</span></h3>
+      <p><span class="ko">1920~30년대 아르데코 양식의 특징과 대표 작품, 그리고 럭셔리 브랜딩에서 계속되는 부활을 다룹니다.</span><span class="en">The characteristics and landmark works of 1920s–30s Art Deco, and how it keeps returning in luxury branding.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

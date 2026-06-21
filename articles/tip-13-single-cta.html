@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CTA 버튼은 한 화면에 하나만 주인공으로 | Nidwolf Design Toolkit</title>
+<meta name="description" content="선택지가 많을수록 클릭이 줄어드는 힉의 법칙과 주요/보조 CTA 설계 전략을 다룹니다."/>
+<meta property="og:title" content="CTA 버튼은 한 화면에 하나만 주인공으로"/>
+<meta property="og:description" content="선택지가 많을수록 클릭이 줄어드는 힉의 법칙과 주요/보조 CTA 설계 전략을 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-13-single-cta.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-13-single-cta.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "CTA 버튼은 한 화면에 하나만 주인공으로",
+  "description": "선택지가 많을수록 클릭이 줄어드는 힉의 법칙과 주요/보조 CTA 설계 전략을 다룹니다.",
+  "url": "https://nidwolf.io/articles/tip-13-single-cta.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🎯</span><span class="cat"><span class="ko">전환율</span><span class="en">Conversion</span></span></div>
+    <h1><span class="ko">CTA 버튼은 한 화면에 하나만 주인공으로</span><span class="en">One Primary CTA Per Screen: The Paradox of Choice in UI</span></h1>
+    <p class="lead"><span class="ko">선택지가 많을수록 클릭이 줄어드는 힉의 법칙과 주요/보조 CTA 설계 전략을 다룹니다.</span><span class="en">How reducing the number of calls to action increases conversion — the psychology of choice overload applied to UI design.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>주인공은 하나, 조연은 조용히</li><li>CTA 문구: 동사로, 구체적으로</li><li>페이지 전체의 CTA 설계</li><li>실제 사례에서 배우기</li><li>CTA 강등의 시각적 단계</li></ul>
+  <ul class="en"><li>One primary, one secondary</li><li>Why we add too many CTAs</li><li>Hierarchy extends to copy too</li></ul>
+</div>
+    <div class="ko"><p>화면에 버튼이 다섯 개 있으면 사용자는 다섯 번 클릭할까요? 현실은 반대입니다. 선택지가 많아질수록 결정에 걸리는 시간이 길어지고(힉의 법칙), 결정이 어려워지면 사람은 가장 쉬운 선택, 즉 '아무것도 하지 않기'를 고릅니다. 전환율을 높이는 첫걸음은 행동 유도(CTA)의 다이어트입니다.</p>
+<h2>주인공은 하나, 조연은 조용히</h2>
+<p>한 화면에는 하나의 주요 CTA만 시각적 주인공이어야 합니다. 강조색으로 채워진(filled) 버튼은 '시작하기' 하나에만 허락하고, 나머지 행동은 외곽선(outline) 버튼이나 텍스트 링크로 강등시키세요. '데모 보기', '더 알아보기' 같은 보조 행동이 주요 CTA와 같은 무게로 나란히 서 있으면 시선과 클릭이 분산됩니다. 색·크기·위치 모두에서 주연과 조연의 차이가 분명해야 합니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>CTA 문구: 동사로, 구체적으로</h2>
+<p>버튼 문구는 클릭 후 일어날 일을 약속해야 합니다. '확인', '제출' 같은 시스템 언어보다 '무료로 시작하기', '견적 받아보기'처럼 사용자가 얻는 가치를 동사로 표현하는 쪽이 강합니다. 불안을 줄이는 보조 문구(카드 등록 불필요, 1분이면 가입 완료)를 버튼 근처에 두면 클릭의 심리적 비용이 더 내려갑니다.</p>
+<h2>페이지 전체의 CTA 설계</h2>
+<p>긴 랜딩 페이지라면 같은 주요 CTA를 스크롤 구간마다 반복 배치하는 것은 괜찮습니다. 원칙은 '한 화면(뷰포트)에 주인공 하나'이지 페이지 전체에 버튼 하나가 아닙니다. 히어로에서 한 번, 기능 소개 후 한 번, 가격표 아래에서 한 번. 사용자가 설득되는 순간마다 행동할 출구를 열어 두되, 그 출구는 항상 같은 문이어야 합니다.</p>
+<p>지금 만드는 화면에서 채워진 버튼을 세어 보세요. 둘 이상이라면 그중 하나만 남기고 나머지를 한 단계씩 낮춰 보세요. 클릭이 모이는 곳이 달라지는 것을 데이터로 확인하게 될 것입니다.</p>
+<h2>실제 사례에서 배우기</h2>
+<p>전환 최적화가 잘 된 서비스들의 가입 페이지를 열어 보세요. 화면에 채워진 버튼이 몇 개인지 세어 보면 대부분 하나입니다. 검색 엔진의 홈은 검색창 하나, 동영상 서비스의 랜딩은 '시작하기' 하나, 결제 화면은 '결제하기' 하나. 보조 행동(로그인, 자세히 보기)은 모두 텍스트 링크로 강등되어 있습니다. 반면 전환이 안 나오는 페이지들은 공통적으로 배너, 팝업, 버튼이 서로 경쟁합니다. 잘되는 페이지의 공통점은 화려함이 아니라 단일한 초점입니다.</p>
+<h2>CTA 강등의 시각적 단계</h2>
+<p>행동의 우선순위를 버튼 스타일의 단계로 표현하는 체계를 만들어 두면 편합니다. 1순위는 채움(filled) 버튼, 2순위는 외곽선(outline) 버튼, 3순위는 텍스트 링크, 4순위는 아이콘 버튼. 한 화면에서 1순위는 하나, 2순위는 둘까지로 예산을 정하세요. 이 체계가 디자인 시스템에 들어가 있으면 "이 버튼 더 눈에 띄게 해 주세요"라는 요청에도 '그러면 어떤 버튼을 강등할까요'라는 생산적인 대화로 응답할 수 있습니다.</p>
+
+<p>CTA 다이어트가 두렵다면 데이터를 방패로 삼으세요. 버튼을 줄인 버전과 기존 버전을 A/B 테스트로 비교하면 됩니다. 대부분의 경우, 선택지를 줄인 쪽이 이깁니다. 사용자에게 필요한 것은 더 많은 문이 아니라 더 분명한 문 하나입니다.</p>
+</div>
+    <div class="en"><p>Giving users more options feels generous. Research consistently shows it backfires. Barry Schwartz's "paradox of choice" — popularized by the jam study showing lower sales with 24 varieties than 6 — applies directly to UI: more CTAs mean more decisions, more hesitation, and ultimately less action.</p>
+<h2>One primary, one secondary</h2>
+<p>The practical rule: each screen should have one primary CTA that is visually dominant, and optionally one secondary CTA that is visually subdued. The primary action is what you want most users to do; the secondary is a fallback for the minority who aren't ready. Make the visual contrast unmistakable — filled button vs. text link, or filled vs. outlined button.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>Why we add too many CTAs</h2>
+<p>Multiple CTAs usually reflect internal disagreements about product priorities, not user needs. When the sales team wants "Start Trial," the marketing team wants "See Demo," and the product team wants "Explore Features," the path of least resistance is to add all three buttons. The user pays the cognitive cost. Force the decision internally — one primary action per screen — and the design improves as a side effect.</p>
+<h2>Hierarchy extends to copy too</h2>
+<p>CTA hierarchy isn't just visual. Copy matters: "Get started free" outperforms "Submit" because it tells the user what they gain, not what they do. Even a single well-designed CTA can underperform if the copy is passive or vague. Write the button label from the user's perspective, not the system's.</p>
+<p>If reducing CTAs feels risky, use data as your shield — A/B test the single-CTA version against the current one. In most cases, fewer options win. Users need a clear door, not more doors.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-12-mobile-first.html">← <span class="ko">모바일 퍼스트: 작은 화면에서 시작하면 본질이 남는다</span><span class="en">Mobile First: Design for Constraints, Then Scale Up</span></a><a class="next" href="tip-14-analogous-complementary.html"><span class="ko">무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술</span><span class="en">Analogous vs. Complementary Color Schemes: When to Use Each</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

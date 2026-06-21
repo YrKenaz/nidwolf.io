@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>터치 타겟 최소 44px: 손가락을 위한 디자인 | Nidwolf Design Toolkit</title>
+<meta name="description" content="Apple HIG와 머티리얼 디자인이 권장하는 터치 타겟 크기와 히트 영역 확장 기법을 다룹니다."/>
+<meta property="og:title" content="터치 타겟 최소 44px: 손가락을 위한 디자인"/>
+<meta property="og:description" content="Apple HIG와 머티리얼 디자인이 권장하는 터치 타겟 크기와 히트 영역 확장 기법을 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-09-touch-target.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-09-touch-target.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "터치 타겟 최소 44px: 손가락을 위한 디자인",
+  "description": "Apple HIG와 머티리얼 디자인이 권장하는 터치 타겟 크기와 히트 영역 확장 기법을 다룹니다.",
+  "url": "https://nidwolf.io/articles/tip-09-touch-target.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🤏</span><span class="cat"><span class="ko">모바일</span><span class="en">Mobile</span></span></div>
+    <h1><span class="ko">터치 타겟 최소 44px: 손가락을 위한 디자인</span><span class="en">터치 타겟 최소 44px: 손가락을 위한 디자인</span></h1>
+    <p class="lead"><span class="ko">Apple HIG와 머티리얼 디자인이 권장하는 터치 타겟 크기와 히트 영역 확장 기법을 다룹니다.</span><span class="en">Apple HIG와 머티리얼 디자인이 권장하는 터치 타겟 크기와 히트 영역 확장 기법을 다룹니다.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>플랫폼별 기준</li><li>보이는 크기와 히트 영역은 다르다</li><li>크기만큼 중요한 간격</li><li>코드로 보는 히트 영역 확장</li><li>높은 곳의 버튼, 닿지 않는 엄지</li></ul>
+  <ul class="en"><li>플랫폼별 기준</li><li>보이는 크기와 히트 영역은 다르다</li><li>크기만큼 중요한 간격</li><li>코드로 보는 히트 영역 확장</li><li>높은 곳의 버튼, 닿지 않는 엄지</li></ul>
+</div>
+    <div class="ko"><p>마우스 커서는 1px 단위로 정확하지만 손가락은 그렇지 않습니다. 성인 손가락 끝의 접촉 면적은 평균 10mm 안팎이고, 화면을 보지 않고 누르는 경우도 많습니다. 그래서 모바일 UI의 모든 터치 가능한 요소에는 최소 크기 기준이 존재합니다.</p>
+<h2>플랫폼별 기준</h2>
+<p>Apple 휴먼 인터페이스 가이드라인은 44×44pt를, 구글 머티리얼 디자인은 48×48dp를 최소 터치 타겟으로 권장합니다. WCAG 접근성 기준도 2.5.5 항목에서 44×44 CSS 픽셀을 제시합니다. 요약하면 어떤 플랫폼이든 44~48px 미만의 터치 영역은 오터치를 유발한다는 데 합의가 있는 셈입니다. 버튼뿐 아니라 체크박스, 닫기 아이콘, 리스트의 행, 탭 항목 모두에 적용됩니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>보이는 크기와 히트 영역은 다르다</h2>
+<p>디자인상 아이콘이 24px로 작아야 한다면, 보이는 크기는 유지하되 터치 영역만 넓히면 됩니다. CSS에서는 패딩을 더해 실제 클릭 영역을 48px로 만들거나, 가상 요소(::before)로 투명한 히트 영역을 확장하는 기법을 씁니다. 시각적 밀도와 사용성은 이렇게 분리해서 해결하는 것이 정석입니다.</p>
+<h2>크기만큼 중요한 간격</h2>
+<p>타겟이 충분히 커도 서로 붙어 있으면 오터치가 발생합니다. 인접한 터치 요소 사이에는 최소 8px의 간격을 확보하세요. 특히 '삭제'와 '저장'처럼 결과가 정반대인 버튼이 붙어 있는 배치는 피해야 합니다. 화면 가장자리도 고려 대상입니다. 한 손 조작 시 엄지가 닿는 영역(화면 하단 2/3)에 주요 액션을 두고, 상단 모서리에는 빈도 낮은 기능을 배치하는 것이 엄지 친화적(thumb-friendly) 설계입니다.</p>
+<p>테스트 방법은 간단합니다. 디자인 시안을 실제 기기에서 띄우고 엄지로 모든 버튼을 빠르게 눌러 보세요. 두 번 이상 잘못 눌리는 요소가 있다면 그것이 바로 44px 규칙이 필요한 자리입니다. 데스크톱 우선으로 작업하는 디자이너일수록 이 검증 과정을 빼먹기 쉽습니다.</p>
+<h2>코드로 보는 히트 영역 확장</h2>
+<p>24px 아이콘 버튼의 터치 영역을 48px로 늘리는 가장 간단한 CSS는 패딩입니다. 버튼에 padding: 12px을 주면 보이는 아이콘은 그대로인 채 클릭 영역만 48px이 됩니다. 레이아웃을 건드리고 싶지 않다면 가상 요소 기법을 쓰세요. position: relative인 버튼에 ::before { position: absolute; inset: -12px; content: ''; }를 추가하면 시각적 변화 없이 히트 영역만 사방 12px씩 확장됩니다. 두 줄의 코드가 오터치 불만을 크게 줄여 줍니다.</p>
+<h2>높은 곳의 버튼, 닿지 않는 엄지</h2>
+<p>화면이 커지면서 '닿는 것'의 문제는 크기에서 위치로 확장되었습니다. 6인치 이상 화면에서 한 손으로 화면 좌상단을 누르려면 손을 고쳐 잡아야 합니다. 그래서 최신 모바일 디자인은 핵심 액션을 점점 아래로 내리고 있습니다. 하단 탭 바, 하단 시트, 플로팅 버튼, 그리고 주소창마저 하단으로 내린 브라우저들이 그 증거입니다. 자주 쓰는 기능일수록 화면 아래쪽 절반에, 파괴적이거나 드문 기능은 위쪽에 두는 것이 현대 모바일 배치의 기본 문법입니다.</p>
+</div>
+    <div class="en"></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-08-8pt-grid.html">← <span class="ko">8pt 그리드 시스템: 모든 간격을 8의 배수로</span><span class="en">The 8pt Grid: Why All Your Spacing Should Be Multiples of 8</span></a><a class="next" href="tip-10-contrast-emphasis.html"><span class="ko">대비 없이는 강조도 없다</span><span class="en">Contrast and Emphasis: How to Create Visual Hierarchy Without Color Alone</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

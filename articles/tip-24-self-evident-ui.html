@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>사용자는 설명서를 읽지 않는다: 자명한 UI 만들기 | Nidwolf Design Toolkit</title>
+<meta name="description" content="스티브 크룩의 '생각하게 하지 마' 원칙과 어포던스·관례를 활용한 직관적 인터페이스 설계법을 다룹니다."/>
+<meta property="og:title" content="사용자는 설명서를 읽지 않는다: 자명한 UI 만들기"/>
+<meta property="og:description" content="스티브 크룩의 '생각하게 하지 마' 원칙과 어포던스·관례를 활용한 직관적 인터페이스 설계법을 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-24-self-evident-ui.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-24-self-evident-ui.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "사용자는 설명서를 읽지 않는다: 자명한 UI 만들기",
+  "description": "스티브 크룩의 '생각하게 하지 마' 원칙과 어포던스·관례를 활용한 직관적 인터페이스 설계법을 다룹니다.",
+  "url": "https://nidwolf.io/articles/tip-24-self-evident-ui.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🎪</span><span class="cat"><span class="ko">UX 원칙</span><span class="en">UX Principles</span></span></div>
+    <h1><span class="ko">사용자는 설명서를 읽지 않는다: 자명한 UI 만들기</span><span class="en">Self-Evident UI: Design So Clear It Needs No Instructions</span></h1>
+    <p class="lead"><span class="ko">스티브 크룩의 '생각하게 하지 마' 원칙과 어포던스·관례를 활용한 직관적 인터페이스 설계법을 다룹니다.</span><span class="en">What makes UI self-evident, the role of affordances and conventions, and how to test whether your design communicates without explanation.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>어포던스: 생김새가 사용법이다</li><li>관례는 공짜 학습이다</li><li>자명함을 검증하는 방법</li><li>온보딩이 필요 없는 온보딩</li><li>자명함과 브랜드 개성의 균형</li></ul>
+  <ul class="en"><li>Affordances and signifiers</li><li>Leverage conventions</li><li>Testing self-evidence</li></ul>
+</div>
+    <div class="ko"><p>온보딩 투어, 도움말 팝업, 사용 가이드 PDF. 이런 것들이 늘어난다는 것은 UI가 스스로를 설명하지 못한다는 고백입니다. 스티브 크룩이 사용성의 고전 '생각하게 하지 마(Don't Make Me Think)'에서 말했듯, 좋은 인터페이스의 기준은 단순합니다. 보는 순간 무엇인지, 어떻게 쓰는지 자명할 것.</p>
+<h2>어포던스: 생김새가 사용법이다</h2>
+<p>버튼은 눌릴 것처럼 생겨야 하고, 입력란은 입력할 수 있을 것처럼 보여야 합니다. 이를 어포던스(행동 유도성)라고 합니다. 플랫 디자인 유행 이후 버튼과 일반 텍스트의 구분이 흐려지면서 '클릭 가능성의 위기'가 생겼습니다. 테두리도 배경도 없는 텍스트가 사실은 버튼이라면, 사용자는 화면을 더듬으며 클릭되는 곳을 찾아야 합니다. 인터랙티브 요소에는 최소한의 시각적 단서(배경, 테두리, 색, 밑줄)를 남겨 두세요.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>관례는 공짜 학습이다</h2>
+<p>로고는 왼쪽 위에 있고 누르면 홈으로 갑니다. 장바구니는 오른쪽 위에 있습니다. 밑줄 텍스트는 링크입니다. 사용자는 수천 개의 다른 사이트에서 이 관례들을 이미 학습했습니다. 관례를 따르면 그 학습을 공짜로 물려받고, 관례를 깨면 사용자를 처음부터 다시 가르쳐야 합니다. 독창성은 브랜드 표현과 콘텐츠에서 발휘하고, 인터랙션 패턴은 지루할 만큼 평범하게 가져가는 것이 영리한 배분입니다.</p>
+<h2>자명함을 검증하는 방법</h2>
+<p>가장 저렴한 테스트는 5초 테스트입니다. 처음 보는 사람에게 화면을 5초 보여주고 가립니다. 이 페이지가 무엇을 하는 곳인지, 무엇을 누르면 되는지 답하지 못한다면 화면은 자명하지 않은 것입니다. 또 하나는 설명 제거 테스트입니다. 화면의 안내 문구를 모두 지웠을 때 사용이 불가능해진다면, 그 안내문은 디자인 결함을 가리는 반창고였던 셈입니다.</p>
+<p>사용자에게 똑똑함을 요구하는 UI는 실패합니다. 똑똑함은 디자이너가 미리 발휘해서, 사용자는 아무 생각 없이 쓸 수 있게 만드는 것. 그것이 이 직업의 본질입니다.</p>
+<h2>온보딩이 필요 없는 온보딩</h2>
+<p>최고의 온보딩은 투어 팝업이 아니라 점진적 공개(Progressive Disclosure)입니다. 처음에는 핵심 기능만 보여주고, 사용자가 익숙해진 시점에 고급 기능을 맥락 속에서 드러내는 방식입니다. 빈 화면(Empty State)도 강력한 교육 도구입니다. "아직 프로젝트가 없습니다" 대신 "첫 프로젝트를 만들어 보세요 + 만들기 버튼"을 보여주면, 설명 없이 다음 행동이 자명해집니다. 가르치려 하지 말고, 다음 한 걸음이 항상 보이게 만드세요.</p>
+<h2>자명함과 브랜드 개성의 균형</h2>
+<p>"평범하게 만들라"는 조언이 개성을 포기하라는 뜻은 아닙니다. 구조와 인터랙션은 관례를 따르되, 색·일러스트·말투·모션의 디테일에서 브랜드가 드러나게 하는 것이 균형점입니다. 사용자는 장바구니가 어디 있는지 헤매고 싶지 않지만, 결제 완료 화면의 재치 있는 문구는 기쁘게 받아들입니다. 익숙함은 뼈대에, 개성은 살결에. 이 배분을 지키는 제품이 쓰기 쉬우면서도 기억에 남습니다.</p>
+
+<p>자명한 UI의 최종 시험대는 출시 후의 문의 채널입니다. "이건 어떻게 하나요?"라는 질문이 반복되는 지점이 곧 자명하지 않은 지점입니다. 고객 문의 로그는 가장 정직한 사용성 테스트 결과물이니 정기적으로 디자인 백로그로 환원하세요.</p>
+</div>
+    <div class="en"><p>The goal of UI design is to make user intent achievable without reading a manual, watching a tutorial, or asking support. Steve Krug's principle — "Don't make me think" — captures the target: every choice should be visible, every action should be obvious, every result should be predictable.</p>
+<h2>Affordances and signifiers</h2>
+<p>Affordances are what an element can do; signifiers are what it communicates it can do. A button affords being pressed; a raised border, a filled background, and a pointer cursor on hover are all signifiers that communicate "press me." When signifiers are absent — a flat rectangle with text but no visual treatment indicating interactivity — the affordance exists but is invisible. Good UI design ensures signifiers match affordances.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>Leverage conventions</h2>
+<p>Conventions are pre-learned affordances. Users already know: top-left logo = home link, magnifying glass = search, hamburger icon = menu, underlined text = hyperlink. Following these conventions is not a failure of creativity — it is respect for the cognitive investment users have already made. Reserve creative deviation for cases where the deviation genuinely adds value, and where users have enough context to learn the new pattern.</p>
+<h2>Testing self-evidence</h2>
+<p>The five-second test: show a user the screen for five seconds, then hide it, and ask "what do you think this page is for and what can you do on it?" If answers are wrong or vague, the signifiers need work. The first-click test: where does a user click first when given a task? If the majority click in the wrong place, the primary CTA's signifiers aren't strong enough.</p>
+<p>The ultimate test of self-evident UI is the support inbox. Repeated questions about "how do I do X" identify exactly where self-evidence failed. Feed support logs back into the design backlog regularly.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-23-proximity.html">← <span class="ko">근접성의 원칙: 간격이 곧 관계를 설명한다</span><span class="en">The Proximity Principle: Organize Without Drawing Boxes</span></a><a class="next" href="tip-25-z-pattern.html"><span class="ko">Z자형 시선 패턴과 랜딩 페이지 설계</span><span class="en">The Z-Pattern: Designing Layouts That Guide the Eye</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

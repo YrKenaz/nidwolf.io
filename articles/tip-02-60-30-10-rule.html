@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>60-30-10 규칙: 실패하지 않는 색 배분 공식 | Nidwolf Design Toolkit</title>
+<meta name="description" content="배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다."/>
+<meta property="og:title" content="60-30-10 규칙: 실패하지 않는 색 배분 공식"/>
+<meta property="og:description" content="배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-02-60-30-10-rule.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-02-60-30-10-rule.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "60-30-10 규칙: 실패하지 않는 색 배분 공식",
+  "description": "배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.",
+  "url": "https://nidwolf.io/articles/tip-02-60-30-10-rule.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+    <h1><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h1>
+    <p class="lead"><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>세 가지 역할의 분담</li><li>왜 10%가 강력한가</li><li>실전 적용 순서</li><li>실전 예시: 대시보드에 적용하기</li><li>비율이 무너졌을 때의 증상</li></ul>
+  <ul class="en"><li>The three roles</li><li>Why 10% is so powerful</li><li>Practical application order</li></ul>
+</div>
+    <div class="ko"><p>색을 고르는 것보다 어려운 일은 고른 색을 '얼마나' 쓸지 정하는 것입니다. 아무리 좋은 팔레트도 비율이 무너지면 촌스러워집니다. 인테리어 디자인에서 출발해 UI 디자인의 표준이 된 60-30-10 규칙은 이 비율 문제에 대한 가장 검증된 답입니다.</p>
+<h2>세 가지 역할의 분담</h2>
+<p>60%는 지배색(Dominant)입니다. 화면의 배경, 카드 표면, 큰 영역을 채우는 색으로, 대부분 흰색·밝은 회색·아주 어두운 회색처럼 채도가 낮은 중립색을 씁니다. 30%는 보조색(Secondary)입니다. 내비게이션 바, 섹션 구분, 일러스트 배경처럼 구조를 드러내는 영역에 쓰며 브랜드 색의 옅은 톤이 자주 선택됩니다. 마지막 10%가 강조색(Accent)입니다. 버튼, 링크, 알림 뱃지처럼 사용자의 행동을 유도하는 지점에만 아껴서 사용합니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-14-analogous-complementary.html"><span class="ko">무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술</span><span class="en">Analogous vs. Complementary Color Schemes: When to Use Each</span></a>
+</div>
+<h2>왜 10%가 강력한가</h2>
+<p>강조색의 힘은 희소성에서 나옵니다. 화면의 10%만 차지하기 때문에 시선이 자동으로 그곳에 모입니다. 반대로 브랜드 색을 화면의 절반에 칠하면 정작 눌러야 할 버튼이 배경에 묻혀버립니다. 전환율이 중요한 페이지일수록 강조색의 사용처를 '주요 CTA 하나'로 제한하는 훈련이 필요합니다.</p>
+<h2>실전 적용 순서</h2>
+<p>먼저 중립색 배경으로 전체 레이아웃을 회색조로 완성하세요. 색 없이도 위계가 읽히면 구조가 탄탄하다는 뜻입니다. 그다음 보조색으로 섹션의 리듬을 만들고, 마지막에 강조색을 행동 지점에만 얹습니다. 이 순서를 지키면 색이 구조를 망치는 일이 없습니다. 다크 모드에서도 비율은 동일하게 유지하되, 60%의 배경을 순수 검정 대신 #121212~#1a1a2e 계열로 잡으면 눈의 피로가 줄어듭니다.</p>
+<p>60-30-10은 출발점이지 법률이 아닙니다. 포트폴리오처럼 표현이 중요한 사이트라면 30-60-10으로 뒤집을 수도 있습니다. 다만 처음에는 규칙대로 만들어 보고, 의도가 생겼을 때 비율을 바꾸세요. 색의 비율을 의식하는 것만으로 결과물의 안정감이 눈에 띄게 달라집니다.</p>
+<h2>실전 예시: 대시보드에 적용하기</h2>
+<p>관리자 대시보드를 예로 들어 보겠습니다. 60%는 페이지 배경(#f5f6fa)과 카드 표면(#ffffff)이 담당합니다. 30%는 사이드바의 짙은 남색과 차트의 옅은 브랜드 톤이 맡습니다. 10%는 '새 항목 추가' 버튼, 미확인 알림 뱃지, 그래프에서 강조하려는 단 하나의 막대에만 쓰입니다. 이 배분이 지켜진 대시보드는 데이터가 많아도 시선이 길을 잃지 않습니다.</p>
+<h2>비율이 무너졌을 때의 증상</h2>
+<p>자신의 화면이 60-30-10에서 얼마나 벗어났는지 확인하는 방법이 있습니다. 화면을 캡처해 흐리게(blur) 처리해 보세요. 흐려진 상태에서 강조색이 화면 곳곳에 번져 있다면 10%가 과용된 것이고, 어디에도 색의 초점이 없다면 강조색이 제 역할을 못 하는 것입니다. 좋은 화면은 흐려져도 '시선이 모일 한 곳'이 분명하게 남습니다. 이 간단한 블러 테스트는 색 배분뿐 아니라 시각적 위계 전반을 점검하는 데도 유용합니다.</p>
+
+<p>마지막으로, 60-30-10은 화면 하나가 아니라 제품 전체에 걸쳐 유지될 때 브랜드가 됩니다. 모든 화면에서 같은 색이 같은 역할을 맡는 일관성이 쌓이면, 사용자는 색만 보고도 '여기는 누를 곳'임을 학습하게 됩니다.</p>
+</div>
+    <div class="en"><p>Choosing colors is one challenge; deciding how much of each color to use is harder. Even a great palette looks amateur when proportions are wrong. The 60-30-10 rule — originally from interior design — is the most validated answer to this proportion problem in UI design.</p>
+<h2>The three roles</h2>
+<p>60% is the dominant color: backgrounds, card surfaces, and large areas. It's almost always a low-saturation neutral — white, light gray, or deep near-black. 30% is the secondary color: navigation bars, section dividers, and structural elements, often a muted brand tone. The remaining 10% is the accent: buttons, links, and notification badges — the action triggers, used sparingly.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-14-analogous-complementary.html"><span class="ko">무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술</span><span class="en">Analogous vs. Complementary Color Schemes: When to Use Each</span></a>
+</div>
+<h2>Why 10% is so powerful</h2>
+<p>Accent color derives its power from scarcity. Because it occupies only 10% of the screen, the eye is drawn there automatically. Paint half the screen in your brand color, and the buttons you need users to click get buried in noise. On conversion-focused pages, disciplining yourself to limit accent use to a single primary CTA is a critical skill.</p>
+<h2>Practical application order</h2>
+<p>Build the full layout in grayscale first. If hierarchy reads clearly without color, the structure is solid. Then add secondary color for section rhythm, and finally drop accent color onto action points only. This order prevents color from undermining structure. In dark mode, keep the same proportions but shift the 60% background from pure black to #121212–#1a1a2e to reduce eye fatigue.</p>
+<p>60-30-10 is a starting point, not a law. An expressive portfolio might invert to 30-60-10. But build with the rule first, and only break it once you have a deliberate reason. Simply being aware of color ratios will visibly improve the stability of your work.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-01-golden-ratio.html">← <span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a><a class="next" href="tip-03-f-pattern.html"><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-14-analogous-complementary.html">
+      <div class="card-top"><span class="icon">🌈</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술</span><span class="en">Analogous vs. Complementary Color Schemes: When to Use Each</span></h3>
+      <p><span class="ko">색상환을 기준으로 유사색·보색 조합을 설계하는 방법과 다색 사용 시 톤 통일 원칙을 설명합니다.</span><span class="en">The difference between analogous and complementary color relationships, and practical guidance for choosing the right scheme for your UI.</span></p>
+    </a><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

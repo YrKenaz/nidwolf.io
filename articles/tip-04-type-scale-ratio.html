@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>제목과 본문 크기 비율, 1.25배가 기준인 이유 | Nidwolf Design Toolkit</title>
+<meta name="description" content="타이포그래피 스케일에서 제목과 본문의 크기 비율을 정하는 기준과 모듈러 스케일 활용법을 정리합니다."/>
+<meta property="og:title" content="제목과 본문 크기 비율, 1.25배가 기준인 이유"/>
+<meta property="og:description" content="타이포그래피 스케일에서 제목과 본문의 크기 비율을 정하는 기준과 모듈러 스케일 활용법을 정리합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-04-type-scale-ratio.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-04-type-scale-ratio.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "제목과 본문 크기 비율, 1.25배가 기준인 이유",
+  "description": "타이포그래피 스케일에서 제목과 본문의 크기 비율을 정하는 기준과 모듈러 스케일 활용법을 정리합니다.",
+  "url": "https://nidwolf.io/articles/tip-04-type-scale-ratio.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🔤</span><span class="cat"><span class="ko">타이포그래피</span><span class="en">Typography</span></span></div>
+    <h1><span class="ko">제목과 본문 크기 비율, 1.25배가 기준인 이유</span><span class="en">Why 1.25× Is the Standard Heading-to-Body Ratio</span></h1>
+    <p class="lead"><span class="ko">타이포그래피 스케일에서 제목과 본문의 크기 비율을 정하는 기준과 모듈러 스케일 활용법을 정리합니다.</span><span class="en">The logic behind modular type scales and how to choose the right ratio for your content's character.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>1.25배: 가장 무난한 출발점</li><li>콘텐츠 성격에 따른 비율 선택</li><li>크기만으로 위계를 만들지 말 것</li><li>실무 적용: CSS 변수로 스케일 고정하기</li><li>한글 타이포그래피에서의 보정</li></ul>
+  <ul class="en"><li>1.25×: the most versatile starting point</li><li>Matching ratio to content personality</li><li>Size isn't the only hierarchy tool</li></ul>
+</div>
+    <div class="ko"><p>제목을 본문보다 '적당히' 크게 만들라는 조언은 모호합니다. 적당히가 얼마인지 숫자로 말할 수 있어야 일관된 시스템이 됩니다. 타이포그래피에서 그 답은 비율, 즉 모듈러 스케일(Modular Scale)입니다.</p>
+<h2>1.25배: 가장 무난한 출발점</h2>
+<p>본문 16px에 1.25배를 반복 적용하면 16 → 20 → 25 → 31 → 39px의 단계가 나옵니다. 이 비율(Major Third)은 단계 간 차이가 분명하면서도 과하지 않아, 문서·블로그·관리자 화면처럼 텍스트가 많은 인터페이스에 두루 어울립니다. 제목과 본문의 크기 차이가 1.25~1.5배 범위에 있을 때 위계는 드러나면서 흐름이 끊기지 않는다는 것이 오랜 편집 디자인의 경험칙입니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-11-font-limit.html"><span class="ko">폰트는 2가지, 크기는 3가지면 충분하다</span><span class="en">The Two-Font Rule: Why Fewer Typefaces Mean Better Design</span></a>
+</div>
+<h2>콘텐츠 성격에 따른 비율 선택</h2>
+<p>비율은 페이지의 목소리 크기입니다. 1.2배(Minor Third)는 차분하고 밀도 높은 느낌이라 대시보드에 적합하고, 1.333배(Perfect Fourth)는 표현력이 좋아 마케팅 페이지에 어울립니다. 1.618배(황금비)는 단계 간 대비가 극적이어서 큰 헤드라인이 주인공인 랜딩 페이지에 효과적입니다. 중요한 것은 하나의 비율을 정했으면 페이지 전체에서 일관되게 쓰는 것입니다. 제목마다 임의의 크기를 부여하는 순간 시스템은 무너집니다.</p>
+<h2>크기만으로 위계를 만들지 말 것</h2>
+<p>위계는 크기, 굵기, 색, 여백의 조합으로 만들어집니다. 크기 차이를 줄이고 싶다면 굵기(예: 본문 400, 제목 700)와 위쪽 여백으로 보완할 수 있습니다. 실무에서는 h1~h3까지만 스케일을 쓰고 h4 이하는 본문 크기에 굵기만 달리하는 경우도 많습니다. 또한 제목은 행간을 본문(1.5~1.7)보다 좁은 1.1~1.3으로 잡아야 여러 줄로 꺾였을 때 덩어리감이 유지됩니다.</p>
+<p>오늘 만드는 화면의 폰트 크기들을 나열해 보세요. 16, 18, 22, 28처럼 규칙 없이 흩어져 있다면 비율 하나를 정해 다시 정렬하는 것부터가 타이포그래피 시스템의 시작입니다.</p>
+<h2>실무 적용: CSS 변수로 스케일 고정하기</h2>
+<p>정한 비율이 작업 중에 흐트러지지 않게 하려면 코드 차원에서 고정하는 것이 좋습니다. CSS 커스텀 프로퍼티로 --text-sm: 13px; --text-base: 16px; --text-lg: 20px; --text-xl: 25px; --text-2xl: 31px처럼 토큰을 정의하고, 컴포넌트에서는 항상 토큰만 참조하게 만드세요. 디자이너가 피그마에서 같은 이름의 텍스트 스타일을 쓰면 디자인과 코드의 스케일이 자동으로 동기화됩니다.</p>
+<h2>한글 타이포그래피에서의 보정</h2>
+<p>같은 픽셀 크기라도 한글은 라틴 알파벳보다 글자가 빽빽하고 커 보입니다. 영문 기준으로 만들어진 스케일을 한글 본문에 그대로 쓰면 행간이 부족하게 느껴지는 이유입니다. 한글 본문은 행간을 1.6~1.8로 영문(1.5)보다 넉넉히 잡고, 자간은 -0.01~-0.02em 정도 살짝 좁히면 인상이 단정해집니다. 제목은 크기가 커질수록 자간을 더 좁혀야(-0.02~-0.04em) 글자들이 흩어져 보이지 않습니다. 비율 시스템에 이런 언어별 보정을 더하는 것이 한국어 서비스 타이포그래피의 완성도를 가릅니다.</p>
+</div>
+    <div class="en"><p>"Make the heading a bit larger than the body" is vague advice. You need a number — a ratio — to build a consistent type system. That's what modular scale provides.</p>
+<h2>1.25×: the most versatile starting point</h2>
+<p>Applying 1.25× (Major Third) repeatedly from 16px gives 16 → 20 → 25 → 31 → 39px. The step differences are clear without being extreme, making this scale ideal for text-heavy interfaces: documents, blogs, admin dashboards. When the size gap between heading and body falls in the 1.25–1.5× range, hierarchy is visible without breaking reading flow — a principle with deep roots in editorial design.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-11-font-limit.html"><span class="ko">폰트는 2가지, 크기는 3가지면 충분하다</span><span class="en">The Two-Font Rule: Why Fewer Typefaces Mean Better Design</span></a>
+</div>
+<h2>Matching ratio to content personality</h2>
+<p>The ratio is your page's "volume." 1.2× (Minor Third) reads calm and dense — right for dashboards. 1.333× (Perfect Fourth) is more expressive — suited to marketing pages. 1.618× (golden ratio) is dramatic, ideal for landing pages where a big headline is the hero. Once you pick a ratio, use it consistently across the entire page. Assigning arbitrary sizes to each heading level collapses the system instantly.</p>
+<h2>Size isn't the only hierarchy tool</h2>
+<p>Hierarchy is built from size, weight, color, and spacing combined. If you want to reduce size contrast, compensate with weight (e.g., body 400, heading 700) and margin above. In practice many systems apply the scale only to h1–h3, then use the body size with changed weight for h4 and below. Also remember: headings need tighter line-height (1.1–1.3) than body text (1.5–1.7) to preserve the blocky feel when they wrap.</p>
+<p>List the font sizes in your current design. If they're scattered — 16, 18, 22, 28 — with no underlying pattern, picking one ratio and realigning them is where a typography system begins.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-03-f-pattern.html">← <span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></a><a class="next" href="tip-05-whitespace.html"><span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-11-font-limit.html">
+      <div class="card-top"><span class="icon">♻️</span><span class="cat"><span class="ko">타이포그래피</span><span class="en">Typography</span></span></div>
+      <h3><span class="ko">폰트는 2가지, 크기는 3가지면 충분하다</span><span class="en">The Two-Font Rule: Why Fewer Typefaces Mean Better Design</span></h3>
+      <p><span class="ko">한 화면에서 폰트 패밀리와 크기 가짓수를 제한해야 하는 이유와 예외를 두는 기준을 설명합니다.</span><span class="en">How limiting yourself to one or two typefaces creates professional-looking UI and builds a coherent typographic voice.</span></p>
+    </a><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

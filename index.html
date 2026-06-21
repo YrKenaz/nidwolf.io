@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>(function(){var l=localStorage.getItem('nw-lang')||'ko';document.documentElement.lang=l;if(localStorage.getItem('nw-dark'))document.documentElement.setAttribute('data-dark','');})();</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nidwolf Design Toolkit — 디자이너를 위한 무료 도구 모음</title>
+<meta name="description" content="디자이너와 기획자를 위한 무료 도구 모음. 컬러 팔레트, 디자인 위자드, 사다리 추첨, 디자인 아티클 40편을 한 곳에서."/>
+<meta property="og:title" content="Nidwolf Design Toolkit"/>
+<meta property="og:description" content="디자이너와 기획자를 위한 무료 도구 모음."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://nidwolf.io"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/"/>
+<link rel="icon" href="Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="articles/style.css"/>
+<style>
+/* ── Hero ─────────────────────────────────────── */
+.hero-wrap{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:64px 0 52px;
+  text-align:center;
+}
+.hero-wrap .wrap{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--accent-bg);color:var(--accent);
+  border:1.5px solid var(--accent);border-radius:20px;
+  padding:4px 14px;
+}
+.hero-wrap h1{
+  font-size:40px;font-weight:900;line-height:1.2;
+  letter-spacing:-.02em;
+}
+.hero-wrap h1 .accent{color:var(--accent);}
+.hero-sub{
+  font-size:16px;color:var(--text2);max-width:520px;line-height:1.65;
+}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--accent);color:#fff;
+  font-size:14px;font-weight:700;
+  padding:11px 24px;border-radius:10px;
+  transition:opacity .15s,transform .15s;
+  text-decoration:none;
+}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);text-decoration:none;}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--surface);color:var(--text2);
+  border:1.5px solid var(--border);
+  font-size:14px;font-weight:700;
+  padding:11px 24px;border-radius:10px;
+  transition:border-color .15s,color .15s,transform .15s;
+  text-decoration:none;
+}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);text-decoration:none;}
+
+/* ── Update banner ───────────────────────────── */
+.update-banner{
+  border:1px solid var(--border);border-radius:12px;
+  background:var(--surface);
+  padding:14px 20px;
+  display:flex;align-items:center;gap:14px;
+  margin:32px 0 0;
+}
+.update-pill{
+  flex-shrink:0;font-size:11px;font-weight:800;letter-spacing:.05em;
+  background:var(--accent);color:#fff;
+  padding:3px 10px;border-radius:20px;
+}
+.update-text{font-size:13px;color:var(--text2);line-height:1.5;}
+.update-text strong{color:var(--text);font-weight:700;}
+.update-arrow{margin-left:auto;font-size:16px;color:var(--text2);}
+
+/* ── Section ─────────────────────────────────── */
+.section{padding:52px 0 0;}
+.section-header{
+  display:flex;align-items:baseline;gap:10px;margin-bottom:18px;
+}
+.section-header h2{font-size:20px;font-weight:800;}
+.section-header .count{
+  font-size:12px;font-weight:700;color:var(--accent);
+  background:var(--accent-bg);padding:2px 9px;border-radius:10px;
+}
+
+/* ── Tool cards ──────────────────────────────── */
+.tool-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.tool-card{
+  display:flex;flex-direction:column;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:14px;padding:24px 22px;
+  transition:border-color .15s,box-shadow .15s,transform .15s;
+  text-decoration:none;color:var(--text);
+  position:relative;overflow:hidden;
+}
+.tool-card:hover{
+  border-color:var(--accent);
+  box-shadow:0 8px 24px rgba(99,102,241,.13);
+  transform:translateY(-2px);
+  text-decoration:none;
+}
+.tool-card-icon{font-size:28px;margin-bottom:12px;}
+.tool-card-name{font-size:16px;font-weight:800;margin-bottom:6px;}
+.tool-card-desc{font-size:13px;color:var(--text2);line-height:1.6;flex:1;}
+.tool-card-link{
+  display:inline-flex;align-items:center;gap:4px;
+  margin-top:14px;font-size:12px;font-weight:700;color:var(--accent);
+}
+.tool-card.featured{
+  border-color:var(--accent);
+  background:linear-gradient(135deg,var(--accent-bg) 0%,var(--surface) 60%);
+}
+.tool-card.featured::after{
+  content:'추천';
+  position:absolute;top:14px;right:14px;
+  font-size:10px;font-weight:800;letter-spacing:.05em;
+  background:var(--accent);color:#fff;
+  padding:2px 9px;border-radius:20px;
+}
+html[lang="en"] .tool-card.featured::after{content:'Top';}
+
+/* ── Article grid ────────────────────────────── */
+.article-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:14px;
+  margin-bottom:10px;
+}
+.art-card{
+  display:flex;flex-direction:column;gap:8px;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:12px;padding:18px;
+  transition:border-color .15s,transform .15s,box-shadow .15s;
+  text-decoration:none;color:var(--text);
+}
+.art-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 14px rgba(99,102,241,.1);text-decoration:none;}
+.art-card-top{display:flex;align-items:center;gap:8px;}
+.art-card-icon{font-size:17px;}
+.art-card-cat{
+  font-size:11px;font-weight:700;color:var(--accent);
+  background:var(--accent-bg);padding:2px 8px;border-radius:10px;
+}
+.art-card h3{font-size:14px;font-weight:700;line-height:1.45;}
+.art-card p{font-size:12px;color:var(--text2);line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* ── View all ────────────────────────────────── */
+.view-all{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:10px;font-size:13px;font-weight:700;color:var(--text2);
+  padding:8px 16px;border:1px solid var(--border);border-radius:8px;
+  text-decoration:none;
+  transition:border-color .15s,color .15s;
+}
+.view-all:hover{border-color:var(--accent);color:var(--accent);text-decoration:none;}
+
+/* ── Footer pad ──────────────────────────────── */
+.page-footer-pad{padding-bottom:32px;}
+
+/* ── Responsive ──────────────────────────────── */
+@media(max-width:700px){
+  .hero-wrap{padding:44px 0 36px;}
+  .hero-wrap h1{font-size:28px;}
+  .tool-grid{grid-template-columns:1fr;}
+  .update-banner{flex-wrap:wrap;gap:8px;}
+}
+@media(max-width:900px) and (min-width:701px){
+  .tool-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <img src="Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span>
+    </a>
+    <nav>
+      <a href="design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero-wrap">
+  <div class="wrap">
+    <div class="hero-badge">🎨 Free · No Sign-up</div>
+
+    <h1>
+      <span class="ko"><span class="accent">디자이너</span>를 위한<br/>무료 도구 모음</span>
+      <span class="en">Free Tools for<br/><span class="accent">Designers</span></span>
+    </h1>
+
+    <p class="hero-sub">
+      <span class="ko">컬러 팔레트, 디자인 위자드, 팀 추첨 사다리까지 — 회원가입 없이 바로 사용하세요.</span>
+      <span class="en">Color palettes, design wizard, team lottery ladder — use instantly, no sign-up required.</span>
+    </p>
+
+    <div class="hero-cta">
+      <a class="btn-primary" href="design-toolkit.html">
+        🎨 <span class="ko">도구 바로 시작</span><span class="en">Open Toolkit</span>
+      </a>
+      <a class="btn-secondary" href="articles/index.html">
+        📚 <span class="ko">아티클 보기</span><span class="en">Read Articles</span>
+      </a>
+    </div>
+
+    <!-- Update banner -->
+    <div class="update-banner">
+      <span class="update-pill">NEW</span>
+      <span class="update-text">
+        <strong><span class="ko">사다리 게임 업데이트</span><span class="en">Ladder Game Updated</span></strong>
+        <span class="ko"> — 맵 생성 애니메이션, 포탈 시스템, 함정/숨김 바 연출 개선</span>
+        <span class="en"> — Map reveal animation, portal system, trap &amp; hidden bar effects</span>
+      </span>
+      <a href="ladder.html" class="update-arrow">→</a>
+    </div>
+  </div>
+</section>
+
+<!-- Main content -->
+<main>
+  <div class="wrap">
+
+    <!-- Quick Access -->
+    <div class="section">
+      <div class="section-header">
+        <h2><span class="ko">빠른 접근</span><span class="en">Quick Access</span></h2>
+      </div>
+      <div class="tool-grid">
+
+        <a class="tool-card featured" href="design-toolkit.html">
+          <div class="tool-card-icon">🎨</div>
+          <div class="tool-card-name"><span class="ko">디자인 도구</span><span class="en">Design Toolkit</span></div>
+          <div class="tool-card-desc">
+            <span class="ko">컬러 팔레트 생성, 디자인 위자드, 뱃지, 퀴즈, 타임라인까지 — 디자인 업무를 돕는 모든 도구.</span>
+            <span class="en">Color palettes, design wizard, badges, quiz, and timeline — all tools for design work.</span>
+          </div>
+          <span class="tool-card-link"><span class="ko">열기</span><span class="en">Open</span> →</span>
+        </a>
+
+        <a class="tool-card" href="ladder.html">
+          <div class="tool-card-icon">🪜</div>
+          <div class="tool-card-name"><span class="ko">사다리 게임</span><span class="en">Ladder Game</span></div>
+          <div class="tool-card-desc">
+            <span class="ko">팀 미팅 당번, 점심 메뉴, 역할 배정까지. Canvas 기반 사다리 추첨 게임.</span>
+            <span class="en">Assign meeting duties, lunch picks, roles, and more. Canvas-based ladder lottery.</span>
+          </div>
+          <span class="tool-card-link"><span class="ko">시작하기</span><span class="en">Play</span> →</span>
+        </a>
+
+        <a class="tool-card" href="articles/index.html">
+          <div class="tool-card-icon">📚</div>
+          <div class="tool-card-name"><span class="ko">디자인 아티클</span><span class="en">Design Articles</span></div>
+          <div class="tool-card-desc">
+            <span class="ko">황금비부터 바우하우스까지 — 실무에 바로 쓰이는 디자인 팁 &amp; 역사 40편.</span>
+            <span class="en">Golden ratio to Bauhaus — 40 practical design tips &amp; history articles.</span>
+          </div>
+          <span class="tool-card-link"><span class="ko">읽기</span><span class="en">Read</span> →</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Featured Articles -->
+    <div class="section">
+      <div class="section-header">
+        <h2><span class="ko">추천 아티클</span><span class="en">Featured Articles</span></h2>
+        <span class="count">40</span>
+      </div>
+      <div class="article-grid">
+
+        <a class="art-card" href="articles/tip-01-golden-ratio.html">
+          <div class="art-card-top">
+            <span class="art-card-icon">📐</span>
+            <span class="art-card-cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span>
+          </div>
+          <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Layouts with the Golden Ratio</span></h3>
+          <p><span class="ko">수천 년간 건축·예술에 쓰인 황금비를 UI 레이아웃에 적용하는 실전 방법.</span><span class="en">Applying the age-old golden ratio to modern UI layout design.</span></p>
+        </a>
+
+        <a class="art-card" href="articles/tip-08-8pt-grid.html">
+          <div class="art-card-top">
+            <span class="art-card-icon">📏</span>
+            <span class="art-card-cat"><span class="ko">그리드</span><span class="en">Grid</span></span>
+          </div>
+          <h3><span class="ko">8pt 그리드 시스템: 모든 간격을 8의 배수로</span><span class="en">8pt Grid System</span></h3>
+          <p><span class="ko">개발자와 협업이 쉬워지고 일관된 간격을 만드는 8pt 그리드의 원칙.</span><span class="en">Keep spacing consistent and developer-friendly with the 8pt grid.</span></p>
+        </a>
+
+        <a class="art-card" href="articles/tip-15-less-is-more.html">
+          <div class="art-card-top">
+            <span class="art-card-icon">✂️</span>
+            <span class="art-card-cat"><span class="ko">원칙</span><span class="en">Principle</span></span>
+          </div>
+          <h3><span class="ko">완성은 뺄 것이 없을 때다 — 단순함의 기술</span><span class="en">Perfection is Achieved When Nothing Can Be Removed</span></h3>
+          <p><span class="ko">더하기가 아닌 빼기로 완성하는 미니멀 디자인 사고법.</span><span class="en">Minimal design: the art of subtraction over addition.</span></p>
+        </a>
+
+        <a class="art-card" href="articles/history-02-bauhaus.html">
+          <div class="art-card-top">
+            <span class="art-card-icon">🏛️</span>
+            <span class="art-card-cat"><span class="ko">역사</span><span class="en">History</span></span>
+          </div>
+          <h3><span class="ko">바우하우스 — 모든 현대 디자인의 원점</span><span class="en">Bauhaus — The Origin of Modern Design</span></h3>
+          <p><span class="ko">1919년 독일에서 시작해 UI, 그래픽, 건축까지 영향을 미친 바우하우스의 유산.</span><span class="en">How the 1919 German school shaped everything from UI to architecture.</span></p>
+        </a>
+
+      </div>
+      <a class="view-all" href="articles/index.html">
+        <span class="ko">전체 아티클 보기 (40편)</span><span class="en">View all 40 articles</span> →
+      </a>
+    </div>
+
+    <div class="page-footer-pad"></div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+function _toggleLang(){
+  var html=document.documentElement;
+  var next=html.lang==='ko'?'en':'ko';
+  html.lang=next;
+  localStorage.setItem('nw-lang',next);
+  var btns=document.querySelectorAll('.lang-toggle');
+  btns.forEach(function(b){if(b.id!=='dark-btn')b.textContent=next==='ko'?'EN':'KR';});
+}
+function _toggleDark(){
+  var html=document.documentElement;
+  if(html.hasAttribute('data-dark')){
+    html.removeAttribute('data-dark');
+    localStorage.removeItem('nw-dark');
+  } else {
+    html.setAttribute('data-dark','');
+    localStorage.setItem('nw-dark','1');
+  }
+}
+// Sync lang button text on load
+(function(){
+  var l=document.documentElement.lang;
+  document.querySelectorAll('.lang-toggle').forEach(function(b){
+    if(b.id!=='dark-btn') b.textContent=l==='ko'?'EN':'KR';
+  });
+})();
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

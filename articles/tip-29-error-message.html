@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게 | Nidwolf Design Toolkit</title>
+<meta name="description" content="사용자를 막다른 길에 두지 않는 에러 메시지 작성법과 UX 라이팅의 톤 설계를 다룹니다."/>
+<meta property="og:title" content="좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게"/>
+<meta property="og:description" content="사용자를 막다른 길에 두지 않는 에러 메시지 작성법과 UX 라이팅의 톤 설계를 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-29-error-message.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-29-error-message.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게",
+  "description": "사용자를 막다른 길에 두지 않는 에러 메시지 작성법과 UX 라이팅의 톤 설계를 다룹니다.",
+  "url": "https://nidwolf.io/articles/tip-29-error-message.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🔐</span><span class="cat"><span class="ko">UX 라이팅</span><span class="en">UX Writing</span></span></div>
+    <h1><span class="ko">좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게</span><span class="en">좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게</span></h1>
+    <p class="lead"><span class="ko">사용자를 막다른 길에 두지 않는 에러 메시지 작성법과 UX 라이팅의 톤 설계를 다룹니다.</span><span class="en">사용자를 막다른 길에 두지 않는 에러 메시지 작성법과 UX 라이팅의 톤 설계를 다룹니다.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>3요소를 갖춘 메시지의 구조</li><li>톤: 책임은 시스템이, 해결은 함께</li><li>에러를 보여주는 위치와 시점</li><li>에러 상황별 문구 템플릿</li><li>404와 빈 상태도 에러 디자인이다</li></ul>
+  <ul class="en"><li>3요소를 갖춘 메시지의 구조</li><li>톤: 책임은 시스템이, 해결은 함께</li><li>에러를 보여주는 위치와 시점</li><li>에러 상황별 문구 템플릿</li><li>404와 빈 상태도 에러 디자인이다</li></ul>
+</div>
+    <div class="ko"><p>"오류가 발생했습니다." 이 한 문장은 사용자에게 아무것도 알려주지 않으면서 불안만 줍니다. 에러는 제품이 사용자와 나누는 가장 예민한 대화입니다. 잘 쓰인 에러 메시지는 세 가지 질문에 답합니다. 무슨 일이 일어났는가, 왜 일어났는가, 이제 어떻게 하면 되는가.</p>
+<h2>3요소를 갖춘 메시지의 구조</h2>
+<p>나쁜 예: "업로드 실패." 좋은 예: "파일이 업로드되지 않았어요(무엇). 20MB를 초과하는 파일은 올릴 수 없습니다(왜). 파일을 압축하거나 더 작은 파일을 선택해 주세요(어떻게)." 세 요소 중 가장 자주 빠지는 것이 '어떻게'입니다. 해결책 없는 에러 메시지는 사용자를 막다른 길에 세워 두는 것과 같습니다. 재시도 버튼, 대안 경로, 문의 링크 등 다음 행동을 반드시 함께 제시하세요.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>톤: 책임은 시스템이, 해결은 함께</h2>
+<p>"잘못된 비밀번호를 입력하셨습니다"처럼 사용자를 주어로 한 문장은 비난처럼 읽힙니다. "비밀번호가 일치하지 않아요"처럼 상황을 서술하는 쪽이 부드럽습니다. 기술 용어(Error 500, NullPointerException)는 로그에만 남기고 사용자에게는 사람의 언어로 번역해 주세요. 다만 지나친 익살("앗! 뭔가 단단히 꼬였어요 🙈")은 결제 실패처럼 심각한 맥락에서 오히려 신뢰를 깎습니다. 유머의 수위는 에러의 심각도에 반비례해야 합니다.</p>
+<h2>에러를 보여주는 위치와 시점</h2>
+<p>폼 검증 에러는 문제의 필드 바로 옆에, 색뿐 아니라 아이콘과 텍스트로 함께 표시해야 합니다(색맹 사용자 고려). 입력 도중 실시간 검증은 사용자가 필드를 떠난 시점(blur)에 하는 것이 친절하고, 타이핑 첫 글자부터 빨간 경고를 띄우는 것은 가장 나쁜 패턴입니다. 그리고 최고의 에러 메시지는 에러를 미리 막는 디자인입니다. 형식을 자동 보정하는 입력란, 조건을 미리 보여주는 비밀번호 규칙 안내가 그 예입니다.</p>
+<p>제품의 모든 에러 메시지를 모아 '무엇·왜·어떻게' 체크리스트로 점검해 보세요. 에러의 순간을 잘 설계한 제품은 실패조차 신뢰의 기회로 바꿉니다.</p>
+<h2>에러 상황별 문구 템플릿</h2>
+<p>자주 쓰는 상황의 템플릿을 만들어 두면 품질이 일정해집니다. 네트워크 오류: "연결이 불안정해요. 네트워크를 확인하고 다시 시도해 주세요. [다시 시도]". 입력 형식 오류: "이메일 형식이 올바르지 않아요. example@domain.com 형태로 입력해 주세요." 권한 부족: "이 기능은 관리자만 사용할 수 있어요. 권한이 필요하면 관리자에게 요청해 주세요. [요청 보내기]". 서버 오류: "일시적인 문제가 발생했어요. 잠시 후 다시 시도해 주세요. 문제가 계속되면 문의해 주세요. [문의하기]". 모든 템플릿에 무엇·왜·어떻게가 들어 있는지 확인하세요.</p>
+<h2>404와 빈 상태도 에러 디자인이다</h2>
+<p>가장 많이 노출되는 에러 화면은 404 페이지입니다. 막다른 길 대신 갈림길을 주세요. 검색창, 인기 콘텐츠 링크, 홈 버튼이 있는 404는 이탈을 회수합니다. 검색 결과 없음, 빈 목록 같은 빈 상태(Empty State)도 같은 원리입니다. "결과가 없습니다"로 끝내지 말고 "철자를 바꿔 보거나, 필터를 줄여 보세요"라는 다음 행동을 제시하세요. 시스템이 잘못한 것이 아니어도, 사용자가 멈춰 선 모든 순간은 디자인의 책임 영역입니다.</p>
+</div>
+    <div class="en"></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-28-pattern-library.html">← <span class="ko">패턴 라이브러리: 재사용이 일관성을 만든다</span><span class="en">Design Pattern Libraries: Build Once, Use Everywhere</span></a><a class="next" href="tip-30-microinteraction-timing.html"><span class="ko">마이크로인터랙션의 골든 타임, 200~500ms</span><span class="en">Microinteraction Timing: The Milliseconds That Define Feel</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

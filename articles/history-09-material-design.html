@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>머티리얼 디자인: 구글이 만든 디지털 종이의 물리학 | Nidwolf Design Toolkit</title>
+<meta name="description" content="구글 머티리얼 디자인의 핵심 은유와 모션 원칙, 디자인 시스템 시대를 연 의의를 정리합니다."/>
+<meta property="og:title" content="머티리얼 디자인: 구글이 만든 디지털 종이의 물리학"/>
+<meta property="og:description" content="구글 머티리얼 디자인의 핵심 은유와 모션 원칙, 디자인 시스템 시대를 연 의의를 정리합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/history-09-material-design.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/history-09-material-design.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "머티리얼 디자인: 구글이 만든 디지털 종이의 물리학",
+  "description": "구글 머티리얼 디자인의 핵심 은유와 모션 원칙, 디자인 시스템 시대를 연 의의를 정리합니다.",
+  "url": "https://nidwolf.io/articles/history-09-material-design.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 역사</span><span class="en">Design History</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🎯</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span> <span class="era">2014–</span></div>
+    <h1><span class="ko">머티리얼 디자인: 구글이 만든 디지털 종이의 물리학</span><span class="en">Material Design: Google's Unified Design Language</span></h1>
+    <p class="lead"><span class="ko">구글 머티리얼 디자인의 핵심 은유와 모션 원칙, 디자인 시스템 시대를 연 의의를 정리합니다.</span><span class="en">How Google's 2014 Material Design system unified design across platforms, introduced the concept of design tokens, and shaped how design systems are built today.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>종이와 잉크의 은유</li><li>모션은 의미다</li><li>디자인 시스템 시대의 개막</li><li>머티리얼을 따를 때와 벗어날 때</li><li>Material 3와 디자인 토큰의 시대</li></ul>
+  <ul class="en"><li>The material metaphor</li><li>The design system contribution</li><li>Material You and adaptive design</li></ul>
+</div>
+    <div class="ko"><p>2014년 구글 I/O에서 발표된 머티리얼 디자인(Material Design)은 단순한 스타일 가이드가 아니라 하나의 물리학이었습니다. 화면 속 모든 요소를 '디지털 종이(머티리얼)'라는 가상의 재료로 정의하고, 그 재료가 어떻게 겹치고 움직이고 반응하는지에 대한 일관된 법칙을 부여한 것입니다.</p>
+<h2>종이와 잉크의 은유</h2>
+<p>머티리얼의 표면은 종이처럼 행동합니다. 두께가 있고(1dp), 그림자를 만들며, 다른 표면 위에 떠 있을 수 있지만 서로 통과할 수는 없습니다. 콘텐츠는 그 종이 위에 인쇄된 잉크입니다. 이 은유가 천재적인 이유는 플랫 디자인의 명료함을 유지하면서, 플랫이 잃어버린 깊이와 위계를 그림자 한 가지로 복구했기 때문입니다. 엘리베이션(elevation) 개념 덕분에 사용자는 어떤 요소가 떠 있고 눌 수 있는지 직관적으로 압니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="history-01-art-nouveau.html"><span class="ko">아르누보: 자연의 곡선이 디자인이 되다</span><span class="en">Art Nouveau: When Nature Became Design</span></a>
+</div>
+<h2>모션은 의미다</h2>
+<p>머티리얼의 또 다른 기여는 모션의 성문화입니다. 버튼을 누르면 터치 지점에서 잉크가 퍼지는 리플 효과가 입력을 확인해 주고, 화면 전환 시 요소들이 순간이동하지 않고 연속적으로 변형됩니다. '모션은 장식이 아니라 의미를 전달해야 한다'는 원칙과 함께 표준 이징 곡선, 지속 시간 가이드까지 수치로 제시했습니다. 애니메이션이 감각의 영역에서 사양의 영역으로 넘어온 순간입니다.</p>
+<h2>디자인 시스템 시대의 개막</h2>
+<p>머티리얼의 가장 큰 유산은 공개 방식에 있습니다. 철학, 컴포넌트 명세, 코드 구현체, 아이콘과 도구까지 전부 무료로 공개하며 '디자인 시스템'이라는 개념 자체를 업계 표준으로 만들었습니다. 이후 쏟아진 기업 디자인 시스템들(IBM Carbon, Atlassian, Shopify Polaris 등)은 모두 이 공개 모델의 후예입니다. 2021년의 Material You는 사용자 배경화면에서 색을 추출해 시스템 전체 팔레트를 생성하는 개인화로 한 걸음 더 나아갔습니다.</p>
+<p>머티리얼 디자인이 증명한 것은 일관된 규칙이 창의성을 죽이는 게 아니라, 수천 명의 만든 화면을 하나의 제품처럼 느끼게 만든다는 사실입니다. 시스템은 디자인의 반대말이 아니라 디자인의 확장입니다.</p>
+<h2>머티리얼을 따를 때와 벗어날 때</h2>
+<p>머티리얼 디자인은 안드로이드 앱의 사실상 표준이지만, 모든 제품의 답은 아닙니다. 따르면 좋은 경우: 안드로이드 네이티브 앱, 구글 생태계와의 일관성이 중요한 제품, 디자인 리소스가 부족해 검증된 시스템이 필요한 팀. 벗어날 이유가 있는 경우: 브랜드 차별화가 핵심인 소비자 제품, iOS와 웹이 주 무대인 서비스, 머티리얼의 시각 언어(FAB, 리플)가 브랜드 톤과 충돌하는 경우. 중요한 것은 컴포넌트를 쓰느냐가 아니라, 엘리베이션·모션·상태 피드백 같은 원리를 이해하고 자기 시스템에 녹이느냐입니다.</p>
+<h2>Material 3와 디자인 토큰의 시대</h2>
+<p>머티리얼의 최신 버전(Material 3, You)에서 주목할 것은 동적 색상(Dynamic Color)과 토큰 아키텍처입니다. 사용자의 배경화면에서 색을 추출해 HCT 색 공간에서 톤 팔레트를 생성하고, 모든 컴포넌트가 시맨틱 토큰(primary, on-primary, surface-variant 등)을 참조하므로 팔레트가 바뀌어도 대비와 위계가 유지됩니다. 이 구조는 개인화 시대의 디자인 시스템이 나아가는 방향을 보여줍니다. 디자이너가 색 하나하나를 정하는 대신, 색이 생성되는 규칙을 설계하는 일로 역할이 이동하고 있는 것입니다.</p>
+</div>
+    <div class="en"><p>In 2014, Google unveiled Material Design — a comprehensive design system aimed at unifying the visual and interaction language across Android, iOS, and the web. Where previous design trends were aesthetic movements, Material Design was a system: documented principles, reusable components, and defined behaviors that could be implemented consistently by any team at any scale.</p>
+<h2>The material metaphor</h2>
+<p>Material Design's central metaphor is that UI elements are made of a physical material — a digital paper that casts shadows, responds to touch, and moves with physical plausibility. Cards are sheets of material that can be elevated above surfaces; interactions produce ripple effects that emanate from the point of touch; transitions respect the continuity of objects moving through space. The metaphor provided enough physical grounding to communicate depth and interaction without the excess of skeuomorphism.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="history-01-art-nouveau.html"><span class="ko">아르누보: 자연의 곡선이 디자인이 되다</span><span class="en">Art Nouveau: When Nature Became Design</span></a>
+</div>
+<h2>The design system contribution</h2>
+<p>Material Design's most lasting contribution may not be its visual style but its structural approach. It introduced the concept of a systematized design language: color palettes as semantic tokens (Primary, Secondary, Surface, On-Surface), standardized elevation levels, defined type scale relationships, documented component specifications. This approach — design as a system rather than a collection of individual decisions — became the template for every major design system that followed: Apple's Human Interface Guidelines updates, Shopify's Polaris, IBM's Carbon, Microsoft's Fluent.</p>
+<h2>Material You and adaptive design</h2>
+<p>Material Design 3 (Material You, 2021) introduced dynamic color: the system generates a personalized color palette from the user's wallpaper. This represented a fundamental shift from designer-controlled to user-adaptive visual systems — a direction that will likely define the next decade of design systems thinking.</p>
+<p>Material Design proved that design at scale requires systematization. Taste produces beautiful screens; systems produce consistent products. The two are not in opposition, but taste alone cannot substitute for the system when you have 5,000 screens to maintain.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="history-08-flat-design.html">← <span class="ko">플랫 디자인: 그림자를 지우고 본질만 남기다</span><span class="en">Flat Design: The Decade of Simplicity</span></a><a class="next" href="history-10-neumorphism-glassmorphism.html"><span class="ko">뉴모피즘과 글래스모피즘: 2020년대의 질감 실험</span><span class="en">Neumorphism & Glassmorphism: The Aesthetics of 2020</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="history-01-art-nouveau.html">
+      <div class="card-top"><span class="icon">🌿</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1890–1910</span></div>
+      <h3><span class="ko">아르누보: 자연의 곡선이 디자인이 되다</span><span class="en">Art Nouveau: When Nature Became Design</span></h3>
+      <p><span class="ko">1890년대 유럽을 휩쓴 아르누보 운동의 배경, 알폰스 무하와 클림트의 작업, 현대 디자인에 남긴 유산을 정리합니다.</span><span class="en">The origins of Art Nouveau in 1890s Europe, Alphonse Mucha and Klimt's defining works, and the movement's lasting influence on modern visual culture.</span></p>
+    </a><a class="card" href="history-02-bauhaus.html">
+      <div class="card-top"><span class="icon">⬛</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1919–1933</span></div>
+      <h3><span class="ko">바우하우스: 형태는 기능을 따른다</span><span class="en">Bauhaus: Form Follows Function</span></h3>
+      <p><span class="ko">독일 바우하우스 학교의 철학과 교육 방식, 그리고 현대 그래픽·제품·UI 디자인에 미친 결정적 영향을 다룹니다.</span><span class="en">The philosophy and pedagogy of Germany's Bauhaus school, and its decisive influence on modern graphic design, product design, and UI.</span></p>
+    </a><a class="card" href="history-03-art-deco.html">
+      <div class="card-top"><span class="icon">💎</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1920–1940</span></div>
+      <h3><span class="ko">아르데코: 기계 시대의 화려한 기하학</span><span class="en">Art Deco: The Glamorous Geometry of the Machine Age</span></h3>
+      <p><span class="ko">1920~30년대 아르데코 양식의 특징과 대표 작품, 그리고 럭셔리 브랜딩에서 계속되는 부활을 다룹니다.</span><span class="en">The characteristics and landmark works of 1920s–30s Art Deco, and how it keeps returning in luxury branding.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

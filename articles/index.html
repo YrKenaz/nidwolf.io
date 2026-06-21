@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>디자인 아티클 | Nidwolf Design Toolkit</title>
+<meta name="description" content="디자인 팁 30편과 디자인 역사 10편 — 레이아웃, 색상, 타이포그래피, UX 원칙을 다루는 실무 중심 아티클 모음입니다."/>
+<meta property="og:title" content="디자인 아티클"/>
+<meta property="og:description" content="디자인 팁 30편과 디자인 역사 10편 — 레이아웃, 색상, 타이포그래피, UX 원칙을 다루는 실무 중심 아티클 모음입니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content=""/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <h1><span class="ko">디자인 아티클</span><span class="en">Design Articles</span></h1>
+    <p><span class="ko">실무에서 바로 쓰는 디자인 팁 30편과 디자인 운동의 역사 10편을 담았습니다.</span><span class="en">Practical design tips in 30 articles and 10 articles on the history of design movements.</span></p>
+  </section>
+  <section>
+    <h2 class="sec-title"><span class="ko">💡 디자인 팁 <small>30편</small></span><span class="en">💡 Design Tips <small>30 articles</small></span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a><a class="card" href="tip-04-type-scale-ratio.html">
+      <div class="card-top"><span class="icon">🔤</span><span class="cat"><span class="ko">타이포그래피</span><span class="en">Typography</span></span></div>
+      <h3><span class="ko">제목과 본문 크기 비율, 1.25배가 기준인 이유</span><span class="en">Why 1.25× Is the Standard Heading-to-Body Ratio</span></h3>
+      <p><span class="ko">타이포그래피 스케일에서 제목과 본문의 크기 비율을 정하는 기준과 모듈러 스케일 활용법을 정리합니다.</span><span class="en">The logic behind modular type scales and how to choose the right ratio for your content's character.</span></p>
+    </a><a class="card" href="tip-05-whitespace.html">
+      <div class="card-top"><span class="icon">⬜</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span></h3>
+      <p><span class="ko">여백을 능동적인 디자인 요소로 다루는 방법과 매크로/마이크로 여백의 구분을 설명합니다.</span><span class="en">Treating whitespace as an active design element — macro vs. micro whitespace and how it controls hierarchy and readability.</span></p>
+    </a><a class="card" href="tip-06-shadow-consistency.html">
+      <div class="card-top"><span class="icon">🌗</span><span class="cat">UI</span></div>
+      <h3><span class="ko">그림자의 빛 방향은 하나여야 한다</span><span class="en">Your Light Source Must Be One: The Rule of Shadow Consistency</span></h3>
+      <p><span class="ko">UI 그림자 설계의 기본 원칙인 광원 일관성과 엘리베이션 시스템 구축 방법을 다룹니다.</span><span class="en">How to establish a unified virtual light source, build an elevation system, and avoid the subtle inconsistencies that make UI shadows look wrong.</span></p>
+    </a><a class="card" href="tip-07-color-psychology.html">
+      <div class="card-top"><span class="icon">🔵</span><span class="cat"><span class="ko">색상 심리</span><span class="en">Color Psychology</span></span></div>
+      <h3><span class="ko">파랑은 신뢰, 빨강은 긴박함: 색상 심리학 실전 가이드</span><span class="en">Color Psychology: How Hue Shapes User Perception</span></h3>
+      <p><span class="ko">주요 색상이 불러일으키는 심리적 연상과 브랜드·UI에서의 활용 사례, 문화적 맥락의 차이를 정리합니다.</span><span class="en">How red, blue, green, yellow, and neutral tones affect emotional responses — and how to use cultural context to make intentional color choices.</span></p>
+    </a><a class="card" href="tip-08-8pt-grid.html">
+      <div class="card-top"><span class="icon">📏</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">8pt 그리드 시스템: 모든 간격을 8의 배수로</span><span class="en">The 8pt Grid: Why All Your Spacing Should Be Multiples of 8</span></h3>
+      <p><span class="ko">8pt 그리드가 디자인 일관성과 개발 협업에 주는 이점, 그리고 실전 적용 규칙을 설명합니다.</span><span class="en">How the 8pt grid system creates visual consistency, speeds up design decisions, and bridges the gap between designers and developers.</span></p>
+    </a><a class="card" href="tip-09-touch-target.html">
+      <div class="card-top"><span class="icon">🤏</span><span class="cat"><span class="ko">모바일</span><span class="en">Mobile</span></span></div>
+      <h3><span class="ko">터치 타겟 최소 44px: 손가락을 위한 디자인</span><span class="en">터치 타겟 최소 44px: 손가락을 위한 디자인</span></h3>
+      <p><span class="ko">Apple HIG와 머티리얼 디자인이 권장하는 터치 타겟 크기와 히트 영역 확장 기법을 다룹니다.</span><span class="en">Apple HIG와 머티리얼 디자인이 권장하는 터치 타겟 크기와 히트 영역 확장 기법을 다룹니다.</span></p>
+    </a><a class="card" href="tip-10-contrast-emphasis.html">
+      <div class="card-top"><span class="icon">🎭</span><span class="cat"><span class="ko">디자인 원칙</span><span class="en">Design Principle</span></span></div>
+      <h3><span class="ko">대비 없이는 강조도 없다</span><span class="en">Contrast and Emphasis: How to Create Visual Hierarchy Without Color Alone</span></h3>
+      <p><span class="ko">크기·색·굵기·여백의 대비로 시각적 위계를 만드는 방법과 '모두 강조하면 아무것도 강조되지 않는' 원리를 설명합니다.</span><span class="en">The five tools of visual contrast — size, weight, color, position, and white space — and how to combine them to guide user attention.</span></p>
+    </a><a class="card" href="tip-11-font-limit.html">
+      <div class="card-top"><span class="icon">♻️</span><span class="cat"><span class="ko">타이포그래피</span><span class="en">Typography</span></span></div>
+      <h3><span class="ko">폰트는 2가지, 크기는 3가지면 충분하다</span><span class="en">The Two-Font Rule: Why Fewer Typefaces Mean Better Design</span></h3>
+      <p><span class="ko">한 화면에서 폰트 패밀리와 크기 가짓수를 제한해야 하는 이유와 예외를 두는 기준을 설명합니다.</span><span class="en">How limiting yourself to one or two typefaces creates professional-looking UI and builds a coherent typographic voice.</span></p>
+    </a><a class="card" href="tip-12-mobile-first.html">
+      <div class="card-top"><span class="icon">📱</span><span class="cat"><span class="ko">반응형</span><span class="en">Responsive</span></span></div>
+      <h3><span class="ko">모바일 퍼스트: 작은 화면에서 시작하면 본질이 남는다</span><span class="en">Mobile First: Design for Constraints, Then Scale Up</span></h3>
+      <p><span class="ko">모바일 퍼스트 접근법의 철학과 실무 프로세스, 데스크톱 퍼스트와의 차이를 비교합니다.</span><span class="en">Why starting with the smallest screen produces better designs, and the practical process for expanding a mobile-first layout to desktop.</span></p>
+    </a><a class="card" href="tip-13-single-cta.html">
+      <div class="card-top"><span class="icon">🎯</span><span class="cat"><span class="ko">전환율</span><span class="en">Conversion</span></span></div>
+      <h3><span class="ko">CTA 버튼은 한 화면에 하나만 주인공으로</span><span class="en">One Primary CTA Per Screen: The Paradox of Choice in UI</span></h3>
+      <p><span class="ko">선택지가 많을수록 클릭이 줄어드는 힉의 법칙과 주요/보조 CTA 설계 전략을 다룹니다.</span><span class="en">How reducing the number of calls to action increases conversion — the psychology of choice overload applied to UI design.</span></p>
+    </a><a class="card" href="tip-14-analogous-complementary.html">
+      <div class="card-top"><span class="icon">🌈</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">무지개 팔레트는 왜 실패하는가: 유사색과 보색의 기술</span><span class="en">Analogous vs. Complementary Color Schemes: When to Use Each</span></h3>
+      <p><span class="ko">색상환을 기준으로 유사색·보색 조합을 설계하는 방법과 다색 사용 시 톤 통일 원칙을 설명합니다.</span><span class="en">The difference between analogous and complementary color relationships, and practical guidance for choosing the right scheme for your UI.</span></p>
+    </a><a class="card" href="tip-15-less-is-more.html">
+      <div class="card-top"><span class="icon">✂️</span><span class="cat"><span class="ko">디자인 철학</span><span class="en">Design Philosophy</span></span></div>
+      <h3><span class="ko">완성은 더할 것이 없을 때가 아니라 뺄 것이 없을 때</span><span class="en">Less Is More: The Case for Restraint in UI Design</span></h3>
+      <p><span class="ko">생텍쥐페리의 명언이 디자인에 주는 교훈과 빼기 중심 디자인 프로세스를 다룹니다.</span><span class="en">Why subtraction is a design skill, how to identify what to remove, and how restraint improves usability and longevity.</span></p>
+    </a><a class="card" href="tip-16-wcag-contrast.html">
+      <div class="card-top"><span class="icon">🔍</span><span class="cat"><span class="ko">접근성</span><span class="en">Accessibility</span></span></div>
+      <h3><span class="ko">WCAG 색 대비 기준 4.5:1, 숫자의 의미와 검사법</span><span class="en">WCAG Color Contrast: Accessibility Is a Design Constraint, Not a Checkbox</span></h3>
+      <p><span class="ko">WCAG AA/AAA 색상 대비 기준의 의미, 대비율 계산 원리, 실무 검사 도구를 정리합니다.</span><span class="en">What WCAG AA and AAA contrast ratios mean in practice, how to check them, and why meeting them improves design for everyone.</span></p>
+    </a><a class="card" href="tip-17-easing.html">
+      <div class="card-top"><span class="icon">💧</span><span class="cat"><span class="ko">모션</span><span class="en">Motion</span></span></div>
+      <h3><span class="ko">애니메이션의 자연스러움은 ease에서 나온다</span><span class="en">Easing Functions: The Difference Between Cheap and Polished Animation</span></h3>
+      <p><span class="ko">linear가 어색하게 느껴지는 이유와 ease-in/out의 사용처, 커스텀 큐빅 베지어 활용법을 설명합니다.</span><span class="en">What easing functions do, why linear animation feels robotic, and which curves to use for entrances, exits, and emphasis.</span></p>
+    </a><a class="card" href="tip-18-hover-state.html">
+      <div class="card-top"><span class="icon">🖱️</span><span class="cat"><span class="ko">인터랙션</span><span class="en">Interaction</span></span></div>
+      <h3><span class="ko">호버 없는 버튼은 사용자를 불안하게 만든다</span><span class="en">호버 없는 버튼은 사용자를 불안하게 만든다</span></h3>
+      <p><span class="ko">인터랙티브 요소의 상태(호버·포커스·액티브·비활성) 설계가 사용성에 미치는 영향을 다룹니다.</span><span class="en">인터랙티브 요소의 상태(호버·포커스·액티브·비활성) 설계가 사용성에 미치는 영향을 다룹니다.</span></p>
+    </a><a class="card" href="tip-19-grid-break.html">
+      <div class="card-top"><span class="icon">🏗️</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">그리드를 알아야 그리드를 깰 수 있다</span><span class="en">Breaking the Grid: How to Make Rule Violations Feel Intentional</span></h3>
+      <p><span class="ko">그리드 시스템의 역할과, 의도적으로 그리드를 벗어나는 브레이크아웃 기법의 효과를 설명합니다.</span><span class="en">When and how to deliberately break a grid layout to create visual interest — and why you must master the grid before you can break it.</span></p>
+    </a><a class="card" href="tip-20-icon-label.html">
+      <div class="card-top"><span class="icon">🔊</span><span class="cat">UX</span></div>
+      <h3><span class="ko">아이콘만으로는 부족하다: 레이블의 힘</span><span class="en">Icons Alone Are Ambiguous: The Case for Icon + Label</span></h3>
+      <p><span class="ko">아이콘 단독 사용의 인식 실패 문제와 텍스트 레이블 병기 원칙, 예외 조건을 정리합니다.</span><span class="en">Research on icon comprehension failure rates, when label text is required, and patterns for combining icons and labels effectively.</span></p>
+    </a><a class="card" href="tip-21-dark-mode-surface.html">
+      <div class="card-top"><span class="icon">🌙</span><span class="cat"><span class="ko">다크모드</span><span class="en">Dark Mode</span></span></div>
+      <h3><span class="ko">다크 모드의 배경은 순수 검정이 아니다</span><span class="en">다크 모드의 배경은 순수 검정이 아니다</span></h3>
+      <p><span class="ko">다크 모드에서 #000 대신 #121212 계열을 쓰는 이유와 다크 테마 표면·텍스트 설계 원칙을 다룹니다.</span><span class="en">다크 모드에서 #000 대신 #121212 계열을 쓰는 이유와 다크 테마 표면·텍스트 설계 원칙을 다룹니다.</span></p>
+    </a><a class="card" href="tip-22-text-on-image.html">
+      <div class="card-top"><span class="icon">📸</span><span class="cat"><span class="ko">이미지</span><span class="en">Imagery</span></span></div>
+      <h3><span class="ko">이미지 위 텍스트, 가독성을 지키는 5가지 방법</span><span class="en">Readable Text on Images: Five Techniques That Always Work</span></h3>
+      <p><span class="ko">사진 위에 텍스트를 올릴 때 가독성을 확보하는 오버레이·그라디언트·블러 등 실전 기법을 소개합니다.</span><span class="en">How to reliably ensure legible text overlay on photography or illustration, from scrim gradients to text shadows to dedicated safe zones.</span></p>
+    </a><a class="card" href="tip-23-proximity.html">
+      <div class="card-top"><span class="icon">🔢</span><span class="cat"><span class="ko">게슈탈트</span><span class="en">Gestalt</span></span></div>
+      <h3><span class="ko">근접성의 원칙: 간격이 곧 관계를 설명한다</span><span class="en">The Proximity Principle: Organize Without Drawing Boxes</span></h3>
+      <p><span class="ko">게슈탈트 심리학의 근접성 원칙을 폼·카드·내비게이션 설계에 적용하는 방법을 설명합니다.</span><span class="en">How Gestalt proximity works in UI layout, practical spacing ratios for grouping elements, and why spacing can replace most decorative dividers.</span></p>
+    </a><a class="card" href="tip-24-self-evident-ui.html">
+      <div class="card-top"><span class="icon">🎪</span><span class="cat"><span class="ko">UX 원칙</span><span class="en">UX Principles</span></span></div>
+      <h3><span class="ko">사용자는 설명서를 읽지 않는다: 자명한 UI 만들기</span><span class="en">Self-Evident UI: Design So Clear It Needs No Instructions</span></h3>
+      <p><span class="ko">스티브 크룩의 '생각하게 하지 마' 원칙과 어포던스·관례를 활용한 직관적 인터페이스 설계법을 다룹니다.</span><span class="en">What makes UI self-evident, the role of affordances and conventions, and how to test whether your design communicates without explanation.</span></p>
+    </a><a class="card" href="tip-25-z-pattern.html">
+      <div class="card-top"><span class="icon">🪟</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">Z자형 시선 패턴과 랜딩 페이지 설계</span><span class="en">The Z-Pattern: Designing Layouts That Guide the Eye</span></h3>
+      <p><span class="ko">텍스트가 적은 페이지에서 나타나는 Z패턴 시선 흐름과 이를 활용한 히어로 섹션 배치 전략을 설명합니다.</span><span class="en">How the Z-pattern eye movement works on image-heavy pages, where to place key design elements along the Z path, and when to use F-pattern instead.</span></p>
+    </a><a class="card" href="tip-26-warm-cool-colors.html">
+      <div class="card-top"><span class="icon">🌡️</span><span class="cat"><span class="ko">색상 심리</span><span class="en">Color Psychology</span></span></div>
+      <h3><span class="ko">따뜻한 색은 다가오고 차가운 색은 물러난다</span><span class="en">Warm vs. Cool Colors: Depth, Advance, and Emotional Temperature</span></h3>
+      <p><span class="ko">색의 진출·후퇴 성질을 활용해 화면의 깊이와 시각적 우선순위를 설계하는 방법을 다룹니다.</span><span class="en">How warm colors advance and cool colors recede visually, how to use color temperature to create depth in flat design, and cultural considerations.</span></p>
+    </a><a class="card" href="tip-27-performance-design.html">
+      <div class="card-top"><span class="icon">⚡</span><span class="cat"><span class="ko">성능</span><span class="en">Performance</span></span></div>
+      <h3><span class="ko">로딩 1초가 전환율 7%를 좌우한다: 성능도 디자인이다</span><span class="en">Performance-Aware Design: How Design Decisions Affect Core Web Vitals</span></h3>
+      <p><span class="ko">페이지 속도가 사용자 행동과 전환율에 미치는 영향, 디자이너가 성능에 기여하는 방법을 정리합니다.</span><span class="en">How image formats, font loading, layout stability, and animation choices directly affect LCP, CLS, and INP — the metrics Google measures.</span></p>
+    </a><a class="card" href="tip-28-pattern-library.html">
+      <div class="card-top"><span class="icon">🧩</span><span class="cat"><span class="ko">디자인 시스템</span><span class="en">Design System</span></span></div>
+      <h3><span class="ko">패턴 라이브러리: 재사용이 일관성을 만든다</span><span class="en">Design Pattern Libraries: Build Once, Use Everywhere</span></h3>
+      <p><span class="ko">컴포넌트 기반 패턴 라이브러리 구축의 이점과 시작 방법, 디자인 시스템과의 관계를 설명합니다.</span><span class="en">What a design pattern library is, why it's different from a component library, and how to build one that actually gets used.</span></p>
+    </a><a class="card" href="tip-29-error-message.html">
+      <div class="card-top"><span class="icon">🔐</span><span class="cat"><span class="ko">UX 라이팅</span><span class="en">UX Writing</span></span></div>
+      <h3><span class="ko">좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게</span><span class="en">좋은 에러 메시지의 3요소: 무엇이, 왜, 어떻게</span></h3>
+      <p><span class="ko">사용자를 막다른 길에 두지 않는 에러 메시지 작성법과 UX 라이팅의 톤 설계를 다룹니다.</span><span class="en">사용자를 막다른 길에 두지 않는 에러 메시지 작성법과 UX 라이팅의 톤 설계를 다룹니다.</span></p>
+    </a><a class="card" href="tip-30-microinteraction-timing.html">
+      <div class="card-top"><span class="icon">🎬</span><span class="cat"><span class="ko">모션</span><span class="en">Motion</span></span></div>
+      <h3><span class="ko">마이크로인터랙션의 골든 타임, 200~500ms</span><span class="en">Microinteraction Timing: The Milliseconds That Define Feel</span></h3>
+      <p><span class="ko">마이크로인터랙션의 구조와 적정 지속 시간, 과한 모션을 피하는 절제의 원칙을 정리합니다.</span><span class="en">How to set animation durations for UI microinteractions, the 100ms threshold of human perception, and the timing guidelines for common patterns.</span></p>
+    </a></div>
+  </section>
+  <section>
+    <h2 class="sec-title"><span class="ko">📚 디자인 역사 <small>10편</small></span><span class="en">📚 Design History <small>10 articles</small></span></h2>
+    <div class="card-grid"><a class="card" href="history-01-art-nouveau.html">
+      <div class="card-top"><span class="icon">🌿</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1890–1910</span></div>
+      <h3><span class="ko">아르누보: 자연의 곡선이 디자인이 되다</span><span class="en">Art Nouveau: When Nature Became Design</span></h3>
+      <p><span class="ko">1890년대 유럽을 휩쓴 아르누보 운동의 배경, 알폰스 무하와 클림트의 작업, 현대 디자인에 남긴 유산을 정리합니다.</span><span class="en">The origins of Art Nouveau in 1890s Europe, Alphonse Mucha and Klimt's defining works, and the movement's lasting influence on modern visual culture.</span></p>
+    </a><a class="card" href="history-02-bauhaus.html">
+      <div class="card-top"><span class="icon">⬛</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1919–1933</span></div>
+      <h3><span class="ko">바우하우스: 형태는 기능을 따른다</span><span class="en">Bauhaus: Form Follows Function</span></h3>
+      <p><span class="ko">독일 바우하우스 학교의 철학과 교육 방식, 그리고 현대 그래픽·제품·UI 디자인에 미친 결정적 영향을 다룹니다.</span><span class="en">The philosophy and pedagogy of Germany's Bauhaus school, and its decisive influence on modern graphic design, product design, and UI.</span></p>
+    </a><a class="card" href="history-03-art-deco.html">
+      <div class="card-top"><span class="icon">💎</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1920–1940</span></div>
+      <h3><span class="ko">아르데코: 기계 시대의 화려한 기하학</span><span class="en">Art Deco: The Glamorous Geometry of the Machine Age</span></h3>
+      <p><span class="ko">1920~30년대 아르데코 양식의 특징과 대표 작품, 그리고 럭셔리 브랜딩에서 계속되는 부활을 다룹니다.</span><span class="en">The characteristics and landmark works of 1920s–30s Art Deco, and how it keeps returning in luxury branding.</span></p>
+    </a><a class="card" href="history-04-swiss-style.html">
+      <div class="card-top"><span class="icon">🔲</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1950s</span></div>
+      <h3><span class="ko">스위스 국제주의 양식: 그리드와 헬베티카의 탄생</span><span class="en">Swiss International Style: The Birth of the Grid and Helvetica</span></h3>
+      <p><span class="ko">1950년대 스위스에서 정립된 국제 타이포그래피 양식의 원칙과 헬베티카, 그리고 현대 웹 디자인과의 연결을 다룹니다.</span><span class="en">How 1950s Switzerland codified the grid system, produced Helvetica, and established the principles that underpin modern web and UI design.</span></p>
+    </a><a class="card" href="history-05-pop-art.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1960s</span></div>
+      <h3><span class="ko">팝 아트: 대중문화가 예술이 된 순간</span><span class="en">Pop Art: When Mass Culture Became High Art</span></h3>
+      <p><span class="ko">앤디 워홀과 리히텐슈타인의 팝 아트가 상업 이미지와 예술의 경계를 허문 과정, 그래픽 디자인에 남긴 영향을 정리합니다.</span><span class="en">How 1960s Pop Art appropriated advertising, comics, and consumer goods, and its lasting influence on graphic design, branding, and visual irony.</span></p>
+    </a><a class="card" href="history-06-macintosh-ui.html">
+      <div class="card-top"><span class="icon">🖥️</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">1984</span></div>
+      <h3><span class="ko">매킨토시 UI: GUI 시대를 연 1984년의 혁명</span><span class="en">The Macintosh GUI: Inventing the Language of the Desktop</span></h3>
+      <p><span class="ko">제록스 PARC에서 애플 매킨토시로 이어진 그래픽 사용자 인터페이스의 탄생과 수전 케어의 아이콘 디자인을 다룹니다.</span><span class="en">How Apple's 1984 Macintosh introduced the desktop metaphor, WIMP interface, and the design conventions that still govern every computer UI today.</span></p>
+    </a><a class="card" href="history-07-skeuomorphism.html">
+      <div class="card-top"><span class="icon">📒</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">2006–2013</span></div>
+      <h3><span class="ko">스큐어모피즘: 현실을 모방한 UI의 시대</span><span class="en">Skeuomorphism: When Digital Pretended to Be Physical</span></h3>
+      <p><span class="ko">iOS 초기 디자인을 지배한 스큐어모피즘의 논리와 절정기 작품들, 그리고 플랫 디자인으로의 전환 이유를 다룹니다.</span><span class="en">The philosophy and peak years of skeuomorphic design, why Apple championed it, and what triggered the shift to flat design in 2013.</span></p>
+    </a><a class="card" href="history-08-flat-design.html">
+      <div class="card-top"><span class="icon">⬜</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">2013–</span></div>
+      <h3><span class="ko">플랫 디자인: 그림자를 지우고 본질만 남기다</span><span class="en">Flat Design: The Decade of Simplicity</span></h3>
+      <p><span class="ko">마이크로소프트 메트로와 iOS 7이 이끈 플랫 디자인의 원리, 장단점, 플랫 2.0으로의 진화를 정리합니다.</span><span class="en">How flat design replaced skeuomorphism from 2013 onwards, its strengths and weaknesses, and the semi-flat evolution that followed.</span></p>
+    </a><a class="card" href="history-09-material-design.html">
+      <div class="card-top"><span class="icon">🎯</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">2014–</span></div>
+      <h3><span class="ko">머티리얼 디자인: 구글이 만든 디지털 종이의 물리학</span><span class="en">Material Design: Google's Unified Design Language</span></h3>
+      <p><span class="ko">구글 머티리얼 디자인의 핵심 은유와 모션 원칙, 디자인 시스템 시대를 연 의의를 정리합니다.</span><span class="en">How Google's 2014 Material Design system unified design across platforms, introduced the concept of design tokens, and shaped how design systems are built today.</span></p>
+    </a><a class="card" href="history-10-neumorphism-glassmorphism.html">
+      <div class="card-top"><span class="icon">🔵</span><span class="cat"><span class="ko">디자인 역사</span><span class="en">Design History</span></span><span class="era">2020s</span></div>
+      <h3><span class="ko">뉴모피즘과 글래스모피즘: 2020년대의 질감 실험</span><span class="en">Neumorphism & Glassmorphism: The Aesthetics of 2020</span></h3>
+      <p><span class="ko">드리블에서 시작된 뉴모피즘 유행과 글래스모피즘의 정착 과정, 두 트렌드의 접근성 한계와 활용 조건을 다룹니다.</span><span class="en">What neumorphism and glassmorphism are, their appeal, their accessibility failures, and what they reveal about how design trends propagate in the social media era.</span></p>
+    </a></div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

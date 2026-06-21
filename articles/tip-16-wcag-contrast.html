@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WCAG 색 대비 기준 4.5:1, 숫자의 의미와 검사법 | Nidwolf Design Toolkit</title>
+<meta name="description" content="WCAG AA/AAA 색상 대비 기준의 의미, 대비율 계산 원리, 실무 검사 도구를 정리합니다."/>
+<meta property="og:title" content="WCAG 색 대비 기준 4.5:1, 숫자의 의미와 검사법"/>
+<meta property="og:description" content="WCAG AA/AAA 색상 대비 기준의 의미, 대비율 계산 원리, 실무 검사 도구를 정리합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-16-wcag-contrast.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-16-wcag-contrast.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "WCAG 색 대비 기준 4.5:1, 숫자의 의미와 검사법",
+  "description": "WCAG AA/AAA 색상 대비 기준의 의미, 대비율 계산 원리, 실무 검사 도구를 정리합니다.",
+  "url": "https://nidwolf.io/articles/tip-16-wcag-contrast.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🔍</span><span class="cat"><span class="ko">접근성</span><span class="en">Accessibility</span></span></div>
+    <h1><span class="ko">WCAG 색 대비 기준 4.5:1, 숫자의 의미와 검사법</span><span class="en">WCAG Color Contrast: Accessibility Is a Design Constraint, Not a Checkbox</span></h1>
+    <p class="lead"><span class="ko">WCAG AA/AAA 색상 대비 기준의 의미, 대비율 계산 원리, 실무 검사 도구를 정리합니다.</span><span class="en">What WCAG AA and AAA contrast ratios mean in practice, how to check them, and why meeting them improves design for everyone.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>대비율이라는 숫자의 정체</li><li>실무에서 자주 터지는 지점</li><li>검사를 습관으로 만들기</li><li>팔레트 단계에서 대비를 보장하는 법</li><li>대비는 텍스트만의 문제가 아니다</li></ul>
+  <ul class="en"><li>The standards</li><li>Practical checking</li><li>Contrast vs. aesthetics</li></ul>
+</div>
+    <div class="ko"><p>회색 배경 위의 연회색 글씨는 세련돼 보일 수 있지만, 저시력 사용자나 햇빛 아래의 스마트폰 사용자에게는 읽을 수 없는 텍스트입니다. 웹 접근성 지침 WCAG는 이 문제에 명확한 숫자를 제시합니다. 일반 텍스트는 배경과 4.5:1 이상, 큰 텍스트(18pt 이상 또는 14pt 볼드)는 3:1 이상의 대비율. 이것이 AA 등급의 최소 기준입니다.</p>
+<h2>대비율이라는 숫자의 정체</h2>
+<p>대비율은 두 색의 상대 휘도(Relative Luminance) 비율로, 1:1(같은 색)부터 21:1(순백과 순흑)까지의 값을 가집니다. 흰 배경 기준으로 #767676 정도가 대략 4.5:1의 경계선입니다. 즉 흰 바탕에 이보다 밝은 회색 본문은 AA 기준 미달입니다. 보조 텍스트로 즐겨 쓰이는 #999나 #aaa가 대표적인 위반 사례입니다. 더 엄격한 AAA 등급은 7:1을 요구하며, 고대비가 중요한 서비스(공공·금융·의료)에서 참고 기준이 됩니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>실무에서 자주 터지는 지점</h2>
+<p>위반은 본문보다 주변부에서 발생합니다. 플레이스홀더 텍스트, 비활성 버튼, 컬러 배경 위의 흰 글씨(특히 노랑·연두·하늘색 배경), 그라디언트 위의 텍스트, 이미지 위의 캡션이 단골입니다. 브랜드 색이 밝은 계열이라면 '브랜드 색 배경 + 흰 글씨' 조합부터 검사하세요. 의외로 많은 브랜드 색이 3:1을 넘지 못합니다. 이 경우 텍스트용으로 한 단계 어두운 변형 색을 토큰으로 추가하는 것이 표준 해법입니다.</p>
+<h2>검사를 습관으로 만들기</h2>
+<p>Chrome 개발자 도구의 색상 피커는 대비율과 AA/AAA 통과 여부를 즉시 보여줍니다. 피그마에는 Stark, Contrast 같은 플러그인이 있고, 웹에는 WebAIM Contrast Checker가 있습니다. 중요한 것은 도구가 아니라 시점입니다. 다 만들고 검사하면 수정 비용이 크므로, 컬러 팔레트를 정의하는 단계에서 텍스트로 쓰일 색-배경 조합을 미리 전수 검사해 두세요.</p>
+<p>접근성 기준은 규제이기 이전에 품질입니다. 4.5:1을 지키는 화면은 모두에게 더 잘 읽히고, 더 잘 읽히는 화면은 더 오래 사용됩니다.</p>
+<h2>팔레트 단계에서 대비를 보장하는 법</h2>
+<p>색을 다 정한 뒤 대비를 검사하면 수정이 고통스럽습니다. 처음부터 명도 단계로 팔레트를 설계하세요. 브랜드 색을 50~900의 10단계 명도 스케일로 전개하고, "흰 배경 텍스트는 600 이상, 컬러 배경 위 흰 텍스트는 500 이상" 같은 사용 규칙을 토큰에 박아 두는 방식입니다. 이렇게 하면 디자이너가 매번 검사기를 돌리지 않아도 규칙을 따르는 한 대비가 보장됩니다. 주요 디자인 시스템들이 모두 이 방식을 씁니다.</p>
+<h2>대비는 텍스트만의 문제가 아니다</h2>
+<p>WCAG 1.4.11(비텍스트 대비)은 UI 컴포넌트와 그래픽에도 3:1 대비를 요구합니다. 입력란의 테두리, 체크박스, 토글, 아이콘 버튼, 차트의 데이터 색상이 모두 해당됩니다. 흰 배경에 #e0e0e0 테두리의 입력란은 세련돼 보이지만 기준 미달이라 저시력 사용자에게는 입력란의 존재 자체가 보이지 않습니다. 또한 색만으로 정보를 구분하는 것(빨강=오류, 초록=정상)도 피해야 합니다. 색맹 사용자를 위해 아이콘과 텍스트 레이블을 항상 함께 제공하세요.</p>
+</div>
+    <div class="en"><p>Color contrast is where accessibility and usability converge most directly. Low contrast doesn't just fail users with visual impairments — it fatigues every user, reduces readability in bright sunlight, and often signals a design system that hasn't been tested against real conditions.</p>
+<h2>The standards</h2>
+<p>WCAG 2.1 defines three levels. Level A is the minimum. Level AA (the target for most web products) requires a 4.5:1 contrast ratio for normal text and 3:1 for large text (18pt+ or 14pt+ bold). Level AAA requires 7:1 for normal text and 4.5:1 for large text. Gray text on a white background is the most common failure point: #999 on #fff gives only 2.85:1 — well below AA.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>Practical checking</h2>
+<p>Browser DevTools (Chrome, Firefox) include built-in contrast checkers in the color picker. The browser extensions Colour Contrast Analyser and axe DevTools automate auditing across a full page. In Figma, use the built-in Accessibility Checker or the A11y plugin. Check every text color against every background it appears on — interactive state colors (hover, focus) included.</p>
+<h2>Contrast vs. aesthetics</h2>
+<p>Low-contrast design is often a consequence of using brand colors at full saturation for text, or of prioritizing a "soft" aesthetic. The fix is rarely dramatic: slightly darken the text color or lighten the background — often a 10% value shift is enough to pass AA while maintaining the intended palette. Design that passes contrast checks is simply better design for all users in all conditions.</p>
+<p>Treat WCAG AA as a floor, not a ceiling. Many teams find that once they achieve AA, they prefer the result aesthetically as well as functionally. Legibility is a feature.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-15-less-is-more.html">← <span class="ko">완성은 더할 것이 없을 때가 아니라 뺄 것이 없을 때</span><span class="en">Less Is More: The Case for Restraint in UI Design</span></a><a class="next" href="tip-17-easing.html"><span class="ko">애니메이션의 자연스러움은 ease에서 나온다</span><span class="en">Easing Functions: The Difference Between Cheap and Polished Animation</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

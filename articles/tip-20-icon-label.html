@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>아이콘만으로는 부족하다: 레이블의 힘 | Nidwolf Design Toolkit</title>
+<meta name="description" content="아이콘 단독 사용의 인식 실패 문제와 텍스트 레이블 병기 원칙, 예외 조건을 정리합니다."/>
+<meta property="og:title" content="아이콘만으로는 부족하다: 레이블의 힘"/>
+<meta property="og:description" content="아이콘 단독 사용의 인식 실패 문제와 텍스트 레이블 병기 원칙, 예외 조건을 정리합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-20-icon-label.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-20-icon-label.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "아이콘만으로는 부족하다: 레이블의 힘",
+  "description": "아이콘 단독 사용의 인식 실패 문제와 텍스트 레이블 병기 원칙, 예외 조건을 정리합니다.",
+  "url": "https://nidwolf.io/articles/tip-20-icon-label.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🔊</span><span class="cat">UX</span></div>
+    <h1><span class="ko">아이콘만으로는 부족하다: 레이블의 힘</span><span class="en">Icons Alone Are Ambiguous: The Case for Icon + Label</span></h1>
+    <p class="lead"><span class="ko">아이콘 단독 사용의 인식 실패 문제와 텍스트 레이블 병기 원칙, 예외 조건을 정리합니다.</span><span class="en">Research on icon comprehension failure rates, when label text is required, and patterns for combining icons and labels effectively.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>아이콘이 실패하는 이유</li><li>레이블 병기의 실전 형태</li><li>아이콘 단독이 허용되는 조건</li><li>아이콘 사용성 테스트 방법</li><li>아이콘 시스템의 일관성</li></ul>
+  <ul class="en"><li>The recognition problem</li><li>When labels are required</li><li>Combining icon and label well</li></ul>
+</div>
+    <div class="ko"><p>햄버거 메뉴(≡)가 무엇인지 모든 사용자가 알까요? 하트는 좋아요일까요 찜하기일까요? 깔때기 아이콘은 필터일까요 정렬일까요? 디자이너에게 자명한 아이콘도 사용자에게는 수수께끼인 경우가 많습니다. 사용성 연구들이 반복해서 확인한 결론은 명확합니다. 아이콘은 텍스트 레이블과 함께 있을 때 가장 잘 작동합니다.</p>
+<h2>아이콘이 실패하는 이유</h2>
+<p>보편적으로 통하는 아이콘은 생각보다 적습니다. 돋보기(검색), 집(홈), 톱니바퀴(설정) 정도가 안전권이고, 그 밖의 아이콘은 서비스마다 의미가 다릅니다. 같은 별표가 어떤 앱에서는 즐겨찾기, 어떤 앱에서는 평점입니다. 사용자는 아이콘의 의미를 추측하는 데 인지 자원을 쓰고, 추측이 틀리면 잘못된 화면으로 이동하는 비용을 치릅니다. 레이블은 이 추측 게임을 끝내 줍니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-03-f-pattern.html"><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></a>
+</div>
+<h2>레이블 병기의 실전 형태</h2>
+<p>가장 좋은 형태는 아이콘 옆이나 아래에 항상 보이는 텍스트입니다. 모바일 하단 탭 바에서 아이콘 아래 작은 레이블이 표준이 된 이유입니다. 공간이 정말 부족하다면 차라리 아이콘을 빼고 텍스트만 남기는 것이 아이콘만 남기는 것보다 낫습니다. 툴팁은 최후의 보조 수단일 뿐 해결책이 아닙니다. 호버를 해야 보이는 설명은 모바일에서 존재하지 않고, 데스크톱에서도 '몰라서 헤매는 사용자'는 툴팁을 띄울 생각조차 못 합니다.</p>
+<h2>아이콘 단독이 허용되는 조건</h2>
+<p>재생/일시정지, 닫기(×)처럼 수십 년간 학습된 관례적 아이콘, 그리고 같은 화면에서 반복 사용되어 학습이 즉시 일어나는 경우(리스트 각 행의 삭제 아이콘)는 단독 사용이 가능합니다. 이때도 접근성을 위해 aria-label로 스크린 리더용 이름은 반드시 제공해야 합니다. 시각적 레이블을 생략하는 것이지 의미를 생략하는 것이 아닙니다.</p>
+<p>망설여질 때의 기준은 간단합니다. 이 아이콘을 처음 보는 사람이 0.5초 안에 의미를 맞힐 수 있는가? 확신이 없다면 레이블을 붙이세요. 화면은 조금 덜 깔끔해져도, 제품은 훨씬 쓰기 쉬워집니다.</p>
+<h2>아이콘 사용성 테스트 방법</h2>
+<p>아이콘이 통하는지 검증하는 데는 거창한 장비가 필요 없습니다. 아이콘만 보여주고 "이걸 누르면 무슨 일이 일어날까요?"라고 묻는 5초 테스트를 5명에게만 해도 문제가 드러납니다. 닐슨 노먼 그룹의 권고처럼, 정답률이 80% 아래라면 그 아이콘은 단독으로 쓸 수 없습니다. 사내 직원은 이미 학습된 사용자이므로 테스트 대상은 가급적 제품을 처음 보는 사람이어야 합니다.</p>
+<h2>아이콘 시스템의 일관성</h2>
+<p>레이블 문제만큼 흔한 것이 아이콘 스타일의 불일치입니다. 어떤 아이콘은 외곽선(outline), 어떤 것은 채움(filled), 굵기도 제각각인 화면은 아이콘마다 다른 곳에서 가져왔다는 뜻입니다. 하나의 아이콘 세트(Material Symbols, Lucide, Heroicons 등)를 정하고 스타일·굵기·크기(보통 20 또는 24px)를 고정하세요. 채움과 외곽선을 섞어 쓸 때는 규칙(선택됨=채움, 기본=외곽선)을 부여해 차이가 의미를 갖게 만들어야 합니다. 일관된 아이콘은 레이블의 부담도 줄여 줍니다.</p>
+
+<p>아이콘과 레이블의 논쟁에서 기준은 언제나 사용자의 인지 비용입니다. 화면의 깔끔함은 디자이너가 누리고 해석의 부담은 사용자가 진다면 그 거래는 공정하지 않습니다. 의심스러울 때는 언제나 더 친절한 쪽을 선택하세요.</p>
+</div>
+    <div class="en"><p>Icons feel efficient — a small image conveys meaning instantly, right? Research complicates this. Studies show that icon-only navigation has significantly higher error rates than labeled navigation, especially for abstract or non-universal icons. The aesthetic efficiency comes at a usability cost that's hard to see from inside the designer's perspective.</p>
+<h2>The recognition problem</h2>
+<p>Universal icons are rare: home (house), search (magnifying glass), close (×), play (triangle). These work without labels because decades of product exposure have burned them into user memory. Every other icon — a star for favorites? bookmarks? rating? highlights? — is learned, not innate. And "learned" means "only by users who already know your product." First-time users and infrequent users see the same icon differently.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-03-f-pattern.html"><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></a>
+</div>
+<h2>When labels are required</h2>
+<p>Labels are required whenever the icon's meaning isn't universal or when the function is critical (error recovery, destructive actions, primary navigation). Tooltips are not a substitute for labels — they require hover, which isn't available on touch devices, and they're not discovered, they're stumbled upon. If you need a tooltip to explain an icon, the icon needs a label.</p>
+<h2>Combining icon and label well</h2>
+<p>Keep icon and label tightly paired with consistent spacing. The icon size should not dwarf the label: 16–20px icons alongside 14px labels is a common balanced combination. For bottom navigation bars, icon + label below is the platform convention for iOS and Android — deviate with strong justification.</p>
+<p>The measure of icon-label decisions is always the user's cognitive cost. Visual cleanliness is a designer's privilege; the burden of interpretation is the user's. When in doubt, always choose the more communicative option.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-19-grid-break.html">← <span class="ko">그리드를 알아야 그리드를 깰 수 있다</span><span class="en">Breaking the Grid: How to Make Rule Violations Feel Intentional</span></a><a class="next" href="tip-21-dark-mode-surface.html"><span class="ko">다크 모드의 배경은 순수 검정이 아니다</span><span class="en">다크 모드의 배경은 순수 검정이 아니다</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>폰트는 2가지, 크기는 3가지면 충분하다 | Nidwolf Design Toolkit</title>
+<meta name="description" content="한 화면에서 폰트 패밀리와 크기 가짓수를 제한해야 하는 이유와 예외를 두는 기준을 설명합니다."/>
+<meta property="og:title" content="폰트는 2가지, 크기는 3가지면 충분하다"/>
+<meta property="og:description" content="한 화면에서 폰트 패밀리와 크기 가짓수를 제한해야 하는 이유와 예외를 두는 기준을 설명합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-11-font-limit.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-11-font-limit.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "폰트는 2가지, 크기는 3가지면 충분하다",
+  "description": "한 화면에서 폰트 패밀리와 크기 가짓수를 제한해야 하는 이유와 예외를 두는 기준을 설명합니다.",
+  "url": "https://nidwolf.io/articles/tip-11-font-limit.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">♻️</span><span class="cat"><span class="ko">타이포그래피</span><span class="en">Typography</span></span></div>
+    <h1><span class="ko">폰트는 2가지, 크기는 3가지면 충분하다</span><span class="en">The Two-Font Rule: Why Fewer Typefaces Mean Better Design</span></h1>
+    <p class="lead"><span class="ko">한 화면에서 폰트 패밀리와 크기 가짓수를 제한해야 하는 이유와 예외를 두는 기준을 설명합니다.</span><span class="en">How limiting yourself to one or two typefaces creates professional-looking UI and builds a coherent typographic voice.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>가짓수가 늘면 무엇이 무너지는가</li><li>두 폰트의 역할 분담</li><li>크기 3가지로 화면 구성하기</li><li>예외가 허용되는 곳</li><li>좋은 페어링을 찾는 요령</li><li>웹 성능까지 생각한 폰트 전략</li></ul>
+  <ul class="en"><li>One font can be enough</li><li>When you use two fonts</li><li>What unlimited fonts actually cost</li></ul>
+</div>
+    <div class="ko"><p>좋은 타이포그래피의 비결은 좋은 폰트를 고르는 것보다 폰트의 가짓수를 줄이는 데 있습니다. 한 화면에 폰트 패밀리는 2가지, 크기는 3가지를 넘지 않는 것. 이 오래된 경험칙은 지금도 유효합니다.</p>
+<h2>가짓수가 늘면 무엇이 무너지는가</h2>
+<p>폰트가 셋 이상 섞이면 화면의 통일감이 깨지고, 각 폰트가 어떤 역할인지 사용자가 학습할 수 없게 됩니다. 크기도 마찬가지입니다. 14, 15, 16, 18, 21px이 혼재된 화면에서는 크기 차이가 위계가 아니라 잡음으로 읽힙니다. 제한은 미적 취향이 아니라 정보 전달의 효율 문제입니다. 가짓수가 적을수록 각 변화가 의미를 가집니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-04-type-scale-ratio.html"><span class="ko">제목과 본문 크기 비율, 1.25배가 기준인 이유</span><span class="en">Why 1.25× Is the Standard Heading-to-Body Ratio</span></a>
+</div>
+<h2>두 폰트의 역할 분담</h2>
+<p>전형적인 조합은 제목용 폰트와 본문용 폰트의 페어링입니다. 세리프 제목 + 산세리프 본문은 클래식한 신뢰감을, 개성 있는 디스플레이 폰트 + 무난한 산세리프 본문은 브랜드 표현과 가독성의 균형을 만듭니다. 한글 환경이라면 제목과 본문 모두 같은 패밀리를 쓰되 굵기만 달리하는 단일 폰트 전략도 훌륭합니다. Pretendard나 Noto Sans KR처럼 굵기 단계가 풍부한 폰트라면 하나로도 충분한 위계를 만들 수 있습니다.</p>
+<h2>크기 3가지로 화면 구성하기</h2>
+<p>기본 구성은 제목(예: 24px), 본문(16px), 캡션(13px)입니다. 여기에 페이지 대표 제목이 필요하면 한 단계(32px)를 추가하는 정도로 충분합니다. 더 세밀한 구분이 필요할 때는 크기 대신 굵기와 색을 조절하세요. 같은 16px이라도 굵기 600의 진한 글씨와 굵기 400의 회색 글씨는 명확히 다른 층위로 읽힙니다.</p>
+<h2>예외가 허용되는 곳</h2>
+<p>코드 블록의 모노스페이스 폰트, 인용문의 세리프체처럼 기능적 이유가 있는 폰트는 가짓수 계산에서 너그럽게 봐도 됩니다. 핵심은 '이 폰트가 왜 여기 있는가'에 답할 수 있느냐입니다. 답할 수 없는 폰트와 크기를 지우는 것, 그것이 타이포그래피 정리의 시작이자 끝입니다.</p>
+<h2>좋은 페어링을 찾는 요령</h2>
+<p>두 폰트를 조합할 때는 '비슷하면서 다르게'가 원칙입니다. x-높이(소문자 높이)와 글자 폭이 비슷한 폰트끼리는 섞여도 어색하지 않고, 분류(세리프 대 산세리프)가 다르면 역할 구분이 분명해집니다. 같은 디자이너나 같은 패밀리에서 나온 슈퍼패밀리(예: 세리프와 산세리프 버전이 함께 출시된 폰트)는 검증된 안전한 선택입니다. 반대로 개성이 강한 폰트 두 개를 섞는 것은 주연 배우 두 명을 한 장면에 세우는 것과 같아서 거의 항상 충돌합니다.</p>
+<h2>웹 성능까지 생각한 폰트 전략</h2>
+<p>폰트 가짓수 제한은 성능 문제이기도 합니다. 한글 웹폰트는 글리프가 많아 굵기 하나에 수백 KB에서 1MB를 넘기도 합니다. 패밀리 2종에 각 3굵기면 최대 6개의 폰트 파일이 로드되는 셈입니다. 쓰는 굵기만 명시적으로 로드하고, 서브셋 폰트(자주 쓰는 글자만 추린 경량판)를 쓰고, font-display: swap으로 로딩 중에도 텍스트가 보이게 하세요. 디자인의 절제가 곧 성능의 절제가 됩니다.</p>
+
+<p>폰트 절제의 효과는 더하는 순간이 아니라 비교하는 순간 드러납니다. 폰트를 정리하기 전후의 화면을 나란히 놓고 보세요. 줄어든 것은 가짓수지만 늘어난 것은 신뢰감이라는 사실을 눈으로 확인하게 될 것입니다.</p>
+</div>
+    <div class="en"><p>Mixing fonts is seductive — each new typeface seems to add personality. But every additional typeface also adds visual noise and splits the reader's attention. Professional UI design almost universally follows a simple constraint: use at most two typefaces per project.</p>
+<h2>One font can be enough</h2>
+<p>Many of the most polished interfaces use a single typeface family — leveraging weight (400, 600, 700), size, and color to create all the hierarchy they need. A modern variable font can span the entire range from body text to display headline within one file. If a single family covers your needs, adding a second font is complexity without benefit.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-04-type-scale-ratio.html"><span class="ko">제목과 본문 크기 비율, 1.25배가 기준인 이유</span><span class="en">Why 1.25× Is the Standard Heading-to-Body Ratio</span></a>
+</div>
+<h2>When you use two fonts</h2>
+<p>The classic two-font pairing is a serif for headings and a sans-serif for body — or vice versa. The principle: the two faces should have clear contrast in personality (classic vs. modern, structured vs. humanist) but harmonious proportions. Free starting points: Playfair Display + Source Sans Pro, Merriweather + Inter. Avoid pairing two serifs or two grotesque sans-serifs — the similarity creates tension without contrast.</p>
+<h2>What unlimited fonts actually cost</h2>
+<p>Beyond aesthetics, each additional font is an HTTP request, a rendering cost, and a maintenance burden. Three typefaces from three different foundries means three different rhythm systems fighting each other across your screens. The user doesn't notice extra fonts; they notice when the screen feels inconsistent, and the fonts are often why.</p>
+<p>The effect of font restraint becomes visible as a contrast — before and after. Reducing from four typefaces to two and placing them side by side reveals that what was lost is count, and what was gained is trust.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-10-contrast-emphasis.html">← <span class="ko">대비 없이는 강조도 없다</span><span class="en">Contrast and Emphasis: How to Create Visual Hierarchy Without Color Alone</span></a><a class="next" href="tip-12-mobile-first.html"><span class="ko">모바일 퍼스트: 작은 화면에서 시작하면 본질이 남는다</span><span class="en">Mobile First: Design for Constraints, Then Scale Up</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-04-type-scale-ratio.html">
+      <div class="card-top"><span class="icon">🔤</span><span class="cat"><span class="ko">타이포그래피</span><span class="en">Typography</span></span></div>
+      <h3><span class="ko">제목과 본문 크기 비율, 1.25배가 기준인 이유</span><span class="en">Why 1.25× Is the Standard Heading-to-Body Ratio</span></h3>
+      <p><span class="ko">타이포그래피 스케일에서 제목과 본문의 크기 비율을 정하는 기준과 모듈러 스케일 활용법을 정리합니다.</span><span class="en">The logic behind modular type scales and how to choose the right ratio for your content's character.</span></p>
+    </a><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

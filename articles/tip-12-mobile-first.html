@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>모바일 퍼스트: 작은 화면에서 시작하면 본질이 남는다 | Nidwolf Design Toolkit</title>
+<meta name="description" content="모바일 퍼스트 접근법의 철학과 실무 프로세스, 데스크톱 퍼스트와의 차이를 비교합니다."/>
+<meta property="og:title" content="모바일 퍼스트: 작은 화면에서 시작하면 본질이 남는다"/>
+<meta property="og:description" content="모바일 퍼스트 접근법의 철학과 실무 프로세스, 데스크톱 퍼스트와의 차이를 비교합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-12-mobile-first.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-12-mobile-first.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "모바일 퍼스트: 작은 화면에서 시작하면 본질이 남는다",
+  "description": "모바일 퍼스트 접근법의 철학과 실무 프로세스, 데스크톱 퍼스트와의 차이를 비교합니다.",
+  "url": "https://nidwolf.io/articles/tip-12-mobile-first.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">📱</span><span class="cat"><span class="ko">반응형</span><span class="en">Responsive</span></span></div>
+    <h1><span class="ko">모바일 퍼스트: 작은 화면에서 시작하면 본질이 남는다</span><span class="en">Mobile First: Design for Constraints, Then Scale Up</span></h1>
+    <p class="lead"><span class="ko">모바일 퍼스트 접근법의 철학과 실무 프로세스, 데스크톱 퍼스트와의 차이를 비교합니다.</span><span class="en">Why starting with the smallest screen produces better designs, and the practical process for expanding a mobile-first layout to desktop.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>작은 화면이 강제하는 우선순위</li><li>CSS 관점의 모바일 퍼스트</li><li>모바일 퍼스트가 정답이 아닌 경우</li><li>모바일 퍼스트 작업 순서 예시</li><li>점진적 향상이라는 사고방식</li></ul>
+  <ul class="en"><li>Constraints reveal priorities</li><li>Progressive enhancement vs. graceful degradation</li><li>Practical process</li></ul>
+</div>
+    <div class="ko"><p>모바일 퍼스트는 단순히 '모바일도 지원하자'가 아닙니다. 가장 작은 화면에서 디자인을 시작하고, 화면이 커질수록 기능을 더해 가는 사고방식의 전환입니다. 루크 로블르스키가 이 개념을 제안한 이후, 모바일 트래픽이 데스크톱을 넘어선 지금은 사실상의 표준이 되었습니다.</p>
+<h2>작은 화면이 강제하는 우선순위</h2>
+<p>320~390px 폭의 화면에는 모든 것을 담을 수 없습니다. 이 제약이 오히려 선물입니다. 핵심 콘텐츠가 무엇인지, 사용자가 이 화면에서 정말 해야 할 행동이 무엇인지 답하지 않으면 모바일 화면은 완성되지 않기 때문입니다. 데스크톱에서 시작하면 넓은 공간을 채우기 위해 부가 요소가 늘어나고, 그것을 모바일로 줄이는 과정은 고통스러운 삭제의 연속이 됩니다. 반대로 모바일에서 시작하면 본질이 먼저 확정되고 데스크톱은 그 본질을 더 여유 있게 보여주는 무대가 됩니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>CSS 관점의 모바일 퍼스트</h2>
+<p>구현에서도 순서가 뒤집힙니다. 기본 스타일을 모바일 기준으로 작성하고, min-width 미디어쿼리로 큰 화면의 스타일을 더해 가는 방식입니다. 이렇게 하면 저사양 모바일 기기가 불필요한 데스크톱 스타일을 해석할 필요가 없고, 스타일 덮어쓰기의 방향이 일관되어 유지보수가 쉬워집니다. 한 줄 컬럼에서 시작해 2단, 3단으로 확장하는 레이아웃 설계가 자연스럽게 따라옵니다.</p>
+<h2>모바일 퍼스트가 정답이 아닌 경우</h2>
+<p>관리자 콘솔, 데이터 분석 대시보드, 전문가용 편집 도구처럼 사용자의 95%가 데스크톱에서 쓰는 제품이라면 데스크톱 퍼스트가 합리적입니다. 중요한 것은 구호가 아니라 실제 사용자의 기기 분포입니다. 애널리틱스를 열어 모바일 비중을 확인하고, 그 숫자가 시작점을 정하게 하세요.</p>
+<p>어느 쪽에서 시작하든 한 가지는 같습니다. 반응형은 같은 화면을 줄이고 늘리는 일이 아니라, 화면 크기마다 최적의 경험을 다시 설계하는 일이라는 점입니다.</p>
+<h2>모바일 퍼스트 작업 순서 예시</h2>
+<p>실제 프로젝트에서의 진행 순서는 이렇습니다. 1단계, 360px 폭 기준으로 핵심 과업 흐름(탐색→상세→행동)을 와이어프레임으로 완성합니다. 2단계, 그 흐름이 모바일에서 막힘없이 끝나는지 검증합니다. 3단계, 768px(태블릿)에서 한 줄 컬럼을 2단으로 펼치고 숨겼던 보조 정보를 노출합니다. 4단계, 1200px(데스크톱)에서 사이드바·멀티 컬럼 등 여유 공간의 활용을 설계합니다. 각 단계에서 추가되는 것은 장식이 아니라 '공간이 생겨서 가능해진 정보'여야 합니다.</p>
+<h2>점진적 향상이라는 사고방식</h2>
+<p>모바일 퍼스트의 기술적 짝꿍은 점진적 향상(Progressive Enhancement)입니다. 모든 기기에서 작동하는 기본 경험을 먼저 만들고, 화면이 크거나 성능이 좋은 환경에서 향상된 경험(호버 효과, 애니메이션, 멀티 컬럼)을 덧입히는 접근입니다. 반대 방향인 우아한 저하(Graceful Degradation)는 풀옵션에서 기능을 빼는 방식이라 빠뜨리는 것이 생기기 쉽습니다. 더하는 설계가 빼는 설계보다 항상 안전합니다.</p>
+
+<p>모바일 퍼스트를 한 문장으로 요약하면 '제약을 먼저 통과하라'입니다. 가장 어려운 조건에서 작동하는 설계는 쉬운 조건에서 더 잘 작동하지만, 그 역은 성립하지 않습니다. 작은 화면은 제약이 아니라 본질을 걸러 주는 체입니다.</p>
+</div>
+    <div class="en"><p>Mobile-first is not just a technical approach — it's a design philosophy. Starting with the most constrained version forces you to answer a critical question upfront: what is essential? Everything that survives the mobile pass earns its place on the desktop version.</p>
+<h2>Constraints reveal priorities</h2>
+<p>A 375px mobile viewport cannot hide unclear priorities. There's no room for a sidebar, a secondary CTA, and a promotional banner all at once. Mobile-first design forces hierarchy decisions that desktop-first workflows often defer or obscure. Designers who start mobile tend to ship products with cleaner information architecture — not because mobile is inherently better, but because the constraints are ruthless editors.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>Progressive enhancement vs. graceful degradation</h2>
+<p>Mobile-first means progressive enhancement: start with a working, valuable experience for the smallest screen, then enhance for larger ones. Graceful degradation (the opposite) starts from desktop and strips features for mobile — often resulting in a "mobile experience" that's just a broken desktop. Progressive enhancement produces better mobile outcomes because mobile is designed for, not designed around.</p>
+<h2>Practical process</h2>
+<p>Design the single-column layout first. Establish all visual hierarchy, all key interactions, all content priorities at 375px. Then expand: at 768px, decide what gets two columns. At 1200px, decide what becomes a persistent sidebar or a horizontal navigation. Each breakpoint should be a deliberate promotion, not a reaction to available space.</p>
+<p>Mobile-first in one sentence: pass the hardest test first. A design that works in the most constrained environment works better everywhere else. Small screens are not a limitation — they are a filter for the essential.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-11-font-limit.html">← <span class="ko">폰트는 2가지, 크기는 3가지면 충분하다</span><span class="en">The Two-Font Rule: Why Fewer Typefaces Mean Better Design</span></a><a class="next" href="tip-13-single-cta.html"><span class="ko">CTA 버튼은 한 화면에 하나만 주인공으로</span><span class="en">One Primary CTA Per Screen: The Paradox of Choice in UI</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

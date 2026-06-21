@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Z자형 시선 패턴과 랜딩 페이지 설계 | Nidwolf Design Toolkit</title>
+<meta name="description" content="텍스트가 적은 페이지에서 나타나는 Z패턴 시선 흐름과 이를 활용한 히어로 섹션 배치 전략을 설명합니다."/>
+<meta property="og:title" content="Z자형 시선 패턴과 랜딩 페이지 설계"/>
+<meta property="og:description" content="텍스트가 적은 페이지에서 나타나는 Z패턴 시선 흐름과 이를 활용한 히어로 섹션 배치 전략을 설명합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-25-z-pattern.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-25-z-pattern.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Z자형 시선 패턴과 랜딩 페이지 설계",
+  "description": "텍스트가 적은 페이지에서 나타나는 Z패턴 시선 흐름과 이를 활용한 히어로 섹션 배치 전략을 설명합니다.",
+  "url": "https://nidwolf.io/articles/tip-25-z-pattern.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🪟</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+    <h1><span class="ko">Z자형 시선 패턴과 랜딩 페이지 설계</span><span class="en">The Z-Pattern: Designing Layouts That Guide the Eye</span></h1>
+    <p class="lead"><span class="ko">텍스트가 적은 페이지에서 나타나는 Z패턴 시선 흐름과 이를 활용한 히어로 섹션 배치 전략을 설명합니다.</span><span class="en">How the Z-pattern eye movement works on image-heavy pages, where to place key design elements along the Z path, and when to use F-pattern instead.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>Z의 네 꼭짓점에 무엇을 둘 것인가</li><li>히어로 섹션에 적용하기</li><li>패턴보다 중요한 것</li><li>스크롤 시대의 Z패턴 변형</li><li>시선 유도의 추가 도구들</li></ul>
+  <ul class="en"><li>The four Z-pattern positions</li><li>Reinforcing the diagonal</li><li>Z vs. F: choosing the right model</li></ul>
+</div>
+    <div class="ko"><p>텍스트가 빽빽한 페이지에서 시선이 F자로 움직인다면, 요소가 적고 시각적인 페이지에서는 Z자로 움직입니다. 왼쪽 위에서 오른쪽 위로, 대각선을 가로질러 왼쪽 아래로, 다시 오른쪽 아래로. 랜딩 페이지와 히어로 섹션 설계의 고전적인 뼈대가 바로 이 Z패턴입니다.</p>
+<h2>Z의 네 꼭짓점에 무엇을 둘 것인가</h2>
+<p>시선이 머무는 네 지점에 역할을 배정합니다. 1번 왼쪽 위는 시작점이므로 로고와 브랜드. 2번 오른쪽 위는 첫 수평 이동의 종착지로 내비게이션이나 보조 CTA(로그인). 3번 왼쪽 아래로 향하는 대각선 구간에는 핵심 메시지와 비주얼을 배치해 시선이 콘텐츠를 관통하게 합니다. 4번 오른쪽 아래는 여정의 종점이므로 주요 CTA 버튼의 자리입니다. 시선이 끝나는 곳에서 행동이 시작되는 구조입니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>히어로 섹션에 적용하기</h2>
+<p>전형적인 적용은 이렇습니다. 좌상단 로고, 우상단 메뉴, 중앙 왼쪽에 헤드라인과 서브카피, 그 아래(또는 오른쪽 아래 방향)에 CTA 버튼, 오른쪽에 제품 이미지. 사용자의 시선이 로고 → 메뉴 → 헤드라인 → 이미지 → CTA로 흐르며 설득의 순서를 그대로 따라가게 됩니다. 여러 화면 분량의 긴 랜딩 페이지라면 섹션마다 Z를 반복하거나, 좌우 배치를 번갈아 뒤집는 지그재그 레이아웃으로 리듬을 만들 수 있습니다.</p>
+<h2>패턴보다 중요한 것</h2>
+<p>Z패턴은 '아무 단서가 없을 때' 시선이 흐르는 기본값일 뿐입니다. 강한 대비, 큰 얼굴 사진, 화살표 같은 방향 단서는 Z를 가볍게 이깁니다. 사진 속 인물의 시선이 향하는 곳을 사용자도 따라 본다는 연구는 유명합니다. 따라서 Z패턴으로 기본 골격을 잡되, 시각적 무게와 방향 단서로 시선을 의도한 경로로 끌고 가는 것이 실전 설계입니다. 패턴은 출발점이고, 위계가 결승선입니다.</p>
+<p>지금 만드는 히어로 섹션 위에 Z를 그려 보세요. 네 꼭짓점에 무엇이 놓여 있나요? 그 답이 곧 그 페이지의 설득 시나리오입니다.</p>
+<h2>스크롤 시대의 Z패턴 변형</h2>
+<p>한 화면에 모든 것이 담기던 시대의 Z패턴은 긴 스크롤 페이지에서 지그재그 레이아웃으로 진화했습니다. 섹션마다 이미지와 텍스트의 좌우를 번갈아 배치하면 시선이 Z를 연속으로 그리며 내려가 단조로움이 사라집니다. 이때 각 섹션의 텍스트 블록 끝에는 작은 CTA나 다음 섹션으로의 단서를 두어 시선의 흐름이 끊기지 않게 합니다. Z의 연쇄가 곧 스토리텔링의 리듬이 되는 것입니다.</p>
+<h2>시선 유도의 추가 도구들</h2>
+<p>패턴 위에 얹을 수 있는 시선 유도 장치들이 있습니다. 사람 얼굴(특히 시선 방향)은 가장 강력한 자석이므로, 모델이 CTA 쪽을 바라보는 사진은 버튼 주목도를 끌어올립니다. 화살표·곡선·사선 같은 방향 요소, 번호 매기기(1→2→3), 그리고 애니메이션(움직임은 무조건 시선을 끕니다)도 효과적입니다. 단, 유도 장치가 둘 이상 경쟁하면 효과가 상쇄됩니다. 한 화면의 시선 시나리오는 하나의 경로로 설계하세요.</p>
+
+<p>시선 패턴 이론들의 공통 결론은 하나입니다. 사용자의 시선은 게으르고, 디자이너는 그 게으름을 존중해야 한다는 것. 시선이 자연스럽게 흐르는 길목에 중요한 것을 두는 배려가 모든 패턴 이론의 본질입니다.</p>
+</div>
+    <div class="en"><p>On sparse, image-led pages — landing pages, marketing pages, hero sections — the eye doesn't follow the F-pattern. Instead, it traces a Z shape: left to right across the top, then diagonally down-left, then left to right across the bottom. Understanding this motion lets you place the right content at the right stop on the Z's journey.</p>
+<h2>The four Z-pattern positions</h2>
+<p>Top-left: the first point of contact. Logo, primary brand identifier, or the single most important contextual element. Top-right: the second point. Secondary navigation, a login link, or a key action (e.g., "Get Started"). Bottom-left: the diagonal endpoint. Often used for supporting information, a subheading, or a trust signal. Bottom-right: the final position — place the primary CTA here. The eye arrives at the end of the Z ready to take action.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>Reinforcing the diagonal</h2>
+<p>You can strengthen the Z's diagonal by placing a visual element — an angled image, a directional illustration, or even a subtle gradient — along the diagonal path. This guides eye movement rather than leaving it to default behavior. Used in this way, the Z-pattern becomes an active compositional tool rather than a passive description of behavior.</p>
+<h2>Z vs. F: choosing the right model</h2>
+<p>Use the Z-pattern model for content-sparse, image-heavy, low-text pages (landing pages, login screens, product heroes). Use the F-pattern model for text-heavy, information-dense pages (articles, documentation, search results). Many pages contain both: a Z-pattern hero section followed by an F-pattern content body.</p>
+<p>The common lesson from all eye-tracking models: the user's gaze is conservative, and designers should work with it rather than against it. Put important things where the eye will travel — not where the whitespace happened to leave room.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-24-self-evident-ui.html">← <span class="ko">사용자는 설명서를 읽지 않는다: 자명한 UI 만들기</span><span class="en">Self-Evident UI: Design So Clear It Needs No Instructions</span></a><a class="next" href="tip-26-warm-cool-colors.html"><span class="ko">따뜻한 색은 다가오고 차가운 색은 물러난다</span><span class="en">Warm vs. Cool Colors: Depth, Advance, and Emotional Temperature</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-05-whitespace.html">
+      <div class="card-top"><span class="icon">⬜</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span></h3>
+      <p><span class="ko">여백을 능동적인 디자인 요소로 다루는 방법과 매크로/마이크로 여백의 구분을 설명합니다.</span><span class="en">Treating whitespace as an active design element — macro vs. micro whitespace and how it controls hierarchy and readability.</span></p>
+    </a><a class="card" href="tip-08-8pt-grid.html">
+      <div class="card-top"><span class="icon">📏</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">8pt 그리드 시스템: 모든 간격을 8의 배수로</span><span class="en">The 8pt Grid: Why All Your Spacing Should Be Multiples of 8</span></h3>
+      <p><span class="ko">8pt 그리드가 디자인 일관성과 개발 협업에 주는 이점, 그리고 실전 적용 규칙을 설명합니다.</span><span class="en">How the 8pt grid system creates visual consistency, speeds up design decisions, and bridges the gap between designers and developers.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

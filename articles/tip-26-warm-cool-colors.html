@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>따뜻한 색은 다가오고 차가운 색은 물러난다 | Nidwolf Design Toolkit</title>
+<meta name="description" content="색의 진출·후퇴 성질을 활용해 화면의 깊이와 시각적 우선순위를 설계하는 방법을 다룹니다."/>
+<meta property="og:title" content="따뜻한 색은 다가오고 차가운 색은 물러난다"/>
+<meta property="og:description" content="색의 진출·후퇴 성질을 활용해 화면의 깊이와 시각적 우선순위를 설계하는 방법을 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-26-warm-cool-colors.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-26-warm-cool-colors.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "따뜻한 색은 다가오고 차가운 색은 물러난다",
+  "description": "색의 진출·후퇴 성질을 활용해 화면의 깊이와 시각적 우선순위를 설계하는 방법을 다룹니다.",
+  "url": "https://nidwolf.io/articles/tip-26-warm-cool-colors.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🌡️</span><span class="cat"><span class="ko">색상 심리</span><span class="en">Color Psychology</span></span></div>
+    <h1><span class="ko">따뜻한 색은 다가오고 차가운 색은 물러난다</span><span class="en">Warm vs. Cool Colors: Depth, Advance, and Emotional Temperature</span></h1>
+    <p class="lead"><span class="ko">색의 진출·후퇴 성질을 활용해 화면의 깊이와 시각적 우선순위를 설계하는 방법을 다룹니다.</span><span class="en">How warm colors advance and cool colors recede visually, how to use color temperature to create depth in flat design, and cultural considerations.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>깊이를 만드는 색의 배치</li><li>우선순위 표현에 활용하기</li><li>주의: 면적과 채도의 변수</li><li>데이터 시각화에서의 색온도 활용</li><li>중립 회색에도 온도가 있다</li></ul>
+  <ul class="en"><li>Creating depth without shadows</li><li>Temperature in data visualization</li><li>Balancing temperature in a palette</li></ul>
+</div>
+    <div class="ko"><p>같은 거리에 있어도 빨강·주황·노랑 같은 따뜻한 색은 앞으로 튀어나와 보이고, 파랑·보라 같은 차가운 색은 뒤로 물러나 보입니다. 진출색과 후퇴색이라 불리는 이 현상은 색의 파장에 따라 눈의 초점이 미세하게 다르게 맺히는 데서 비롯됩니다. 회화에서 원근감을 만들던 이 원리는 UI에서도 그대로 작동합니다.</p>
+<h2>깊이를 만드는 색의 배치</h2>
+<p>배경을 차가운 색이나 중립색으로, 전경의 핵심 요소를 따뜻한 색으로 배치하면 화면에 자연스러운 깊이가 생깁니다. 파란 대시보드 배경 위의 주황 알림 뱃지, 차분한 남색 히어로 위의 코랄색 CTA 버튼이 유독 또렷해 보이는 이유입니다. 반대로 따뜻한 색 배경 위에 차가운 색 버튼을 두면 버튼이 배경 뒤로 가라앉는 듯한 묘한 어색함이 생깁니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-07-color-psychology.html"><span class="ko">파랑은 신뢰, 빨강은 긴박함: 색상 심리학 실전 가이드</span><span class="en">Color Psychology: How Hue Shapes User Perception</span></a>
+</div>
+<h2>우선순위 표현에 활용하기</h2>
+<p>진출·후퇴는 시각적 우선순위의 언어가 됩니다. 사용자가 지금 주목해야 할 것(경고, 신규 알림, 핵심 지표)은 따뜻한 계열로 앞에 세우고, 항상 존재하지만 주인공은 아닌 것(내비게이션, 배경 패널, 보조 정보)은 차갑거나 중립적인 계열로 물러나게 합니다. 데이터 시각화에서도 강조하려는 항목 하나만 따뜻한 색으로 칠하고 나머지를 한색·회색으로 두는 기법이 표준처럼 쓰입니다.</p>
+<h2>주의: 면적과 채도의 변수</h2>
+<p>진출색이 강하다고 넓게 쓰면 역효과가 납니다. 화면의 절반이 주황이면 깊이는 사라지고 피로만 남습니다. 진출색은 좁은 면적에서 가장 강하게 작동합니다. 또한 채도가 낮아지면 진출 효과도 약해지므로, 파스텔 톤끼리의 조합에서는 명도 대비로 깊이를 보완해야 합니다. 다크 모드에서는 밝은 색 자체가 전진하므로 색온도보다 명도의 영향이 커진다는 점도 기억해 두세요.</p>
+<p>화면이 평평하게 느껴진다면 그림자를 더하기 전에 색온도를 점검해 보세요. 앞에 있어야 할 것이 차가운 색이고 뒤에 있어야 할 것이 따뜻한 색은 아닌지. 색만 바꿔도 화면에 공간이 생깁니다.</p>
+<h2>데이터 시각화에서의 색온도 활용</h2>
+<p>차트에서 색온도는 의미의 방향을 만듭니다. 히트맵에서 따뜻한 색은 높은 값·위험·활성을, 차가운 색은 낮은 값·안전·비활성을 직관적으로 전달합니다. 시계열 비교에서는 강조할 한 줄만 따뜻한 색(주황)으로, 나머지 맥락 선들은 차가운 회청색으로 깔면 메시지가 분명해집니다. 모든 계열에 똑같이 선명한 색을 배정한 차트는 무지개 케이크처럼 화려하지만 아무것도 말하지 않습니다.</p>
+<h2>중립 회색에도 온도가 있다</h2>
+<p>순수 회색(#808080)은 실무에서 의외로 잘 쓰이지 않습니다. 대부분의 디자인 시스템은 파란 기운이 도는 쿨 그레이(slate, #64748b 계열)나 노란 기운의 웜 그레이(stone, #78716c 계열)를 씁니다. 쿨 그레이는 테크·기업 제품의 차분하고 전문적인 인상에, 웜 그레이는 라이프스타일·식음료의 부드러운 인상에 어울립니다. 배경·테두리·텍스트의 회색 계열을 한 온도로 통일하는 것은 작지만 화면의 격을 바꾸는 디테일입니다. 브랜드 색과 같은 온도의 회색을 고르면 화면 전체가 한 가족이 됩니다.</p>
+
+<p>색온도는 배우고 나면 어디서나 보이기 시작합니다. 영화 포스터의 주인공과 배경, 게임 UI의 체력 바와 마나 바, 지하철 노선도의 강조 노선까지. 일상에서 진출과 후퇴의 배치를 읽는 연습이 곧 색 감각의 훈련입니다.</p>
+</div>
+    <div class="en"><p>Color temperature is one of the most powerful and underused tools for creating depth on flat screens. Warm colors — reds, oranges, yellows — appear to advance toward the viewer. Cool colors — blues, greens, blue-violets — appear to recede. This perceptual phenomenon is why a red CTA button on a cool-toned background commands immediate attention: it physically seems to be reaching toward you.</p>
+<h2>Creating depth without shadows</h2>
+<p>In flat design systems where elevation shadows are minimal or absent, color temperature can substitute. Place warm-toned elements (highlighted items, important content cards) against a cooler background to create a foreground/background separation that doesn't rely on shadow. A cool gray background with warm-white content cards creates subtle but effective spatial layering.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-07-color-psychology.html"><span class="ko">파랑은 신뢰, 빨강은 긴박함: 색상 심리학 실전 가이드</span><span class="en">Color Psychology: How Hue Shapes User Perception</span></a>
+</div>
+<h2>Temperature in data visualization</h2>
+<p>Diverging data scales (negative to positive, cold to hot, low to high risk) naturally map to cool-to-warm gradients. The semantic alignment — cold colors for cold values, warm for warm — reduces the cognitive load of reading the chart. It's one of the rare cases where data design and emotional response are perfectly aligned.</p>
+<h2>Balancing temperature in a palette</h2>
+<p>Most successful palettes have a defined temperature bias (predominantly cool or warm) with a small amount of the opposing temperature as accent. This creates the vibration of complementary contrast while maintaining a dominant mood. All-warm or all-cool palettes without this tension can feel flat, while palettes with no temperature bias feel directionless.</p>
+<p>Temperature sense develops by reading the world's visual design. Movie posters, game UI health bars, subway maps — once you start reading advance/retreat relationships in daily life, color temperature becomes a conscious tool rather than an accident.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-25-z-pattern.html">← <span class="ko">Z자형 시선 패턴과 랜딩 페이지 설계</span><span class="en">The Z-Pattern: Designing Layouts That Guide the Eye</span></a><a class="next" href="tip-27-performance-design.html"><span class="ko">로딩 1초가 전환율 7%를 좌우한다: 성능도 디자인이다</span><span class="en">Performance-Aware Design: How Design Decisions Affect Core Web Vitals</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-07-color-psychology.html">
+      <div class="card-top"><span class="icon">🔵</span><span class="cat"><span class="ko">색상 심리</span><span class="en">Color Psychology</span></span></div>
+      <h3><span class="ko">파랑은 신뢰, 빨강은 긴박함: 색상 심리학 실전 가이드</span><span class="en">Color Psychology: How Hue Shapes User Perception</span></h3>
+      <p><span class="ko">주요 색상이 불러일으키는 심리적 연상과 브랜드·UI에서의 활용 사례, 문화적 맥락의 차이를 정리합니다.</span><span class="en">How red, blue, green, yellow, and neutral tones affect emotional responses — and how to use cultural context to make intentional color choices.</span></p>
+    </a><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

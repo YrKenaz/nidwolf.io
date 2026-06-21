@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>(function(){var l=localStorage.getItem('nw-lang')||'ko';document.documentElement.lang=l;if(localStorage.getItem('nw-dark'))document.documentElement.setAttribute('data-dark','');})();</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>사다리타기 | Nidwolf Design Toolkit</title>
+<link rel="icon" href="Nidwolf-ico.ico" type="image/x-icon"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  /* ── Light (기본) ── */
+  --bg:#f5f6fa;--sf:#ffffff;--sf2:#f0f2f8;--bdr:#e2e5ef;
+  --ac:#7C6CF5;--ac2:#3EC9A7;--ac3:#E24B4A;
+  --t1:#1a1d2e;--t2:#6b7280;--t3:#c0c4d8;
+  /* Canvas tokens */
+  --cv-bg:#f5f6fa;--cv-dot:rgba(0,0,0,.05);
+  --cv-rail:#c8cfe8;--cv-rdot:#bdc4e0;
+  --cv-bar:#7C6CF5;--cv-lbl:#9094b8;
+}
+html[data-dark]{
+  /* ── Dark ── */
+  --bg:#0E1117;--sf:#181C26;--sf2:#1E2333;--bdr:#252B40;
+  --t1:#E8EAF0;--t2:#8B8FA8;--t3:#404464;
+  /* Canvas tokens */
+  --cv-bg:#0E1117;--cv-dot:rgba(255,255,255,.028);
+  --cv-rail:#1E2540;--cv-rdot:#252B48;
+  --cv-bar:#3A4A80;--cv-lbl:#6B7094;
+}
+html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif;}
+a{color:inherit;text-decoration:none;} button{cursor:pointer;border:none;outline:none;font-family:inherit;} input{font-family:inherit;outline:none;}
+.page{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* Header */
+.hdr{padding:10px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--bdr);background:var(--sf);flex-shrink:0;}
+.logo{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.logo img{width:18px;height:18px;} .logo span{color:var(--t2);font-weight:400;}
+.hdr nav{display:flex;gap:10px;margin-left:auto;align-items:center;}
+.hdr nav a{font-size:12px;color:var(--t2);} .hdr nav a:hover{color:var(--t1);}
+.lang-btn{font-size:11px;padding:3px 8px;border-radius:5px;border:1px solid var(--bdr);background:transparent;color:var(--t2);}
+
+/* Main layout */
+.main{flex:1;display:flex;min-height:0;}
+
+/* Left panel */
+.panel{width:240px;flex-shrink:0;background:var(--sf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;padding:14px;gap:10px;overflow-y:auto;}
+.plabel{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{display:flex;align-items:center;gap:3px;background:var(--sf2);border:1px solid var(--bdr);border-radius:5px;padding:3px 8px;font-size:12px;}
+.tag .rm{background:none;font-size:13px;color:var(--t3);padding:0 1px;} .tag .rm:hover{color:var(--ac3);}
+.addinp{display:flex;gap:5px;}
+.addinp input{flex:1;background:var(--sf2);border:1px solid var(--bdr);border-radius:5px;padding:5px 8px;font-size:12px;color:var(--t1);}
+.addinp input::placeholder{color:var(--t3);} .addinp input:focus{border-color:var(--ac);}
+.btn-add{background:var(--ac);color:#fff;border-radius:5px;padding:5px 10px;font-size:12px;}
+.btn-add:hover{opacity:.85;}
+.ritem{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.rnum{font-size:10px;color:var(--t3);width:16px;flex-shrink:0;}
+.ritem input{flex:1;background:var(--sf2);border:1px solid var(--bdr);border-radius:5px;padding:4px 7px;font-size:11px;color:var(--t1);}
+.ritem input:focus{border-color:var(--ac2);}
+hr.div{border:none;border-top:1px solid var(--bdr);}
+.skin-btn{display:flex;align-items:center;justify-content:space-between;background:var(--sf2);border:1px solid var(--bdr);border-radius:7px;padding:7px 11px;font-size:12px;color:var(--t1);width:100%;}
+.skin-btn:hover{border-color:var(--ac);}
+.skin-badge{font-size:10px;padding:1px 6px;border-radius:99px;background:var(--ac);color:#fff;}
+
+/* Legend */
+.legend{display:flex;flex-direction:column;gap:5px;}
+.leg-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t2);}
+.leg-dot{width:12px;height:3px;border-radius:2px;flex-shrink:0;}
+
+/* Canvas wrap */
+.cwrap{flex:1;position:relative;min-width:0;}
+canvas#ladder{display:block;width:100%;height:100%;}
+.flash{position:absolute;inset:0;background:#fff;pointer-events:none;opacity:0;z-index:15;transition:opacity .08s;}
+.statusbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:var(--sf);border:1px solid var(--bdr);border-radius:99px;padding:5px 14px;font-size:12px;color:var(--t2);z-index:10;opacity:0;transition:opacity .2s;white-space:nowrap;pointer-events:none;}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:20;opacity:0;pointer-events:none;transition:opacity .25s;}
+html[data-dark] .overlay{background:rgba(14,17,23,.82);}
+.overlay.show{opacity:1;pointer-events:auto;}
+.obox{background:var(--sf);border:1px solid var(--bdr);border-radius:14px;padding:28px 36px;text-align:center;min-width:280px;max-width:340px;}
+.obox table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0;}
+.obox td{padding:7px 10px;border-bottom:1px solid var(--bdr);}
+.obox td:last-child{font-weight:600;color:var(--ac2);text-align:right;}
+.btn-replay{margin-top:14px;padding:9px 26px;border-radius:9px;background:var(--ac);color:#fff;font-size:13px;font-weight:600;}
+.btn-replay:hover{opacity:.85;}
+
+/* Controls */
+.ctrls{padding:10px 18px;background:var(--sf);border-top:1px solid var(--bdr);display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;}
+.btn-main{padding:8px 22px;border-radius:7px;font-size:13px;font-weight:600;}
+.btn-start{background:var(--ac);color:#fff;} .btn-start:hover{opacity:.85;} .btn-start:disabled{background:var(--bdr);color:var(--t3);cursor:not-allowed;}
+.btn-reset{background:var(--sf2);border:1px solid var(--bdr);color:var(--t2);} .btn-reset:hover{border-color:var(--t2);color:var(--t1);}
+.spd-grp{display:flex;gap:3px;align-items:center;}
+.spd-lbl{font-size:11px;color:var(--t2);margin-right:3px;}
+.btn-spd{padding:4px 9px;border-radius:5px;font-size:11px;background:var(--sf2);border:1px solid var(--bdr);color:var(--t2);}
+.btn-spd.on,.btn-spd:hover{border-color:var(--ac);color:var(--ac);}
+.react-grp{display:flex;gap:5px;margin-left:auto;}
+.btn-rx{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;}
+.btn-curse{background:rgba(226,75,74,.12);border:1px solid var(--ac3);color:var(--ac3);}
+.btn-curse:hover{background:rgba(226,75,74,.22);}
+.btn-bless{background:rgba(62,201,167,.12);border:1px solid var(--ac2);color:var(--ac2);}
+.btn-bless:hover{background:rgba(62,201,167,.22);}
+.btn-rx:disabled{opacity:.3;cursor:not-allowed;}
+html[lang="ko"] .en{display:none;} html[lang="en"] .ko{display:none;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hdr">
+  <a class="logo" href="index.html">
+    <img src="Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span>
+  </a>
+  <nav>
+    <a href="design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+    <a href="articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+    <button class="lang-btn" onclick="_tl()">EN</button>
+    <button class="lang-btn" id="dark-btn" onclick="_td()" title="다크/라이트 모드">🌙</button>
+  </nav>
+</header>
+
+<div class="main">
+
+  <!-- Left panel -->
+  <div class="panel">
+    <div class="plabel"><span class="ko">참가자</span><span class="en">Participants</span></div>
+    <div class="tags" id="tagList"></div>
+    <div class="addinp">
+      <input type="text" id="nameIn" placeholder="이름 / Name" maxlength="8"/>
+      <button class="btn-add" onclick="UI.addP()"><span class="ko">추가</span><span class="en">Add</span></button>
+    </div>
+
+    <hr class="div"/>
+
+    <div class="plabel"><span class="ko">결과 슬롯</span><span class="en">Results</span></div>
+    <div id="resultList"></div>
+
+    <hr class="div"/>
+
+    <div class="plabel"><span class="ko">스킨</span><span class="en">Skin</span></div>
+    <button class="skin-btn" onclick="SM.pick()">
+      <span id="skinName">Default</span>
+      <span class="skin-badge" id="skinBadge">기본</span>
+    </button>
+
+    <hr class="div"/>
+
+    <div class="plabel"><span class="ko">바 범례</span><span class="en">Legend</span></div>
+    <div class="legend">
+      <div class="leg-row"><div class="leg-dot" style="background:#3A4A80"></div><span class="ko">일반 길</span><span class="en">Normal path</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#3EC9A7"></div><span class="ko">🔍 숨겨진 길 (출현)</span><span class="en">🔍 Hidden path (reveal)</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#E24B4A;opacity:.5"></div><span class="ko">🚫 함정 길 (소멸)</span><span class="en">🚫 Trap path (vanish)</span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#7C6CF5;border-radius:50%;height:12px"></div><span class="ko">🌀 포탈 (순간이동)</span><span class="en">🌀 Portal (teleport)</span></div>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="cwrap" id="cwrap">
+    <canvas id="ladder"></canvas>
+    <div class="flash" id="flash"></div>
+    <div class="statusbar" id="sb"></div>
+    <div class="overlay" id="ov"><div class="obox" id="obox"></div></div>
+  </div>
+
+</div><!-- .main -->
+
+<div class="ctrls">
+  <button class="btn-main btn-start" id="btnStart" onclick="UI.start()">
+    <span class="ko">🎲 사다리 시작</span><span class="en">🎲 Start</span>
+  </button>
+  <button class="btn-main btn-reset" onclick="UI.reset()">
+    <span class="ko">초기화</span><span class="en">Reset</span>
+  </button>
+
+  <div class="spd-grp">
+    <span class="spd-lbl"><span class="ko">속도</span><span class="en">Speed</span></span>
+    <button class="btn-spd" data-s=".6" onclick="UI.setSpd(.6)">×½</button>
+    <button class="btn-spd on" id="spd1" data-s="1" onclick="UI.setSpd(1)">×1</button>
+    <button class="btn-spd" data-s="2" onclick="UI.setSpd(2)">×2</button>
+  </div>
+
+  <div class="react-grp">
+    <button class="btn-rx btn-curse" id="btnCurse" disabled onclick="UI.react('curse')">⚡ <span class="ko">저주</span><span class="en">Curse</span></button>
+    <button class="btn-rx btn-bless" id="btnBless" disabled onclick="UI.react('bless')">✨ <span class="ko">축복</span><span class="en">Bless</span></button>
+  </div>
+</div>
+
+</div><!-- .page -->
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+//  SKIN BASE  — interface every skin must implement
+// ═══════════════════════════════════════════════════════
+class SkinBase {
+  constructor(ctx, cfg) { this.ctx = ctx; this.cfg = cfg; }
+  drawBg()                              { throw 0; }
+  drawRail(x, y1, y2)                  { throw 0; }
+  // alpha 0‥1, color css string
+  drawBar(x1, y1, x2, y2, alpha, color){ throw 0; }
+  // opacity 0‥1 (dim waiting markers)
+  drawMarker(cx, cy, idx, n, lbl, op)  { throw 0; }
+  drawLabel(x, y, txt, pos, idx)       { throw 0; }
+  drawParticle(cx, cy, color, r, a)    { throw 0; }
+  drawPortal(cx, cy, r, rot, alpha, role)    { throw 0; }
+  drawPortalBeam(x1, y1, x2, y2, alpha)     { throw 0; }
+}
+
+// ═══════════════════════════════════════════════════════
+//  DEFAULT SKIN
+// ═══════════════════════════════════════════════════════
+class DefaultSkin extends SkinBase {
+  static COLORS = ['#7C6CF5','#3EC9A7','#F59E0B','#E24B4A','#60A5FA',
+                   '#F472B6','#A3E635','#FB923C','#38BDF8','#C084FC'];
+  _c(i){ return DefaultSkin.COLORS[i % DefaultSkin.COLORS.length]; }
+
+  // CSS 변수 읽기 (라이트/다크 테마 자동 반영)
+  _cv(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  drawBg() {
+    const {ctx,cfg:{w,h}} = this;
+    ctx.fillStyle = this._cv('--cv-bg') || '#f5f6fa';
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = this._cv('--cv-dot') || 'rgba(0,0,0,.05)';
+    for (let x=50;x<w;x+=50)
+      for (let y=50;y<h;y+=50) {
+        ctx.beginPath(); ctx.arc(x,y,1,0,Math.PI*2); ctx.fill();
+      }
+  }
+
+  drawRail(x, y1, y2) {
+    const {ctx} = this;
+    const railColor = this._cv('--cv-rail') || '#c8cfe8';
+    const dotColor  = this._cv('--cv-rdot') || '#bdc4e0';
+    ctx.save();
+    ctx.strokeStyle = railColor; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x,y1); ctx.lineTo(x,y2); ctx.stroke();
+    ctx.fillStyle = dotColor;
+    [y1,y2].forEach(y=>{ ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill(); });
+    ctx.restore();
+  }
+
+  drawBar(x1, y1, x2, y2, alpha=1, color) {
+    if (!color) color = this._cv('--cv-bar') || '#7C6CF5';
+    const {ctx} = this;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    // tick marks at rail junctions (vertical, at each endpoint)
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x1,y1-5); ctx.lineTo(x1,y1+5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x2,y2-5); ctx.lineTo(x2,y2+5); ctx.stroke();
+    ctx.restore();
+  }
+
+  drawMarker(cx, cy, idx, n, lbl, op=1) {
+    const {ctx} = this;
+    const r = 12, color = this._c(idx);
+    ctx.save();
+    ctx.globalAlpha = op;
+    if (op > 0.6) { ctx.shadowColor = color; ctx.shadowBlur = 18; }
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle = color; ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText((lbl||'?')[0].toUpperCase(), cx, cy);
+    ctx.restore();
+  }
+
+  drawLabel(x, y, txt, pos, idx) {
+    const {ctx} = this;
+    ctx.save();
+    ctx.font = '600 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = pos==='top' ? 'bottom' : 'top';
+    ctx.fillStyle = idx!=null ? this._c(idx) : (this._cv('--cv-lbl') || '#6B7094');
+    ctx.fillText(txt, x, pos==='top' ? y-14 : y+14);
+    ctx.restore();
+  }
+
+  drawParticle(cx, cy, color, r, a) {
+    const {ctx} = this;
+    ctx.save(); ctx.globalAlpha=a; ctx.fillStyle=color;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  drawPortal(cx, cy, r, rot, alpha, role) {
+    if (alpha < 0.01) return;
+    const {ctx} = this;
+    const isEntry = role === 'entry';
+    const col1 = isEntry ? '#7C6CF5' : '#3EC9A7';
+    const col2 = isEntry ? '#A89EFF' : '#8DFFD9';
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    // Outer glow ring
+    ctx.shadowColor = col1; ctx.shadowBlur = 14;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.strokeStyle = col1; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.shadowBlur = 0;
+    // Inner fill glow
+    ctx.save(); ctx.globalAlpha = alpha * 0.18;
+    ctx.fillStyle = col1; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+    // Outer rotating arc segments (5 arcs, clockwise)
+    const seg = Math.PI * 2 / 5;
+    for (let i=0; i<5; i++) {
+      const a0 = rot + i * seg;
+      ctx.beginPath(); ctx.arc(cx, cy, r-1, a0, a0 + seg * 0.55);
+      ctx.strokeStyle = col2; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
+    }
+    // Inner counter-rotating arcs (3 arcs)
+    const ir = r * 0.58, iseg = Math.PI * 2 / 3;
+    for (let i=0; i<3; i++) {
+      const a0 = -rot * 1.5 + i * iseg;
+      ctx.beginPath(); ctx.arc(cx, cy, ir, a0, a0 + iseg * 0.4);
+      ctx.strokeStyle = col1; ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.stroke();
+    }
+    // Center dot
+    ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, Math.PI*2);
+    ctx.fillStyle = '#fff'; ctx.globalAlpha = alpha * 0.9; ctx.fill();
+    ctx.restore();
+  }
+
+  drawPortalBeam(x1, y1, x2, y2, alpha) {
+    const {ctx} = this;
+    ctx.save();
+    ctx.globalAlpha = alpha * 0.22;
+    const grd = ctx.createLinearGradient(x1, y1, x2, y2);
+    grd.addColorStop(0, '#7C6CF5'); grd.addColorStop(1, '#3EC9A7');
+    ctx.strokeStyle = grd; ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 9]);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  SKIN MANAGER
+// ═══════════════════════════════════════════════════════
+const SM = (() => {
+  const reg = {}; let active = 'default';
+  return {
+    reg(name, Cls, label){ reg[name]={Cls, label:label||name}; },
+    make(ctx,cfg){ return new reg[active].Cls(ctx,cfg); },
+    pick(){
+      const keys=Object.keys(reg);
+      if(keys.length<2){alert('추가 스킨 개발 중입니다.');return;}
+      const nxt=keys[(keys.indexOf(active)+1)%keys.length];
+      active=nxt;
+      document.getElementById('skinName').textContent=reg[nxt].label;
+      document.getElementById('skinBadge').textContent=nxt==='default'?'기본':nxt;
+      UI.rebuild();
+    }
+  };
+})();
+SM.reg('default', DefaultSkin, 'Default');
+
+// ═══════════════════════════════════════════════════════
+//  LADDER ENGINE  v2 — dynamic bar system
+//
+//  Bar types:
+//    'normal' — always visible, always affects path
+//    'hidden' — invisible at start → FADES IN as marker approaches
+//               → marker TURNS here (it's in the true path)
+//    'trap'   — visible at start → FADES OUT as marker approaches
+//               → marker goes STRAIGHT (NOT in true path)
+//
+//  Persistence: bar states are stored on the engine object.
+//  Sequential players all see the same board state changes.
+// ═══════════════════════════════════════════════════════
+class Engine {
+  constructor(participants, results, opts={}) {
+    this.pp   = [...participants];
+    this.rr   = [...results];
+    this.n    = participants.length;
+    this.rows = opts.rows ?? 20;
+    this._seed = opts.seed ?? Date.now();
+    this._rng = this._lcg(this._seed);
+
+    // trueBars: real bars (affect path). type = 'normal'|'hidden'
+    // trapBars: fake bars (visible initially but don't affect path). type = 'trap'
+    this.trueBars = [];
+    this.trapBars = [];
+    this.allBars  = [];  // trueBars + trapBars combined for rendering/triggering
+    this.portals  = [];  // portal pairs: entry col ↔ exit col (circular wrap)
+
+    this.paths   = [];   // canvas waypoints per participant
+    this.mapping = [];   // mapping[i] = result column index (0..n-1)
+  }
+
+  _lcg(seed){ let s=seed>>>0; return ()=>{ s=(Math.imul(1664525,s)+1013904223)>>>0; return s/0xFFFFFFFF; }; }
+  _r(){ return this._rng(); }
+
+  build() {
+    for (let attempt = 0; attempt < 10; attempt++) {
+      this._rng = this._lcg(this._seed + attempt * 7919);
+      this.trueBars = []; this.trapBars = []; this.allBars = [];
+      this.portals  = []; this.paths   = []; this.mapping  = [];
+      this._genTrueBars();
+      this._genTrapBars();
+      this._genPortals();
+      this.allBars = [...this.trueBars, ...this.trapBars];
+      this._computePaths();
+      if (new Set(this.mapping).size === this.n) break; // 바이젝션 확인
+    }
+    return this;
+  }
+
+  _genTrueBars() {
+    const {n, rows} = this;
+    const bars = [];
+    // excl keys: 'col:row' — a rail position already used as a bar endpoint
+    const excl = new Set();
+    for (let row=1; row<rows; row++) {
+      let col=0;
+      while (col < n-1) {
+        if (this._r() < 0.30) {
+          // rowDelta: 0=horizontal (40%), 1=gentle diagonal (35%), 2=steep (25%)
+          const rd_r = this._r();
+          const rd = rd_r < 0.40 ? 0 : rd_r < 0.75 ? 1 : 2;
+          const rowEnd = Math.min(row + rd, rows - 1);
+          const actualRd = rowEnd - row;
+          const lk = `${col}:${row}`, rk = `${col+1}:${rowEnd}`;
+          if (!excl.has(lk) && !excl.has(rk)) {
+            const hidden = this._r() < 0.28;
+            bars.push(this._mkBar(col, row, hidden ? 'hidden' : 'normal', actualRd));
+            excl.add(lk); excl.add(rk);
+            excl.add(`${col-1}:${row}`); excl.add(`${col+1}:${row}`);
+            excl.add(`${col}:${rowEnd}`); excl.add(`${col+2}:${rowEnd}`);
+            col += 2;
+          } else { col++; }
+        } else col++;
+      }
+    }
+    this.trueBars = bars;
+  }
+
+  _genTrapBars() {
+    const {n, rows} = this;
+    const traps = [];
+
+    // 1차: trueBar 엔드포인트 + 이웃 제외 (시각적 겹침 방지)
+    const fullExcl = new Set();
+    this.trueBars.forEach(b => {
+      fullExcl.add(`${b.col}:${b.row}`);    fullExcl.add(`${b.col+1}:${b.rowEnd}`);
+      fullExcl.add(`${b.col-1}:${b.row}`);  fullExcl.add(`${b.col+1}:${b.row}`);
+      fullExcl.add(`${b.col}:${b.rowEnd}`); fullExcl.add(`${b.col+2}:${b.rowEnd}`);
+    });
+    // 2차 폴백: 엔드포인트만 제외 (구간에 배치 공간이 전혀 없을 때 사용)
+    const epExcl = new Set();
+    this.trueBars.forEach(b => {
+      epExcl.add(`${b.col}:${b.row}`);
+      epExcl.add(`${b.col+1}:${b.rowEnd}`);
+    });
+
+    // 함정끼리 이웃 제외 (배치 중 누적)
+    const trapExcl = new Set();
+
+    const numSec = Math.max(1, Math.min(3, Math.floor((rows - 1) / 3)));
+    const secSize = Math.floor((rows - 1) / numSec);
+
+    const tryPlace = (rowStart, rowEnd_s, quota, baseExcl) => {
+      const slots = [];
+      for (let row = rowStart; row <= rowEnd_s; row++)
+        for (let col = 0; col < n - 1; col++)
+          slots.push({col, row});
+      for (let i = slots.length - 1; i > 0; i--) {
+        const j = Math.floor(this._r() * (i + 1));
+        [slots[i], slots[j]] = [slots[j], slots[i]];
+      }
+      let placed = 0;
+      for (const {col, row} of slots) {
+        if (placed >= quota) break;
+        for (const rd of [0, 1, 2]) {
+          const rowEnd = Math.min(row + rd, rows - 1);
+          const lk = `${col}:${row}`, rk = `${col+1}:${rowEnd}`;
+          if (baseExcl.has(lk) || baseExcl.has(rk)) continue;
+          if (trapExcl.has(lk)  || trapExcl.has(rk))  continue;
+          traps.push(this._mkBar(col, row, 'trap', rowEnd - row));
+          trapExcl.add(lk); trapExcl.add(rk);
+          trapExcl.add(`${col-1}:${row}`); trapExcl.add(`${col+1}:${row}`);
+          trapExcl.add(`${col}:${rowEnd}`); trapExcl.add(`${col+2}:${rowEnd}`);
+          placed++;
+          break;
+        }
+      }
+      return placed;
+    };
+
+    for (let s = 0; s < numSec; s++) {
+      const rowStart = 1 + s * secSize;
+      const rowEnd_s = s === numSec - 1 ? rows - 1 : rowStart + secSize - 1;
+      const quota = 1 + Math.floor(this._r() * 3);
+      const placed = tryPlace(rowStart, rowEnd_s, quota, fullExcl);
+      // 구간에 배치 실패 시 폴백: 엔드포인트만 제외하여 1개 강제 배치
+      if (placed === 0) tryPlace(rowStart, rowEnd_s, 1, epExcl);
+    }
+
+    this.trapBars = traps;
+  }
+
+  _genPortals() {
+    // Portal connects two random non-adjacent rails, with diagonal support.
+    if (this.n < 3) return;
+    const badKeys = new Set(
+      [...this.trueBars, ...this.trapBars].flatMap(b => [
+        `${b.col}:${b.row}`, `${b.col+1}:${b.rowEnd}`
+      ])
+    );
+    const minRow = Math.floor(this.rows * 0.20);
+    const maxRow = Math.floor(this.rows * 0.72);
+    // Pick entryCol randomly, then exitCol at least 2 rails away
+    let entryCol, exitCol;
+    for (let attempt = 0; attempt < 20; attempt++) {
+      entryCol = Math.floor(this._r() * this.n);
+      const candidates = [];
+      for (let c = 0; c < this.n; c++) {
+        if (Math.abs(c - entryCol) >= 2) candidates.push(c);
+      }
+      if (candidates.length === 0) continue;
+      exitCol = candidates[Math.floor(this._r() * candidates.length)];
+      break;
+    }
+    if (exitCol === undefined) return;
+    // Pick entryRow
+    let entryRow = minRow + Math.floor(this._r() * (maxRow - minRow));
+    for (let t = 0; t < this.rows && badKeys.has(`${entryCol}:${entryRow}`); t++)
+      entryRow = minRow + ((entryRow - minRow + 1) % (maxRow - minRow + 1));
+    if (badKeys.has(`${entryCol}:${entryRow}`)) return;
+    // Portal diagonal (−3 to +3 rows offset)
+    const portalDelta = Math.round((this._r() - 0.5) * 6);
+    const exitRow = Math.max(0, Math.min(this.rows - 1, entryRow + portalDelta));
+    if (badKeys.has(`${exitCol}:${exitRow}`)) return;
+    this.portals.push({
+      entryCol, entryRow, exitCol, exitRow,
+      alpha: 0, targetAlpha: 0,
+      triggered: false, transitioning: false,
+      rotation: 0, fadeSpeed: 2.5,
+    });
+  }
+
+  _mkBar(col, row, type, rowDelta=0) {
+    const rowEnd = row + rowDelta;
+    return {
+      col, row, rowDelta, rowEnd, type,
+      alpha:       0,   // all bars start invisible
+      targetAlpha: 0,
+      triggered:   false,
+      transitioning: false,
+      fadeSpeed:   type === 'trap' ? 3.5 : 3.0,
+      revealColor: false,
+    };
+  }
+
+  _computePaths() {
+    for (let i=0; i<this.n; i++) {
+      const {wps, endCol} = this._sim(i);
+      this.paths.push(wps);
+      this.mapping.push(endCol);
+    }
+  }
+
+  _sim(startCol) {
+    const {rows, trueBars, portals} = this;
+    const wps  = [{row:0, col:startCol}];
+    let col = startCol, row = 0;
+    // Per-player used sets prevent re-traversal of diagonal bars/portals
+    const usedBars    = new Set();
+    const usedPortals = new Set();
+
+    while (row < rows) {
+      // ── Portal check (entry or exit side) ──
+      const portal = portals.find(p => !usedPortals.has(p) &&
+        ((p.entryCol===col && p.entryRow===row) ||
+         (p.exitCol===col  && p.exitRow===row)));
+      if (portal) {
+        usedPortals.add(portal);
+        wps.push({row, col, wpType:'portal_entry'});
+        if (portal.entryCol===col && portal.entryRow===row) {
+          col = portal.exitCol; row = portal.exitRow;
+        } else {
+          col = portal.entryCol; row = portal.entryRow;
+        }
+        wps.push({row, col, wpType:'portal_exit'});
+        continue;
+      }
+      // ── Bar: left endpoint (col,row)=go right; right endpoint (col-1, rowEnd=row)=go left ──
+      const bR = trueBars.find(b => !usedBars.has(b) && b.col===col   && b.row===row);
+      const bL = trueBars.find(b => !usedBars.has(b) && b.col===col-1 && b.rowEnd===row);
+      if (bR) {
+        usedBars.add(bR);
+        wps.push({row, col}); col++; row = bR.rowEnd;
+        wps.push({row, col});
+      } else if (bL) {
+        usedBars.add(bL);
+        wps.push({row, col}); col--; row = bL.row;
+        wps.push({row, col});
+      } else {
+        row++;
+      }
+    }
+    wps.push({row:rows, col});
+    return {wps, endCol:col};
+  }
+
+  // Convert logical (col, row) → canvas (x, y)
+  xy(col, row, cfg) {
+    return {
+      x: cfg.padX + col * cfg.gap,
+      y: cfg.padY + (row / this.rows) * (cfg.h - cfg.padY*2),
+    };
+  }
+
+  canvasPath(idx, cfg) {
+    return this.paths[idx].map(p => ({...this.xy(p.col, p.row, cfg), wpType: p.wpType}));
+  }
+
+  // Trigger a bar to start its fade animation (called by AnimCtrl)
+  trigger(bar) {
+    if (bar.triggered) return;
+    bar.triggered    = true;
+    bar.transitioning = true;
+    if      (bar.type === 'hidden') { bar.targetAlpha = 1; bar.revealColor = true; }
+    else if (bar.type === 'trap')   { bar.targetAlpha = 0; }  // 함정: 사라짐
+    // normal: 이미 게임 시작 시 즉시 표시됨, 재트리거 없음
+  }
+
+  triggerPortal(portal) {
+    if (portal.triggered) return;
+    portal.triggered=true; portal.transitioning=true; portal.targetAlpha=1;
+  }
+
+  tickPortals(dt) {
+    this.portals.forEach(p => {
+      if (p.transitioning) {
+        const dir = Math.sign(p.targetAlpha - p.alpha);
+        p.alpha += dir * p.fadeSpeed * dt;
+        const done = dir>0 ? p.alpha>=p.targetAlpha : p.alpha<=p.targetAlpha;
+        if (done) { p.alpha=p.targetAlpha; p.transitioning=false; }
+      }
+      if (p.alpha > 0.01) p.rotation += dt * 2.2; // rotate 2.2 rad/sec
+    });
+  }
+
+  // Advance all bar alpha animations (call each frame with dt)
+  tickBars(dt) {
+    this.allBars.forEach(b => {
+      if (!b.transitioning) return;
+      const dir = Math.sign(b.targetAlpha - b.alpha);
+      b.alpha += dir * b.fadeSpeed * dt;
+      const done = dir > 0 ? b.alpha >= b.targetAlpha : b.alpha <= b.targetAlpha;
+      if (done) {
+        b.alpha = b.targetAlpha;
+        b.transitioning = false;
+        b.revealColor = false; // reset teal highlight after animation
+      }
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  ANIMATION CONTROLLER — sequential only
+// ═══════════════════════════════════════════════════════
+class AnimCtrl {
+  constructor(eng, skin, canvas) {
+    this.eng    = eng;
+    this.skin   = skin;
+    this.canvas = canvas;
+    this.ctx    = canvas.getContext('2d');
+    this.speed  = 1;        // user speed multiplier
+    this._raf   = null;
+    this._lt    = null;
+    this.cfg    = null;
+    this.cidx   = 0;        // current player index
+    this.markers = [];
+    this.parts  = [];       // particles
+    this._trapRevealSet = new Set(); // trap bars on current player's path
+    this._teleport = null;  // portal teleport sequence: {phase,t,dur,opacity,toX,toY}
+    this.onDone  = null;    // (playerIdx) => void  called when a player finishes
+  }
+
+  // Vertical / horizontal pixel speed
+  get _vspd(){ return 420 * this.speed; }
+  get _hspd(){ return this._vspd * 2.8; }
+
+  init(cfg) {
+    this.cfg = cfg;
+    this.cidx = 0;
+    this.parts = [];
+    this.markers = this.eng.pp.map((name,i) => {
+      const {x,y} = this.eng.xy(i,0,cfg);
+      return {name,i,x,y, wpIdx:0, t:0, done:false, active:false};
+    });
+  }
+
+  // Activate current player and ensure loop is running
+  startCurrent() {
+    const m = this.markers[this.cidx];
+    if (!m) return;
+    m.active = true;
+    this._teleport = null;
+    // 첫 플레이어 시작 시: 일반/함정 바 즉시 표시 (hidden은 그대로 숨김)
+    if (this.cidx === 0) {
+      this.eng.allBars.forEach(b => {
+        if (b.type === 'normal') { b.alpha = 1; b.targetAlpha = 1; b.triggered = true; }
+        if (b.type === 'trap')   { b.alpha = 1; b.targetAlpha = 1; }  // triggered는 false 유지 → 이후 fade-out 가능
+      });
+    }
+    // Pre-compute which trap bars this player will visually encounter.
+    // Strategy: walk consecutive waypoint pairs and collect every (col, row)
+    // the player DESCENDS through vertically. Diagonal bar moves and portal
+    // teleports are excluded from this set — only true vertical descent counts.
+    const eng = this.eng;
+    const pathWps = eng.paths[this.cidx];
+    const descendedThrough = new Set();
+    for (let wi = 0; wi < pathWps.length - 1; wi++) {
+      const wp = pathWps[wi];
+      const wn = pathWps[wi + 1];
+      if (wp.wpType === 'portal_entry') continue; // teleports, not a descent
+      if (wp.wpType === 'portal_exit')            // always include exit landing
+        descendedThrough.add(`${wp.col}:${wp.row}`);
+      if (wp.col === wn.col && wn.row > wp.row) { // vertical descent, same column
+        for (let r = wp.row; r <= wn.row; r++)
+          descendedThrough.add(`${wp.col}:${r}`);
+      }
+    }
+    this._trapRevealSet = new Set(
+      eng.trapBars.filter(b =>
+        descendedThrough.has(`${b.col}:${b.row}`) ||        // 왼쪽 레일 통과
+        descendedThrough.has(`${b.col+1}:${b.rowEnd}`)      // 오른쪽 레일 통과 (대각선)
+      )
+    );
+    if (!this._raf) {
+      this._lt = null;
+      this._raf = requestAnimationFrame(ts => this._loop(ts));
+    }
+  }
+
+  stop() { if(this._raf){cancelAnimationFrame(this._raf);this._raf=null;} }
+  setSpeed(s){ this.speed=s; }
+
+  // Spawn particles at (cx,cy)
+  burst(cx, cy, colors, n=14) {
+    for (let i=0;i<n;i++) {
+      const a=Math.random()*Math.PI*2, s=60+Math.random()*140;
+      this.parts.push({
+        x:cx, y:cy,
+        vx:Math.cos(a)*s, vy:Math.sin(a)*s-110,
+        c:colors[i%colors.length],
+        r:1.8+Math.random()*3.2,
+        life:0.5+Math.random()*.65, ml:1.15,
+      });
+    }
+  }
+
+  _loop(ts) {
+    if (this._lt===null) this._lt=ts;
+    const dt = Math.min((ts-this._lt)/1000, 0.04);
+    this._lt = ts;
+    this._update(dt);
+    this._draw();
+    this._raf = requestAnimationFrame(t => this._loop(t));
+  }
+
+  _update(dt) {
+    // ── Handle active portal teleport sequence ──
+    if (this._teleport) { this._updateTeleport(dt); return; }
+
+    const {eng, markers, cfg} = this;
+    const m = markers[this.cidx];
+    if (!m || !m.active || m.done) { eng.tickBars(dt); eng.tickPortals(dt); return; }
+
+    // Move marker along pre-computed waypoints
+    const wps = eng.canvasPath(m.i, cfg);
+    if (m.wpIdx >= wps.length-1) {
+      const last = wps[wps.length-1];
+      m.x=last.x; m.y=last.y; m.done=true;
+      // 턴 종료 시 미발동 함정 강제 처리 (경로 위 함정이 어떤 이유로든 skip된 경우)
+      this._trapRevealSet.forEach(bar => { if (!bar.triggered) eng.trigger(bar); });
+      this._trapRevealSet = new Set();
+      this.onDone?.(m.i);
+    } else {
+      const cur=wps[m.wpIdx], nxt=wps[m.wpIdx+1];
+
+      // ── Portal teleport: marker is at portal_entry, next wp is portal_exit ──
+      // Instead of sliding linearly across the canvas, play a fade-teleport sequence.
+      if (cur.wpType==='portal_entry' && nxt && nxt.wpType==='portal_exit') {
+        this._teleport = {phase:'in', t:0, dur:0.32, opacity:1, toX:nxt.x, toY:nxt.y};
+        this.burst(cur.x, cur.y, ['#7C6CF5','#A89EFF','#ffffff'], 18);
+        eng.tickBars(dt); eng.tickPortals(dt);
+        return;
+      }
+
+      const dx=nxt.x-cur.x, dy=nxt.y-cur.y;
+      const dist=Math.hypot(dx,dy)||.001;
+      const spd = Math.abs(dy)>.5 ? this._vspd : this._hspd;
+      m.t += (spd*dt)/dist;
+      if (m.t>=1){ m.t=0; m.wpIdx++; m.x=nxt.x; m.y=nxt.y; }
+      else       { m.x=cur.x+dx*m.t; m.y=cur.y+dy*m.t; }
+    }
+
+    // ── Bar triggers (column-aware, diagonal-aware) ──
+    const TRIGGER_PX = 72;
+    const markerCol = Math.round((m.x - cfg.padX) / cfg.gap);
+    eng.allBars.forEach(bar => {
+      if (bar.triggered) return;
+      const {x:bx1, y:by1} = eng.xy(bar.col,   bar.row,    cfg);
+      const {x:bx2, y:by2} = eng.xy(bar.col+1, bar.rowEnd, cfg);
+      const onBar = markerCol === bar.col || markerCol === bar.col + 1;
+      if (!onBar) return;
+      // 플레이어가 통과하는 레일 기준으로 트리거 Y 결정 (대각선 바 오차 방지)
+      const barTrigY = (markerCol === bar.col) ? by1 : by2;
+      if (m.y < barTrigY - TRIGGER_PX) return;  // 아직 도달 전
+      if (m.y > barTrigY + TRIGGER_PX) return;  // 이미 지나침 (위쪽 bar 오트리거 방지)
+      if (bar.type === 'trap' && !this._trapRevealSet.has(bar)) return;
+      eng.trigger(bar);
+      const midX = (bx1+bx2)/2, midY = (by1+by2)/2;
+      if (bar.type==='hidden') {
+        this.burst(midX, midY, ['#3EC9A7','#8DFFD9','#fff'], 14);
+      } else if (bar.type==='trap') {
+        this.burst(midX, midY, ['#E24B4A','#FF9090','#FFD0D0'], 12);
+      }
+    });
+
+    // ── Portal triggers (diagonal-aware) ──
+    eng.portals.forEach(portal => {
+      if (portal.triggered) return;
+      const {y:ey1} = eng.xy(portal.entryCol, portal.entryRow, cfg);
+      const {y:ey2} = eng.xy(portal.exitCol,  portal.exitRow,  cfg);
+      const portalTrigY = Math.min(ey1, ey2);
+      if (m.y < portalTrigY - TRIGGER_PX) return;
+      if (m.y > portalTrigY + TRIGGER_PX) return;
+      const onPortal = markerCol===portal.entryCol || markerCol===portal.exitCol;
+      if (!onPortal) return;
+      eng.triggerPortal(portal);
+      const {x:pex, y:pey} = eng.xy(portal.entryCol, portal.entryRow, cfg);
+      const {x:pxx, y:pxy} = eng.xy(portal.exitCol,  portal.exitRow,  cfg);
+      this.burst(pex, pey, ['#7C6CF5','#A89EFF','#C8C0FF'], 10);
+      this.burst(pxx, pxy, ['#3EC9A7','#8DFFD9','#C0FFF0'], 10);
+    });
+
+    eng.tickBars(dt);
+    eng.tickPortals(dt);
+
+    this.parts = this.parts.filter(p => {
+      p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=100*dt; p.life-=dt;
+      return p.life>0;
+    });
+  }
+
+  // Fade-out at entry → instant reposition → fade-in at exit
+  _updateTeleport(dt) {
+    const tp = this._teleport;
+    const m  = this.markers[this.cidx];
+    tp.t += dt;
+    if (tp.phase === 'in') {
+      tp.opacity = Math.max(0, 1 - tp.t / tp.dur);
+      if (tp.t >= tp.dur) {
+        tp.phase='out'; tp.t=0; tp.opacity=0;
+        m.wpIdx++;             // skip to portal_exit wp
+        m.x=tp.toX; m.y=tp.toY;
+        this.burst(tp.toX, tp.toY, ['#7C6CF5','#A89EFF','#ffffff'], 18);
+        this._sb('🌀 순간이동!');
+      }
+    } else {
+      tp.opacity = Math.min(1, tp.t / tp.dur);
+      if (tp.t >= tp.dur) {
+        tp.opacity=1; this._teleport=null;
+        // m.wpIdx는 portal_exit를 가리킴 (in 페이즈에서 이미 1 증가)
+        // 추가 증가 없이 portal_exit에서부터 정상 이동 시작
+        m.t = 0;
+      }
+    }
+    this.eng.tickBars(dt);
+    this.eng.tickPortals(dt);
+    this.parts = this.parts.filter(p => {
+      p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=100*dt; p.life-=dt;
+      return p.life>0;
+    });
+  }
+
+  _sb(txt) {
+    const el=document.getElementById('sb');
+    if (!el) return;
+    if (txt){ el.textContent=txt; el.style.opacity='1'; }
+    else    { el.style.opacity='0'; }
+  }
+
+  _draw() {
+    const {ctx,eng,skin,markers,cfg,cidx} = this;
+    const {w,h,padX,padY,gap,n} = cfg;
+    const yT=padY, yB=h-padY;
+
+    ctx.clearRect(0,0,w,h);
+    skin.drawBg();
+
+    // Rails
+    for (let i=0;i<n;i++) skin.drawRail(padX+i*gap, yT, yB);
+
+    // ── ALL BARS with dynamic alpha & color (diagonal-aware) ──
+    eng.allBars.forEach(bar => {
+      if (bar.alpha < 0.01) return;
+      const {x:bx1, y:by1} = eng.xy(bar.col,   bar.row,    cfg);
+      const {x:bx2, y:by2} = eng.xy(bar.col+1, bar.rowEnd, cfg);
+
+      const barBase = skin._cv('--cv-bar') || '#7C6CF5';
+      let color;
+      if (bar.type === 'normal') {
+        color = barBase;
+      } else if (bar.type === 'hidden') {
+        color = bar.revealColor ? '#3EC9A7' : barBase;
+      } else {
+        color = bar.alpha < 0.55 ? '#E24B4A' : barBase; // 함정: 사라지며 빨갛게
+      }
+
+      skin.drawBar(bx1, by1, bx2, by2, bar.alpha, color);
+    });
+
+    // ── Portal pairs: diagonal beam + rotating ring portals ──
+    eng.portals.forEach(portal => {
+      if (portal.alpha < 0.01) return;
+      const {x:ex, y:ey}   = eng.xy(portal.entryCol, portal.entryRow, cfg);
+      const {x:xx, y:exy_} = eng.xy(portal.exitCol,  portal.exitRow,  cfg);
+      const r = Math.min(cfg.gap * 0.35, 28);
+      skin.drawPortalBeam(ex, ey, xx, exy_, portal.alpha);
+      skin.drawPortal(ex, ey, r,  portal.rotation,         portal.alpha, 'entry');
+      skin.drawPortal(xx, exy_, r, -portal.rotation * 1.4, portal.alpha, 'exit');
+    });
+
+    // Top labels
+    eng.pp.forEach((name,i) => skin.drawLabel(padX+i*gap, yT, name, 'top', i));
+
+    // Bottom labels (results in their column positions)
+    eng.rr.forEach((res,i) => {
+      if (i>=n) return;
+      skin.drawLabel(padX+i*gap, yB, res||`결과${i+1}`, 'bottom');
+    });
+
+    // Waiting markers (at start, dimmed)
+    markers.forEach((m,i) => {
+      if (i===cidx) return;
+      if (m.done) {
+        // Show done markers at their landing column
+        const endCol = eng.mapping[i];
+        const {x,y} = eng.xy(endCol, eng.rows, cfg);
+        skin.drawMarker(x, y, i, n, m.name, 0.45);
+      } else {
+        // Not yet started — show at top
+        const {x,y} = eng.xy(i, 0, cfg);
+        skin.drawMarker(x, y, i, n, m.name, 0.22);
+      }
+    });
+
+    // Current player — opacity controlled by teleport state when teleporting
+    const cm = markers[cidx];
+    if (cm) {
+      const mOp = this._teleport ? this._teleport.opacity : 1.0;
+      if (cm.active && !cm.done) {
+        skin.drawMarker(cm.x, cm.y, cm.i, n, cm.name, mOp);
+      } else if (!cm.done) {
+        const {x,y}=eng.xy(cm.i,0,cfg);
+        skin.drawMarker(x,y,cm.i,n,cm.name,0.5);
+      }
+    }
+
+    // Particles
+    this.parts.forEach(p => {
+      skin.drawParticle(p.x, p.y, p.c, p.r, p.life/p.ml);
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  UI  — sequential flow manager
+// ═══════════════════════════════════════════════════════
+const UI = (() => {
+  let pps  = ['민준','지우','서연','하준'];
+  let rr   = ['발표 진행','회의 기록','간식 담당','면제!'];
+  let spd  = 1;
+  let eng  = null, anim = null, running = false;
+
+  // ── Canvas setup ──
+  function _cfg(canvas) {
+    const wrap=document.getElementById('cwrap');
+    const dpr=window.devicePixelRatio||1;
+    const W=wrap.clientWidth, H=wrap.clientHeight;
+    canvas.width=W*dpr; canvas.height=H*dpr;
+    canvas.style.width=W+'px'; canvas.style.height=H+'px';
+    const ctx=canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+    const n=pps.length;
+    const padX=Math.max(55, W*.08);
+    const padY=62;
+    const gap=n>1?(W-padX*2)/(n-1):W/2;
+    return {w:W,h:H,padX,padY,gap,n};
+  }
+
+  // ── Idle preview ──
+  function _idle() {
+    const canvas=document.getElementById('ladder');
+    const cfg=_cfg(canvas);
+    const ctx=canvas.getContext('2d');
+    const sk=SM.make(ctx,cfg);
+    const {padX,padY,gap,n,h} = cfg;
+    const yT=padY, yB=h-padY;
+    sk.drawBg();
+    for(let i=0;i<n;i++){
+      sk.drawRail(padX+i*gap,yT,yB);
+      sk.drawLabel(padX+i*gap,yT,pps[i],'top',i);
+      sk.drawLabel(padX+i*gap,yB,rr[i]||`결과${i+1}`,'bottom');
+    }
+
+    pps.forEach((_,i)=>sk.drawMarker(padX+i*gap,yT,i,n,pps[i],.3));
+  }
+
+  // ── Map reveal animation (2 seconds) ──
+  function _revealMap(canvas, cfg, ctx, skin, onDone) {
+    const {padX, padY, gap, n, h, w} = cfg;
+    const yT = padY, yB = h - padY;
+    const rows = eng.rows;
+    const DURATION = 2000;
+    const t0 = performance.now();
+    let raf;
+
+    // Sort all bars top-to-bottom for sequential reveal
+    const barsSorted = [...eng.allBars].sort((a, b) => a.row - b.row);
+    const barBase = skin._cv('--cv-bar') || '#7C6CF5';
+
+    function ease(x) { return x < 0.5 ? 2*x*x : 1-Math.pow(-2*x+2,2)/2; } // easeInOutQuad
+
+    function frame(now) {
+      const raw = Math.min((now - t0) / DURATION, 1);
+      const t   = ease(raw);
+
+      ctx.clearRect(0, 0, w, h);
+      skin.drawBg();
+
+      // ── Phase 1: rails grow top→bottom (t 0→0.55) ──
+      const railProg = Math.min(raw / 0.55, 1);
+      const clipY    = yT + (yB - yT) * railProg;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, w, clipY + 8);
+      ctx.clip();
+      for (let i = 0; i < n; i++) skin.drawRail(padX + i*gap, yT, yB);
+      ctx.restore();
+
+      // Top labels always visible; bottom labels appear when rails finish
+      for (let i = 0; i < n; i++) {
+        skin.drawLabel(padX + i*gap, yT, pps[i], 'top', i);
+        if (railProg >= 1) skin.drawLabel(padX + i*gap, yB, rr[i]||`결과${i+1}`, 'bottom');
+      }
+
+      // ── Phase 2: bars appear row-by-row (raw 0.25→1.0) ──
+      // hidden bars: 처음부터 보이지 않음 / trap bars: 일반 바처럼 보임
+      if (raw > 0.25) {
+        const barT   = (raw - 0.25) / 0.75;
+        const cutRow = barT * rows;
+
+        barsSorted.forEach(bar => {
+          if (bar.type === 'hidden') return;          // 숨겨진 길은 표시 안 함
+          if (bar.row > cutRow) return;
+          const appear = Math.min((cutRow - bar.row) * 3, 1);
+          if (appear < 0.01) return;
+
+          const {x:bx1, y:by1} = eng.xy(bar.col,   bar.row,    cfg);
+          const {x:bx2, y:by2} = eng.xy(bar.col+1, bar.rowEnd, cfg);
+          skin.drawBar(bx1, by1, bx2, by2, appear * 0.85, barBase); // 함정도 일반색
+        });
+      }
+
+      if (raw < 1) {
+        raf = requestAnimationFrame(frame);
+      } else {
+        // Reset bar states to game-ready: normal+trap visible, hidden invisible
+        eng.allBars.forEach(b => {
+          if      (b.type === 'normal') { b.alpha=1; b.targetAlpha=1; b.triggered=true; }
+          else if (b.type === 'trap')   { b.alpha=1; b.targetAlpha=1; }
+          else                          { b.alpha=0; b.targetAlpha=0; }
+        });
+        onDone();
+      }
+    }
+
+    raf = requestAnimationFrame(frame);
+  }
+
+  // ── UI element helpers ──
+  function _renderUI() {
+    document.getElementById('tagList').innerHTML = pps.map((n,i)=>
+      `<span class="tag">${n}<button class="rm" onclick="UI.rmP(${i})">×</button></span>`
+    ).join('');
+    document.getElementById('resultList').innerHTML = pps.map((_,i)=>
+      `<div class="ritem"><span class="rnum">${i+1}</span><input type="text" value="${rr[i]||''}" placeholder="결과 ${i+1}" maxlength="12" oninput="UI.setR(${i},this.value)"/></div>`
+    ).join('');
+  }
+
+  function _sb(t) {
+    const el=document.getElementById('sb');
+    if(t){el.textContent=t;el.style.opacity='1';}
+    else el.style.opacity='0';
+  }
+
+  function _ov(html){ document.getElementById('obox').innerHTML=html; document.getElementById('ov').classList.add('show'); }
+  function _closeOv(){ document.getElementById('ov').classList.remove('show'); }
+
+  function _setRunning(v) {
+    running=v;
+    document.getElementById('btnStart').disabled=v;
+    document.getElementById('btnCurse').disabled=!v;
+    document.getElementById('btnBless').disabled=!v;
+  }
+
+  // ── Result overlay ──
+  function _showResults() {
+    // 게임 종료: 어떤 플레이어 경로에도 포함되지 않은 함정 일괄 처리
+    eng.trapBars.forEach(b => { if (!b.triggered) eng.trigger(b); });
+    let html='<div style="font-size:32px;margin-bottom:10px">🎲</div>';
+    html+='<div style="font-size:16px;font-weight:700;margin-bottom:4px"><span class="ko">결과 발표</span><span class="en">Results</span></div>';
+    html+='<table>';
+    for(let i=0;i<eng.n;i++){
+      const name=eng.pp[i];
+      const res=eng.rr[eng.mapping[i]]||`결과${eng.mapping[i]+1}`;
+      html+=`<tr><td style="color:var(--t2)">${name}</td><td>${res}</td></tr>`;
+    }
+    html+='</table>';
+        html+='<button class="btn-replay" onclick="UI.reset()"><span class="ko">다시 하기</span><span class="en">Play Again</span></button>';
+    _ov(html);
+    _setRunning(false);
+    _sb('');
+  }
+
+  // ── Fake winner finale (last player only) ──
+  function _fakeWinner(trueIdx, cb) {
+    const trueResIdx = eng.mapping[trueIdx];
+    const fakeResIdx = (trueResIdx+1) % eng.n;
+    const fakeRes    = eng.rr[fakeResIdx] || `결과${fakeResIdx+1}`;
+    const name       = eng.pp[trueIdx];
+    _sb(`🎉 ${name} → ${fakeRes}!`);
+    setTimeout(()=>{
+      _sb('⚠️ 오류 감지! 재계산 중…');
+      setTimeout(()=>{ _sb(''); cb?.(); }, 1500);
+    }, 1300);
+  }
+
+  // ── Advance to player idx ──
+  function _goNext(idx) {
+    if (idx >= eng.n) { _showResults(); return; }
+    anim.cidx = idx;
+    _sb(`▶ ${eng.pp[idx]}`);
+    setTimeout(()=>{ anim.startCurrent(); }, 380);
+  }
+
+  // ── Public API ──
+  const pub = {
+    addP() {
+      const inp=document.getElementById('nameIn');
+      const name=inp.value.trim();
+      if(!name||pps.length>=10) return;
+      pps.push(name);
+      if(rr.length<pps.length) rr.push(`결과 ${pps.length}`);
+      inp.value=''; _renderUI(); _idle();
+    },
+    rmP(i){
+      if(pps.length<=2){alert('최소 2명 필요합니다.');return;}
+      pps.splice(i,1); rr.splice(i,1); _renderUI(); _idle();
+    },
+    setR(i,v){ rr[i]=v; },
+    setSpd(s){
+      spd=s;
+      document.querySelectorAll('.btn-spd').forEach(b=>b.classList.toggle('on',+b.dataset.s===s));
+      anim?.setSpeed(s);
+    },
+    react(type){
+      if(!anim||!running) return;
+      const colors=type==='curse'?['#E24B4A','#FF8080','#FFB0B0']:['#3EC9A7','#7C6CF5','#FFD700'];
+      const m=anim.markers[anim.cidx];
+      if(m&&m.active&&!m.done) anim.burst(m.x,m.y,colors,18);
+    },
+    rebuild(){ _idle(); },
+    reset(){
+      _closeOv(); anim?.stop(); anim=null; eng=null;
+      _setRunning(false); _sb(''); _idle();
+    },
+    start() {
+      if(running||pps.length<2){if(pps.length<2)alert('참가자 2명 이상이 필요합니다.');return;}
+      _closeOv(); _setRunning(true);
+
+      while(rr.length<pps.length) rr.push(`결과 ${rr.length+1}`);
+      const shuffled=[...rr.slice(0,pps.length)].sort(()=>Math.random()-.5);
+
+      eng = new Engine(pps, shuffled, {rows:20, seed:Date.now()});
+      eng.build();
+
+      const canvas=document.getElementById('ladder');
+      const cfg=_cfg(canvas);
+      const ctx=canvas.getContext('2d');
+      const skin=SM.make(ctx,cfg);
+
+      anim = new AnimCtrl(eng, skin, canvas);
+      anim.init(cfg);
+      anim.setSpeed(spd);
+
+      anim.onDone = (playerIdx) => {
+        const name=eng.pp[playerIdx];
+        const res=eng.rr[eng.mapping[playerIdx]]||`결과${eng.mapping[playerIdx]+1}`;
+        const isLast = playerIdx === eng.n-1;
+
+        if (isLast && eng.n > 1) {
+          setTimeout(()=>_fakeWinner(playerIdx, ()=>setTimeout(_showResults,300)), 500);
+        } else if (playerIdx < eng.n-1) {
+          setTimeout(()=>{
+            _sb(`✓ ${name} → ${res}`);
+            setTimeout(()=>_goNext(playerIdx+1), 1600);
+          }, 450);
+        } else {
+          setTimeout(_showResults, 600);
+        }
+      };
+
+      // 맵 생성 연출 후 게임 시작
+      _sb('🗺️ 사다리 맵 생성 중…');
+      _revealMap(canvas, cfg, ctx, skin, () => {
+        _sb('');
+        setTimeout(() => _goNext(0), 150);
+      });
+    },
+    init() {
+      _renderUI();
+      document.getElementById('nameIn').addEventListener('keydown',e=>{
+        if(e.key==='Enter') pub.addP();
+      });
+      window.addEventListener('resize',()=>{ if(!running) _idle(); });
+      _idle();
+    }
+  };
+  return pub;
+})();
+
+// ═══════════════════════════════════════════════════════
+//  LANG TOGGLE
+// ═══════════════════════════════════════════════════════
+function _tl() {
+  const h=document.documentElement;
+  const next=h.lang==='ko'?'en':'ko';
+  h.lang=next; localStorage.setItem('nw-lang',next);
+  const btn=document.getElementById('lang-btn');
+  if(btn) btn.textContent=next==='ko'?'EN':'KR';
+}
+function _td() {
+  const isDark=document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark?'1':'');
+  const btn=document.getElementById('dark-btn');
+  if(btn) btn.textContent=isDark?'☀️':'🌙';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const lb=document.getElementById('lang-btn');
+  if(lb) lb.textContent=document.documentElement.lang==='ko'?'EN':'KR';
+  const db=document.getElementById('dark-btn');
+  if(db) db.textContent=document.documentElement.hasAttribute('data-dark')?'☀️':'🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

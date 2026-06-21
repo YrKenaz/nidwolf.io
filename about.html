@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>소개·문의 | Nidwolf Design Toolkit</title>
+<meta name="description" content="Nidwolf Design Toolkit 소개와 문의 방법을 안내합니다."/>
+<meta property="og:title" content="소개·문의"/>
+<meta property="og:description" content="Nidwolf Design Toolkit 소개와 문의 방법을 안내합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content=""/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="icon" href="Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="articles/style.css"/>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><img src="Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <article>
+    <h1><span class="ko">소개</span><span class="en">About</span></h1>
+    <p class="lead"><span class="ko">Nidwolf Design Toolkit은 디자인을 배우고 실험하는 사람들을 위한 무료 도구·콘텐츠 사이트입니다.</span><span class="en">Nidwolf Design Toolkit is a free tools and content site for learning and experimenting with design.</span></p>
+    <div class="ko">
+    <h2>무엇을 할 수 있나요</h2>
+    <p><a href="design-toolkit.html">디자인 위자드</a>에서는 시각 스타일, 레이아웃, 반응형 전략, 인터랙션, 컬러 팔레트를 조합해 UI 방향을 실시간 프리뷰로 확인하고, 결과를 CSS 변수·JSON 토큰·디자인 브리프로 내보낼 수 있습니다. 웹뿐 아니라 WPF 데스크톱 앱 스타일도 지원합니다.</p>
+    <p><a href="articles/index.html">아티클</a> 섹션에서는 레이아웃, 색상, 타이포그래피, UX 원칙을 다루는 실무 중심 디자인 팁 30편과 아르누보부터 글래스모피즘까지 디자인 운동의 역사 10편을 읽을 수 있습니다.</p>
+    <h2>이 사이트를 만든 이유</h2>
+    <p>디자인 이론은 흩어져 있고, 도구는 비싸거나 복잡합니다. 이론을 읽고 바로 도구에서 실험하는 순환이 한곳에서 이루어지는 가벼운 놀이터를 목표로 만들었습니다. 모든 기능은 무료이며 별도의 가입 없이 사용할 수 있습니다.</p>
+    <h2>문의</h2>
+    <p>오류 제보, 콘텐츠 제안, 제휴 문의는 아래 이메일로 보내 주세요.</p>
+    <p>📧 <a href="mailto:krun0519@gmail.com">krun0519@gmail.com</a></p>
+    </div>
+    <div class="en">
+    <h2>What you can do here</h2>
+    <p>The <a href="design-toolkit.html">Design Wizard</a> lets you combine visual styles, layouts, responsive strategies, interactions, and color palettes with a live preview, then export as CSS variables, JSON design tokens, or a design brief. Supports both web and WPF desktop app styles.</p>
+    <p>The <a href="articles/index.html">Articles</a> section features 30 practical design tip articles covering layout, color, typography, and UX principles — plus 10 design history articles from Art Nouveau to Glassmorphism.</p>
+    <h2>Why we built this</h2>
+    <p>Design theory is scattered, and most tools are expensive or complex. The goal: a lightweight playground where you read a concept and immediately experiment with it in the tool — in one place, free, no signup required.</p>
+    <h2>Contact</h2>
+    <p>For bug reports, content suggestions, or partnership inquiries:</p>
+    <p>📧 <a href="mailto:krun0519@gmail.com">krun0519@gmail.com</a></p>
+    </div>
+  </article>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var html = document.documentElement;
+  if(html.hasAttribute('data-dark')){
+    html.removeAttribute('data-dark');
+    localStorage.removeItem('nw-dark');
+  } else {
+    html.setAttribute('data-dark','');
+    localStorage.setItem('nw-dark','1');
+  }
+}
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

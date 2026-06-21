@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>황금비 1:1.618로 레이아웃 잡는 법 | Nidwolf Design Toolkit</title>
+<meta name="description" content="황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다."/>
+<meta property="og:title" content="황금비 1:1.618로 레이아웃 잡는 법"/>
+<meta property="og:description" content="황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-01-golden-ratio.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-01-golden-ratio.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "황금비 1:1.618로 레이아웃 잡는 법",
+  "description": "황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.",
+  "url": "https://nidwolf.io/articles/tip-01-golden-ratio.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+    <h1><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h1>
+    <p class="lead"><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>황금비를 레이아웃 분할에 쓰는 법</li><li>타이포그래피 스케일에 적용하기</li><li>흔한 오해와 주의점</li><li>실전 체크리스트</li><li>자주 묻는 질문</li></ul>
+  <ul class="en"><li>Splitting layouts with the golden ratio</li><li>Applying it to typography scales</li><li>Common pitfalls</li></ul>
+</div>
+    <div class="ko"><p>디자인을 처음 배울 때 가장 자주 듣는 숫자가 1.618, 이른바 황금비입니다. 고대 그리스 건축부터 자연의 나선 구조까지 등장하는 이 비율은 "사람이 본능적으로 편안하게 느끼는 비례"로 알려져 있습니다. 신비주의적인 과장도 섞여 있지만, 실무에서 황금비는 레이아웃의 비례를 빠르게 결정하는 훌륭한 출발점이 됩니다.</p>
+<h2>황금비를 레이아웃 분할에 쓰는 법</h2>
+<p>가장 실용적인 활용은 2단 분할입니다. 전체 폭을 1.618:1로 나누면 약 61.8%와 38.2%가 됩니다. 본문 영역과 사이드바를 이 비율로 나누면 5:5나 7:3보다 훨씬 자연스러운 무게 배분이 만들어집니다. 예를 들어 1200px 컨테이너라면 본문 742px, 사이드바 458px 정도가 황금비 분할입니다. 히어로 섹션의 텍스트 영역과 이미지 영역을 나눌 때도 같은 방식을 쓸 수 있습니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-05-whitespace.html"><span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span></a>
+</div>
+<h2>타이포그래피 스케일에 적용하기</h2>
+<p>황금비는 폰트 크기 체계에도 유용합니다. 본문을 16px로 잡고 1.618을 곱해 나가면 16 → 26 → 42 → 68px의 스케일이 나옵니다. 단계 사이의 대비가 강해서 헤드라인 중심의 마케팅 페이지, 랜딩 페이지에 잘 어울립니다. 반대로 정보 밀도가 높은 대시보드나 문서 페이지에서는 1.2~1.25배 같은 완만한 스케일이 더 적합합니다. 콘텐츠 성격에 따라 비율 자체를 디자인 결정으로 다루는 것이 핵심입니다.</p>
+<h2>흔한 오해와 주의점</h2>
+<p>황금비가 만능 규칙은 아닙니다. 픽셀 단위로 1.618을 정확히 지키는 것보다, 그리드 시스템과의 호환이 더 중요합니다. 실무에서는 황금비로 큰 비례를 잡은 뒤 8pt 그리드에 맞춰 값을 반올림하는 방식이 현실적입니다. 742px 대신 744px(8의 배수)을 쓰는 식입니다. 또한 반응형 환경에서는 화면 폭에 따라 비율이 깨지므로, 황금비는 데스크톱 기준 레이아웃의 출발점으로 삼고 브레이크포인트마다 재조정해야 합니다.</p>
+<p>정리하면 황금비는 "왜 이 비율로 나눴는가"에 대한 근거 있는 출발점을 제공하는 도구입니다. 비례에 대한 감이 아직 없다면 황금비로 시작해 보고, 익숙해지면 콘텐츠에 맞게 의도적으로 변형하세요. 규칙을 알고 깨는 것과 모르고 어긋나는 것은 결과물의 완성도에서 큰 차이를 만듭니다.</p>
+<h2>실전 체크리스트</h2>
+<p>황금비를 오늘 바로 적용해 보고 싶다면 이 순서를 따르세요. 첫째, 현재 레이아웃의 주요 분할 비율을 측정합니다. 본문과 사이드바, 히어로의 텍스트와 이미지 영역이 각각 몇 대 몇인지 적어 보세요. 둘째, 그 비율을 61.8:38.2와 비교합니다. 차이가 크다면 황금비 분할로 시안을 하나 더 만들어 나란히 놓고 비교하세요. 셋째, 폰트 스케일에 1.618을 적용한 버전과 1.25를 적용한 버전을 만들어 콘텐츠 밀도에 맞는 쪽을 고릅니다.</p>
+<h2>자주 묻는 질문</h2>
+<p>"황금비와 3분할 법칙은 뭐가 다른가요?"라는 질문을 자주 받습니다. 3분할 법칙은 화면을 가로세로 3등분(33.3%)하는 사진 구도의 규칙이고, 황금비 분할은 38.2% 지점에 선이 옵니다. 두 선의 위치가 비슷해서 실무 결과물은 크게 다르지 않은 경우가 많습니다. 둘 중 무엇을 쓰느냐보다, 임의의 비율 대신 근거 있는 비율을 일관되게 쓰고 있느냐가 중요합니다. 디자인 리뷰에서 "왜 이 비율인가요?"라는 질문에 답할 수 있다면 어느 쪽이든 충분합니다.</p>
+</div>
+    <div class="en"><p>The golden ratio, 1.618, is one of the first numbers you encounter when learning design. Appearing in ancient Greek architecture and natural spirals, it's often described as the proportion humans instinctively find pleasing. While some mysticism surrounds the concept, in practice the golden ratio is an excellent starting point for quickly establishing layout proportions.</p>
+<h2>Splitting layouts with the golden ratio</h2>
+<p>The most practical use is a two-column split. Dividing the total width by 1.618:1 gives roughly 61.8% and 38.2%. Splitting the content area from the sidebar at this ratio creates a more naturally balanced weight distribution than 50:50 or 70:30. For a 1200px container, that's about 742px for content and 458px for the sidebar. The same ratio applies when dividing hero text and image areas.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-05-whitespace.html"><span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span></a>
+</div>
+<h2>Applying it to typography scales</h2>
+<p>Starting at 16px and multiplying by 1.618 repeatedly yields 16 → 26 → 42 → 68px. The strong contrast between steps suits marketing or landing pages where headlines dominate. Conversely, information-dense dashboards or docs benefit from gentler ratios like 1.2–1.25×. Treat the ratio itself as a design decision based on content character.</p>
+<h2>Common pitfalls</h2>
+<p>The golden ratio is not a universal law. In practice, use it to set broad proportions and then round to your 8pt grid — 744px instead of 742px. In responsive environments, the ratio can break across breakpoints, so treat it as a starting point for desktop layout and readjust per breakpoint.</p>
+<p>Think of the golden ratio as a principled starting point for answering "why this proportion?" Begin with it, then deviate with intent once your instincts develop. Knowing the rule before you break it makes a measurable difference in the final result.</p></div>
+  </article>
+  <nav class="prevnext"><span></span><a class="next" href="tip-02-60-30-10-rule.html"><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-05-whitespace.html">
+      <div class="card-top"><span class="icon">⬜</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span></h3>
+      <p><span class="ko">여백을 능동적인 디자인 요소로 다루는 방법과 매크로/마이크로 여백의 구분을 설명합니다.</span><span class="en">Treating whitespace as an active design element — macro vs. micro whitespace and how it controls hierarchy and readability.</span></p>
+    </a><a class="card" href="tip-08-8pt-grid.html">
+      <div class="card-top"><span class="icon">📏</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">8pt 그리드 시스템: 모든 간격을 8의 배수로</span><span class="en">The 8pt Grid: Why All Your Spacing Should Be Multiples of 8</span></h3>
+      <p><span class="ko">8pt 그리드가 디자인 일관성과 개발 협업에 주는 이점, 그리고 실전 적용 규칙을 설명합니다.</span><span class="en">How the 8pt grid system creates visual consistency, speeds up design decisions, and bridges the gap between designers and developers.</span></p>
+    </a><a class="card" href="tip-19-grid-break.html">
+      <div class="card-top"><span class="icon">🏗️</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">그리드를 알아야 그리드를 깰 수 있다</span><span class="en">Breaking the Grid: How to Make Rule Violations Feel Intentional</span></h3>
+      <p><span class="ko">그리드 시스템의 역할과, 의도적으로 그리드를 벗어나는 브레이크아웃 기법의 효과를 설명합니다.</span><span class="en">When and how to deliberately break a grid layout to create visual interest — and why you must master the grid before you can break it.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

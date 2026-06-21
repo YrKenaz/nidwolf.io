@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>그림자의 빛 방향은 하나여야 한다 | Nidwolf Design Toolkit</title>
+<meta name="description" content="UI 그림자 설계의 기본 원칙인 광원 일관성과 엘리베이션 시스템 구축 방법을 다룹니다."/>
+<meta property="og:title" content="그림자의 빛 방향은 하나여야 한다"/>
+<meta property="og:description" content="UI 그림자 설계의 기본 원칙인 광원 일관성과 엘리베이션 시스템 구축 방법을 다룹니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-06-shadow-consistency.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-06-shadow-consistency.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "그림자의 빛 방향은 하나여야 한다",
+  "description": "UI 그림자 설계의 기본 원칙인 광원 일관성과 엘리베이션 시스템 구축 방법을 다룹니다.",
+  "url": "https://nidwolf.io/articles/tip-06-shadow-consistency.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">🌗</span><span class="cat">UI</span></div>
+    <h1><span class="ko">그림자의 빛 방향은 하나여야 한다</span><span class="en">Your Light Source Must Be One: The Rule of Shadow Consistency</span></h1>
+    <p class="lead"><span class="ko">UI 그림자 설계의 기본 원칙인 광원 일관성과 엘리베이션 시스템 구축 방법을 다룹니다.</span><span class="en">How to establish a unified virtual light source, build an elevation system, and avoid the subtle inconsistencies that make UI shadows look wrong.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>가상의 광원을 하나 정하라</li><li>엘리베이션: 그림자로 높이를 표현하기</li><li>흔한 실수들</li><li>그림자 토큰 설계 예시</li><li>그림자 대신 쓸 수 있는 것들</li></ul>
+  <ul class="en"><li>Define a single virtual light source</li><li>Build an elevation system</li><li>Shadows in dark mode</li></ul>
+</div>
+    <div class="ko"><p>화면 속 그림자가 어색하게 느껴진다면 십중팔구 광원이 여러 개이기 때문입니다. 현실 세계에서 그림자는 빛의 반대편에 생깁니다. 어떤 카드는 그림자가 아래로, 어떤 버튼은 오른쪽으로 지고 있다면 사용자의 뇌는 무의식적으로 모순을 감지합니다.</p>
+<h2>가상의 광원을 하나 정하라</h2>
+<p>UI 디자인의 관례는 광원을 화면의 위쪽(약간 왼쪽 위)에 두는 것입니다. 따라서 그림자는 아래쪽으로 떨어지며, CSS로는 box-shadow의 Y 오프셋을 양수로, X 오프셋은 0이나 아주 작은 값으로 잡습니다. 예를 들어 0 2px 8px rgba(0,0,0,.12) 같은 형태입니다. 프로젝트의 모든 그림자가 이 방향을 공유해야 화면 전체가 하나의 공간처럼 느껴집니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>엘리베이션: 그림자로 높이를 표현하기</h2>
+<p>머티리얼 디자인이 정립한 엘리베이션 개념은 그림자를 '높이의 언어'로 만듭니다. 표면에서 살짝 떠 있는 카드는 작고 진한 그림자, 화면 위에 떠 있는 모달이나 드롭다운은 크고 부드러운 그림자를 가집니다. 실무에서는 3~4단계면 충분합니다. 예컨대 1단계(카드) 0 1px 3px, 2단계(호버·버튼) 0 4px 12px, 3단계(드롭다운) 0 8px 24px, 4단계(모달) 0 16px 48px처럼 단계가 올라갈수록 오프셋과 블러를 함께 키우고 투명도는 낮추는 식입니다.</p>
+<h2>흔한 실수들</h2>
+<p>첫째, 순수 검정 그림자는 탁해 보입니다. 배경색의 색조를 살짝 섞거나(파란 배경이면 푸른 그림자) 투명도를 8~16% 수준으로 낮추세요. 둘째, 그림자 남용입니다. 모든 요소에 그림자를 주면 높이의 의미가 사라집니다. 떠 있어야 할 이유가 있는 요소에만 부여하세요. 셋째, 다크 모드에서 그림자는 거의 보이지 않습니다. 이때는 그림자 대신 표면 밝기 차이(밝은 표면 = 높은 엘리베이션)로 높이를 표현하는 것이 머티리얼의 권장 방식입니다.</p>
+<p>그림자는 장식이 아니라 공간의 물리 법칙입니다. 광원 하나, 단계 3~4개. 이 두 가지만 정해 두면 그림자가 화면의 질서를 만들어 줍니다.</p>
+<h2>그림자 토큰 설계 예시</h2>
+<p>실무에서 바로 쓸 수 있는 4단계 그림자 토큰 예시입니다. --shadow-1: 0 1px 3px rgba(16,24,40,.08) — 카드, 입력란. --shadow-2: 0 4px 12px rgba(16,24,40,.10) — 호버된 카드, 떠 있는 버튼. --shadow-3: 0 8px 24px rgba(16,24,40,.14) — 드롭다운, 팝오버. --shadow-4: 0 20px 48px rgba(16,24,40,.20) — 모달, 다이얼로그. 검정 대신 짙은 남색 기운(16,24,40)을 쓰면 그림자가 더 맑아 보입니다. 토큰 이름을 elevation 단계로 정해 두면 "이 컴포넌트는 몇 층인가"라는 질문만으로 그림자가 결정됩니다.</p>
+<h2>그림자 대신 쓸 수 있는 것들</h2>
+<p>모든 구분을 그림자로 해결할 필요는 없습니다. 옅은 테두리(1px solid #eee)는 그림자보다 가볍게 영역을 구분하고, 배경색 차이(흰 카드와 회색 페이지 배경)는 그림자 없이도 표면을 분리합니다. 미니멀한 디자인일수록 그림자는 '정말 떠 있는 것'(모달, 드롭다운)에만 남기고 정적인 카드는 테두리나 배경 대비로 처리하는 경향이 있습니다. 그림자·테두리·배경 대비라는 세 가지 분리 수단을 상황에 따라 골라 쓰는 것이 표면 설계의 기술입니다.</p>
+</div>
+    <div class="en"><p>If shadows in your UI look off, the most likely reason is multiple competing light sources. In the real world, shadows fall opposite the light. When one card casts a shadow downward while a button casts one to the right, the brain detects the contradiction subconsciously — and the UI feels untrustworthy.</p>
+<h2>Define a single virtual light source</h2>
+<p>UI convention places the light source above the screen, slightly to the left. Shadows fall downward: a positive Y offset, near-zero X offset. A value like <code>0 2px 8px rgba(0,0,0,.12)</code> follows this convention. Every shadow in the project should share this direction. When the whole screen shares one light source, it reads as a coherent space.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>Build an elevation system</h2>
+<p>Rather than hand-crafting each shadow, define elevation levels. Level 1 (subtle, e.g., cards): <code>0 1px 4px rgba(0,0,0,.08)</code>. Level 2 (floating, e.g., dropdowns): <code>0 4px 16px rgba(0,0,0,.12)</code>. Level 3 (overlays, modals): <code>0 8px 32px rgba(0,0,0,.18)</code>. Using CSS variables for these values lets you update the entire system in one place and ensures consistency by default.</p>
+<h2>Shadows in dark mode</h2>
+<p>In dark mode, dark shadows on dark backgrounds disappear. Compensate by adding a very faint colored inner glow or a subtle border — <code>border: 1px solid rgba(255,255,255,.06)</code> — to define elevation instead. Material Design calls this "surface tints": slightly lighter background colors for higher elevation. The principle of a single light source still applies; only the rendering technique changes.</p>
+<p>Check your design system's shadows right now. Are they all pointing the same direction with the same blur-to-offset ratio? If not, standardizing them is one of the highest-leverage low-effort fixes available.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-05-whitespace.html">← <span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span></a><a class="next" href="tip-07-color-psychology.html"><span class="ko">파랑은 신뢰, 빨강은 긴박함: 색상 심리학 실전 가이드</span><span class="en">Color Psychology: How Hue Shapes User Perception</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

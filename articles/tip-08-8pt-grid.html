@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>8pt 그리드 시스템: 모든 간격을 8의 배수로 | Nidwolf Design Toolkit</title>
+<meta name="description" content="8pt 그리드가 디자인 일관성과 개발 협업에 주는 이점, 그리고 실전 적용 규칙을 설명합니다."/>
+<meta property="og:title" content="8pt 그리드 시스템: 모든 간격을 8의 배수로"/>
+<meta property="og:description" content="8pt 그리드가 디자인 일관성과 개발 협업에 주는 이점, 그리고 실전 적용 규칙을 설명합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-08-8pt-grid.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-08-8pt-grid.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "8pt 그리드 시스템: 모든 간격을 8의 배수로",
+  "description": "8pt 그리드가 디자인 일관성과 개발 협업에 주는 이점, 그리고 실전 적용 규칙을 설명합니다.",
+  "url": "https://nidwolf.io/articles/tip-08-8pt-grid.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">📏</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+    <h1><span class="ko">8pt 그리드 시스템: 모든 간격을 8의 배수로</span><span class="en">The 8pt Grid: Why All Your Spacing Should Be Multiples of 8</span></h1>
+    <p class="lead"><span class="ko">8pt 그리드가 디자인 일관성과 개발 협업에 주는 이점, 그리고 실전 적용 규칙을 설명합니다.</span><span class="en">How the 8pt grid system creates visual consistency, speeds up design decisions, and bridges the gap between designers and developers.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>왜 하필 8인가</li><li>실전 적용 규칙</li><li>4pt 보조 그리드와 예외 처리</li><li>디자인 도구에서 8pt 그리드 강제하기</li><li>8pt 그리드에 대한 흔한 반론</li></ul>
+  <ul class="en"><li>Why 8?</li><li>Apply it to every dimension</li><li>Designer-developer handoff</li></ul>
+</div>
+    <div class="ko"><p>패딩은 13px, 마진은 17px, 아이콘은 22px. 이렇게 임의의 숫자가 난무하는 화면은 어딘가 어수선해 보이고, 개발자와의 소통도 힘들어집니다. 8pt 그리드 시스템은 이 문제를 단순한 규칙 하나로 해결합니다. 모든 간격, 크기, 위치를 8의 배수(8, 16, 24, 32, 40…)로 맞추는 것입니다.</p>
+<h2>왜 하필 8인가</h2>
+<p>8은 짝수라 절반(4)도 정수이고, 대부분의 화면 해상도가 8로 나누어떨어집니다. 1x, 1.5x, 2x 등 다양한 픽셀 밀도에서 8의 배수는 깨지지 않고 선명하게 렌더링됩니다. 또한 선택지가 제한되면 결정이 빨라집니다. '이 여백은 23px일까 25px일까'를 고민하는 대신 16이냐 24냐의 양자택일이 되므로 디자인 속도가 올라가고 화면 간 일관성은 자동으로 따라옵니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>실전 적용 규칙</h2>
+<p>간격 스케일을 토큰으로 정의하세요. 4(예외적 미세 간격), 8, 12, 16, 24, 32, 48, 64 정도면 대부분의 화면을 커버합니다. 컴포넌트 내부 패딩은 8 또는 16, 관련 요소 사이는 8~16, 그룹과 그룹 사이는 24~32, 섹션과 섹션 사이는 48~96처럼 위계에 따라 단계를 올리면 됩니다. 타이포그래피의 행간도 8의 배수(16px 본문에 24px 행간)로 맞추면 세로 리듬이 생깁니다.</p>
+<h2>4pt 보조 그리드와 예외 처리</h2>
+<p>아이콘 옆 레이블처럼 8px도 넓게 느껴지는 미세한 자리에는 절반인 4px을 허용하는 것이 일반적입니다. 이를 4pt 서브 그리드라고 부릅니다. 다만 4의 사용은 컴포넌트 내부의 미세 조정으로 한정하고, 레이아웃 차원의 간격은 8 이상을 유지해야 시스템이 흐트러지지 않습니다. 텍스트의 시각적 높이처럼 수치와 보이는 크기가 어긋나는 경우에는 광학적 보정을 우선해도 좋습니다. 그리드는 도구이지 족쇄가 아니기 때문입니다.</p>
+<p>지금 작업 중인 화면의 간격 값들을 모두 적어 보세요. 8의 배수로 정리하는 데 한 시간이면 충분하고, 그 한 시간이 화면 전체의 정돈된 인상을 만들어 줍니다.</p>
+<h2>디자인 도구에서 8pt 그리드 강제하기</h2>
+<p>피그마에서는 레이아웃 그리드를 8px로 설정하고, 큰 이동(Shift+방향키) 단위를 8로 바꿔 두면 작업 자체가 그리드 위에서 이루어집니다. 오토 레이아웃의 간격과 패딩 값도 8의 배수만 쓰는 습관을 들이세요. 개발 쪽에서는 Tailwind의 기본 spacing 스케일(4px 단위)이나 CSS 변수 토큰으로 강제할 수 있습니다. 도구가 규칙을 지켜 주면 사람은 규칙을 잊어도 됩니다.</p>
+<h2>8pt 그리드에 대한 흔한 반론</h2>
+<p>"디자인이 다 비슷해지지 않나요?"라는 우려가 있지만, 그리드는 간격의 어휘를 제한할 뿐 배치의 문장은 무한합니다. 오히려 간격 고민이 사라진 만큼 구조와 콘텐츠에 쓸 에너지가 늘어납니다. "기존 디자인을 다 뜯어고쳐야 하나요?"라는 질문에는 점진 적용을 권합니다. 새로 만드는 화면부터 8pt를 적용하고, 기존 화면은 손댈 일이 있을 때마다 정리하면 몇 달 안에 자연스럽게 수렴합니다. 완벽한 빅뱅 전환보다 꾸준한 수렴이 현실적입니다.</p>
+
+<p>8pt 그리드의 진짜 수혜자는 미래의 자신과 동료입니다. 몇 달 뒤 화면을 수정할 때, 새 팀원이 합류했을 때, 규칙이 있는 화면은 빠르게 읽히고 안전하게 고쳐집니다. 일관성은 현재의 아름다움이자 미래의 생산성입니다.</p>
+</div>
+    <div class="en"><p>Design decisions that seem subjective often have a better answer hiding in a simple rule. Spacing is a perfect example. Instead of agonizing over whether a gap should be 13px or 15px, the 8pt grid gives you a clear system: all spacing values are multiples of 8 (8, 16, 24, 32, 48, 64…).</p>
+<h2>Why 8?</h2>
+<p>The number 8 has two practical virtues. First, most modern screen densities (1×, 1.5×, 2×, 3×) divide into 8 evenly, preventing sub-pixel rendering issues. Second, 8's factors (2, 4) make it easy to create intermediate steps (4px for very tight spaces, 12px as 8+4). The result is a spacing vocabulary that feels both flexible and consistent.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>Apply it to every dimension</h2>
+<p>The grid applies not just to margins and padding, but to component heights and widths too. Common touch targets are 40px or 48px (multiples of 8). Icon sizes cluster around 16, 24, and 32px. Applying the rule universally means any two elements placed near each other will have harmonious spacing relationships automatically.</p>
+<h2>Designer-developer handoff</h2>
+<p>An 8pt grid dramatically speeds up design-to-code handoff. Instead of inspecting every spacing value individually, developers can apply the rule: "all spacing is a multiple of 8." This reduces implementation errors and back-and-forth. Design systems like Material Design, Apple's HIG, and Ant Design all standardize on 8pt spacing for exactly this reason.</p>
+<p>The 8pt grid's real beneficiaries are your future self and your teammates. A screen built on consistent rules is easy to read, safe to edit, and fast to extend. Consistency now is both present-day beauty and future productivity.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-07-color-psychology.html">← <span class="ko">파랑은 신뢰, 빨강은 긴박함: 색상 심리학 실전 가이드</span><span class="en">Color Psychology: How Hue Shapes User Perception</span></a><a class="next" href="tip-09-touch-target.html"><span class="ko">터치 타겟 최소 44px: 손가락을 위한 디자인</span><span class="en">터치 타겟 최소 44px: 손가락을 위한 디자인</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-05-whitespace.html">
+      <div class="card-top"><span class="icon">⬜</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">여백은 빈 공간이 아니다: 화이트스페이스 설계법</span><span class="en">White Space Is Not Empty Space: How to Design with Negative Space</span></h3>
+      <p><span class="ko">여백을 능동적인 디자인 요소로 다루는 방법과 매크로/마이크로 여백의 구분을 설명합니다.</span><span class="en">Treating whitespace as an active design element — macro vs. micro whitespace and how it controls hierarchy and readability.</span></p>
+    </a><a class="card" href="tip-19-grid-break.html">
+      <div class="card-top"><span class="icon">🏗️</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">그리드를 알아야 그리드를 깰 수 있다</span><span class="en">Breaking the Grid: How to Make Rule Violations Feel Intentional</span></h3>
+      <p><span class="ko">그리드 시스템의 역할과, 의도적으로 그리드를 벗어나는 브레이크아웃 기법의 효과를 설명합니다.</span><span class="en">When and how to deliberately break a grid layout to create visual interest — and why you must master the grid before you can break it.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>

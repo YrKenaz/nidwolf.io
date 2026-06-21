@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var lang = localStorage.getItem('nw-lang') || 'ko';
+  document.documentElement.lang = lang;
+  if(localStorage.getItem('nw-dark')) document.documentElement.setAttribute('data-dark','');
+})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>이미지 위 텍스트, 가독성을 지키는 5가지 방법 | Nidwolf Design Toolkit</title>
+<meta name="description" content="사진 위에 텍스트를 올릴 때 가독성을 확보하는 오버레이·그라디언트·블러 등 실전 기법을 소개합니다."/>
+<meta property="og:title" content="이미지 위 텍스트, 가독성을 지키는 5가지 방법"/>
+<meta property="og:description" content="사진 위에 텍스트를 올릴 때 가독성을 확보하는 오버레이·그라디언트·블러 등 실전 기법을 소개합니다."/>
+<meta property="og:type" content="article"/>
+<meta property="og:url" content="https://nidwolf.io/articles/tip-22-text-on-image.html"/>
+<meta property="og:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.io/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.io/articles/tip-22-text-on-image.html"/>
+<link rel="icon" href="../Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="../articles/style.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "이미지 위 텍스트, 가독성을 지키는 5가지 방법",
+  "description": "사진 위에 텍스트를 올릴 때 가독성을 확보하는 오버레이·그라디언트·블러 등 실전 기법을 소개합니다.",
+  "url": "https://nidwolf.io/articles/tip-22-text-on-image.html",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nidwolf Design Toolkit",
+    "url": "https://nidwolf.io"
+  },
+  "datePublished": "2026-01-01",
+  "dateModified": "2026-06-13"
+}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../design-toolkit.html"><img src="../Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="../articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="../ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="../about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap article-wrap">
+  <nav class="breadcrumb"><a href="index.html"><span class="ko">아티클</span><span class="en">Articles</span></a> › <span class="ko">디자인 팁</span><span class="en">Design Tips</span></nav>
+  <article>
+    <div class="article-meta"><span class="icon">📸</span><span class="cat"><span class="ko">이미지</span><span class="en">Imagery</span></span></div>
+    <h1><span class="ko">이미지 위 텍스트, 가독성을 지키는 5가지 방법</span><span class="en">Readable Text on Images: Five Techniques That Always Work</span></h1>
+    <p class="lead"><span class="ko">사진 위에 텍스트를 올릴 때 가독성을 확보하는 오버레이·그라디언트·블러 등 실전 기법을 소개합니다.</span><span class="en">How to reliably ensure legible text overlay on photography or illustration, from scrim gradients to text shadows to dedicated safe zones.</span></p>
+    <div class="key-points">
+  <div class="kp-title"><span class="ko">이 글에서 다루는 내용</span><span class="en">In this article</span></div>
+  <ul class="ko"><li>방법 1: 어두운 오버레이</li><li>방법 2: 부분 그라디언트</li><li>방법 3과 4: 블러와 박스</li><li>방법 5: 텍스트 섀도와 위치 전략</li><li>동적 콘텐츠 환경에서의 안전장치</li><li>기법별 선택 가이드</li></ul>
+  <ul class="en"><li>1. Semi-transparent scrim (overlay)</li><li>2. Dedicated safe zone</li><li>3. Text shadow</li><li>4. Frosted glass panel</li><li>5. Outline or knockout text</li></ul>
+</div>
+    <div class="ko"><p>히어로 이미지 위에 흰 제목을 올렸는데 사진의 밝은 부분과 겹쳐 글자가 사라진 경험, 누구나 있을 것입니다. 이미지는 통제할 수 없는 배경입니다. 밝기도, 색도, 복잡도도 사진마다 다릅니다. 이미지 위 텍스트의 가독성은 우연에 맡기지 말고 장치로 보장해야 합니다.</p>
+<h2>방법 1: 어두운 오버레이</h2>
+<p>가장 보편적인 해법은 이미지 전체에 반투명 검정 레이어(rgba(0,0,0,.4)~.6)를 덮고 흰 텍스트를 올리는 것입니다. 단순하고 확실하지만 이미지의 생동감이 죽는 비용이 있습니다. 사진이 분위기 전달용이라면 좋은 선택이고, 제품 사진처럼 디테일이 중요하면 부적합합니다.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>방법 2: 부분 그라디언트</h2>
+<p>텍스트가 있는 영역에만 그라디언트를 까는 방식입니다. 하단에 제목이 있다면 linear-gradient(to top, rgba(0,0,0,.7), transparent 60%)처럼 아래쪽만 어둡게 만듭니다. 이미지의 위쪽은 살아 있고 텍스트 영역은 보호되는, 비용 대비 효과가 가장 좋은 기법입니다. 영상 썸네일과 카드 UI에서 표준처럼 쓰입니다.</p>
+<h2>방법 3과 4: 블러와 박스</h2>
+<p>backdrop-filter: blur()로 텍스트 뒤 영역만 흐리게 만들면 세련된 글래스 효과와 가독성을 동시에 얻습니다. 더 확실한 방법은 텍스트에 불투명한 배경 박스를 주는 것입니다. 잡지 스타일의 타이포그래피 박스는 가독성이 완벽하고 디자인 의도도 분명해 보입니다.</p>
+<h2>방법 5: 텍스트 섀도와 위치 전략</h2>
+<p>가벼운 보정으로는 text-shadow(0 1px 3px rgba(0,0,0,.5))가 있습니다. 단독으로는 약하므로 다른 기법과 병행하는 보조 수단으로 보는 것이 좋습니다. 마지막으로 가장 근본적인 방법은 배치입니다. 이미지에서 단순한 영역(하늘, 벽, 아웃포커스된 배경)을 골라 텍스트를 두고, CMS라면 에디터가 텍스트 위치를 조정할 수 있게 만드는 것입니다.</p>
+<p>어떤 방법을 쓰든 검증 기준은 하나입니다. 가장 밝은 사진과 가장 어두운 사진을 넣어 보세요. 양극단에서 모두 읽힌다면 그 디자인은 안전합니다.</p>
+<h2>동적 콘텐츠 환경에서의 안전장치</h2>
+<p>CMS나 사용자 업로드 이미지처럼 어떤 사진이 올지 모르는 환경이라면 안전장치를 시스템에 내장해야 합니다. 썸네일 카드에는 항상 하단 그라디언트를 기본 적용하고, 텍스트 영역의 최소 대비를 검사해 기준 미달이면 오버레이 농도를 자동으로 올리는 로직도 가능합니다. 가장 간단한 대안은 텍스트를 이미지 밖으로 빼는 것입니다. 이미지 아래 텍스트 영역을 분리한 카드 레이아웃은 어떤 이미지가 와도 가독성이 보장됩니다.</p>
+<h2>기법별 선택 가이드</h2>
+<p>상황별 권장 조합을 정리합니다. 브랜드 무드가 중요한 히어로는 부분 그라디언트 + 텍스트 섀도. 영상·뉴스 썸네일은 하단 그라디언트가 표준. 제품 사진 위 짧은 레이블은 반투명 블러 칩(backdrop-filter). 긴 텍스트를 얹어야 한다면 불투명 박스나 이미지 밖 분리. 그리고 모든 경우에 최종 검증은 같습니다. 순백에 가까운 사진과 칠흑 같은 사진을 넣고 양쪽에서 AA 대비(4.5:1)가 나오는지 확인하는 것입니다.</p>
+</div>
+    <div class="en"><p>Placing text directly on a photograph is a reliable way to create a legibility problem. Images have unpredictable bright and dark areas that can wash out or obscure text in ways that vary by image. These five techniques solve the problem reliably regardless of the underlying image.</p>
+<h2>1. Semi-transparent scrim (overlay)</h2>
+<p>Apply a semi-transparent color layer between image and text — typically black or a dark brand color at 40–60% opacity. The scrim darkens the entire image uniformly, guaranteeing contrast without hiding the image entirely. For hero sections, a gradient scrim (dark at the bottom, transparent at the top) is particularly effective: the image breathes at the top while the bottom provides reliable text contrast.</p>
+<div class="inline-related">
+  <span class="ir-label"><span class="ko">관련 아티클</span><span class="en">Related</span></span>
+  <a href="tip-01-golden-ratio.html"><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></a>
+</div>
+<h2>2. Dedicated safe zone</h2>
+<p>Crop and compose the image to include a consistently bright or dark region where text will sit. A landscape photo with an open sky at the top provides a reliable pale area for dark text. This requires coordination between design and content/photography, but produces the cleanest visual result.</p>
+<h2>3. Text shadow</h2>
+<p>A diffuse text shadow — <code>text-shadow: 0 1px 8px rgba(0,0,0,.7)</code> — separates light text from any background without a visible overlay layer. It works best for display text (large headings) and less well for small body text, where the blur can reduce legibility rather than improve it.</p>
+<h2>4. Frosted glass panel</h2>
+<p>Place text inside a panel with <code>backdrop-filter: blur(12px)</code> and a semi-transparent background. The blur creates readable contrast while keeping the background imagery visible and dynamic. Browser support is excellent as of 2024.</p>
+<h2>5. Outline or knockout text</h2>
+<p>Thick text stroke in a contrasting color creates readable text without any background overlay. Best for display or decorative use rather than body text.</p>
+<p>Test every technique with the real image content, not a placeholder. Techniques fail at particular image-content combinations, and that failure is only visible with real content.</p></div>
+  </article>
+  <nav class="prevnext"><a class="prev" href="tip-21-dark-mode-surface.html">← <span class="ko">다크 모드의 배경은 순수 검정이 아니다</span><span class="en">다크 모드의 배경은 순수 검정이 아니다</span></a><a class="next" href="tip-23-proximity.html"><span class="ko">근접성의 원칙: 간격이 곧 관계를 설명한다</span><span class="en">The Proximity Principle: Organize Without Drawing Boxes</span> →</a></nav>
+  <section class="related">
+    <h2><span class="ko">함께 읽기</span><span class="en">Read Next</span></h2>
+    <div class="card-grid"><a class="card" href="tip-01-golden-ratio.html">
+      <div class="card-top"><span class="icon">📐</span><span class="cat"><span class="ko">레이아웃</span><span class="en">Layout</span></span></div>
+      <h3><span class="ko">황금비 1:1.618로 레이아웃 잡는 법</span><span class="en">Using the 1:1.618 Golden Ratio in Layout</span></h3>
+      <p><span class="ko">황금비를 웹 레이아웃 분할과 타이포그래피 스케일에 실제로 적용하는 방법과 주의점을 정리했습니다.</span><span class="en">How to practically apply the golden ratio to web layout splits and typography scales — and when to break the rule.</span></p>
+    </a><a class="card" href="tip-02-60-30-10-rule.html">
+      <div class="card-top"><span class="icon">🎨</span><span class="cat"><span class="ko">색상</span><span class="en">Color</span></span></div>
+      <h3><span class="ko">60-30-10 규칙: 실패하지 않는 색 배분 공식</span><span class="en">The 60-30-10 Rule: A Fail-Safe Color Distribution Formula</span></h3>
+      <p><span class="ko">배경 60%, 보조색 30%, 포인트 10%로 색을 배분하는 60-30-10 규칙의 실전 적용법을 설명합니다.</span><span class="en">How to allocate 60% dominant, 30% secondary, and 10% accent color across your UI — and why the 10% is the most powerful.</span></p>
+    </a><a class="card" href="tip-03-f-pattern.html">
+      <div class="card-top"><span class="icon">👁️</span><span class="cat">UX</span></div>
+      <h3><span class="ko">F자형 시선 패턴: 사용자는 화면을 이렇게 읽는다</span><span class="en">F-Pattern Eye Scanning: How Users Actually Read Screens</span></h3>
+      <p><span class="ko">아이트래킹 연구로 밝혀진 F자형 읽기 패턴과 이를 활용한 콘텐츠 배치 전략을 다룹니다.</span><span class="en">Eye-tracking research revealed the F-shaped reading pattern — here's how to structure content placement around how people really scan.</span></p>
+    </a></div>
+  </section>
+  <p class="back-tool"><span class="ko">💡 배운 내용을 바로 실험해 보세요 — <a href="../design-toolkit.html">Nidwolf 디자인 위자드 열기</a></span><span class="en">💡 Try it out — <a href="../design-toolkit.html">Open Nidwolf Design Wizard</a></span></p>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="../about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="../privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="../design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+<script>
+function _toggleLang(){
+  var html = document.documentElement;
+  var next = html.lang === 'ko' ? 'en' : 'ko';
+  html.lang = next;
+  localStorage.setItem('nw-lang', next);
+  var btn = document.querySelector('.lang-toggle');
+  if(btn) btn.textContent = next === 'ko' ? 'EN' : 'KR';
+}
+function _toggleDark(){
+  var isDark = document.documentElement.toggleAttribute('data-dark');
+  localStorage.setItem('nw-dark', isDark ? '1' : '');
+  var btn = document.getElementById('dark-btn');
+  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.querySelector('.lang-toggle');
+  if(btn){ var cur=document.documentElement.lang; btn.textContent=cur==='ko'?'EN':'KR'; }
+  var db = document.getElementById('dark-btn');
+  if(db) db.textContent = document.documentElement.hasAttribute('data-dark') ? '☀️' : '🌙';
+});
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>
