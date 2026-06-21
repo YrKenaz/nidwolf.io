@@ -2700,20 +2700,20 @@ function renderTip(){
 // FUN ZONE 2: 오늘의 디자인 과제
 // ═══════════════════════════════════════════════════════════
 const CHALLENGES=[
-  {emoji:'🔴',title:'한 가지 색으로',desc:'빨간색 계열 한 가지 팔레트만 사용해서 랜딩 페이지 조합을 완성하세요.',hint:'Crimson Red 팔레트 추천',type:'web',cat:'색상',title_en:'One Color Only',desc_en:'Use only a single red-toned palette to complete a landing page layout.',hint_en:'Try the Crimson Red palette'},
-  {emoji:'⬛',title:'글자만으로',desc:'이미지 없이 타이포그래피와 여백만으로 포트폴리오 레이아웃을 만들어보세요.',hint:'Typography → Split 레이아웃 추천',type:'web',cat:'타이포',title_en:'Type Only',desc_en:'Without images, build a portfolio layout using only typography and whitespace.',hint_en:'Try Typography → Split layout'},
-  {emoji:'🌙',title:'다크 온리',desc:'다크 테마 팔레트(Carbon, Dark Rose, Synthwave)로 대시보드를 구성하세요.',hint:'Dark Mode 전환 후 시작하세요',type:'web',cat:'다크모드',title_en:'Dark Only',desc_en:'Build a dashboard using a dark-theme palette (Carbon, Dark Rose, Synthwave).',hint_en:'Switch to Dark Mode first'},
-  {emoji:'📱',title:'모바일 퍼스트',desc:'Mobile App 레이아웃에 파스텔 팔레트를 조합해 앱 스크린을 완성하세요.',hint:'Lavender + Mobile 레이아웃 추천',type:'web',cat:'반응형',title_en:'Mobile First',desc_en:'Combine a Mobile App layout with a pastel palette to finish an app screen.',hint_en:'Try Lavender + Mobile layout'},
-  {emoji:'⚡',title:'3분 챌린지',desc:'지금부터 3분 안에 가장 마음에 드는 조합을 완성하고 Export CSS를 받으세요.',hint:'위자드의 랜덤 조합을 활용하세요',type:'web',cat:'속도',title_en:'3-Minute Challenge',desc_en:'Complete your favorite combination and export CSS in under 3 minutes.',hint_en:'Use the Wizard random combination feature'},
-  {emoji:'🌈',title:'무지개 팔레트 금지',desc:'단색 계열 팔레트(Cobalt, Emerald 등)만 사용해 독창적인 레이아웃을 만드세요.',hint:'보색보다 유사색 조합을 시도하세요',type:'web',cat:'색상',title_en:'No Rainbow Palettes',desc_en:'Use only monochromatic palettes (Cobalt, Emerald, etc.) to create a unique layout.',hint_en:'Try analogous over complementary color combos'},
-  {emoji:'🏢',title:'WPF 엔터프라이즈',desc:'WPF 위자드에서 Admin Dashboard를 Fluent 스타일로 구성해 XAML을 Export하세요.',hint:'App → WPF → Admin Dashboard',type:'app',cat:'WPF',title_en:'WPF Enterprise',desc_en:'In the WPF Wizard, build an Admin Dashboard in Fluent style and export XAML.',hint_en:'App → WPF → Admin Dashboard'},
-  {emoji:'📊',title:'데이터 우선',desc:'Dashboard 레이아웃에 Corporate Slate 팔레트를 조합해 신뢰감 있는 분석 페이지를 만드세요.',hint:'Slate + Dashboard + Minimal 인터랙션',type:'web',cat:'데이터',title_en:'Data First',desc_en:'Combine a Dashboard layout with Corporate Slate for a trustworthy analytics page.',hint_en:'Slate + Dashboard + Minimal interaction'},
-  {emoji:'🎨',title:'아트 디렉터 모드',desc:'Solar Gold + Terracotta 두 팔레트 중 하나를 골라 E-commerce 레이아웃으로 완성하세요.',hint:'따뜻한 색으로 구매 욕구를 자극하세요',type:'web',cat:'이커머스',title_en:'Art Director Mode',desc_en:'Choose Solar Gold or Terracotta and complete an E-commerce layout.',hint_en:'Warm colors stimulate purchase intent'},
-  {emoji:'🔲',title:'그리드 탐험',desc:'3가지 다른 레이아웃(Card, Masonry, Grid-L)을 같은 팔레트로 비교해보세요.',hint:'같은 색, 다른 구조의 차이를 느껴보세요',type:'web',cat:'레이아웃',title_en:'Grid Explorer',desc_en:'Compare 3 different layouts (Card, Masonry, Grid-L) using the same palette.',hint_en:'Feel the difference — same color, different structure'},
-  {emoji:'🌿',title:'자연 테마',desc:'Sage, Emerald, Teal 중 하나를 골라 Blog/Article 레이아웃으로 차분한 디자인을 완성하세요.',hint:'여백을 충분히 활용하세요',type:'web',cat:'색상',title_en:'Nature Theme',desc_en:'Choose Sage, Emerald, or Teal and build a calm Blog/Article layout.',hint_en:'Use generous whitespace'},
-  {emoji:'🎭',title:'반전의 미학',desc:'다크 팔레트로 밝은 느낌을, 밝은 팔레트로 진지한 느낌을 내보세요. 가능할까요?',hint:'텍스트와 구조로 분위기를 바꿔보세요',type:'web',cat:'실험',title_en:'The Art of Reversal',desc_en:'Try making a dark palette feel bright, or a bright palette feel serious. Can it work?',hint_en:'Change the mood through text and structure'},
-  {emoji:'🚀',title:'스타트업 랜딩',desc:'Landing Page 레이아웃 + 인터랙션 Micro animation + 현대적 팔레트로 스타트업 페이지를 만드세요.',hint:'Lavender 또는 Aurora 팔레트 추천',type:'web',cat:'랜딩',title_en:'Startup Landing',desc_en:'Combine Landing Page + Micro animation + a modern palette to build a startup page.',hint_en:'Try Lavender or Aurora palette'},
-  {emoji:'🎮',title:'게임 UI',desc:'Electric Violet 또는 Synthwave 팔레트로 WPF Media Player 앱 화면을 구성해보세요.',hint:'화려한 색감이 게임 UI에 잘 맞습니다',type:'app',cat:'WPF',title_en:'Game UI',desc_en:'Build a WPF Media Player screen using Electric Violet or Synthwave palette.',hint_en:'Bold color works well for game UI'},
+  {emoji:'🔴',title:'한 가지 색으로',desc:'빨간색 계열 한 가지 팔레트만 사용해서 랜딩 페이지 조합을 완성하세요.',hint:'Crimson Red 팔레트 추천',type:'web',cat:'색상',cat_en:'Color',title_en:'One Color Only',desc_en:'Use only a single red-toned palette to complete a landing page layout.',hint_en:'Try the Crimson Red palette'},
+  {emoji:'⬛',title:'글자만으로',desc:'이미지 없이 타이포그래피와 여백만으로 포트폴리오 레이아웃을 만들어보세요.',hint:'Typography → Split 레이아웃 추천',type:'web',cat:'타이포',cat_en:'Typography',title_en:'Type Only',desc_en:'Without images, build a portfolio layout using only typography and whitespace.',hint_en:'Try Typography → Split layout'},
+  {emoji:'🌙',title:'다크 온리',desc:'다크 테마 팔레트(Carbon, Dark Rose, Synthwave)로 대시보드를 구성하세요.',hint:'Dark Mode 전환 후 시작하세요',type:'web',cat:'다크모드',cat_en:'Dark Mode',title_en:'Dark Only',desc_en:'Build a dashboard using a dark-theme palette (Carbon, Dark Rose, Synthwave).',hint_en:'Switch to Dark Mode first'},
+  {emoji:'📱',title:'모바일 퍼스트',desc:'Mobile App 레이아웃에 파스텔 팔레트를 조합해 앱 스크린을 완성하세요.',hint:'Lavender + Mobile 레이아웃 추천',type:'web',cat:'반응형',cat_en:'Responsive',title_en:'Mobile First',desc_en:'Combine a Mobile App layout with a pastel palette to finish an app screen.',hint_en:'Try Lavender + Mobile layout'},
+  {emoji:'⚡',title:'3분 챌린지',desc:'지금부터 3분 안에 가장 마음에 드는 조합을 완성하고 Export CSS를 받으세요.',hint:'위자드의 랜덤 조합을 활용하세요',type:'web',cat:'속도',cat_en:'Speed',title_en:'3-Minute Challenge',desc_en:'Complete your favorite combination and export CSS in under 3 minutes.',hint_en:'Use the Wizard random combination feature'},
+  {emoji:'🌈',title:'무지개 팔레트 금지',desc:'단색 계열 팔레트(Cobalt, Emerald 등)만 사용해 독창적인 레이아웃을 만드세요.',hint:'보색보다 유사색 조합을 시도하세요',type:'web',cat:'색상',cat_en:'Color',title_en:'No Rainbow Palettes',desc_en:'Use only monochromatic palettes (Cobalt, Emerald, etc.) to create a unique layout.',hint_en:'Try analogous over complementary color combos'},
+  {emoji:'🏢',title:'WPF 엔터프라이즈',desc:'WPF 위자드에서 Admin Dashboard를 Fluent 스타일로 구성해 XAML을 Export하세요.',hint:'App → WPF → Admin Dashboard',type:'app',cat:'WPF',cat_en:'WPF',title_en:'WPF Enterprise',desc_en:'In the WPF Wizard, build an Admin Dashboard in Fluent style and export XAML.',hint_en:'App → WPF → Admin Dashboard'},
+  {emoji:'📊',title:'데이터 우선',desc:'Dashboard 레이아웃에 Corporate Slate 팔레트를 조합해 신뢰감 있는 분석 페이지를 만드세요.',hint:'Slate + Dashboard + Minimal 인터랙션',type:'web',cat:'데이터',cat_en:'Data',title_en:'Data First',desc_en:'Combine a Dashboard layout with Corporate Slate for a trustworthy analytics page.',hint_en:'Slate + Dashboard + Minimal interaction'},
+  {emoji:'🎨',title:'아트 디렉터 모드',desc:'Solar Gold + Terracotta 두 팔레트 중 하나를 골라 E-commerce 레이아웃으로 완성하세요.',hint:'따뜻한 색으로 구매 욕구를 자극하세요',type:'web',cat:'이커머스',cat_en:'E-Commerce',title_en:'Art Director Mode',desc_en:'Choose Solar Gold or Terracotta and complete an E-commerce layout.',hint_en:'Warm colors stimulate purchase intent'},
+  {emoji:'🔲',title:'그리드 탐험',desc:'3가지 다른 레이아웃(Card, Masonry, Grid-L)을 같은 팔레트로 비교해보세요.',hint:'같은 색, 다른 구조의 차이를 느껴보세요',type:'web',cat:'레이아웃',cat_en:'Layout',title_en:'Grid Explorer',desc_en:'Compare 3 different layouts (Card, Masonry, Grid-L) using the same palette.',hint_en:'Feel the difference — same color, different structure'},
+  {emoji:'🌿',title:'자연 테마',desc:'Sage, Emerald, Teal 중 하나를 골라 Blog/Article 레이아웃으로 차분한 디자인을 완성하세요.',hint:'여백을 충분히 활용하세요',type:'web',cat:'색상',cat_en:'Color',title_en:'Nature Theme',desc_en:'Choose Sage, Emerald, or Teal and build a calm Blog/Article layout.',hint_en:'Use generous whitespace'},
+  {emoji:'🎭',title:'반전의 미학',desc:'다크 팔레트로 밝은 느낌을, 밝은 팔레트로 진지한 느낌을 내보세요. 가능할까요?',hint:'텍스트와 구조로 분위기를 바꿔보세요',type:'web',cat:'실험',cat_en:'Experiment',title_en:'The Art of Reversal',desc_en:'Try making a dark palette feel bright, or a bright palette feel serious. Can it work?',hint_en:'Change the mood through text and structure'},
+  {emoji:'🚀',title:'스타트업 랜딩',desc:'Landing Page 레이아웃 + 인터랙션 Micro animation + 현대적 팔레트로 스타트업 페이지를 만드세요.',hint:'Lavender 또는 Aurora 팔레트 추천',type:'web',cat:'랜딩',cat_en:'Landing',title_en:'Startup Landing',desc_en:'Combine Landing Page + Micro animation + a modern palette to build a startup page.',hint_en:'Try Lavender or Aurora palette'},
+  {emoji:'🎮',title:'게임 UI',desc:'Electric Violet 또는 Synthwave 팔레트로 WPF Media Player 앱 화면을 구성해보세요.',hint:'화려한 색감이 게임 UI에 잘 맞습니다',type:'app',cat:'WPF',cat_en:'WPF',title_en:'Game UI',desc_en:'Build a WPF Media Player screen using Electric Violet or Synthwave palette.',hint_en:'Bold color works well for game UI'},
 ];
 
 function renderChallenge(){
@@ -2725,14 +2725,14 @@ function renderChallenge(){
   const upcoming=[1,2,3].map(o=>CHALLENGES[(idx+o)%CHALLENGES.length]).map((x,i)=>`
     <div style="display:flex;gap:10px;align-items:center;padding:10px;border-radius:8px;background:var(--bg);border:1px solid var(--border)">
       <span style="font-size:20px">${x.emoji}</span>
-      <div><div style="font-size:12px;font-weight:700;color:var(--text)">${_en?(x.title_en||x.title):x.title}</div><div style="font-size:11px;color:var(--text2)">${x.cat}</div></div>
+      <div><div style="font-size:12px;font-weight:700;color:var(--text)">${_en?(x.title_en||x.title):x.title}</div><div style="font-size:11px;color:var(--text2)">${_en?(x.cat_en||x.cat):x.cat}</div></div>
       <span style="margin-left:auto;font-size:11px;color:var(--text2)">D+${i+1}</span>
     </div>`).join('');
   const all=CHALLENGES.map((x,i)=>`
     <div style="display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:6px;background:${i===idx?'var(--accent-bg)':'transparent'}">
       <span>${x.emoji}</span>
       <span style="font-size:12px;font-weight:${i===idx?'700':'400'};color:${i===idx?'var(--accent)':'var(--text)'}">${_en?(x.title_en||x.title):x.title}</span>
-      <span style="margin-left:auto;font-size:10px;color:var(--text2)">${x.cat}</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text2)">${_en?(x.cat_en||x.cat):x.cat}</span>
       ${i===idx?`<span style="font-size:10px;background:var(--accent);color:var(--surface);padding:1px 6px;border-radius:8px">${_en?'Today':'오늘'}</span>`:''}
     </div>`).join('');
   c.innerHTML=`<div class="fun-wrap">
@@ -2743,7 +2743,7 @@ function renderChallenge(){
           <div style="font-size:11px;color:var(--text2)">Day ${_dayIndex()} ${_en?'Challenge':'챌린지'} ${typeLabel}</div>
           <div class="fun-title">${_en?(ch.title_en||ch.title):ch.title}</div>
         </div>
-        <span style="margin-left:auto;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--text2)">${ch.cat}</span>
+        <span style="margin-left:auto;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--text2)">${_en?(ch.cat_en||ch.cat):ch.cat}</span>
       </div>
       <p style="font-size:13px;color:var(--text);line-height:1.7;margin:12px 0 8px">${_en?(ch.desc_en||ch.desc):ch.desc}</p>
       <div style="background:var(--surface2);border-radius:8px;padding:10px 14px;border-left:3px solid var(--accent)">
@@ -3144,7 +3144,7 @@ function _showBadgeUnlock(id){
   if(unlocked.includes(id))return;
   unlocked.push(id);
   localStorage.setItem('nw_unlocked',JSON.stringify(unlocked));
-  toast(`🏅 새 뱃지 획득: ${b.icon} "${b.name}"`);
+  const _en=document.documentElement.lang==='en';toast(`🏅 ${_en?'Badge Unlocked':'새 뱃지 획득'}: ${b.icon} "${_en?(b.name_en||b.name):b.name}"`);
 }
 
 function _updateBadgeNavCount(){

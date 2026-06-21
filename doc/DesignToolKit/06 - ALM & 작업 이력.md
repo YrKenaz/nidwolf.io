@@ -22,6 +22,23 @@
 
 ## 스프린트 로그
 
+### Sprint 4 — 도메인 전환 + 이중언어 완성 (2026-06-21)
+
+**목표**: nidwolf.com 도메인 연결 / Cloudflare Pages 배포 / design-toolkit 전체 이중언어화
+
+| # | 작업 | 결과 |
+|---|------|------|
+| 1 | 전체 파일 nidwolf.io → nidwolf.com 일괄 치환 | ✅ |
+| 2 | Cloudflare Pages 프로젝트 생성 + GitHub 연동 | ✅ |
+| 3 | Gabia 네임서버 → Cloudflare 이전 | ✅ |
+| 4 | nidwolf.com 커스텀 도메인 Active 확인 | ✅ |
+| 5 | Google Search Console 등록 + sitemap 제출 | ✅ |
+| 6 | CHALLENGES `cat_en` 필드 추가 (14개) | ✅ |
+| 7 | renderChallenge 3곳 한/영 cat 표시 전환 | ✅ |
+| 8 | `_showBadgeUnlock` 토스트 이중언어화 | ✅ |
+
+---
+
 ### Sprint 3 — 사다리 게임 고도화 + 메인 페이지 (2026-06-20)
 
 **목표**: 사다리 게임 완성도 향상 / 전체 사이트 통합 / 메인 페이지 신설
@@ -84,7 +101,7 @@
 | ID | 우선순위 | 제목 | 설명 |
 |----|---------|------|------|
 | BL-010 | ⭐⭐⭐ | Google AdSense 연동 | 심사 통과 후 광고 스크립트 삽입 |
-| BL-011 | ⭐⭐ | design-toolkit 영문 데이터 완성 | TIPS/CHALLENGES/BADGES 영문 필드 |
+| BL-011 | ✅ 완료 | design-toolkit 영문 데이터 완성 | TIPS/CHALLENGES/BADGES/HISTORY 영문 필드 + 렌더 전환 완료 |
 | BL-012 | ⭐⭐ | 아티클 검색 기능 | articles/index.html 클라이언트 검색 |
 | BL-013 | ⭐ | 뉴스레터 구독 폼 | 이메일 수집 |
 
