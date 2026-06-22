@@ -329,9 +329,79 @@ html[data-dark] .cg-result-overlay{background:rgba(22,24,32,.94);}
   .home-tool-grid{grid-template-columns:repeat(2,1fr);}
   .home-ext-row{grid-template-columns:1fr;}
 }
+
+/* ── CONTRAST CHECKER ─────────────────────────── */
+.cc-wrap{max-width:860px;margin:0 auto;padding:24px 0 60px;}
+.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+@media(max-width:540px){.cc-grid{grid-template-columns:1fr;}}
+.cc-label{font-size:13px;color:var(--text2);display:block;margin-bottom:7px;font-weight:500;}
+.cc-picker-row{display:flex;gap:8px;align-items:center;}
+.cc-color-input{width:44px;height:40px;padding:2px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;flex-shrink:0;background:none;}
+.cc-hex-input{flex:1;height:40px;padding:0 12px;border:1.5px solid var(--border);border-radius:8px;font-family:monospace;font-size:14px;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;}
+.cc-hex-input:focus{border-color:var(--accent);}
+.cc-swap-btn{height:40px;padding:0 13px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text2);cursor:pointer;font-size:18px;flex-shrink:0;transition:border-color .15s;}
+.cc-swap-btn:hover{border-color:var(--accent);color:var(--accent);}
+.cc-ratio-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.cc-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 12px;text-align:center;}
+.cc-stat-label{font-size:11px;color:var(--text2);margin-bottom:5px;}
+.cc-stat-val{font-size:24px;font-weight:700;color:var(--text);line-height:1;}
+.cc-stat-sub{font-size:11px;color:var(--text2);margin-top:4px;}
+.cc-pass{color:#059669!important;}.cc-fail{color:#dc2626!important;}.cc-warn{color:#d97706!important;}
+.cc-section{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.cc-section-head{padding:11px 18px;background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);font-weight:600;}
+.cc-section-body{padding:18px 20px;background:var(--bg);}
+.cc-preview-box{padding:22px 20px;border-radius:8px;border:1px solid var(--border);margin-bottom:12px;transition:background .2s;}
+.cc-comp-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+.cc-comp-btn{padding:9px 18px;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:default;}
+.cc-comp-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+.cc-comp-link{font-size:14px;text-decoration:underline;cursor:default;}
+.cc-comp-text{font-size:14px;}
+.cc-comp-large{font-size:22px;font-weight:700;}
+.cc-comp-input{padding:8px 13px;border-radius:7px;font-size:14px;min-width:120px;background:transparent;cursor:default;}
+.cc-comp-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;border:2px solid;}
+.cc-comp-labels{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;font-size:11px;color:var(--text2);text-align:center;}
+@media(max-width:580px){.cc-comp-labels{grid-template-columns:repeat(3,1fr);}}
+.cc-blind-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:500px){.cc-blind-grid{grid-template-columns:repeat(2,1fr);}}
+.cc-blind-cell{border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.cc-blind-preview{height:60px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+.cc-blind-label{font-size:11px;text-align:center;padding:5px 4px;color:var(--text2);background:var(--surface);}
+.cc-suggest-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.cc-suggest-btn{display:flex;align-items:center;gap:7px;padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;font-size:12px;color:var(--text);transition:border-color .15s;}
+.cc-suggest-btn:hover{border-color:var(--accent);}
+.cc-suggest-swatch{width:18px;height:18px;border-radius:4px;flex-shrink:0;border:1px solid var(--border);}
+.cc-suggest-hex{font-family:monospace;font-size:13px;}
+.cc-suggest-ratio{color:var(--text2);font-size:11px;}
+.cc-suggest-tag{font-size:11px;color:var(--text2);font-weight:600;padding-right:4px;}
+.cc-preset-cat{margin-bottom:14px;}.cc-preset-cat:last-child{margin-bottom:0;}
+.cc-preset-cat-label{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:7px;}
+.cc-preset-btns{display:flex;flex-wrap:wrap;gap:6px;}
+.cc-preset-btn{display:flex;align-items:center;gap:7px;padding:5px 11px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);cursor:pointer;font-size:12px;color:var(--text);transition:border-color .15s;}
+.cc-preset-btn:hover{border-color:var(--accent);}
+.cc-preset-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1px solid var(--border);}
+.cc-info-bar{padding:10px 14px;border-radius:8px;font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.6;}
+.cc-info-bar.pass{background:#f0fdf4;color:#14532d;border:1px solid #bbf7d0;}
+.cc-info-bar.fail{background:#fff1f2;color:#881337;border:1px solid #fecdd3;}
+.cc-info-bar.warn{background:#fffbeb;color:#78350f;border:1px solid #fed7aa;}
+html[data-dark] .cc-info-bar.pass{background:#052e16;color:#4ade80;border-color:#14532d;}
+html[data-dark] .cc-info-bar.fail{background:#2c0a0a;color:#f87171;border-color:#7f1d1d;}
+html[data-dark] .cc-info-bar.warn{background:#292106;color:#fcd34d;border-color:#78350f;}
+.cc-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cc-table th,.cc-table td{padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;}
+.cc-table th{color:var(--text2);font-weight:600;font-size:12px;}
+.cc-table tr:last-child td{border-bottom:none;}
 </style>
 </head>
 <body>
+
+<!-- 색맹 시뮬 SVG 필터 -->
+<svg style="position:absolute;width:0;height:0" aria-hidden="true">
+  <defs>
+    <filter id="cc-prot"><feColorMatrix type="matrix" values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/></filter>
+    <filter id="cc-deut"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
+    <filter id="cc-trit"><feColorMatrix type="matrix" values="0.95 0.05 0 0 0  0 0.433 0.567 0 0  0 0.475 0.525 0 0  0 0 0 1 0"/></filter>
+  </defs>
+</svg>
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo" onclick="_goHome()" style="cursor:pointer;">
@@ -356,7 +426,7 @@ html[data-dark] .cg-result-overlay{background:rgba(22,24,32,.94);}
     <div class="nav-item" id="nav-timeline"  onclick="gotoTool('timeline',this)"   aria-label="디자인 역사 타임라인"><span class="ni">📚</span><span class="nl"><span class="ko">디자인 역사</span><span class="en">Design History</span></span></div>
     <div class="nav-item" id="nav-badges"    onclick="gotoTool('badges',this)"     aria-label="디자이너 뱃지"><span class="ni">🏅</span><span class="nl"><span class="ko">디자이너 뱃지</span><span class="en">Badges</span></span><span class="nav-badge" id="badge-count-nav">0</span></div>
     <div class="nav-item" onclick="location.href='ladder.html'" role="button" aria-label="사다리 게임"><span class="ni">🪜</span><span class="nl"><span class="ko">사다리 게임</span><span class="en">Ladder Game</span></span></div>
-    <div class="nav-item" onclick="location.href='contrast-checker.html'" role="button" aria-label="색상 대비 체커"><span class="ni">🎨</span><span class="nl"><span class="ko">대비 체커</span><span class="en">Contrast</span></span></div>
+    <div class="nav-item" id="nav-contrast" onclick="gotoTool('contrast',this)" role="button" aria-label="색상 대비 체커"><span class="ni">🎨</span><span class="nl"><span class="ko">대비 체커</span><span class="en">Contrast</span></span></div>
     <div class="nav-section">Contents</div>
     <div class="nav-item" onclick="location.href='articles/index.html'" role="button" aria-label="디자인 아티클"><span class="ni">📖</span><span class="nl"><span class="ko">디자인 아티클</span><span class="en">Articles</span></span></div>
     <div class="nav-item" onclick="location.href='about.html'" role="button" aria-label="소개 및 문의"><span class="ni">ℹ️</span><span class="nl"><span class="ko">소개·문의</span><span class="en">About</span></span></div>
@@ -601,6 +671,7 @@ function gotoTool(tool,el){
   const _en=document.documentElement.lang==='en';
   const titles={export:'Export CSS',wizard:'Design Wizard',
     tip:    _en?'💡 Daily Design Tip'      :'💡 오늘의 디자인 팁',
+    contrast: _en?'🎨 Color Contrast Checker':'🎨 색상 대비 체커',
     challenge:_en?'📅 Daily Challenge'     :'📅 오늘의 과제',
     colorgame:_en?'🎯 Color Name Game'     :'🎯 색상 이름 맞히기',
     tastequiz:_en?'🧠 Design Taste Profile':'🧠 디자인 취향 프로파일',
@@ -609,16 +680,245 @@ function gotoTool(tool,el){
   const subs={export:'CSS Variables · Tailwind · SCSS',
     wizard:   _en?'Set your UI direction in 5 steps'      :'5가지 기준으로 UI 방향을 선택하세요',
     tip:      _en?'Fresh design insight every day'         :'매일 새로운 디자인 인사이트',
+    contrast: _en?'WCAG AA/AAA accessibility contrast check'  :'WCAG 접근성 대비비 실시간 확인',
     challenge:_en?'Complete today\'s combination challenge':'오늘의 조건으로 조합을 완성하세요',
     colorgame:_en?'Guess the color name before time runs out!':'타이머 안에 맞히세요!',
     tastequiz:_en?'Build your taste profile through choices':'선택으로 취향 프로필을 완성하세요',
     timeline: _en?'Explore the history of design movements' :'디자인 운동의 역사를 탐험하세요',
     badges:   _en?'Your design journey so far'              :'지금까지 쌓아온 기록'};
   document.getElementById('topbar-title').innerHTML=(titles[tool]||tool)+` <span id="topbar-sub">${subs[tool]||''}</span>`;
-  const renders={export:renderExport,wizard:renderWizard,tip:renderTip,challenge:renderChallenge,colorgame:renderColorGame,tastequiz:renderTasteQuiz,timeline:renderTimeline,badges:renderBadges};
+  const renders={export:renderExport,wizard:renderWizard,tip:renderTip,challenge:renderChallenge,colorgame:renderColorGame,tastequiz:renderTasteQuiz,timeline:renderTimeline,badges:renderBadges,contrast:renderContrastChecker};
   renders[tool]?.();
   _badgeTick('visit_'+tool);
 }
+
+
+// ═══════════════════════════════════════════════
+// CONTRAST CHECKER
+// ═══════════════════════════════════════════════
+(function(){
+  // 유틸
+  function _hexToRgb(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+  function _rgbToHex([r,g,b]){return'#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');}
+  function _lin(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+  function _lum([r,g,b]){return 0.2126*_lin(r)+0.7152*_lin(g)+0.0722*_lin(b);}
+  function _contrast(f,b){const l1=_lum(f),l2=_lum(b);return(Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05);}
+  function _isHex(h){return/^#[0-9a-fA-F]{6}$/.test(h);}
+  function _darken(rgb,a){return rgb.map(v=>Math.max(0,v-a));}
+  function _lighten(rgb,a){return rgb.map(v=>Math.min(255,v+a));}
+
+  const CC_PRESETS=[
+    {ko:'🌙 다크모드',en:'🌙 Dark Mode',items:[
+      {ko:'다크 배경 / 흰 텍스트',en:'Dark bg / white text',fg:'#f8fafc',bg:'#0f172a'},
+      {ko:'다크 + 파랑 강조',en:'Dark + blue accent',fg:'#60a5fa',bg:'#1e293b'},
+      {ko:'다크 + 초록 강조',en:'Dark + green accent',fg:'#4ade80',bg:'#052e16'},
+      {ko:'터미널 스타일',en:'Terminal style',fg:'#00ff41',bg:'#0d0d0d'},
+    ]},
+    {ko:'🎨 UI 패턴',en:'🎨 UI Patterns',items:[
+      {ko:'오류 메시지',en:'Error message',fg:'#991b1b',bg:'#fef2f2'},
+      {ko:'성공 메시지',en:'Success message',fg:'#14532d',bg:'#f0fdf4'},
+      {ko:'경고 메시지',en:'Warning message',fg:'#78350f',bg:'#fffbeb'},
+      {ko:'정보 메시지',en:'Info message',fg:'#1e3a8a',bg:'#eff6ff'},
+      {ko:'비활성(비추천)',en:'Disabled text ❌',fg:'#9ca3af',bg:'#ffffff'},
+    ]},
+    {ko:'🚨 실패 사례',en:'🚨 Fail Examples',items:[
+      {ko:'노랑 위 흰색 ❌',en:'Yellow on white ❌',fg:'#facc15',bg:'#ffffff'},
+      {ko:'회색 텍스트 ❌',en:'Light gray text ❌',fg:'#9ca3af',bg:'#ffffff'},
+      {ko:'파스텔 핑크 ❌',en:'Pastel pink on white ❌',fg:'#f9a8d4',bg:'#ffffff'},
+      {ko:'연청색 ❌',en:'Light blue on white ❌',fg:'#93c5fd',bg:'#ffffff'},
+    ]},
+    {ko:'🏢 브랜드 스타일',en:'🏢 Brand Styles',items:[
+      {ko:'미니멀 (흑백)',en:'Minimal (monochrome)',fg:'#111827',bg:'#ffffff'},
+      {ko:'클래식 (크림/갈색)',en:'Classic (cream/brown)',fg:'#451a03',bg:'#fef9ef'},
+      {ko:'모던 (네이비/블루)',en:'Modern (navy/blue)',fg:'#e2e8f0',bg:'#0f172a'},
+      {ko:'사이버펑크',en:'Cyberpunk',fg:'#00ff41',bg:'#0d0d0d'},
+      {ko:'복고풍 (세피아)',en:'Retro (sepia)',fg:'#5c2d00',bg:'#fdf6e3'},
+    ]},
+  ];
+  const CC_BLIND=[
+    {ko:'정상 시각',en:'Normal',f:'none'},
+    {ko:'적록색맹',en:'Protanopia',f:'url(#cc-prot)'},
+    {ko:'녹색맹',en:'Deuteranopia',f:'url(#cc-deut)'},
+    {ko:'청황색맹',en:'Tritanopia',f:'url(#cc-trit)'},
+  ];
+
+  function _ccBuildPresets(){
+    const en=document.documentElement.lang==='en';
+    const area=document.getElementById('cc-preset-area');
+    if(!area)return;
+    area.innerHTML='';
+    CC_PRESETS.forEach(cat=>{
+      const div=document.createElement('div');div.className='cc-preset-cat';
+      const lbl=document.createElement('div');lbl.className='cc-preset-cat-label';lbl.textContent=en?cat.en:cat.ko;div.appendChild(lbl);
+      const row=document.createElement('div');row.className='cc-preset-btns';
+      cat.items.forEach(p=>{
+        const btn=document.createElement('button');btn.className='cc-preset-btn';
+        btn.innerHTML=`<span class="cc-preset-swatch" style="background:${p.fg}"></span><span>${en?p.en:p.ko}</span>`;
+        btn.onclick=()=>_ccApply(p.fg,p.bg);row.appendChild(btn);
+      });
+      div.appendChild(row);area.appendChild(div);
+    });
+  }
+
+  function _ccUpdateBlind(fg,bg){
+    const en=document.documentElement.lang==='en';
+    const grid=document.getElementById('cc-blind-grid');if(!grid)return;
+    grid.innerHTML='';
+    CC_BLIND.forEach(t=>{
+      const cell=document.createElement('div');cell.className='cc-blind-cell';
+      cell.innerHTML=`<div class="cc-blind-preview" style="background:${bg};filter:${t.f}"><span style="color:${fg};font-size:15px;font-weight:700">Aa 가나</span></div><div class="cc-blind-label">${en?t.en:t.ko}</div>`;
+      grid.appendChild(cell);
+    });
+  }
+
+  function _ccUpdateSuggest(fg,bg,ratio){
+    const en=document.documentElement.lang==='en';
+    const area=document.getElementById('cc-suggest-area');if(!area)return;
+    area.innerHTML='';
+    if(ratio>=4.5){area.innerHTML=`<span style="font-size:13px;color:var(--cc-pass,#059669)">✅ ${en?'Already passes AA standard.':'이미 AA 기준을 통과했습니다.'}</span>`;return;}
+    const fgRgb=_hexToRgb(fg),bgRgb=_hexToRgb(bg);
+    let fgS=null,bgS=null;
+    for(let s=3;s<=200;s+=3){
+      if(!fgS){const d=_darken(fgRgb,s);if(_contrast(d,bgRgb)>=4.5)fgS={hex:_rgbToHex(d),r:_contrast(d,bgRgb)};}
+      if(!fgS){const l=_lighten(fgRgb,s);if(_contrast(l,bgRgb)>=4.5)fgS={hex:_rgbToHex(l),r:_contrast(l,bgRgb)};}
+      if(!bgS){const d=_darken(bgRgb,s);if(_contrast(fgRgb,d)>=4.5)bgS={hex:_rgbToHex(d),r:_contrast(fgRgb,d)};}
+      if(!bgS){const l=_lighten(bgRgb,s);if(_contrast(fgRgb,l)>=4.5)bgS={hex:_rgbToHex(l),r:_contrast(fgRgb,l)};}
+      if(fgS&&bgS)break;
+    }
+    if(fgS){const tag=document.createElement('span');tag.className='cc-suggest-tag';tag.textContent=en?'Foreground →':'전경색 →';area.appendChild(tag);
+      const btn=document.createElement('button');btn.className='cc-suggest-btn';btn.innerHTML=`<span class="cc-suggest-swatch" style="background:${fgS.hex}"></span><span class="cc-suggest-hex">${fgS.hex}</span><span class="cc-suggest-ratio">${fgS.r.toFixed(2)}:1</span>`;btn.onclick=()=>_ccApply(fgS.hex,bg);area.appendChild(btn);}
+    if(bgS){const tag=document.createElement('span');tag.className='cc-suggest-tag';tag.style.marginLeft=fgS?'12px':'0';tag.textContent=en?'Background →':'배경색 →';area.appendChild(tag);
+      const btn=document.createElement('button');btn.className='cc-suggest-btn';btn.innerHTML=`<span class="cc-suggest-swatch" style="background:${bgS.hex}"></span><span class="cc-suggest-hex">${bgS.hex}</span><span class="cc-suggest-ratio">${bgS.r.toFixed(2)}:1</span>`;btn.onclick=()=>_ccApply(fg,bgS.hex);area.appendChild(btn);}
+    if(!fgS&&!bgS)area.innerHTML=`<span style="font-size:13px;color:var(--text2)">${en?'No suggestion found.':'적합한 제안을 찾을 수 없습니다.'}</span>`;
+  }
+
+  function _ccCalc(){
+    const fgEl=document.getElementById('cc-fg');const bgEl=document.getElementById('cc-bg');if(!fgEl||!bgEl)return;
+    const fg=fgEl.value,bg=bgEl.value;
+    document.getElementById('cc-fg-hex').value=fg;document.getElementById('cc-bg-hex').value=bg;
+    const r=_contrast(_hexToRgb(fg),_hexToRgb(bg));
+    const en=document.documentElement.lang==='en';
+    document.getElementById('cc-ratio').textContent=r.toFixed(2)+':1';
+    const aaPass=r>=4.5,aaaPass=r>=7,aaLargePass=r>=3;
+    const aaEl=document.getElementById('cc-aa');aaEl.textContent=aaPass?(en?'Pass':'통과'):(en?'Fail':'실패');aaEl.className='cc-stat-val '+(aaPass?'cc-pass':'cc-fail');
+    const aaaEl=document.getElementById('cc-aaa');aaaEl.textContent=aaaPass?(en?'Pass':'통과'):(en?'Fail':'실패');aaaEl.className='cc-stat-val '+(aaaPass?'cc-pass':'cc-fail');
+    const sub=document.getElementById('cc-aa-sub');sub.textContent=(!aaPass&&aaLargePass)?(en?'Passes for large text (3:1)':'큰 텍스트는 통과 (3:1)'):'';
+    const bar=document.getElementById('cc-info-bar');bar.style.display='flex';
+    if(aaaPass){bar.className='cc-info-bar pass';bar.textContent=en?'✅ Excellent! Passes both AA and AAA standards.':'✅ 훌륭합니다! AA와 AAA 기준을 모두 통과했습니다.';}
+    else if(aaPass){bar.className='cc-info-bar warn';bar.textContent=en?'✅ Passes AA. For AAA (7:1) you need a stronger contrast.':'✅ AA 통과. AAA(7:1) 기준을 충족하려면 대비를 더 높여야 합니다.';}
+    else if(aaLargePass){bar.className='cc-info-bar warn';bar.textContent=en?'⚠️ Fails AA for normal text, but passes for large text (3:1).':'⚠️ 일반 텍스트 AA 실패. 큰 텍스트(18pt+)에서만 사용하세요.';}
+    else{bar.className='cc-info-bar fail';bar.textContent=en?'❌ Fails WCAG AA. Not recommended for any text or UI use.':'❌ WCAG AA 기준 미달. 텍스트·UI 요소에 사용하지 마세요.';}
+    const preview=document.getElementById('cc-comp-preview');preview.style.background=bg;
+    [['cc-cp-btn',el=>{el.style.background=fg;el.style.color=bg;}],['cc-cp-badge',el=>{el.style.background=fg;el.style.color=bg;}],['cc-cp-link',el=>{el.style.color=fg;}],['cc-cp-text',el=>{el.style.color=fg;}],['cc-cp-large',el=>{el.style.color=fg;}],['cc-cp-input',el=>{el.style.color=fg;el.style.borderColor=fg;}],['cc-cp-icon',el=>{el.style.color=fg;el.style.borderColor=fg;}]].forEach(([id,fn])=>{const el=document.getElementById(id);if(el)fn(el);});
+    _ccUpdateBlind(fg,bg);_ccUpdateSuggest(fg,bg,r);
+  }
+
+  function _ccApply(fg,bg){
+    document.getElementById('cc-fg').value=fg;document.getElementById('cc-bg').value=bg;
+    document.getElementById('cc-fg-hex').value=fg;document.getElementById('cc-bg-hex').value=bg;
+    _ccCalc();
+  }
+
+  window._ccSyncHex=function(id){
+    const hex=document.getElementById('cc-'+id+'-hex').value.trim();
+    if(_isHex(hex)){document.getElementById('cc-'+id).value=hex;_ccCalc();}
+  };
+  window._ccSwap=function(){
+    const fg=document.getElementById('cc-fg').value,bg=document.getElementById('cc-bg').value;_ccApply(bg,fg);
+  };
+
+  window.renderContrastChecker=function(){
+    const en=document.documentElement.lang==='en';
+    document.getElementById('content').innerHTML=`
+<div class="cc-wrap">
+  <!-- 색상 입력 -->
+  <div class="cc-grid">
+    <div>
+      <label class="cc-label" for="cc-fg">${en?'Foreground (text / icon)':'전경색 (텍스트·아이콘)'}</label>
+      <div class="cc-picker-row">
+        <input type="color" id="cc-fg" class="cc-color-input" value="#1d4ed8">
+        <input type="text" id="cc-fg-hex" class="cc-hex-input" value="#1d4ed8" maxlength="7" oninput="_ccSyncHex('fg')">
+      </div>
+    </div>
+    <div>
+      <label class="cc-label" for="cc-bg">${en?'Background':'배경색'}</label>
+      <div class="cc-picker-row">
+        <input type="color" id="cc-bg" class="cc-color-input" value="#ffffff">
+        <input type="text" id="cc-bg-hex" class="cc-hex-input" value="#ffffff" maxlength="7" oninput="_ccSyncHex('bg')">
+        <button class="cc-swap-btn" onclick="_ccSwap()" title="${en?'Swap':'전경/배경 스왑'}">⇄</button>
+      </div>
+    </div>
+  </div>
+  <!-- 대비비 결과 -->
+  <div class="cc-ratio-row">
+    <div class="cc-stat"><div class="cc-stat-label">${en?'Contrast ratio':'대비비'}</div><div class="cc-stat-val" id="cc-ratio">—</div></div>
+    <div class="cc-stat"><div class="cc-stat-label">AA ${en?'(normal text 4.5:1)':'(일반 텍스트 4.5:1)'}</div><div class="cc-stat-val" id="cc-aa">—</div><div class="cc-stat-sub" id="cc-aa-sub"></div></div>
+    <div class="cc-stat"><div class="cc-stat-label">AAA ${en?'(enhanced 7:1)':'(강화 기준 7:1)'}</div><div class="cc-stat-val" id="cc-aaa">—</div></div>
+  </div>
+  <div id="cc-info-bar" class="cc-info-bar" style="margin-bottom:20px;display:none"></div>
+  <!-- ① 미리보기 -->
+  <div class="cc-section">
+    <div class="cc-section-head">① ${en?'UI Component Preview':'UI 컴포넌트 미리보기'}</div>
+    <div class="cc-section-body">
+      <div id="cc-comp-preview" class="cc-preview-box">
+        <div class="cc-comp-grid">
+          <button class="cc-comp-btn" id="cc-cp-btn">Button</button>
+          <span class="cc-comp-badge" id="cc-cp-badge">Badge</span>
+          <span class="cc-comp-link" id="cc-cp-link">${en?'Link text':'링크 텍스트'}</span>
+          <span class="cc-comp-text" id="cc-cp-text">${en?'Body text':'일반 텍스트'}</span>
+          <span class="cc-comp-large" id="cc-cp-large">${en?'Heading':'큰 제목'}</span>
+          <span class="cc-comp-input" id="cc-cp-input">${en?'Input':'입력 필드'}</span>
+          <span class="cc-comp-icon" id="cc-cp-icon">Aa</span>
+        </div>
+      </div>
+      <div class="cc-comp-labels">
+        <span>${en?'Button':'버튼'}</span><span>${en?'Badge':'뱃지'}</span><span>${en?'Link':'링크'}</span>
+        <span>${en?'Text':'텍스트'}</span><span>${en?'Heading':'제목'}</span><span>${en?'Input':'입력창'}</span>
+      </div>
+    </div>
+  </div>
+  <!-- ② 수정 제안 -->
+  <div class="cc-section">
+    <div class="cc-section-head">② ${en?'Auto Color Fix Suggestions':'자동 색상 수정 제안'}</div>
+    <div class="cc-section-body">
+      <p style="font-size:13px;color:var(--text2);margin:0 0 12px">${en?'If the current colors fail AA, the closest passing color is suggested. Click to apply.':'현재 색상이 AA 기준 미달이면 가장 가까운 통과 색상을 제안합니다. 클릭하면 바로 적용됩니다.'}</p>
+      <div class="cc-suggest-row" id="cc-suggest-area"></div>
+    </div>
+  </div>
+  <!-- ③ 색맹 시뮬 -->
+  <div class="cc-section">
+    <div class="cc-section-head">③ ${en?'Color Vision Simulation':'색각 이상 시뮬레이션'}</div>
+    <div class="cc-section-body">
+      <p style="font-size:13px;color:var(--text2);margin:0 0 14px">${en?'Preview how colors appear under different types of color vision deficiency.':'색각 이상 유형별로 색상이 어떻게 보이는지 확인합니다.'}</p>
+      <div class="cc-blind-grid" id="cc-blind-grid"></div>
+    </div>
+  </div>
+  <!-- ④ 프리셋 -->
+  <div class="cc-section">
+    <div class="cc-section-head">④ ${en?'Preset Combinations':'카테고리별 프리셋'}</div>
+    <div class="cc-section-body" id="cc-preset-area"></div>
+  </div>
+  <!-- WCAG 기준표 -->
+  <div class="cc-section">
+    <div class="cc-section-head">📋 WCAG 2.1 ${en?'Contrast Requirements':'대비 기준 요약'}</div>
+    <div class="cc-section-body" style="padding:0">
+      <table class="cc-table"><thead><tr><th>${en?'Level':'기준'}</th><th>${en?'Applies to':'적용 대상'}</th><th>${en?'Min ratio':'최소 비율'}</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AA</strong></td><td>${en?'Normal text (below 18pt or 14pt Bold)':'일반 텍스트 (18pt 미만 또는 14pt Bold 미만)'}</td><td><strong>4.5 : 1</strong></td></tr>
+        <tr><td><strong>AA</strong></td><td>${en?'Large text (18pt+ or 14pt Bold+)':'큰 텍스트 (18pt 이상 또는 14pt Bold 이상)'}</td><td><strong>3.0 : 1</strong></td></tr>
+        <tr><td><strong>AA</strong></td><td>${en?'UI components, icons, graphics':'UI 컴포넌트, 아이콘, 그래픽'}</td><td><strong>3.0 : 1</strong></td></tr>
+        <tr><td><strong>AAA</strong></td><td>${en?'Normal text (enhanced)':'일반 텍스트 (강화 기준)'}</td><td><strong>7.0 : 1</strong></td></tr>
+        <tr><td><strong>AAA</strong></td><td>${en?'Large text (enhanced)':'큰 텍스트 (강화 기준)'}</td><td><strong>4.5 : 1</strong></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>`;
+    document.getElementById('cc-fg').addEventListener('input',_ccCalc);
+    document.getElementById('cc-bg').addEventListener('input',_ccCalc);
+    _ccBuildPresets();
+    _ccCalc();
+  };
+})();
 
 // ── TOAST ─────────────────────────────────────
 function toast(msg){
