@@ -241,6 +241,12 @@ html[lang="ko"] .wz-point-label-en{display:none;}
 .cg-option.correct{border-color:#10b981;background:#ecfdf5;color:#064e3b;}
 .cg-option.wrong{border-color:#ef4444;background:#fff5f5;color:#450a0a;}
 .cg-timer-bar{height:5px;border-radius:3px;background:var(--accent);transition:width linear;margin-bottom:12px;}
+.cg-overlay{position:absolute;inset:0;border-radius:12px;background:rgba(var(--surface-rgb,248,249,252),.92);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:10;padding:28px 24px;text-align:center;}
+html[data-dark] .cg-overlay{background:rgba(22,24,32,.92);}
+.cg-overlay-title{font-size:22px;font-weight:800;color:var(--text);}
+.cg-overlay-desc{font-size:13px;color:var(--text2);line-height:1.7;max-width:320px;}
+.cg-start-btn{margin-top:4px;padding:11px 32px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.cg-start-btn:hover{opacity:.85;}
 .tl-item{display:flex;gap:16px;margin-bottom:0;}
 .tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:4px;border:2px solid var(--surface);}
 .tl-line{width:2px;background:var(--border);margin:0 auto;flex:1;min-height:24px;}
@@ -2773,13 +2779,30 @@ function renderChallenge(){
 // ═══════════════════════════════════════════════════════════
 let _cgScore=0,_cgBest=parseInt(localStorage.getItem('cg_best')||'0'),_cgTimer=null,_cgAnswered=false;
 
+function _cgStart(){
+  const ov=document.getElementById('cg-overlay');
+  if(ov){ov.style.opacity='0';ov.style.transition='opacity .25s';setTimeout(()=>ov.remove(),250);}
+  _cgNextRound();
+}
 function renderColorGame(){
   _cgScore=0;_cgAnswered=false;
   if(_cgTimer)clearInterval(_cgTimer);
   const _en=document.documentElement.lang==='en';
   const c=document.getElementById('content');
   c.innerHTML=`<div class="fun-wrap">
-    <div class="fun-section">
+    <div class="fun-section" style="position:relative">
+      <div id="cg-overlay" class="cg-overlay">
+        <div class="cg-overlay-title">🎯 ${_en?'Color Name Quiz':'색상 이름 맞히기'}</div>
+        <div class="cg-overlay-desc">${_en?'A color swatch appears — pick the correct palette name before the timer runs out.<br>Wrong or slow? Score resets to 0. How high can you go?':'색상 견본이 표시됩니다. 타이머가 끝나기 전에 올바른 팔레트 이름을 고르세요.<br>오답·시간 초과 시 점수가 0으로 초기화됩니다.'}</div>
+        <div style="display:flex;gap:10px;font-size:12px;color:var(--text2);background:var(--bg);border-radius:8px;padding:10px 16px;border:1px solid var(--border)">
+          <span>⏱ ${_en?'10 sec / round':'라운드당 10초'}</span>
+          <span>·</span>
+          <span>✅ ${_en?'Correct → +1 pt':'정답 → +1점'}</span>
+          <span>·</span>
+          <span>❌ ${_en?'Wrong → reset':'오답 → 초기화'}</span>
+        </div>
+        <button class="cg-start-btn" onclick="_cgStart()">${_en?'▶ Start Game':'▶ 게임 시작'}</button>
+      </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
         <div class="fun-title">🎯 ${_en?'Color Name Quiz':'색상 이름 맞히기'}</div>
         <div style="display:flex;gap:12px;align-items:center">
@@ -2795,7 +2818,6 @@ function renderColorGame(){
     </div>
   </div>`;
   _badgeTick('colorgame_played');
-  _cgNextRound();
 }
 
 function _cgNextRound(){
@@ -2826,7 +2848,9 @@ function _cgAnswer(btn,chosen,correct){
   if(_cgAnswered)return;
   _cgAnswered=true;
   if(_cgTimer)clearInterval(_cgTimer);
+  const _en=document.documentElement.lang==='en';
   const res=document.getElementById('cg-result');
+  const bar=document.getElementById('cg-timer-bar');
   const allBtns=document.querySelectorAll('.cg-option');
   allBtns.forEach(b=>{
     const n=b.textContent;
@@ -2835,7 +2859,6 @@ function _cgAnswer(btn,chosen,correct){
   });
   if(chosen===correct){
     _cgScore++;
-    const _en=document.documentElement.lang==='en';
     if(_cgScore>_cgBest){_cgBest=_cgScore;localStorage.setItem('cg_best',_cgBest);document.getElementById('cg-best').textContent=_cgBest+(_en?' pts':'점');}
     document.getElementById('cg-score').textContent=_cgScore+(_en?' pts':'점');
     res.style.color='#059669';res.textContent=_en?'✅ Correct! +1 pt':'✅ 정답! +1점';
@@ -2845,10 +2868,11 @@ function _cgAnswer(btn,chosen,correct){
     setTimeout(_cgNextRound,900);
   } else {
     btn.classList.add('wrong');
+    if(bar){bar.style.transition='none';bar.style.width='0';}
     res.style.color='#ef4444';res.textContent=_en?`❌ Wrong! Answer: "${PALETTES.find(p=>p.id===correct)?.name}" (score reset)`:`❌ 오답. 정답은 "${PALETTES.find(p=>p.id===correct)?.name}" 입니다. (점수 초기화)`;
     _cgScore=0;
     document.getElementById('cg-score').textContent='0'+(_en?' pts':'점');
-    setTimeout(_cgNextRound,2000);
+    setTimeout(_cgNextRound,700);
   }
 }
 
