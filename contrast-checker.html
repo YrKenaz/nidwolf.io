@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>(function(){
+  var l=localStorage.getItem('nw-lang')||'ko';
+  document.documentElement.lang=l;
+  if(localStorage.getItem('nw-dark'))document.documentElement.setAttribute('data-dark','');
+})();</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>색상 대비 체커 (WCAG) | Nidwolf Design Toolkit</title>
+<meta name="description" content="전경색과 배경색의 WCAG 대비비를 실시간으로 확인하세요. AA·AAA 통과 여부, UI 컴포넌트 미리보기, 색맹 시뮬레이션, 자동 수정 제안 기능을 무료로 제공합니다."/>
+<meta property="og:title" content="색상 대비 체커 (WCAG) | Nidwolf Design Toolkit"/>
+<meta property="og:description" content="WCAG AA·AAA 색상 대비 체커 — UI 컴포넌트 미리보기, 색맹 시뮬레이션, 자동 색상 수정 제안"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://nidwolf.com/contrast-checker.html"/>
+<meta property="og:image" content="https://nidwolf.com/nidwolf-logo.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:image" content="https://nidwolf.com/nidwolf-logo.png"/>
+<link rel="canonical" href="https://nidwolf.com/contrast-checker.html"/>
+<link rel="icon" href="Nidwolf-ico.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="articles/style.css"/>
+<style>
+:root{
+  --cc-surface:#f8f9fb;
+  --cc-border:#e5e7eb;
+  --cc-pass:#059669;
+  --cc-fail:#dc2626;
+  --cc-warn:#d97706;
+}
+html[data-dark]{
+  --cc-surface:#1e2130;
+  --cc-border:#2d3148;
+}
+.cc-wrap{max-width:860px;margin:0 auto;padding:32px 20px 60px;}
+.cc-title{font-size:28px;font-weight:700;color:var(--t1);margin-bottom:6px;}
+.cc-sub{font-size:14px;color:var(--t2);margin-bottom:32px;}
+.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+@media(max-width:540px){.cc-grid{grid-template-columns:1fr;}}
+.cc-label{font-size:13px;color:var(--t2);display:block;margin-bottom:7px;font-weight:500;}
+.cc-picker-row{display:flex;gap:8px;align-items:center;}
+.cc-color-input{width:44px;height:40px;padding:2px;border-radius:8px;border:1.5px solid var(--cc-border);cursor:pointer;flex-shrink:0;background:none;}
+.cc-hex-input{flex:1;height:40px;padding:0 12px;border:1.5px solid var(--cc-border);border-radius:8px;font-family:monospace;font-size:14px;background:var(--bg);color:var(--t1);outline:none;transition:border-color .15s;}
+.cc-hex-input:focus{border-color:var(--ac);}
+.cc-swap-btn{height:40px;padding:0 13px;border:1.5px solid var(--cc-border);border-radius:8px;background:var(--bg);color:var(--t2);cursor:pointer;font-size:18px;flex-shrink:0;transition:border-color .15s;}
+.cc-swap-btn:hover{border-color:var(--ac);color:var(--ac);}
+.cc-ratio-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.cc-stat{background:var(--cc-surface);border:1px solid var(--cc-border);border-radius:10px;padding:16px 12px;text-align:center;}
+.cc-stat-label{font-size:11px;color:var(--t2);margin-bottom:5px;}
+.cc-stat-val{font-size:24px;font-weight:700;color:var(--t1);line-height:1;}
+.cc-stat-sub{font-size:11px;color:var(--t2);margin-top:4px;}
+.cc-pass{color:var(--cc-pass)!important;}
+.cc-fail{color:var(--cc-fail)!important;}
+.cc-warn{color:var(--cc-warn)!important;}
+
+.cc-section{border:1px solid var(--cc-border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.cc-section-head{padding:11px 18px;background:var(--cc-surface);border-bottom:1px solid var(--cc-border);font-size:13px;color:var(--t2);font-weight:600;display:flex;align-items:center;gap:8px;}
+.cc-section-head .cc-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--ac);color:#fff;font-weight:600;}
+.cc-section-body{padding:18px 20px;background:var(--bg);}
+
+/* 미리보기 */
+.cc-preview-box{padding:22px 20px;border-radius:8px;border:1px solid var(--cc-border);margin-bottom:12px;transition:background .2s;}
+.cc-comp-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+.cc-comp-btn{padding:9px 18px;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:default;}
+.cc-comp-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+.cc-comp-link{font-size:14px;text-decoration:underline;cursor:default;}
+.cc-comp-text{font-size:14px;}
+.cc-comp-large{font-size:22px;font-weight:700;}
+.cc-comp-input{padding:8px 13px;border-radius:7px;font-size:14px;min-width:120px;background:transparent;cursor:default;}
+.cc-comp-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;border:2px solid;}
+
+/* 라벨 그리드 */
+.cc-comp-labels{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;font-size:11px;color:var(--t2);text-align:center;}
+@media(max-width:580px){.cc-comp-labels{grid-template-columns:repeat(3,1fr);}}
+
+/* 색맹 시뮬 */
+.cc-blind-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:500px){.cc-blind-grid{grid-template-columns:repeat(2,1fr);}}
+.cc-blind-cell{border-radius:8px;overflow:hidden;border:1px solid var(--cc-border);}
+.cc-blind-preview{height:60px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+.cc-blind-label{font-size:11px;text-align:center;padding:5px 4px;color:var(--t2);background:var(--cc-surface);}
+
+/* 수정 제안 */
+.cc-suggest-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.cc-suggest-btn{display:flex;align-items:center;gap:7px;padding:6px 12px;border:1.5px solid var(--cc-border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:12px;color:var(--t1);transition:border-color .15s;}
+.cc-suggest-btn:hover{border-color:var(--ac);}
+.cc-suggest-swatch{width:18px;height:18px;border-radius:4px;flex-shrink:0;border:1px solid var(--cc-border);}
+.cc-suggest-hex{font-family:monospace;font-size:13px;}
+.cc-suggest-ratio{color:var(--t2);font-size:11px;}
+.cc-suggest-tag{font-size:11px;color:var(--t2);font-weight:600;padding-right:4px;}
+
+/* 프리셋 */
+.cc-preset-cat{margin-bottom:14px;}
+.cc-preset-cat:last-child{margin-bottom:0;}
+.cc-preset-cat-label{font-size:12px;color:var(--t2);font-weight:600;margin-bottom:7px;}
+.cc-preset-btns{display:flex;flex-wrap:wrap;gap:6px;}
+.cc-preset-btn{display:flex;align-items:center;gap:7px;padding:5px 11px;border:1.5px solid var(--cc-border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:12px;color:var(--t1);transition:border-color .15s;}
+.cc-preset-btn:hover{border-color:var(--ac);}
+.cc-preset-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1px solid var(--cc-border);}
+
+/* 정보 바 */
+.cc-info-bar{padding:10px 14px;border-radius:8px;font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.6;}
+.cc-info-bar.pass{background:#f0fdf4;color:#14532d;border:1px solid #bbf7d0;}
+.cc-info-bar.fail{background:#fff1f2;color:#881337;border:1px solid #fecdd3;}
+.cc-info-bar.warn{background:#fffbeb;color:#78350f;border:1px solid #fed7aa;}
+html[data-dark] .cc-info-bar.pass{background:#052e16;color:#4ade80;border-color:#14532d;}
+html[data-dark] .cc-info-bar.fail{background:#2c0a0a;color:#f87171;border-color:#7f1d1d;}
+html[data-dark] .cc-info-bar.warn{background:#292106;color:#fcd34d;border-color:#78350f;}
+
+/* 기준 테이블 */
+.cc-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cc-table th,.cc-table td{padding:8px 12px;border-bottom:1px solid var(--cc-border);text-align:left;}
+.cc-table th{color:var(--t2);font-weight:600;font-size:12px;}
+.cc-table tr:last-child td{border-bottom:none;}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><img src="Nidwolf-ico.ico" alt=""/>Nidwolf <span>Design Toolkit</span></a>
+    <nav>
+      <a href="design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Tools</span></a>
+      <a href="articles/index.html"><span class="ko">아티클</span><span class="en">Articles</span></a>
+      <a href="ladder.html"><span class="ko">사다리 게임</span><span class="en">Ladder</span></a>
+      <a href="contrast-checker.html" style="color:var(--ac)"><span class="ko">대비 체커</span><span class="en">Contrast</span></a>
+      <a href="about.html"><span class="ko">소개</span><span class="en">About</span></a>
+      <button class="lang-toggle" onclick="_toggleLang()">EN</button>
+      <button class="lang-toggle" id="dark-btn" onclick="_toggleDark()" style="padding:4px 9px;">🌙</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="cc-wrap">
+  <h1 class="cc-title"><span class="ko">🎨 색상 대비 체커</span><span class="en">🎨 Color Contrast Checker</span></h1>
+  <p class="cc-sub"><span class="ko">WCAG 접근성 기준에 따른 전경·배경 색상 대비를 실시간으로 확인합니다.</span><span class="en">Check foreground/background color contrast against WCAG accessibility standards in real time.</span></p>
+
+  <!-- 색상 입력 -->
+  <div class="cc-grid">
+    <div>
+      <label class="cc-label" for="fg"><span class="ko">전경색 (텍스트·아이콘)</span><span class="en">Foreground (text / icon)</span></label>
+      <div class="cc-picker-row">
+        <input type="color" id="fg" class="cc-color-input" value="#1d4ed8">
+        <input type="text" id="fg-hex" class="cc-hex-input" value="#1d4ed8" maxlength="7" oninput="syncHex('fg')">
+      </div>
+    </div>
+    <div>
+      <label class="cc-label" for="bg"><span class="ko">배경색</span><span class="en">Background</span></label>
+      <div class="cc-picker-row">
+        <input type="color" id="bg" class="cc-color-input" value="#ffffff">
+        <input type="text" id="bg-hex" class="cc-hex-input" value="#ffffff" maxlength="7" oninput="syncHex('bg')">
+        <button class="cc-swap-btn" onclick="swapColors()" title="전경/배경 스왑 · Swap">⇄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 대비비 결과 -->
+  <div class="cc-ratio-row">
+    <div class="cc-stat">
+      <div class="cc-stat-label"><span class="ko">대비비</span><span class="en">Contrast ratio</span></div>
+      <div class="cc-stat-val" id="ratio">—</div>
+    </div>
+    <div class="cc-stat">
+      <div class="cc-stat-label">AA <span class="ko">(일반 텍스트 4.5:1)</span><span class="en">(normal text 4.5:1)</span></div>
+      <div class="cc-stat-val" id="aa-result">—</div>
+      <div class="cc-stat-sub" id="aa-sub"></div>
+    </div>
+    <div class="cc-stat">
+      <div class="cc-stat-label">AAA <span class="ko">(강화 기준 7:1)</span><span class="en">(enhanced 7:1)</span></div>
+      <div class="cc-stat-val" id="aaa-result">—</div>
+    </div>
+  </div>
+
+  <!-- 상태 안내 바 -->
+  <div id="info-bar" class="cc-info-bar" style="margin-bottom:20px;display:none"></div>
+
+  <!-- ① UI 컴포넌트 미리보기 -->
+  <div class="cc-section">
+    <div class="cc-section-head">
+      <span>① <span class="ko">UI 컴포넌트 미리보기</span><span class="en">UI Component Preview</span></span>
+    </div>
+    <div class="cc-section-body">
+      <div id="comp-preview" class="cc-preview-box">
+        <div class="cc-comp-grid" id="comp-items">
+          <button class="cc-comp-btn" id="cp-btn">Button</button>
+          <span class="cc-comp-badge" id="cp-badge">Badge</span>
+          <span class="cc-comp-link" id="cp-link"><span class="ko">링크 텍스트</span><span class="en">Link text</span></span>
+          <span class="cc-comp-text" id="cp-text"><span class="ko">일반 텍스트</span><span class="en">Body text</span></span>
+          <span class="cc-comp-large" id="cp-large"><span class="ko">큰 제목</span><span class="en">Heading</span></span>
+          <span class="cc-comp-input" id="cp-input"><span class="ko">입력 필드</span><span class="en">Input</span></span>
+          <span class="cc-comp-icon" id="cp-icon">Aa</span>
+        </div>
+      </div>
+      <div class="cc-comp-labels">
+        <span><span class="ko">버튼</span><span class="en">Button</span></span>
+        <span><span class="ko">뱃지</span><span class="en">Badge</span></span>
+        <span><span class="ko">링크</span><span class="en">Link</span></span>
+        <span><span class="ko">텍스트</span><span class="en">Text</span></span>
+        <span><span class="ko">제목</span><span class="en">Heading</span></span>
+        <span><span class="ko">입력창</span><span class="en">Input</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 자동 색상 수정 제안 -->
+  <div class="cc-section">
+    <div class="cc-section-head">
+      <span>② <span class="ko">자동 색상 수정 제안</span><span class="en">Auto Color Fix Suggestions</span></span>
+    </div>
+    <div class="cc-section-body">
+      <p style="font-size:13px;color:var(--t2);margin:0 0 12px"><span class="ko">현재 색상이 AA 기준을 통과하지 못하면 가장 가까운 통과 색상을 자동으로 제안합니다. 클릭하면 바로 적용됩니다.</span><span class="en">If the current colors fail the AA standard, the closest passing color is suggested automatically. Click to apply.</span></p>
+      <div class="cc-suggest-row" id="suggest-area"></div>
+    </div>
+  </div>
+
+  <!-- ③ 색맹 시뮬레이션 -->
+  <div class="cc-section">
+    <div class="cc-section-head">
+      <span>③ <span class="ko">색각 이상 시뮬레이션</span><span class="en">Color Vision Simulation</span></span>
+    </div>
+    <div class="cc-section-body">
+      <p style="font-size:13px;color:var(--t2);margin:0 0 14px"><span class="ko">색각 이상 유형별로 색상이 어떻게 보이는지 확인합니다. 전 세계 인구의 약 8%(남성)가 색각 이상을 가집니다.</span><span class="en">Preview how colors appear under different types of color vision deficiency. About 8% of males worldwide are affected.</span></p>
+      <div class="cc-blind-grid" id="blind-grid"></div>
+    </div>
+  </div>
+
+  <!-- ④ 카테고리별 프리셋 -->
+  <div class="cc-section">
+    <div class="cc-section-head">
+      <span>④ <span class="ko">카테고리별 프리셋</span><span class="en">Preset Combinations</span></span>
+    </div>
+    <div class="cc-section-body" id="preset-area"></div>
+  </div>
+
+  <!-- WCAG 기준 요약 -->
+  <div class="cc-section">
+    <div class="cc-section-head">
+      <span>📋 <span class="ko">WCAG 2.1 대비 기준 요약</span><span class="en">WCAG 2.1 Contrast Requirements</span></span>
+    </div>
+    <div class="cc-section-body" style="padding:0">
+      <table class="cc-table">
+        <thead>
+          <tr>
+            <th><span class="ko">기준</span><span class="en">Level</span></th>
+            <th><span class="ko">적용 대상</span><span class="en">Applies to</span></th>
+            <th><span class="ko">최소 비율</span><span class="en">Min ratio</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AA</strong></td>
+            <td><span class="ko">일반 텍스트 (18pt 미만 또는 14pt Bold 미만)</span><span class="en">Normal text (below 18pt or 14pt Bold)</span></td>
+            <td><strong>4.5 : 1</strong></td>
+          </tr>
+          <tr>
+            <td><strong>AA</strong></td>
+            <td><span class="ko">큰 텍스트 (18pt 이상 또는 14pt Bold 이상)</span><span class="en">Large text (18pt+ or 14pt Bold+)</span></td>
+            <td><strong>3.0 : 1</strong></td>
+          </tr>
+          <tr>
+            <td><strong>AA</strong></td>
+            <td><span class="ko">UI 컴포넌트, 아이콘, 그래픽</span><span class="en">UI components, icons, graphics</span></td>
+            <td><strong>3.0 : 1</strong></td>
+          </tr>
+          <tr>
+            <td><strong>AAA</strong></td>
+            <td><span class="ko">일반 텍스트 (강화 기준)</span><span class="en">Normal text (enhanced)</span></td>
+            <td><strong>7.0 : 1</strong></td>
+          </tr>
+          <tr>
+            <td><strong>AAA</strong></td>
+            <td><span class="ko">큰 텍스트 (강화 기준)</span><span class="en">Large text (enhanced)</span></td>
+            <td><strong>4.5 : 1</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Nidwolf Design Toolkit</p>
+    <nav>
+      <a href="about.html"><span class="ko">소개·문의</span><span class="en">About</span></a>
+      <a href="privacy.html"><span class="ko">개인정보처리방침</span><span class="en">Privacy Policy</span></a>
+      <a href="design-toolkit.html"><span class="ko">디자인 도구</span><span class="en">Design Tools</span></a>
+    </nav>
+  </div>
+</footer>
+
+<!-- 색맹 SVG 필터 -->
+<svg style="position:absolute;width:0;height:0" aria-hidden="true">
+  <defs>
+    <filter id="prot"><feColorMatrix type="matrix" values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/></filter>
+    <filter id="deut"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
+    <filter id="trit"><feColorMatrix type="matrix" values="0.95 0.05 0 0 0  0 0.433 0.567 0 0  0 0.475 0.525 0 0  0 0 0 1 0"/></filter>
+    <filter id="mono"><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+</svg>
+
+<script>
+// ── 색상 유틸 ──────────────────────────────────
+function hexToRgb(h){
+  h=h.replace('#','');
+  if(h.length===3)h=h.split('').map(c=>c+c).join('');
+  return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
+}
+function rgbToHex([r,g,b]){
+  return'#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+}
+function lin(c){c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);}
+function lum([r,g,b]){return 0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);}
+function contrast(f,b){const l1=lum(f),l2=lum(b);return(Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05);}
+function isHex(h){return/^#[0-9a-fA-F]{6}$/.test(h);}
+function darken(rgb,amt){return rgb.map(v=>Math.max(0,v-amt));}
+function lighten(rgb,amt){return rgb.map(v=>Math.min(255,v+amt));}
+
+// ── 프리셋 데이터 ──────────────────────────────
+const PRESETS=[
+  {cat_ko:'🌙 다크모드',cat_en:'🌙 Dark Mode',items:[
+    {label_ko:'다크 배경 / 흰 텍스트',label_en:'Dark bg / white text',fg:'#f8fafc',bg:'#0f172a'},
+    {label_ko:'다크 + 파랑 강조',label_en:'Dark + blue accent',fg:'#60a5fa',bg:'#1e293b'},
+    {label_ko:'다크 + 초록 강조',label_en:'Dark + green accent',fg:'#4ade80',bg:'#052e16'},
+    {label_ko:'터미널 스타일',label_en:'Terminal style',fg:'#00ff41',bg:'#0d0d0d'},
+  ]},
+  {cat_ko:'🎨 UI 패턴',cat_en:'🎨 UI Patterns',items:[
+    {label_ko:'오류 메시지',label_en:'Error message',fg:'#991b1b',bg:'#fef2f2'},
+    {label_ko:'성공 메시지',label_en:'Success message',fg:'#14532d',bg:'#f0fdf4'},
+    {label_ko:'경고 메시지',label_en:'Warning message',fg:'#78350f',bg:'#fffbeb'},
+    {label_ko:'정보 메시지',label_en:'Info message',fg:'#1e3a8a',bg:'#eff6ff'},
+    {label_ko:'비활성(비추천)',label_en:'Disabled text ❌',fg:'#9ca3af',bg:'#ffffff'},
+  ]},
+  {cat_ko:'🚨 실패 사례 (접근성 위반)',cat_en:'🚨 Fail Examples (violations)',items:[
+    {label_ko:'노랑 위 흰색 ❌',label_en:'Yellow on white ❌',fg:'#facc15',bg:'#ffffff'},
+    {label_ko:'회색 텍스트 ❌',label_en:'Light gray text ❌',fg:'#9ca3af',bg:'#ffffff'},
+    {label_ko:'파스텔 핑크 위 흰색 ❌',label_en:'Pastel pink on white ❌',fg:'#f9a8d4',bg:'#ffffff'},
+    {label_ko:'연청색 위 흰색 ❌',label_en:'Light blue on white ❌',fg:'#93c5fd',bg:'#ffffff'},
+  ]},
+  {cat_ko:'🏢 브랜드 스타일',cat_en:'🏢 Brand Styles',items:[
+    {label_ko:'미니멀 (흑백)',label_en:'Minimal (monochrome)',fg:'#111827',bg:'#ffffff'},
+    {label_ko:'클래식 (크림/갈색)',label_en:'Classic (cream/brown)',fg:'#451a03',bg:'#fef9ef'},
+    {label_ko:'모던 (네이비/블루)',label_en:'Modern (navy/blue)',fg:'#e2e8f0',bg:'#0f172a'},
+    {label_ko:'사이버펑크 (검/네온)',label_en:'Cyberpunk (black/neon)',fg:'#00ff41',bg:'#0d0d0d'},
+    {label_ko:'복고풍 (세피아)',label_en:'Retro (sepia)',fg:'#5c2d00',bg:'#fdf6e3'},
+  ]},
+];
+
+// ── 색맹 타입 ──────────────────────────────────
+const BLIND_TYPES=[
+  {label_ko:'정상 시각',label_en:'Normal',filter:'none'},
+  {label_ko:'적록색맹',label_en:'Protanopia',filter:'url(#prot)'},
+  {label_ko:'녹색맹',label_en:'Deuteranopia',filter:'url(#deut)'},
+  {label_ko:'청황색맹',label_en:'Tritanopia',filter:'url(#trit)'},
+];
+
+// ── 프리셋 빌드 ────────────────────────────────
+function buildPresets(){
+  const en=document.documentElement.lang==='en';
+  const area=document.getElementById('preset-area');
+  area.innerHTML='';
+  PRESETS.forEach(cat=>{
+    const div=document.createElement('div');
+    div.className='cc-preset-cat';
+    const lbl=document.createElement('div');
+    lbl.className='cc-preset-cat-label';
+    lbl.textContent=en?cat.cat_en:cat.cat_ko;
+    div.appendChild(lbl);
+    const row=document.createElement('div');
+    row.className='cc-preset-btns';
+    cat.items.forEach(p=>{
+      const btn=document.createElement('button');
+      btn.className='cc-preset-btn';
+      btn.innerHTML=`<span class="cc-preset-swatch" style="background:${p.fg}"></span><span>${en?p.label_en:p.label_ko}</span>`;
+      btn.onclick=()=>applyColors(p.fg,p.bg);
+      row.appendChild(btn);
+    });
+    div.appendChild(row);
+    area.appendChild(div);
+  });
+}
+
+// ── 색맹 시뮬 업데이트 ─────────────────────────
+function updateBlind(fgHex,bgHex){
+  const en=document.documentElement.lang==='en';
+  const grid=document.getElementById('blind-grid');
+  grid.innerHTML='';
+  BLIND_TYPES.forEach(t=>{
+    const cell=document.createElement('div');
+    cell.className='cc-blind-cell';
+    const r=contrast(hexToRgb(fgHex),hexToRgb(bgHex));
+    cell.innerHTML=`
+      <div class="cc-blind-preview" style="background:${bgHex};filter:${t.filter}">
+        <span style="color:${fgHex};font-size:15px;font-weight:700">Aa 가나</span>
+      </div>
+      <div class="cc-blind-label">${en?t.label_en:t.label_ko}</div>
+    `;
+    grid.appendChild(cell);
+  });
+}
+
+// ── 자동 수정 제안 ─────────────────────────────
+function updateSuggest(fgHex,bgHex,ratio){
+  const en=document.documentElement.lang==='en';
+  const area=document.getElementById('suggest-area');
+  area.innerHTML='';
+  if(ratio>=4.5){
+    area.innerHTML=`<span style="font-size:13px;color:var(--cc-pass)">✅ ${en?'Already passes AA standard.':'이미 AA 기준을 통과했습니다.'}</span>`;
+    return;
+  }
+  const fgRgb=hexToRgb(fgHex);
+  const bgRgb=hexToRgb(bgHex);
+  let fgSug=null,bgSug=null;
+  for(let s=3;s<=200;s+=3){
+    if(!fgSug){
+      const d=darken(fgRgb,s);
+      if(contrast(d,bgRgb)>=4.5)fgSug={hex:rgbToHex(d),r:contrast(d,bgRgb)};
+    }
+    if(!fgSug){
+      const l=lighten(fgRgb,s);
+      if(contrast(l,bgRgb)>=4.5)fgSug={hex:rgbToHex(l),r:contrast(l,bgRgb)};
+    }
+    if(!bgSug){
+      const d=darken(bgRgb,s);
+      if(contrast(fgRgb,d)>=4.5)bgSug={hex:rgbToHex(d),r:contrast(fgRgb,d)};
+    }
+    if(!bgSug){
+      const l=lighten(bgRgb,s);
+      if(contrast(fgRgb,l)>=4.5)bgSug={hex:rgbToHex(l),r:contrast(fgRgb,l)};
+    }
+    if(fgSug&&bgSug)break;
+  }
+  if(fgSug){
+    const tag=document.createElement('span');
+    tag.className='cc-suggest-tag';
+    tag.textContent=en?'Foreground →':'전경색 →';
+    area.appendChild(tag);
+    const btn=document.createElement('button');
+    btn.className='cc-suggest-btn';
+    btn.innerHTML=`<span class="cc-suggest-swatch" style="background:${fgSug.hex}"></span><span class="cc-suggest-hex">${fgSug.hex}</span><span class="cc-suggest-ratio">${fgSug.r.toFixed(2)}:1</span>`;
+    btn.onclick=()=>applyColors(fgSug.hex,bgHex);
+    area.appendChild(btn);
+  }
+  if(bgSug){
+    const tag=document.createElement('span');
+    tag.className='cc-suggest-tag';
+    tag.style.marginLeft=fgSug?'12px':'0';
+    tag.textContent=en?'Background →':'배경색 →';
+    area.appendChild(tag);
+    const btn=document.createElement('button');
+    btn.className='cc-suggest-btn';
+    btn.innerHTML=`<span class="cc-suggest-swatch" style="background:${bgSug.hex}"></span><span class="cc-suggest-hex">${bgSug.hex}</span><span class="cc-suggest-ratio">${bgSug.r.toFixed(2)}:1</span>`;
+    btn.onclick=()=>applyColors(fgHex,bgSug.hex);
+    area.appendChild(btn);
+  }
+  if(!fgSug&&!bgSug){
+    area.innerHTML=`<span style="font-size:13px;color:var(--t2)">${en?'No suggestion found.':'적합한 제안을 찾을 수 없습니다.'}</span>`;
+  }
+}
+
+// ── 메인 계산 ──────────────────────────────────
+function calc(){
+  const fgHex=document.getElementById('fg').value;
+  const bgHex=document.getElementById('bg').value;
+  document.getElementById('fg-hex').value=fgHex;
+  document.getElementById('bg-hex').value=bgHex;
+
+  const fgRgb=hexToRgb(fgHex);
+  const bgRgb=hexToRgb(bgHex);
+  const r=contrast(fgRgb,bgRgb);
+  const en=document.documentElement.lang==='en';
+
+  // 대비비
+  document.getElementById('ratio').textContent=r.toFixed(2)+':1';
+
+  // AA/AAA
+  const aaEl=document.getElementById('aa-result');
+  const aaaEl=document.getElementById('aaa-result');
+  const aaPass=r>=4.5,aaaPass=r>=7,aaLargePass=r>=3;
+  aaEl.textContent=aaPass?(en?'Pass':'통과'):(en?'Fail':'실패');
+  aaEl.className='cc-stat-val '+(aaPass?'cc-pass':'cc-fail');
+  aaaEl.textContent=aaaPass?(en?'Pass':'통과'):(en?'Fail':'실패');
+  aaaEl.className='cc-stat-val '+(aaaPass?'cc-pass':'cc-fail');
+  const sub=document.getElementById('aa-sub');
+  sub.textContent=(!aaPass&&aaLargePass)?(en?'Passes for large text (3:1)':`큰 텍스트는 통과 (3:1)`):'';
+
+  // 안내 바
+  const bar=document.getElementById('info-bar');
+  bar.style.display='flex';
+  if(aaaPass){
+    bar.className='cc-info-bar pass';
+    bar.textContent=en?'✅ Excellent! Passes both AA and AAA standards.':'✅ 훌륭합니다! AA와 AAA 기준을 모두 통과했습니다.';
+  } else if(aaPass){
+    bar.className='cc-info-bar warn';
+    bar.textContent=en?'✅ Passes AA. For AAA (7:1) you need a stronger contrast.':'✅ AA 통과. AAA(7:1) 기준을 충족하려면 대비를 더 높여야 합니다.';
+  } else if(aaLargePass){
+    bar.className='cc-info-bar warn';
+    bar.textContent=en?'⚠️ Fails AA for normal text, but passes for large text (3:1). Avoid using for body text.':'⚠️ 일반 텍스트 AA 실패. 큰 텍스트(18pt+)에서만 사용하세요.';
+  } else {
+    bar.className='cc-info-bar fail';
+    bar.textContent=en?'❌ Fails WCAG AA. Not recommended for any text or UI use.':'❌ WCAG AA 기준 미달. 텍스트·UI 요소에 사용하지 마세요.';
+  }
+
+  // 컴포넌트 미리보기
+  const preview=document.getElementById('comp-preview');
+  preview.style.background=bgHex;
+  const items=[
+    ['cp-btn',      el=>{el.style.background=fgHex;el.style.color=bgHex;}],
+    ['cp-badge',    el=>{el.style.background=fgHex;el.style.color=bgHex;}],
+    ['cp-link',     el=>{el.style.color=fgHex;}],
+    ['cp-text',     el=>{el.style.color=fgHex;}],
+    ['cp-large',    el=>{el.style.color=fgHex;}],
+    ['cp-input',    el=>{el.style.color=fgHex;el.style.borderColor=fgHex;}],
+    ['cp-icon',     el=>{el.style.color=fgHex;el.style.borderColor=fgHex;}],
+  ];
+  items.forEach(([id,fn])=>{const el=document.getElementById(id);if(el)fn(el);});
+
+  updateBlind(fgHex,bgHex);
+  updateSuggest(fgHex,bgHex,r);
+}
+
+// ── 입력 핸들러 ────────────────────────────────
+function syncHex(id){
+  const hex=document.getElementById(id+'-hex').value.trim();
+  if(isHex(hex)){document.getElementById(id).value=hex;calc();}
+}
+function applyColors(fg,bg){
+  document.getElementById('fg').value=fg;
+  document.getElementById('bg').value=bg;
+  document.getElementById('fg-hex').value=fg;
+  document.getElementById('bg-hex').value=bg;
+  calc();
+}
+function swapColors(){
+  const fg=document.getElementById('fg').value;
+  const bg=document.getElementById('bg').value;
+  applyColors(bg,fg);
+}
+
+document.getElementById('fg').addEventListener('input',calc);
+document.getElementById('bg').addEventListener('input',calc);
+
+// ── 언어 토글 ──────────────────────────────────
+function _toggleLang(){
+  const h=document.documentElement;
+  const next=h.lang==='ko'?'en':'ko';
+  h.lang=next;
+  localStorage.setItem('nw-lang',next);
+  const btn=document.querySelector('.lang-toggle');
+  if(btn)btn.textContent=next==='ko'?'EN':'KR';
+  buildPresets();
+  calc();
+}
+function _toggleDark(){
+  const h=document.documentElement;
+  if(h.hasAttribute('data-dark')){h.removeAttribute('data-dark');localStorage.removeItem('nw-dark');}
+  else{h.setAttribute('data-dark','');localStorage.setItem('nw-dark','1');}
+}
+
+// ── 초기화 ─────────────────────────────────────
+buildPresets();
+calc();
+
+const lb=document.querySelector('.lang-toggle');
+if(lb)lb.textContent=document.documentElement.lang==='ko'?'EN':'KR';
+</script>
+<script src="/cookie-consent.js"></script>
+</body>
+</html>
