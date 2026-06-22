@@ -352,7 +352,7 @@ html[data-dark] .cg-result-overlay{background:rgba(22,24,32,.94);}
     <div class="nav-item" id="nav-tip"       onclick="gotoTool('tip',this)"       aria-label="오늘의 디자인 팁"><span class="ni">💡</span><span class="nl"><span class="ko">오늘의 팁</span><span class="en">Daily Tip</span></span></div>
     <div class="nav-item" id="nav-challenge" onclick="gotoTool('challenge',this)"  aria-label="오늘의 디자인 과제"><span class="ni">📅</span><span class="nl"><span class="ko">오늘의 과제</span><span class="en">Challenge</span></span></div>
     <div class="nav-item" id="nav-colorgame" onclick="gotoTool('colorgame',this)"  aria-label="색상 이름 맞히기"><span class="ni">🎯</span><span class="nl"><span class="ko">색상 맞히기</span><span class="en">Color Game</span></span></div>
-    <div class="nav-item" id="nav-tastequiz" onclick="gotoTool('tastequiz',this)"  aria-label="디자인 감각 퀴즈"><span class="ni">🧠</span><span class="nl"><span class="ko">감각 퀴즈</span><span class="en">Taste Quiz</span></span></div>
+    <div class="nav-item" id="nav-tastequiz" onclick="gotoTool('tastequiz',this)"  aria-label="디자인 취향 프로파일"><span class="ni">🧠</span><span class="nl"><span class="ko">취향 프로파일</span><span class="en">Taste Profile</span></span></div>
     <div class="nav-item" id="nav-timeline"  onclick="gotoTool('timeline',this)"   aria-label="디자인 역사 타임라인"><span class="ni">📚</span><span class="nl"><span class="ko">디자인 역사</span><span class="en">Design History</span></span></div>
     <div class="nav-item" id="nav-badges"    onclick="gotoTool('badges',this)"     aria-label="디자이너 뱃지"><span class="ni">🏅</span><span class="nl"><span class="ko">디자이너 뱃지</span><span class="en">Badges</span></span><span class="nav-badge" id="badge-count-nav">0</span></div>
     <div class="nav-item" onclick="location.href='ladder.html'" role="button" aria-label="사다리 게임"><span class="ni">🪜</span><span class="nl"><span class="ko">사다리 게임</span><span class="en">Ladder Game</span></span></div>
@@ -541,7 +541,7 @@ function _toggleLang(){
     tip:      _en?'💡 Daily Design Tip'      :'💡 오늘의 디자인 팁',
     challenge:_en?'📅 Daily Challenge'       :'📅 오늘의 과제',
     colorgame:_en?'🎯 Color Name Game'       :'🎯 색상 이름 맞히기',
-    tastequiz:_en?'🧠 Design Taste Quiz'     :'🧠 디자인 감각 퀴즈',
+    tastequiz:_en?'🧠 Design Taste Profile'  :'🧠 디자인 취향 프로파일',
     timeline: _en?'📚 Design History'        :'📚 디자인 역사',
     badges:   _en?'🏅 Designer Badges'       :'🏅 디자이너 뱃지'};
   const subs={export:'CSS Variables · Tailwind · SCSS',
@@ -602,7 +602,7 @@ function gotoTool(tool,el){
     tip:    _en?'💡 Daily Design Tip'      :'💡 오늘의 디자인 팁',
     challenge:_en?'📅 Daily Challenge'     :'📅 오늘의 과제',
     colorgame:_en?'🎯 Color Name Game'     :'🎯 색상 이름 맞히기',
-    tastequiz:_en?'🧠 Design Taste Quiz'   :'🧠 디자인 감각 퀴즈',
+    tastequiz:_en?'🧠 Design Taste Profile':'🧠 디자인 취향 프로파일',
     timeline: _en?'📚 Design History'      :'📚 디자인 역사',
     badges:   _en?'🏅 Designer Badges'     :'🏅 디자이너 뱃지'};
   const subs={export:'CSS Variables · Tailwind · SCSS',
@@ -2623,7 +2623,7 @@ function renderHome(){
     {icon:'💡',id:'tip',     kr:'오늘의 팁',        en:'Daily Tip',        sub_kr:'매일 새로운 디자인 인사이트',sub_en:'Fresh insight every day'},
     {icon:'📅',id:'challenge',kr:'오늘의 과제',     en:'Daily Challenge',  sub_kr:'오늘의 조건으로 조합 완성', sub_en:'Complete today\'s combo challenge'},
     {icon:'🎯',id:'colorgame',kr:'색상 맞히기',     en:'Color Game',       sub_kr:'색상값 → 이름 맞히기',     sub_en:'Guess the color name'},
-    {icon:'🧠',id:'tastequiz',kr:'감각 퀴즈',       en:'Taste Quiz',       sub_kr:'나의 디자인 취향 탐색',     sub_en:'Explore your design taste'},
+    {icon:'🧠',id:'tastequiz',kr:'취향 프로파일',    en:'Taste Profile',    sub_kr:'나의 디자인 취향 탐색',     sub_en:'Explore your design taste'},
     {icon:'📚',id:'timeline', kr:'디자인 역사',      en:'Design History',   sub_kr:'주요 디자인 운동 타임라인', sub_en:'Timeline of design movements'},
     {icon:'🏅',id:'badges',  kr:'디자이너 뱃지',    en:'Badges',           sub_kr:`${earned}/${total} 획득`,  sub_en:`${earned}/${total} earned`},
   ];
@@ -2930,20 +2930,28 @@ function _cgRetry(){
 // ═══════════════════════════════════════════════════════════
 let _tqRound=0,_tqSelections={minimal:0,vibrant:0,classic:0,modern:0,structured:0,organic:0};
 const TQ_PAIRS=[
+  // Pair1: 흰색 배경 vs 진한 다크퍼플 — 즉시 구분 가능
   {a:{style:'minimal',label:'미니멀',label_en:'Minimal',bg:'#f8fafc',accent:'#1a1a1a',text:'#374151',card:'#ffffff',border:'1px solid #e5e7eb',radius:'2px'},
-   b:{style:'vibrant',label:'비비드',label_en:'Vivid',bg:'#fdf2f8',accent:'#ec4899',text:'#831843',card:'#fce7f3',border:'none',radius:'16px'}},
+   b:{style:'vibrant',label:'비비드',label_en:'Vivid',bg:'#1e0a3c',accent:'#f0abfc',text:'#fae8ff',card:'#3b0764',border:'none',radius:'18px'}},
+  // Pair2: 크림 vs 다크네이비 — 기존 유지 (완벽한 대비)
   {a:{style:'classic',label:'클래식',label_en:'Classic',bg:'#fef9ef',accent:'#92400e',text:'#451a03',card:'#fffbeb',border:'1px solid #d97706',radius:'4px'},
    b:{style:'modern',label:'모던',label_en:'Modern',bg:'#0f172a',accent:'#60a5fa',text:'#e2e8f0',card:'#1e293b',border:'1px solid #334155',radius:'12px'}},
-  {a:{style:'structured',label:'정렬형',label_en:'Structured',bg:'#f0f4ff',accent:'#3b82f6',text:'#1e3a8a',card:'#ffffff',border:'1px solid #bfdbfe',radius:'6px'},
-   b:{style:'organic',label:'유기적',label_en:'Organic',bg:'#ecfdf5',accent:'#059669',text:'#064e3b',card:'#d1fae5',border:'none',radius:'20px'}},
+  // Pair3: 라이트블루 vs 다크그린 — 명암+색상 이중 대비
+  {a:{style:'structured',label:'정렬형',label_en:'Structured',bg:'#eff6ff',accent:'#1d4ed8',text:'#1e3a8a',card:'#dbeafe',border:'1px solid #93c5fd',radius:'4px'},
+   b:{style:'organic',label:'유기적',label_en:'Organic',bg:'#052e16',accent:'#4ade80',text:'#dcfce7',card:'#14532d',border:'none',radius:'24px'}},
+  // Pair4: 흰색/흑 vs 다크인디고/퍼플 — 그라데이션 분위기 연출
   {a:{style:'minimal',label:'모노크롬',label_en:'Monochrome',bg:'#f9fafb',accent:'#111827',text:'#374151',card:'#ffffff',border:'1px solid #d1d5db',radius:'0px'},
-   b:{style:'vibrant',label:'그라데이션',label_en:'Gradient',bg:'#faf5ff',accent:'#7c3aed',text:'#4c1d95',card:'#ede9fe',border:'none',radius:'12px'}},
-  {a:{style:'classic',label:'뉴모피즘',label_en:'Neumorphism',bg:'#e0e5ec',accent:'#4f7afd',text:'#2d3748',card:'#e0e5ec',border:'none',radius:'12px'},
+   b:{style:'vibrant',label:'그라데이션',label_en:'Gradient',bg:'#0f0c29',accent:'#a855f7',text:'#e9d5ff',card:'#2d1654',border:'1px solid #7c3aed',radius:'14px'}},
+  // Pair5: 연회색(뉴모 카드 살짝 어둡게) vs 다크네이비 — 카드 가시성 수정
+  {a:{style:'classic',label:'뉴모피즘',label_en:'Neumorphism',bg:'#e0e5ec',accent:'#4f7afd',text:'#2d3748',card:'#cfd6e3',border:'none',radius:'12px'},
    b:{style:'modern',label:'글래스모피즘',label_en:'Glassmorphism',bg:'#1a1a2e',accent:'#c026d3',text:'#e879f9',card:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.2)',radius:'16px'}},
-  {a:{style:'structured',label:'그리드 중심',label_en:'Grid-Based',bg:'#ffffff',accent:'#2563eb',text:'#1e40af',card:'#eff6ff',border:'1px solid #93c5fd',radius:'4px'},
-   b:{style:'organic',label:'자유형',label_en:'Free-Form',bg:'#fff7ed',accent:'#f97316',text:'#7c2d12',card:'#ffedd5',border:'none',radius:'24px'}},
+  // Pair6: 화이트/블루 vs 다크오렌지 — 자유형을 어두운 따뜻한 톤으로 강화
+  {a:{style:'structured',label:'그리드 중심',label_en:'Grid-Based',bg:'#f0f7ff',accent:'#1d4ed8',text:'#1e3a8a',card:'#dbeafe',border:'1px solid #93c5fd',radius:'4px'},
+   b:{style:'organic',label:'자유형',label_en:'Free-Form',bg:'#431407',accent:'#fb923c',text:'#fed7aa',card:'#7c2d12',border:'none',radius:'24px'}},
+  // Pair7: 흰색/빨강 vs 검정/네온그린 — 기존 유지 (완벽한 대비)
   {a:{style:'minimal',label:'스위스 국제',label_en:'Swiss Intl.',bg:'#ffffff',accent:'#dc2626',text:'#111',card:'#f4f4f4',border:'1px solid #111',radius:'0px'},
    b:{style:'modern',label:'사이버펑크',label_en:'Cyberpunk',bg:'#0d0d0d',accent:'#00ff41',text:'#00ff41',card:'#111',border:'1px solid #00ff41',radius:'2px'}},
+  // Pair8: 세피아 vs 밝은 노랑 — 기존 유지 (충분한 대비)
   {a:{style:'classic',label:'복고풍',label_en:'Retro',bg:'#fdf6e3',accent:'#8b4513',text:'#5c2d00',card:'#f5efe0',border:'2px solid #d2691e',radius:'0px'},
    b:{style:'vibrant',label:'팝 아트',label_en:'Pop Art',bg:'#fef08a',accent:'#0ea5e9',text:'#0c4a6e',card:'#ffffff',border:'3px solid #111',radius:'0px'}},
 ];
@@ -2994,7 +3002,7 @@ function renderTasteQuiz(){
   const c=document.getElementById('content');
   c.innerHTML=`<div class="fun-wrap">
     <div class="fun-section fun-pop">
-      <div class="fun-title">🧠 ${_en?'Design Taste Quiz':'디자인 감각 퀴즈'}</div>
+      <div class="fun-title">🧠 ${_en?'Design Taste Profile':'디자인 취향 프로파일'}</div>
       <div class="fun-sub">${_en?'Choose the design you prefer. Your taste profile is revealed after 8 rounds.':'두 디자인 중 더 마음에 드는 것을 고르세요. 8라운드 후 취향 프로필이 완성됩니다.'}</div>
       <div id="tq-progress" style="height:4px;background:var(--surface2);border-radius:2px;margin-bottom:14px">
         <div style="height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width .3s"></div>
@@ -3176,7 +3184,7 @@ const BADGES=[
   {id:'color_expert',icon:'🏆',name:'색상 전문가',desc:'색상 맞히기에서 10점 이상 달성했습니다.',cond:'color_game_score10 >= 1',name_en:'Color Expert',desc_en:'Scored 10 or more in the Color Game.'},
   {id:'historian',icon:'📚',name:'디자인 역사학자',desc:'디자인 역사 타임라인을 탐험했습니다.',cond:'timeline_viewed >= 1',name_en:'Design Historian',desc_en:'Explored the Design History timeline.'},
   {id:'night_worker',icon:'🌙',name:'야간 작업자',desc:'다크 모드를 사용해봤습니다.',cond:'dark_mode_used >= 1',name_en:'Night Owl',desc_en:'Tried dark mode.'},
-  {id:'taste_maker',icon:'🧠',name:'취향 명인',desc:'디자인 감각 퀴즈를 완주했습니다.',cond:'tastequiz_done >= 1',name_en:'Taste Maker',desc_en:'Completed the Design Taste Quiz.'},
+  {id:'taste_maker',icon:'🧠',name:'취향 명인',desc:'디자인 취향 프로파일을 완주했습니다.',cond:'tastequiz_done >= 1',name_en:'Taste Maker',desc_en:'Completed the Design Taste Profile.'},
   {id:'fun_explorer',icon:'🔥',name:'Fun Zone 탐험가',desc:'모든 Fun Zone 섹션을 방문했습니다.',cond:'all_fun_visited',name_en:'Fun Zone Explorer',desc_en:'Visited all Fun Zone sections.'},
   {id:'easter_hunter',icon:'🎮',name:'이스터에그 사냥꾼',desc:'숨겨진 이스터에그를 발견했습니다.',cond:'easter_egg_found >= 1',name_en:'Easter Egg Hunter',desc_en:'Found the hidden Easter egg.'},
 ];
