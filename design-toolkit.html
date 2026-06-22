@@ -247,6 +247,13 @@ html[data-dark] .cg-overlay{background:rgba(22,24,32,.92);}
 .cg-overlay-desc{font-size:13px;color:var(--text2);line-height:1.7;max-width:320px;}
 .cg-start-btn{margin-top:4px;padding:11px 32px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}
 .cg-start-btn:hover{opacity:.85;}
+.cg-result-overlay{position:absolute;inset:0;border-radius:12px;background:rgba(var(--surface-rgb,248,249,252),.94);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:10;padding:28px 24px;text-align:center;animation:funPop .3s ease;}
+html[data-dark] .cg-result-overlay{background:rgba(22,24,32,.94);}
+.cg-grade{font-size:36px;line-height:1;}
+.cg-grade-label{font-size:18px;font-weight:800;color:var(--text);}
+.cg-streak{font-size:13px;color:var(--text2);margin-top:2px;}
+.cg-retry-btn{margin-top:8px;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.cg-retry-btn:hover{opacity:.85;}
 .tl-item{display:flex;gap:16px;margin-bottom:0;}
 .tl-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:4px;border:2px solid var(--surface);}
 .tl-line{width:2px;background:var(--border);margin:0 auto;flex:1;min-height:24px;}
@@ -2777,7 +2784,7 @@ function renderChallenge(){
 // ═══════════════════════════════════════════════════════════
 // FUN ZONE 3: 색상 이름 맞히기 게임
 // ═══════════════════════════════════════════════════════════
-let _cgScore=0,_cgBest=parseInt(localStorage.getItem('cg_best')||'0'),_cgTimer=null,_cgAnswered=false;
+let _cgScore=0,_cgStreak=0,_cgBest=parseInt(localStorage.getItem('cg_best')||'0'),_cgTimer=null,_cgAnswered=false;
 
 function _cgStart(){
   const ov=document.getElementById('cg-overlay');
@@ -2785,7 +2792,7 @@ function _cgStart(){
   _cgNextRound();
 }
 function renderColorGame(){
-  _cgScore=0;_cgAnswered=false;
+  _cgScore=0;_cgStreak=0;_cgAnswered=false;
   if(_cgTimer)clearInterval(_cgTimer);
   const _en=document.documentElement.lang==='en';
   const c=document.getElementById('content');
@@ -2858,7 +2865,7 @@ function _cgAnswer(btn,chosen,correct){
     if(pal&&pal.id===correct)b.classList.add('correct');
   });
   if(chosen===correct){
-    _cgScore++;
+    _cgScore++;_cgStreak++;
     if(_cgScore>_cgBest){_cgBest=_cgScore;localStorage.setItem('cg_best',_cgBest);document.getElementById('cg-best').textContent=_cgBest+(_en?' pts':'점');}
     document.getElementById('cg-score').textContent=_cgScore+(_en?' pts':'점');
     res.style.color='#059669';res.textContent=_en?'✅ Correct! +1 pt':'✅ 정답! +1점';
@@ -2869,19 +2876,53 @@ function _cgAnswer(btn,chosen,correct){
   } else {
     btn.classList.add('wrong');
     if(bar){bar.style.transition='none';bar.style.width='0';}
-    res.style.color='#ef4444';res.textContent=_en?`❌ Wrong! Answer: "${PALETTES.find(p=>p.id===correct)?.name}" (score reset)`:`❌ 오답. 정답은 "${PALETTES.find(p=>p.id===correct)?.name}" 입니다. (점수 초기화)`;
-    _cgScore=0;
+    const streak=_cgStreak;
+    _cgScore=0;_cgStreak=0;
     document.getElementById('cg-score').textContent='0'+(_en?' pts':'점');
-    setTimeout(_cgNextRound,700);
+    setTimeout(()=>_cgShowResult('wrong',streak,PALETTES.find(p=>p.id===correct)?.name),500);
   }
 }
 
 function _cgTimeout(){
   const _en=document.documentElement.lang==='en';
-  const res=document.getElementById('cg-result');
-  if(res){res.style.color='#f59e0b';res.textContent=_en?"⏰ Time's up! (score reset)":'⏰ 시간 초과! (점수 초기화)';}
-  _cgScore=0;const sc=document.getElementById('cg-score');if(sc)sc.textContent='0'+(_en?' pts':'점');
-  setTimeout(_cgNextRound,1800);
+  const streak=_cgStreak;
+  _cgScore=0;_cgStreak=0;
+  const sc=document.getElementById('cg-score');if(sc)sc.textContent='0'+(_en?' pts':'점');
+  setTimeout(()=>_cgShowResult('timeout',streak),500);
+}
+function _cgGrade(streak,_en){
+  if(streak===0)return{icon:'😔',label:_en?'Better luck next time!':'다음엔 꼭 맞혀봐요!'};
+  if(streak<=2) return{icon:'🌱',label:_en?'Getting started!':'시작이 반이에요!'};
+  if(streak<=4) return{icon:'👍',label:_en?'Nice work!':'잘하고 있어요!'};
+  if(streak<=7) return{icon:'🎯',label:_en?'Great color sense!':'색감 감각 있어요!'};
+  if(streak<=9) return{icon:'🔥',label:_en?'Color Master!':'색상 고수!'};
+  return{icon:'🏆',label:_en?'Color Expert!':'전문가 수준!'};
+}
+function _cgShowResult(reason,streak,wrongName){
+  const _en=document.documentElement.lang==='en';
+  const g=_cgGrade(streak,_en);
+  const reasonText=reason==='timeout'
+    ?(_en?"⏰ Time's up!":'⏰ 시간 초과!')
+    :(_en?`❌ Wrong! Answer: "${wrongName}"`:`❌ 오답! 정답: "${wrongName}"`);
+  const streakText=streak===0
+    ?(_en?'No correct answers this round.':'이번 라운드 정답 없음')
+    :(_en?`${streak} correct in a row!`:`연속 ${streak}개 정답!`);
+  const div=document.createElement('div');
+  div.className='cg-result-overlay';
+  div.innerHTML=`
+    <div style="font-size:13px;color:#ef4444;font-weight:600">${reasonText}</div>
+    <div class="cg-grade">${g.icon}</div>
+    <div class="cg-grade-label">${g.label}</div>
+    <div class="cg-streak">${streakText}</div>
+    <div style="font-size:12px;color:var(--text2);margin-top:2px">${_en?'Best':'최고기록'}: <strong style="color:var(--accent)">${_cgBest}${_en?' pts':'점'}</strong></div>
+    <button class="cg-retry-btn" onclick="_cgRetry()">🔄 ${_en?'Retry':'다시 시작'}</button>
+  `;
+  const section=document.querySelector('.fun-section');
+  if(section)section.appendChild(div);
+}
+function _cgRetry(){
+  const ov=document.querySelector('.cg-result-overlay');
+  if(ov){ov.style.opacity='0';ov.style.transition='opacity .2s';setTimeout(()=>{ov.remove();_cgNextRound();},200);}
 }
 
 // ═══════════════════════════════════════════════════════════
