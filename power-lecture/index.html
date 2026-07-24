@@ -113,6 +113,30 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
 .toggle-btn[aria-pressed="false"] .dot { background: var(--muted); }
 .back-link { color: var(--muted); }
 
+.calib-btn {
+  background: var(--panel-2); color: var(--muted); border: 1px solid var(--border);
+  padding: 5px 10px; border-radius: 999px; cursor: pointer; font-size: .8rem;
+}
+.calib-btn:hover { color: var(--text); border-color: var(--accent); }
+.calib-btn.on { background: var(--warn); color: #201500; border-color: var(--warn); font-weight: 600; }
+
+/* 섹션별 보정 버튼(보정 모드에서만 표시) */
+.calib-set {
+  display: none; margin-left: 8px; font-size: .72rem; cursor: pointer;
+  background: var(--warn); color: #201500; border: none; border-radius: 6px; padding: 2px 8px; font-weight: 600;
+}
+body.calibrating .calib-set { display: inline-block; }
+body.calibrating .section { outline: 1px dashed var(--border); outline-offset: 4px; }
+
+/* 보정 바 */
+.calib-bar {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 25;
+  background: var(--panel); border-top: 2px solid var(--warn);
+  padding: 10px 14px; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  font-size: .82rem;
+}
+.calib-actions { display: flex; gap: 6px; }
+
 .pane-content { position: relative; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; }
 
 /* 탭바 */
@@ -244,6 +268,7 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
       </div>
       <div class="status-right">
         <span id="cur-section" class="cur-section muted"></span>
+        <button id="calib-btn" class="calib-btn" type="button">⚙ 싱크 보정</button>
         <button id="toggle-btn" class="toggle-btn" type="button" aria-pressed="true">
           <span class="dot"></span><span id="toggle-text">자동 스크롤 ON</span>
         </button>
@@ -265,6 +290,16 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
 
     <!-- 기출문제 탭 -->
     <div id="problems" class="content tabpanel hidden" role="tabpanel"></div>
+
+    <!-- 싱크 보정 바 -->
+    <div id="calib-bar" class="calib-bar hidden">
+      <span class="calib-msg">🎯 <b>싱크 보정 모드</b> — 영상을 재생하다가 각 섹션의 <b>⌖ 지금 위치로</b> 버튼을 누르면 그 시각이 저장됩니다.</span>
+      <span class="calib-actions">
+        <button id="calib-export" class="btn btn-ghost" type="button">보정값 복사</button>
+        <button id="calib-reset" class="btn btn-ghost" type="button">초기화</button>
+        <button id="calib-done" class="btn btn-primary" type="button">완료</button>
+      </span>
+    </div>
 
     <!-- 재개 여부 팝업(토스트형, 비모달) -->
     <div id="resume-popup" class="resume-popup hidden" role="dialog" aria-live="polite">
@@ -466,6 +501,11 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
   var toggleText  = document.getElementById('toggle-text');
   var curSecEl    = document.getElementById('cur-section');
   var lecLabelEl  = document.getElementById('lec-label');
+  var calibBtn    = document.getElementById('calib-btn');
+  var calibBar    = document.getElementById('calib-bar');
+
+  var calibrating = false;
+  var calibData = {};   // { sectionIndex: seconds }
 
   // ---------- 유틸 ----------
   function parseTime(t) {
@@ -526,17 +566,22 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
       var start = parseTime(sec.t);
       html += '<div class="section" data-idx="' + i + '" data-start="' + start + '">'
             +   '<span class="sec-time" data-seek="' + start + '">▶ ' + fmtTime(start) + '</span>'
+            +   '<button class="calib-set" data-idx="' + i + '" type="button">⌖ 지금 위치로</button>'
             +   (sec.heading ? '<h3>' + escapeHtml(sec.heading) + '</h3>' : '')
             +   (sec.html || '')
             + '</div>';
     });
     contentEl.innerHTML = html;
 
-    // 섹션 인덱스 구성(시작시각 오름차순)
+    // 섹션 인덱스 구성
     sections = Array.prototype.map.call(
       contentEl.querySelectorAll('.section'),
-      function (el) { return { el: el, start: Number(el.getAttribute('data-start')) || 0 }; }
-    ).sort(function (a, b) { return a.start - b.start; });
+      function (el) {
+        return { el: el, idx: Number(el.getAttribute('data-idx')) || 0, start: Number(el.getAttribute('data-start')) || 0 };
+      }
+    );
+    loadCalib();
+    applyCalibration(); // 저장된 보정값 반영 + 시작시각 오름차순 정렬
 
     // 타임스탬프 클릭 → 해당 위치로 이동
     contentEl.addEventListener('click', function (e) {
@@ -865,6 +910,79 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
       });
     });
   }
+
+  // ---------- 싱크 보정(캘리브레이션) ----------
+  function calibKey() { return 'calib_' + (LEC && LEC.id ? LEC.id : 'lec'); }
+  function loadCalib() {
+    try { calibData = JSON.parse(localStorage.getItem(calibKey()) || '{}') || {}; }
+    catch (e) { calibData = {}; }
+  }
+  function saveCalib() {
+    try { localStorage.setItem(calibKey(), JSON.stringify(calibData)); } catch (e) {}
+  }
+  function applyCalibration() {
+    // 저장된 보정값을 각 섹션 start에 반영
+    sections.forEach(function (s) {
+      if (calibData[s.idx] != null) s.start = Number(calibData[s.idx]);
+    });
+    // 오름차순 정렬(이진탐색용)
+    sections.sort(function (a, b) { return a.start - b.start; });
+    // ▶ 시각 라벨·seek 갱신
+    sections.forEach(function (s) {
+      var t = s.el.querySelector('.sec-time');
+      if (t) { t.textContent = '▶ ' + fmtTime(s.start); t.setAttribute('data-seek', s.start); }
+    });
+    currentIdx = -1;
+  }
+  function calibrateSection(idx) {
+    if (!player || !player.getCurrentTime) return;
+    var t = Math.floor(player.getCurrentTime() || 0);
+    calibData[idx] = t;
+    saveCalib();
+    applyCalibration();
+    // 잠깐 피드백
+    var btn = contentEl.querySelector('.calib-set[data-idx="' + idx + '"]');
+    if (btn) { var o = btn.textContent; btn.textContent = '✓ ' + fmtTime(t); setTimeout(function () { btn.textContent = o; }, 1200); }
+  }
+  function setCalibrating(on) {
+    calibrating = on;
+    document.body.classList.toggle('calibrating', on);
+    calibBar.classList.toggle('hidden', !on);
+    calibBtn.classList.toggle('on', on);
+    calibBtn.textContent = on ? '⚙ 보정 중' : '⚙ 싱크 보정';
+    if (on) {
+      if (activeTab !== 'content') switchTab('content');
+      enterDisabled(); // 보정 중에는 자동 스크롤 정지
+    }
+  }
+  if (calibBtn) calibBtn.addEventListener('click', function () { setCalibrating(!calibrating); });
+  document.getElementById('calib-done').addEventListener('click', function () { setCalibrating(false); });
+  document.getElementById('calib-reset').addEventListener('click', function () {
+    if (!confirm('이 강의의 보정값을 모두 지울까요?')) return;
+    calibData = {}; saveCalib();
+    // 원래 JSON 시각으로 복원
+    sections.forEach(function (s) { s.start = Number(s.el.getAttribute('data-start')) || 0; });
+    applyCalibration();
+  });
+  document.getElementById('calib-export').addEventListener('click', function () {
+    // 원본 섹션 순서대로 "mm:ss" 배열 + 헤딩 동봉
+    var out = sections.slice().sort(function (a, b) { return a.idx - b.idx; }).map(function (s) {
+      var h = s.el.querySelector('h3');
+      return { t: fmtTime(s.start), heading: h ? h.textContent : '' };
+    });
+    var text = JSON.stringify(out, null, 2);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { alert('보정값을 클립보드에 복사했습니다. 붙여넣어 전달하시면 영구 반영해 드립니다.'); },
+        function () { window.prompt('아래 값을 복사하세요:', text); });
+    } else { window.prompt('아래 값을 복사하세요:', text); }
+  });
+  // 섹션별 보정 버튼(이벤트 위임)
+  contentEl.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.calib-set');
+    if (!b) return;
+    e.stopPropagation();
+    calibrateSection(Number(b.getAttribute('data-idx')));
+  });
 
   // ---------- 시작 ----------
   loadData().then(function (d) {
