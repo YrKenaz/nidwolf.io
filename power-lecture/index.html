@@ -1,1 +1,594 @@
-placeholder
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강의 뷰어</title>
+
+<!-- KaTeX (CDN) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+<style>
+:root {
+  --bg: #0f1419;
+  --panel: #171d26;
+  --panel-2: #1e2530;
+  --border: #2a333f;
+  --text: #e6eaf0;
+  --muted: #97a2b0;
+  --accent: #3ea6ff;
+  --accent-dim: #1c5c93;
+  --ok: #37d67a;
+  --warn: #f2b24c;
+  --hl: rgba(62,166,255,0.12);
+  --hl-border: #3ea6ff;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Pretendard", -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+.muted { color: var(--muted); }
+.error { color: #ff8080; }
+a { color: var(--accent); text-decoration: none; }
+
+/* ============ INDEX PAGE ============ */
+.index-page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+.index-header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+.index-header .notice { margin-top: 10px; color: var(--muted); }
+.lecture-group { margin-top: 34px; }
+.lecture-group h2 {
+  font-size: 1.05rem; color: var(--accent);
+  border-left: 3px solid var(--accent); padding-left: 10px; margin-bottom: 14px;
+}
+.card-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.lec-card {
+  display: block; position: relative;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 14px 12px; color: var(--text);
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); background: var(--panel-2); }
+.lec-card.disabled { opacity: .5; }
+.lec-no { font-weight: 700; color: var(--accent); font-size: .85rem; margin-bottom: 4px; }
+.lec-title { font-size: .98rem; min-height: 2.6em; }
+.lec-meta { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); margin-top: 8px; }
+.lec-badge {
+  position: absolute; top: 10px; right: 10px; font-size: .68rem;
+  padding: 2px 7px; border-radius: 999px; background: var(--panel-2); color: var(--muted);
+  border: 1px solid var(--border);
+}
+.lec-badge.ready { color: var(--ok); border-color: var(--ok); }
+.index-footer { margin-top: 40px; font-size: .85rem; }
+
+/* ============ VIEWER PAGE ============ */
+.viewer-page { height: 100vh; overflow: hidden; }
+.viewer-grid { display: grid; height: 100vh; }
+
+/* 넓은 화면: 좌 영상 / 우 내용 */
+@media (min-width: 900px) {
+  .viewer-grid { grid-template-columns: minmax(420px, 1fr) minmax(360px, 620px); }
+}
+/* 좁은 화면: 상 영상 / 하 내용 */
+@media (max-width: 899px) {
+  .viewer-grid { grid-template-rows: auto 1fr; }
+}
+
+.pane-video {
+  background: #000; display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+.video-wrap { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.video-wrap #player, .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+.statusbar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: var(--panel); border-top: 1px solid var(--border);
+  font-size: .85rem; flex-wrap: wrap;
+}
+.status-center { flex: 1; min-width: 100px; text-align: center; }
+.lec-label { color: var(--text); font-weight: 600; }
+.status-right { display: flex; align-items: center; gap: 10px; }
+.cur-section { font-size: .8rem; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.toggle-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-dim); color: #fff; border: 1px solid var(--accent);
+  padding: 5px 11px; border-radius: 999px; cursor: pointer; font-size: .82rem;
+}
+.toggle-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.toggle-btn[aria-pressed="false"] { background: var(--panel-2); border-color: var(--border); color: var(--muted); }
+.toggle-btn[aria-pressed="false"] .dot { background: var(--muted); }
+.back-link { color: var(--muted); }
+
+.pane-content { position: relative; overflow: hidden; background: var(--bg); }
+.content {
+  height: 100%; overflow-y: auto; padding: 26px 28px 60vh;
+  scroll-behavior: auto; outline: none;
+}
+@media (max-width: 899px) { .content { padding: 20px 18px 60vh; } }
+
+/* 내용 섹션 */
+.section { padding: 6px 0 10px; border-radius: 10px; transition: background .25s ease; scroll-margin-top: 14px; }
+.section .sec-time {
+  display: inline-block; font-size: .72rem; color: var(--accent);
+  border: 1px solid var(--accent-dim); border-radius: 6px; padding: 0 6px; margin-bottom: 6px; cursor: pointer;
+}
+.section h3 { margin: 4px 0 8px; font-size: 1.12rem; }
+.section.active { background: var(--hl); box-shadow: inset 3px 0 0 var(--hl-border); padding-left: 12px; }
+.content h2.doc-title { font-size: 1.3rem; margin: 0 0 4px; }
+.content .doc-sub { color: var(--muted); margin: 0 0 20px; font-size: .9rem; }
+.content ul, .content ol { padding-left: 22px; }
+.content table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: .92rem; }
+.content th, .content td { border: 1px solid var(--border); padding: 6px 9px; text-align: left; }
+.content th { background: var(--panel-2); }
+.katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+
+.est-note {
+  font-size: .8rem; color: var(--warn); background: rgba(242,178,76,.08);
+  border: 1px solid rgba(242,178,76,.3); border-radius: 8px; padding: 8px 12px; margin-bottom: 18px;
+}
+
+/* 재개 팝업(토스트) */
+.resume-popup {
+  position: absolute; right: 18px; bottom: 18px; z-index: 20;
+  background: var(--panel); border: 1px solid var(--accent); border-radius: 12px;
+  padding: 14px 16px; width: min(300px, 82%); box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  animation: pop .18s ease;
+}
+@keyframes pop { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+.popup-text { font-size: .9rem; margin-bottom: 10px; }
+.popup-actions { display: flex; gap: 8px; }
+.btn { border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
+  padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: .85rem; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #041016; font-weight: 600; }
+.btn-ghost { background: transparent; }
+.btn:hover { filter: brightness(1.08); }
+
+/* 재활성 버튼 */
+.reenable-btn {
+  position: absolute; right: 18px; bottom: 18px; z-index: 15;
+  background: var(--accent); color: #041016; border: none; font-weight: 600;
+  padding: 10px 16px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.45);
+}
+.reenable-btn:hover { filter: brightness(1.08); }
+
+.hidden { display: none !important; }
+
+</style>
+</head>
+<body class="viewer-page">
+
+<div id="app" class="viewer-grid">
+
+  <!-- 좌측(넓은 화면) / 상단(좁은 화면): 영상 + 상태바 -->
+  <section class="pane-video">
+    <div class="video-wrap">
+      <div id="player"></div>
+    </div>
+
+    <div class="statusbar">
+      <a class="back-link" href="index.html">← 목록</a>
+      <div class="status-center">
+        <span id="lec-label" class="lec-label"></span>
+      </div>
+      <div class="status-right">
+        <span id="cur-section" class="cur-section muted"></span>
+        <button id="toggle-btn" class="toggle-btn" type="button" aria-pressed="true">
+          <span class="dot"></span><span id="toggle-text">자동 스크롤 ON</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 우측(넓은 화면) / 하단(좁은 화면): 내용 스크롤 영역 -->
+  <section class="pane-content">
+    <div id="content" class="content" tabindex="0">
+      <p class="muted">불러오는 중…</p>
+    </div>
+
+    <!-- 재개 여부 팝업(토스트형, 비모달) -->
+    <div id="resume-popup" class="resume-popup hidden" role="dialog" aria-live="polite">
+      <div class="popup-text">영상 위치에 맞춰 다시 자동 스크롤할까요?</div>
+      <div class="popup-actions">
+        <button id="resume-yes" class="btn btn-primary" type="button">예, 다시 맞춤</button>
+        <button id="resume-no" class="btn btn-ghost" type="button">아니오</button>
+      </div>
+    </div>
+
+    <!-- 거절 후 재활성 버튼(우하단 고정) -->
+    <button id="reenable-btn" class="reenable-btn hidden" type="button">▶ 자동 스크롤 켜기</button>
+  </section>
+
+</div>
+
+<script>window.__LECTURE_DATA__ = {
+  "id": "lec01",
+  "videoId": "bSFzt5qFfpQ",
+  "no": "01강",
+  "shortTitle": "전선의 특성",
+  "title": "전력공학 01강 — 1장 전선로①(전선의 특성)",
+  "textbook": "p.2~7",
+  "timestampNote": "섹션 타임스탬프는 아직 근사치입니다. 실제 영상을 보며 각 '▶ 시각'을 눌러 위치를 확인하고 보정하세요.",
+  "sections": [
+    {
+      "t": "0:00",
+      "heading": "강의 도입 · 1장 전선로 개요",
+      "html": "<p>전력공학의 첫 단원인 <b>전선로</b>를 다룬다. 전선로는 발전소에서 만든 전력을 수용가까지 보내는 통로로, 전선·애자·지지물·지선 등으로 구성된다. 본 강의(01강)에서는 그중 <b>전선 자체의 특성</b>(구비조건, 종류, 이도, 하중)을 학습한다.</p><ul><li>전선로 구성: 전선, 애자, 지지물(전주·철탑), 지선 등</li><li>01강 범위: 전선의 특성 / 02강: 애자·지선</li></ul>"
+    },
+    {
+      "t": "3:30",
+      "heading": "1-1. 전선의 구비조건",
+      "html": "<p>좋은 전선이 갖춰야 할 조건:</p><ul><li>도전율이 클 것 (저항이 작을 것)</li><li>기계적 강도가 클 것 (잘 끊어지지 않을 것)</li><li>비중(밀도)이 작을 것 (가벼울 것)</li><li>가선(설치)이 용이할 것</li><li>내구성이 클 것, 가격이 저렴할 것</li></ul><p>모든 조건을 완벽히 만족하는 재료는 없으므로 경제성과 강도를 절충하여 <b>경동선·경알루미늄선·ACSR</b> 등을 사용한다.</p>"
+    },
+    {
+      "t": "14:00",
+      "heading": "1-2. 전선의 종류",
+      "html": "<ul><li><b>경동선</b>: 도전율 약 97%, 인장강도 큼 → 가공송전선로</li><li><b>연동선</b>: 도전율 약 100%, 유연함 → 옥내배선</li><li><b>강심알루미늄연선(ACSR)</b>: 중심 강선(강도) + 바깥 알루미늄(도전). 경동선보다 지름은 크고 가벼워 <b>장경간·초고압 송전선로</b>에 유리. 지름이 커 코로나에도 유리.</li></ul>"
+    },
+    {
+      "t": "25:00",
+      "heading": "1-3. 이도(Dip, 처짐)",
+      "html": "<p>전선을 두 지지점 사이에 늘어뜨렸을 때 수평선과 전선 최하점의 수직 거리.</p><p><b>이도 공식</b></p>$ D = \\dfrac{W S^{2}}{8T} $<ul><li>$D$: 이도 [m], $W$: 단위길이당 합성하중 [kg/m]</li><li>$S$: 경간 [m], $T$: 수평장력 [kg] ( = 인장하중 / 안전율 )</li></ul><p><b>의미</b>: 이도가 너무 크면 전선이 크게 흔들려 혼촉·수목 접촉 위험 및 지지물이 높아야 하고, 너무 작으면 장력이 커져 단선 위험. 따라서 적정 설계가 필요하다.</p>"
+    },
+    {
+      "t": "42:00",
+      "heading": "1-4. 전선의 실제 길이 · 평균 높이",
+      "html": "<p><b>전선의 실제 길이</b> (경간보다 $\\dfrac{8D^{2}}{3S}$ 만큼 길다)</p>$ L = S + \\dfrac{8D^{2}}{3S} $<p><b>전선의 평균 높이</b></p>$ h = H - \\dfrac{2}{3}D $<p>($H$: 지지점 높이) — 전선이 늘어져 있으므로 평균 높이는 지지점보다 이도의 2/3만큼 낮다.</p>"
+    },
+    {
+      "t": "54:00",
+      "heading": "1-5. 전선의 하중과 안전율",
+      "html": "<p><b>합성하중</b> (수직하중과 수평 풍압하중을 직각 합성)</p>$ W = \\sqrt{(W_{c}+W_{i})^{2} + W_{w}^{2}} $<ul><li>$W_c$: 전선 자중, $W_i$: 빙설(수직)하중, $W_w$: 풍압(수평)하중</li><li><b>빙설하중</b>: 두께 6mm·비중 0.9의 빙설 부착 가정</li></ul><p><b>안전율</b></p>$ \\text{안전율} = \\dfrac{\\text{인장강도(하중)}}{\\text{허용장력}} $<p>경동선 등은 보통 안전율 2.2 이상으로 설계한다.</p>"
+    }
+  ]
+}
+;</script>
+<script>
+/* =========================================================================
+   전력공학 강의 뷰어 — app.js
+   기능: ① 영상 재생에 맞춘 섹션 단위 자동 스크롤
+        ② 수동 스크롤 감지 → 10초 후 재개 팝업 → 선택별 동작(상태머신)
+        ③ KaTeX 수식 렌더링
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  // ---------- 설정 ----------
+  var POLL_MS = 250;          // 영상 재생위치 폴링 주기
+  var IDLE_MS = 10000;        // 수동조작 멈춘 뒤 팝업까지 대기(10초)
+  var PROG_SCROLL_LOCK = 800; // 프로그램 스크롤로 간주하는 시간(ms)
+
+  // ---------- 상태 ----------
+  // AUTO      : 영상에 맞춰 자동 스크롤 중
+  // PAUSED    : 사용자가 방금 수동 스크롤함(10초 대기)
+  // PROMPTING : 재개 여부 팝업 표시 중
+  // DISABLED  : 거절 또는 수동 OFF → 시간과 무관하게 꺼짐
+  var state = 'AUTO';
+
+  var LEC = null;
+  var player = null;
+  var sections = [];          // [{ el, start }]
+  var currentIdx = -1;
+  var isPlaying = false;
+  var isProgrammaticScroll = false;
+
+  var pollTimer = null;
+  var idleTimer = null;
+  var progScrollTimer = null;
+
+  var apiReady = false, dataReady = false;
+
+  // ---------- DOM ----------
+  var contentEl   = document.getElementById('content');
+  var popupEl     = document.getElementById('resume-popup');
+  var reenableBtn = document.getElementById('reenable-btn');
+  var toggleBtn   = document.getElementById('toggle-btn');
+  var toggleText  = document.getElementById('toggle-text');
+  var curSecEl    = document.getElementById('cur-section');
+  var lecLabelEl  = document.getElementById('lec-label');
+
+  // ---------- 유틸 ----------
+  function parseTime(t) {
+    if (typeof t === 'number') return t;
+    if (!t) return 0;
+    var p = String(t).split(':').map(Number);
+    if (p.some(isNaN)) return 0;
+    if (p.length === 3) return p[0] * 3600 + p[1] * 60 + p[2];
+    if (p.length === 2) return p[0] * 60 + p[1];
+    return p[0];
+  }
+  function fmtTime(sec) {
+    sec = Math.max(0, Math.floor(sec));
+    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    var mm = (h > 0 && m < 10 ? '0' : '') + m, ss = (s < 10 ? '0' : '') + s;
+    return (h > 0 ? h + ':' : '') + mm + ':' + ss;
+  }
+
+  // ---------- 데이터 로드 ----------
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = src; s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  function loadData() {
+    // 1) 완결 HTML(빌드본)은 데이터를 window.__LECTURE_DATA__로 인라인
+    if (window.__LECTURE_DATA__) return Promise.resolve(window.__LECTURE_DATA__);
+    var id = (new URLSearchParams(location.search).get('id')) || 'lec01';
+    // 2) file:// 로컬에서도 동작하도록 <script>(전역변수) 방식 우선 시도
+    return loadScript('data/' + id + '.js')
+      .then(function () {
+        if (window.__LECTURE_DATA__) return window.__LECTURE_DATA__;
+        throw new Error('no global');
+      })
+      .catch(function () {
+        // 3) (서버 실행 시) JSON fetch 폴백
+        return fetch('data/' + id + '.json').then(function (r) {
+          if (!r.ok) throw new Error('데이터 로드 실패');
+          return r.json();
+        });
+      });
+  }
+
+  // ---------- 콘텐츠 렌더 ----------
+  function buildContent() {
+    document.title = (LEC.title || '강의 뷰어');
+    if (lecLabelEl) lecLabelEl.textContent = (LEC.no ? LEC.no + ' · ' : '') + (LEC.shortTitle || LEC.title || '');
+
+    var html = '';
+    html += '<h2 class="doc-title">' + escapeHtml(LEC.title || '') + '</h2>';
+    if (LEC.textbook) html += '<p class="doc-sub">교재 ' + escapeHtml(LEC.textbook) + '</p>';
+    if (LEC.timestampNote) {
+      html += '<div class="est-note">⚠ ' + escapeHtml(LEC.timestampNote) + '</div>';
+    }
+    (LEC.sections || []).forEach(function (sec, i) {
+      var start = parseTime(sec.t);
+      html += '<div class="section" data-idx="' + i + '" data-start="' + start + '">'
+            +   '<span class="sec-time" data-seek="' + start + '">▶ ' + fmtTime(start) + '</span>'
+            +   (sec.heading ? '<h3>' + escapeHtml(sec.heading) + '</h3>' : '')
+            +   (sec.html || '')
+            + '</div>';
+    });
+    contentEl.innerHTML = html;
+
+    // 섹션 인덱스 구성(시작시각 오름차순)
+    sections = Array.prototype.map.call(
+      contentEl.querySelectorAll('.section'),
+      function (el) { return { el: el, start: Number(el.getAttribute('data-start')) || 0 }; }
+    ).sort(function (a, b) { return a.start - b.start; });
+
+    // 타임스탬프 클릭 → 해당 위치로 이동
+    contentEl.addEventListener('click', function (e) {
+      var t = e.target.closest && e.target.closest('.sec-time');
+      if (!t) return;
+      var to = Number(t.getAttribute('data-seek')) || 0;
+      if (player && player.seekTo) { player.seekTo(to, true); player.playVideo && player.playVideo(); }
+      if (state === 'DISABLED') { /* 이동만, 자동은 유지 OFF */ }
+    });
+
+    renderMath(contentEl);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  // KaTeX가 defer 로드라 준비될 때까지 대기 후 렌더
+  function renderMath(el, tries) {
+    tries = tries || 0;
+    if (window.renderMathInElement) {
+      try {
+        window.renderMathInElement(el, {
+          delimiters: [
+            { left: '$', right: '$', display: true },
+            { left: '
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
+, right: '
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
+, display: false }
+          ],
+          throwOnError: false
+        });
+      } catch (e) { /* noop */ }
+    } else if (tries < 40) {
+      setTimeout(function () { renderMath(el, tries + 1); }, 100);
+    }
+  }
+
+  // ---------- YouTube 플레이어 ----------
+  window.onYouTubeIframeAPIReady = function () { apiReady = true; tryInit(); };
+
+  function tryInit() {
+    if (apiReady && dataReady && !player) initPlayer();
+  }
+
+  function initPlayer() {
+    player = new YT.Player('player', {
+      videoId: LEC.videoId,
+      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange
+      }
+    });
+  }
+
+  function onPlayerReady() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(tick, POLL_MS);
+    updateUI();
+  }
+
+  function onPlayerStateChange(e) {
+    isPlaying = (e.data === YT.PlayerState.PLAYING);
+  }
+
+  // ---------- 동기화(폴링) ----------
+  function tick() {
+    if (state !== 'AUTO' || !player || !player.getCurrentTime) return;
+    var t = player.getCurrentTime() || 0;
+    var idx = findSectionIdx(t);
+    if (idx !== -1 && idx !== currentIdx) {
+      currentIdx = idx;
+      scrollToSection(idx, true);
+    }
+  }
+
+  function findSectionIdx(t) {
+    // t가 속한 마지막 섹션(start <= t) 이진탐색
+    var lo = 0, hi = sections.length - 1, res = -1;
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1;
+      if (sections[mid].start <= t) { res = mid; lo = mid + 1; }
+      else hi = mid - 1;
+    }
+    return res;
+  }
+
+  function scrollToSection(idx, smooth) {
+    var s = sections[idx];
+    if (!s) return;
+    // 활성 하이라이트
+    sections.forEach(function (o) { o.el.classList.remove('active'); });
+    s.el.classList.add('active');
+    if (curSecEl) {
+      var h = s.el.querySelector('h3');
+      curSecEl.textContent = '▷ ' + (h ? h.textContent : '');
+    }
+    // 프로그램 스크롤 잠금(사용자 조작 오인 방지)
+    isProgrammaticScroll = true;
+    if (progScrollTimer) clearTimeout(progScrollTimer);
+    progScrollTimer = setTimeout(function () { isProgrammaticScroll = false; }, PROG_SCROLL_LOCK);
+
+    s.el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+  }
+
+  // ---------- 사용자 스크롤 감지 ----------
+  var NAV_KEYS = { ArrowUp: 1, ArrowDown: 1, PageUp: 1, PageDown: 1, Home: 1, End: 1, ' ': 1, Spacebar: 1 };
+
+  function onUserScrollGesture() {
+    if (state === 'AUTO') { enterPaused(); }
+    else if (state === 'PAUSED') { resetIdle(); }
+    // PROMPTING/DISABLED 중에는 무시(팝업/버튼으로만 상태 전환)
+  }
+
+  contentEl.addEventListener('wheel', onUserScrollGesture, { passive: true });
+  contentEl.addEventListener('touchmove', onUserScrollGesture, { passive: true });
+  contentEl.addEventListener('keydown', function (e) {
+    if (NAV_KEYS[e.key]) onUserScrollGesture();
+  });
+  // 스크롤바 드래그 등 기타 조작 대비(프로그램 스크롤은 잠금으로 배제)
+  contentEl.addEventListener('scroll', function () {
+    if (isProgrammaticScroll) return;
+    onUserScrollGesture();
+  }, { passive: true });
+
+  // ---------- 상태 전이 ----------
+  function enterAuto() {
+    state = 'AUTO';
+    clearIdle();
+    hidePopup();
+    reenableBtn.classList.add('hidden');
+    // 현재 영상 위치로 즉시 정렬
+    currentIdx = -1;
+    if (player && player.getCurrentTime) {
+      var idx = findSectionIdx(player.getCurrentTime() || 0);
+      if (idx !== -1) { currentIdx = idx; scrollToSection(idx, true); }
+    }
+    updateUI();
+  }
+
+  function enterPaused() {
+    state = 'PAUSED';
+    hidePopup();
+    reenableBtn.classList.add('hidden');
+    resetIdle();
+    updateUI();
+  }
+
+  function enterPrompting() {
+    // 결정 D: 영상이 재생 중일 때만 팝업(멈춰 읽는 중 방해 방지)
+    if (!isPlaying) { resetIdle(); return; }
+    state = 'PROMPTING';
+    showPopup();
+    updateUI();
+  }
+
+  function enterDisabled() {
+    state = 'DISABLED';
+    clearIdle();
+    hidePopup();
+    reenableBtn.classList.remove('hidden'); // 시간과 무관하게 OFF, 버튼으로만 재활성
+    updateUI();
+  }
+
+  function resetIdle() {
+    clearIdle();
+    idleTimer = setTimeout(function () {
+      if (state === 'PAUSED') enterPrompting();
+    }, IDLE_MS);
+  }
+  function clearIdle() { if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } }
+
+  function showPopup() { popupEl.classList.remove('hidden'); }
+  function hidePopup() { popupEl.classList.add('hidden'); }
+
+  // ---------- UI 갱신 ----------
+  function updateUI() {
+    var on = (state === 'AUTO');
+    toggleBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (state === 'AUTO')      toggleText.textContent = '자동 스크롤 ON';
+    else if (state === 'DISABLED') toggleText.textContent = '자동 스크롤 OFF';
+    else                       toggleText.textContent = '자동 스크롤 일시중지';
+  }
+
+  // ---------- 버튼 이벤트 ----------
+  document.getElementById('resume-yes').addEventListener('click', enterAuto);
+  document.getElementById('resume-no').addEventListener('click', enterDisabled);
+  reenableBtn.addEventListener('click', enterAuto);
+  toggleBtn.addEventListener('click', function () {
+    if (state === 'AUTO') enterDisabled(); // 수동 OFF는 언제든 가능
+    else enterAuto();
+  });
+
+  // ---------- 시작 ----------
+  loadData().then(function (d) {
+    LEC = d;
+    buildContent();
+    dataReady = true;
+    updateUI();
+    tryInit();
+  }).catch(function (e) {
+    contentEl.innerHTML = '<p class="error">강의 데이터를 불러오지 못했습니다.<br>'
+      + '로컬 파일을 직접 열었다면 간이 서버로 실행해 주세요 '
+      + '(예: 폴더에서 <code>python -m http.server</code> 실행 후 '
+      + '<code>http://localhost:8000/viewer.html?id=lec01</code>).</p>';
+  });
+
+})();
+
+</script>
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
