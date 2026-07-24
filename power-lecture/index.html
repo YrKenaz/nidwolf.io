@@ -239,17 +239,17 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
     {
       "t": "25:00",
       "heading": "1-3. 이도(Dip, 처짐)",
-      "html": "<p>전선을 두 지지점 사이에 늘어뜨렸을 때 수평선과 전선 최하점의 수직 거리.</p><p><b>이도 공식</b></p>$ D = \\dfrac{W S^{2}}{8T} $<ul><li>$D$: 이도 [m], $W$: 단위길이당 합성하중 [kg/m]</li><li>$S$: 경간 [m], $T$: 수평장력 [kg] ( = 인장하중 / 안전율 )</li></ul><p><b>의미</b>: 이도가 너무 크면 전선이 크게 흔들려 혼촉·수목 접촉 위험 및 지지물이 높아야 하고, 너무 작으면 장력이 커져 단선 위험. 따라서 적정 설계가 필요하다.</p>"
+      "html": "<p>전선을 두 지지점 사이에 늘어뜨렸을 때 수평선과 전선 최하점의 수직 거리.</p><p><b>이도 공식</b></p>$$ D = \\dfrac{W S^{2}}{8T} $$<ul><li>$D$: 이도 [m], $W$: 단위길이당 합성하중 [kg/m]</li><li>$S$: 경간 [m], $T$: 수평장력 [kg] ( = 인장하중 / 안전율 )</li></ul><p><b>의미</b>: 이도가 너무 크면 전선이 크게 흔들려 혼촉·수목 접촉 위험 및 지지물이 높아야 하고, 너무 작으면 장력이 커져 단선 위험. 따라서 적정 설계가 필요하다.</p>"
     },
     {
       "t": "42:00",
       "heading": "1-4. 전선의 실제 길이 · 평균 높이",
-      "html": "<p><b>전선의 실제 길이</b> (경간보다 $\\dfrac{8D^{2}}{3S}$ 만큼 길다)</p>$ L = S + \\dfrac{8D^{2}}{3S} $<p><b>전선의 평균 높이</b></p>$ h = H - \\dfrac{2}{3}D $<p>($H$: 지지점 높이) — 전선이 늘어져 있으므로 평균 높이는 지지점보다 이도의 2/3만큼 낮다.</p>"
+      "html": "<p><b>전선의 실제 길이</b> (경간보다 $\\dfrac{8D^{2}}{3S}$ 만큼 길다)</p>$$ L = S + \\dfrac{8D^{2}}{3S} $$<p><b>전선의 평균 높이</b></p>$$ h = H - \\dfrac{2}{3}D $$<p>($H$: 지지점 높이) — 전선이 늘어져 있으므로 평균 높이는 지지점보다 이도의 2/3만큼 낮다.</p>"
     },
     {
       "t": "54:00",
       "heading": "1-5. 전선의 하중과 안전율",
-      "html": "<p><b>합성하중</b> (수직하중과 수평 풍압하중을 직각 합성)</p>$ W = \\sqrt{(W_{c}+W_{i})^{2} + W_{w}^{2}} $<ul><li>$W_c$: 전선 자중, $W_i$: 빙설(수직)하중, $W_w$: 풍압(수평)하중</li><li><b>빙설하중</b>: 두께 6mm·비중 0.9의 빙설 부착 가정</li></ul><p><b>안전율</b></p>$ \\text{안전율} = \\dfrac{\\text{인장강도(하중)}}{\\text{허용장력}} $<p>경동선 등은 보통 안전율 2.2 이상으로 설계한다.</p>"
+      "html": "<p><b>합성하중</b> (수직하중과 수평 풍압하중을 직각 합성)</p>$$ W = \\sqrt{(W_{c}+W_{i})^{2} + W_{w}^{2}} $$<ul><li>$W_c$: 전선 자중, $W_i$: 빙설(수직)하중, $W_w$: 풍압(수평)하중</li><li><b>빙설하중</b>: 두께 6mm·비중 0.9의 빙설 부착 가정</li></ul><p><b>안전율</b></p>$$ \\text{안전율} = \\dfrac{\\text{인장강도(하중)}}{\\text{허용장력}} $$<p>경동선 등은 보통 안전율 2.2 이상으로 설계한다.</p>"
     }
   ]
 }
@@ -394,18 +394,8 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
       try {
         window.renderMathInElement(el, {
           delimiters: [
-            { left: '$', right: '$', display: true },
-            { left: '
-<!-- YouTube IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-</body>
-</html>
-, right: '
-<!-- YouTube IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
-</body>
-</html>
-, display: false }
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
           ],
           throwOnError: false
         });
