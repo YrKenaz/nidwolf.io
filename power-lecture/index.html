@@ -116,7 +116,7 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
 .pane-content { position: relative; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; }
 
 /* 탭바 */
-.tabbar { display: flex; gap: 4px; padding: 8px 12px 0; background: var(--panel); border-bottom: 1px solid var(--border); }
+.tabbar { display: flex; gap: 4px; padding: 8px 12px 0; background: var(--panel); border-bottom: 1px solid var(--border); flex: 0 0 auto; }
 .tab {
   background: transparent; color: var(--muted); border: 1px solid transparent; border-bottom: none;
   padding: 8px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: .9rem;
@@ -607,7 +607,12 @@ a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); bac
     if (progScrollTimer) clearTimeout(progScrollTimer);
     progScrollTimer = setTimeout(function () { isProgrammaticScroll = false; }, PROG_SCROLL_LOCK);
 
-    s.el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+    // 콘텐츠 컨테이너 '안'에서만 스크롤(상위 영역/탭바가 밀려나지 않도록)
+    var cRect = contentEl.getBoundingClientRect();
+    var sRect = s.el.getBoundingClientRect();
+    var target = contentEl.scrollTop + (sRect.top - cRect.top) - 8;
+    if (target < 0) target = 0;
+    contentEl.scrollTo({ top: target, behavior: smooth ? 'smooth' : 'auto' });
   }
 
   // ---------- 사용자 스크롤 감지 ----------
