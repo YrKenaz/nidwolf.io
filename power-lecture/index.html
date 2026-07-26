@@ -3,15 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>강의 뷰어</title>
-
-<!-- KaTeX (CDN) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-<!-- mathjs (인라인 계산기) -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.3/math.min.js"></script>
-
+<title>전력공학 강의 뷰어 — 다산에듀 남민수</title>
 <style>
 :root {
   --bg: #0f1419;
@@ -251,778 +243,119 @@ body.calibrating .section { outline: 1px dashed var(--border); outline-offset: 4
 
 </style>
 </head>
-<body class="viewer-page">
+<body class="index-page">
+<header class="index-header">
+  <h1 id="course-title">전력공학 강의 뷰어</h1>
+  <p id="course-sub" class="muted"></p>
+  <p class="notice">영상 재생에 맞춰 강의 내용이 자동 스크롤됩니다. 강의를 선택하세요.</p>
+</header>
 
-<div id="app" class="viewer-grid">
+<main id="lecture-list" class="lecture-list">
+  <p class="muted">목록을 불러오는 중…</p>
+</main>
 
-  <!-- 좌측(넓은 화면) / 상단(좁은 화면): 영상 + 상태바 -->
-  <section class="pane-video">
-    <div class="video-wrap">
-      <div id="player"></div>
-    </div>
+<footer class="index-footer muted">
+  <p>※ 콘텐츠가 준비된 강의만 열람 가능합니다. 나머지는 순차 추가 예정입니다.</p>
+</footer>
 
-    <div class="statusbar">
-      <a class="back-link" href="index.html">← 목록</a>
-      <div class="status-center">
-        <span id="lec-label" class="lec-label"></span>
-      </div>
-      <div class="status-right">
-        <span id="cur-section" class="cur-section muted"></span>
-        <button id="calib-btn" class="calib-btn" type="button">⚙ 싱크 보정</button>
-        <button id="toggle-btn" class="toggle-btn" type="button" aria-pressed="true">
-          <span class="dot"></span><span id="toggle-text">자동 스크롤 ON</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 우측(넓은 화면) / 하단(좁은 화면): 탭 + 스크롤 영역 -->
-  <section class="pane-content">
-    <div class="tabbar" role="tablist">
-      <button class="tab active" data-tab="content" role="tab" type="button">📘 강의 내용</button>
-      <button class="tab" data-tab="problems" role="tab" type="button">📝 기출문제 풀이</button>
-    </div>
-
-    <!-- 강의 내용 탭 -->
-    <div id="content" class="content tabpanel" tabindex="0" role="tabpanel">
-      <p class="muted">불러오는 중…</p>
-    </div>
-
-    <!-- 기출문제 탭 -->
-    <div id="problems" class="content tabpanel hidden" role="tabpanel"></div>
-
-    <!-- 싱크 보정 바 -->
-    <div id="calib-bar" class="calib-bar hidden">
-      <span class="calib-msg">🎯 <b>싱크 보정 모드</b> — 영상을 재생하다가 각 섹션의 <b>⌖ 지금 위치로</b> 버튼을 누르면 그 시각이 저장됩니다.</span>
-      <span class="calib-actions">
-        <button id="calib-export" class="btn btn-ghost" type="button">보정값 복사</button>
-        <button id="calib-reset" class="btn btn-ghost" type="button">초기화</button>
-        <button id="calib-done" class="btn btn-primary" type="button">완료</button>
-      </span>
-    </div>
-
-    <!-- 재개 여부 팝업(토스트형, 비모달) -->
-    <div id="resume-popup" class="resume-popup hidden" role="dialog" aria-live="polite">
-      <div class="popup-text">영상 위치에 맞춰 다시 자동 스크롤할까요?</div>
-      <div class="popup-actions">
-        <button id="resume-yes" class="btn btn-primary" type="button">예, 다시 맞춤</button>
-        <button id="resume-no" class="btn btn-ghost" type="button">아니오</button>
-      </div>
-    </div>
-
-    <!-- 거절 후 재활성 버튼(우하단 고정) -->
-    <button id="reenable-btn" class="reenable-btn hidden" type="button">▶ 자동 스크롤 켜기</button>
-  </section>
-
-</div>
-
-<script>window.__LECTURE_DATA__ = {
-  "id": "lec01",
-  "videoId": "bSFzt5qFfpQ",
-  "no": "01강",
-  "shortTitle": "전선의 특성",
-  "title": "전력공학 01강 — 1장 전선로①(전선의 특성)",
-  "textbook": "p.2~7",
-  "timestampNote": "",
-  "sections": [
+<!-- 로컬(file://)에서도 동작하도록 전역변수 방식으로 먼저 로드 -->
+<script>window.__INDEX_DATA__ = {
+  "course": "전력공학 (다산에듀 · 남민수)",
+  "subtitle": "속전속결 전기·공사(산업)기사 필기 이론",
+  "groups": [
     {
-      "t": "0:10",
-      "heading": "강의 오리엔테이션 · 학습 방향",
-      "html": "<ul><li><b>전력공학의 특징</b>: 계산 문제가 적고 <b>중요한 단답형이 반복 출제</b>되어 고득점 확보가 용이한 과목이다.</li><li><b>필기–실기 연관성</b>: 전력공학·전기설비기술기준은 실기 시험과 직결된다. 기출 단순 암기보다 <b>원리를 이해하며</b> 정석대로 공부하는 것이 합격의 지름길이다.</li></ul>"
+      "name": "기본반 이론",
+      "lectures": [
+        { "id": "ot",    "videoId": "NX7IX4snv44", "no": "OT",   "title": "오리엔테이션", "textbook": "-", "duration": "11:24", "ready": false },
+        { "id": "lec01", "videoId": "bSFzt5qFfpQ", "no": "01강", "title": "1장 전선로①(전선의 특성)", "textbook": "p.2~7", "duration": "1:10:08", "ready": true },
+        { "id": "lec02", "videoId": "8SX4UPJxaNA", "no": "02강", "title": "1장 전선로②(애자, 지선)", "textbook": "p.8~18", "duration": "33:26", "ready": true },
+        { "id": "lec03", "videoId": "GIV7k4E0rW8", "no": "03강", "title": "2장 선로정수 및 코로나①(선로정수)", "textbook": "p.28~33", "duration": "1:06:18", "ready": false },
+        { "id": "lec04", "videoId": "rFbYxKdHJiU", "no": "04강", "title": "2장 선로정수 및 코로나②(코로나 현상)", "textbook": "p.34~39", "duration": "31:09", "ready": false },
+        { "id": "lec05", "videoId": "pqQwlGpQLQ8", "no": "05강", "title": "3장 송전특성①(단거리 송전선로)", "textbook": "p.48~50", "duration": "42:49", "ready": false },
+        { "id": "lec06", "videoId": "WQeDHM8x1m4", "no": "06강", "title": "3장 송전특성②(중·장거리, 송전전력, Still식)", "textbook": "p.51~59", "duration": "45:45", "ready": false },
+        { "id": "lec07", "videoId": "hptguN42DzQ", "no": "07강", "title": "4장 조상설비 및 전력원선도①(역률개선 등)", "textbook": "p.70~72", "duration": "58:35", "ready": false },
+        { "id": "lec08", "videoId": "QIDdNhKraUI", "no": "08강", "title": "4장 조상설비 및 전력원선도②(동기조상기 등)", "textbook": "p.73~80", "duration": "42:20", "ready": false },
+        { "id": "lec09", "videoId": "PUtIZljEVxE", "no": "09강", "title": "5장 고장계산", "textbook": "p.88~98", "duration": "49:31", "ready": false },
+        { "id": "lec10", "videoId": "itlYuwbNUA0", "no": "10강", "title": "6장 중성점 접지방식①(중성점 접지)", "textbook": "p.104~109", "duration": "38:52", "ready": false },
+        { "id": "lec11", "videoId": "AzOGv_SdXC0", "no": "11강", "title": "6장 중성점 접지방식②(유도장해, 안정도)", "textbook": "p.110~114", "duration": "47:45", "ready": false },
+        { "id": "lec12", "videoId": "l3-AUdD2cFw", "no": "12강", "title": "7장 이상전압 및 보호계전 방식", "textbook": "p.122~137", "duration": "1:00:41", "ready": false },
+        { "id": "lec13", "videoId": "zfBOFiGDSRI", "no": "13강", "title": "8장 변전소", "textbook": "p.146~163", "duration": "34:13", "ready": false },
+        { "id": "lec14", "videoId": "fjyISI94Ta8", "no": "14강", "title": "9장 배전방식 및 전기공급방식", "textbook": "p.170~180", "duration": "59:41", "ready": false },
+        { "id": "lec15", "videoId": "26VboZnIu6g", "no": "15강", "title": "10장 배전선로의 부하특성 및 운용", "textbook": "p.186~201", "duration": "33:44", "ready": false },
+        { "id": "lec16", "videoId": "zuUEhf0t2MA", "no": "16강", "title": "11~12장 수력발전, 화력발전", "textbook": "p.208~248", "duration": "56:26", "ready": false }
+      ]
     },
     {
-      "t": "4:44",
-      "heading": "전력계통(Power System)의 이해",
-      "html": "<p><b>전력계통 흐름</b></p><p>발전소 → 송전 → 1차 변전소 → 2차 변전소 → 배전 → 수용가(가정/공장)</p><p><b>구간별 전압</b></p><ul><li><b>발전소</b>: 교류(동기) 발전기로 <b>22kV</b> 생산.</li><li><b>송전</b>: 손실 감소를 위해 <b>345kV·765kV</b>로 승압(step-up)하여 철탑으로 전송.</li><li><b>변전소</b>: 154kV를 거쳐 2차 변전소에서 대표 배전전압 <b>22.9kV</b>로 감압(step-down).</li><li><b>수용가</b>: 가정용 <b>220V/110V</b>(단상), 공장용 <b>380V</b>(3상).</li></ul><p><b>공칭전압(Nominal Voltage)</b>: 선로를 대표하는 <b>선간전압</b>. 별도 언급이 없으면 단상을 제외하고 모두 <b>3상</b>으로 간주한다.</p><p>이 계통의 물리적 경로가 <b>전선로</b>(가공전선 + 지지물)이며, 1장에서는 그중 전선 자체의 특성을 다룬다.</p>"
-    },
-    {
-      "t": "16:24",
-      "heading": "전선의 구비조건 6가지",
-      "html": "<p>이상적인 전선이 갖추어야 할 조건과 그 이유:</p><ul><li><b>도전율이 클 것</b> — 저항이 작아 전력손실·전압강하 감소.</li><li><b>기계적 강도(인장강도)가 클 것</b> — 자중·바람·빙설에도 끊어지지 않아야 함.</li><li><b>비중(밀도)이 작을 것</b> — 가벼워야 지지물 부담·이도가 줄고 장경간 가능.</li><li><b>가요성(가선)이 좋을 것</b> — 유연하여 시공이 쉬울 것.</li><li><b>내구성(내식성)이 클 것</b> — 부식·기후에 오래 견딜 것.</li><li><b>경제성</b> — 가격이 저렴하고 대량 생산이 가능할 것.</li></ul><p><b>절충의 원리</b>: 도전율이 가장 좋은 은(銀)은 비싸고, 강도가 큰 강(鋼)은 도전율이 낮다. 모든 조건을 동시에 만족하는 재료는 없으므로 <b>도전율·강도·경제성을 절충</b>해 경동선·경알루미늄선·ACSR을 쓴다.</p>"
-    },
-    {
-      "t": "21:04",
-      "heading": "전선의 분류 및 외경 계산 (연선)",
-      "html": "<p><b>단선(Solid) vs 연선(Stranded)</b>: 연선은 여러 가닥의 <b>소선</b>을 꼬아 만든다.</p><p><b>연선 꼬임 규칙</b>: 중심 1가닥을 기준으로 층이 늘 때마다 <b>6의 배수</b>(6→12→18…)로 소선이 추가된다.</p><ul><li>1층: $1+6=7$가닥</li><li>2층: $1+6+12=19$가닥</li><li>3층: $1+6+12+18=37$가닥</li></ul><p>일반식: $N = 3n(n+1)+1 = 3n^{2}+3n+1$ (층수 $n$)</p><p><b>바깥지름(외경)</b>: 단면 지름 상에 놓이는 소선 수 $(2n+1)$개로 계산.</p>$$ D = (2n+1)\\,d $$<p>예) 규격 <code>19/1.8mm</code> → 19가닥은 <b>2층</b> 구조 → 지름 상 소선 5개 → $D = 1.8 \\times 5 = 9\\,\\text{mm}$.</p><p><b>총 단면적</b>: $A = N \\times \\dfrac{\\pi d^{2}}{4}$</p>"
-    },
-    {
-      "t": "27:49",
-      "heading": "전선의 재료 · 특수 연선 (중공연선·ACSR)",
-      "html": "<p><b>도전율 비교(연동선 100% 기준)</b></p><table><tr><th>재료</th><th>도전율[%]</th><th>용도</th></tr><tr><td>연동선</td><td>100</td><td>옥내배선</td></tr><tr><td>경동선</td><td>약 97</td><td>가공송전선</td></tr><tr><td>경알루미늄</td><td>약 61</td><td>가볍고 저렴</td></tr></table><p><b>중공연선(Hollow Stranded Wire)</b>: 표피효과로 중심부에 전류가 거의 흐르지 않는 점을 이용해 <b>속을 비운</b> 전선. 단면적은 유지하면서 <b>바깥지름을 키워</b> 초고압 선로의 <b>코로나(Corona) 현상 방지</b>에 유리하다.</p><p><b>ACSR(강심 알루미늄 연선)</b>: 알루미늄 안쪽에 <b>강심(철심)</b>을 넣어 기계적 강도를 높인 전선. 가볍고 튼튼하며 지름이 커 <b>코로나 억제</b> 효과까지 있어 송전탑에 주로 사용된다.</p>"
-    },
-    {
-      "t": "35:37",
-      "heading": "전선 굵기 선정 · 켈빈의 법칙",
-      "html": "<p><b>굵기 선정 3대 고려 요소</b></p><ol><li><b>전압강하(Voltage Drop)</b>: 허용 한도 이내로 작을 것.</li><li><b>허용전류(Ampacity)</b>: 부하 전류를 감당하되, 과도하게 커서 비경제적이지 않을 것.</li><li><b>기계적 강도</b>: 단선되지 않을 강도를 확보할 것.</li></ol><p><b>켈빈의 법칙(Kelvin's Law)</b>: 위 요소와 함께 경제성(초기 건설비 + 전력손실 비용)을 종합하여 <b>가장 경제적인 굵기</b>를 정하는 법칙.</p>$$ \\text{전력손실 전력량 요금} = \\text{건설비} \\times (\\text{이자율} + \\text{감가상각률}) $$"
-    },
-    {
-      "t": "40:01",
-      "heading": "표피효과 (Skin Effect)",
-      "html": "<p><b>개념</b>: 교류(AC)가 흐를 때 발생하는 자속 변화(유도기전력) 때문에, 전선 <b>중심부일수록 전류가 상쇄</b>되고 <b>표피(가장자리)로 전류가 몰려</b> 흐르는 현상. 실효저항이 커진다.</p><p><b>침투깊이(Skin Depth, $\\delta$)</b>: 전류가 유효하게 흐르는 깊이. 이 값이 <b>작을수록</b> 표피효과가 심하다.</p>$$ \\delta = \\frac{1}{\\sqrt{\\pi f \\mu k}} $$<p>주파수 $f$, 투자율 $\\mu$, 도전율 $k$(및 전선의 굵기)가 <b>클수록 표피효과가 커진다.</b></p>"
-    },
-    {
-      "t": "49:08",
-      "heading": "이도 (Dip) 공식",
-      "html": "<p><b>개념</b>: 지지물 사이에 전선을 가설할 때 자중으로 자연스럽게 처지는 <b>수직 거리</b>. 실제로는 현수선이지만 포물선으로 근사한다.</p><p><b>이도 공식</b></p>$$ D = \\frac{W S^{2}}{8T} $$<ul><li>$W$: 전선 1m당 중량 [kg/m]</li><li>$S$: 경간(Span, 지지물 간 거리) [m]</li><li>$T$: 수평장력 [kg] $=\\dfrac{\\text{인장하중}}{\\text{안전율}}$</li></ul><p><b>의미</b>: 이도가 크면 전선이 크게 흔들려 혼촉·접촉 위험(지지물을 높여야 함), 작으면 장력 $T$가 커져 단선 위험. 적정 설계가 핵심이다.</p>"
-    },
-    {
-      "t": "53:46",
-      "heading": "전선의 실제 길이 (·평균 높이·온도)",
-      "html": "<p><b>전선의 실제 길이</b> — 직선 경간 $S$에 처짐으로 늘어난 길이 $\\dfrac{8D^{2}}{3S}$를 더한다.</p>$$ L = S + \\frac{8D^{2}}{3S} $$<p><b>전선의 평균 높이</b> ($H$: 지지점 높이)</p>$$ h = H - \\frac{2}{3}D $$<p><b>온도 변화</b>: 기온이 오르면 전선이 열팽창으로 길어져 이도가 <b>커지고</b>(장력↓), 내리면 이도가 <b>작아진다</b>(장력↑). 여름·겨울 조건을 모두 고려해 설계한다.</p>"
-    },
-    {
-      "t": "57:08",
-      "heading": "중앙 지지점이 풀렸을 때의 변화",
-      "html": "<p>지지점이 여러 개인 가공 선로에서 <b>중앙 지지점이 이탈(풀림)</b>하면, 경간이 2배가 되면서 처짐(이도)은 <b>처음 이도의 2배</b>로 늘어난다.</p><p>(이도 $D \\propto S^{2}$ 이지만, 이 상황은 실무·시험에서 “중앙점이 풀리면 이도가 2배”로 정리해 기억한다.)</p>"
-    },
-    {
-      "t": "1:00:26",
-      "heading": "전선의 복합 하중 합력 계산",
-      "html": "<p>이도 공식의 $W$(하중)는 환경적 요인을 <b>벡터 합산(피타고라스)</b>으로 구한다. 수직하중(자중+빙설)과 수평하중(풍압)을 직각 합성:</p>$$ W = \\sqrt{(W_c + W_i)^{2} + W_w^{2}} $$<ul><li><b>자중</b> $W_c$: 전선 자체 무게.</li><li><b>빙설하중(수직)</b> $W_i = \\pi\\,\\rho\\,t\\,(d+t)\\times10^{-3}$ ($t=6\\text{mm}$, $\\rho=0.9$).</li><li><b>풍압하중(수평)</b> $W_w = P\\,(d+2t)\\times10^{-3}$ ($P$: 풍압[kg/m²], 빙설 없으면 $d$만).</li></ul>"
-    },
-    {
-      "t": "1:05:20",
-      "heading": "전선의 보호 설비 (댐퍼·오프셋)",
-      "html": "<ul><li><b>댐퍼(Damper)</b>: 전선에 추를 달아 바람에 의한 <b>미풍진동(Vibration)</b> 피로를 흡수·방지 → 단선 예방. (아머로드도 같은 목적)</li><li><b>오프셋(Off-set)</b>: 철탑에서 층이 다른 전선의 수평 위치를 <b>엇갈리게</b> 배치하여, 빙설 탈락 시 전선이 위아래로 튀는 <b>도약(Jump)에 의한 단락 사고를 방지</b>.</li><li><b>갤러핑(Galloping)</b>: 비대칭 착빙 + 바람으로 크게 출렁이는 저주파 진동 → <b>상간 스페이서</b>로 방지.</li></ul>"
-    },
-    {
-      "t": "1:07:58",
-      "heading": "개념 확인 문제 풀이 · 마무리",
-      "html": "<p>1장 전선로 핵심 기출 유형 정리: ① 전선의 <b>구비조건</b>, ② <b>이도·수평장력</b> 계산, ③ <b>오프셋</b>의 역할.</p><p>👉 위쪽 <b>[📝 기출문제 풀이]</b> 탭에서 관련 문제를 직접 풀어보고 정답·해설을 확인하세요.</p>"
-    }
-  ],
-  "problemVideoId": "TlyWQd0-WfY",
-  "problems": [
-    {
-      "tag": "이도",
-      "q": "경간 $S=200\\,\\text{m}$, 전선의 합성하중 $W=2\\,\\text{kg/m}$, 수평장력 $T=2000\\,\\text{kg}$일 때 이도 $D$는?",
-      "choices": ["2 m", "5 m", "8 m", "10 m"],
-      "correct": 1,
-      "answer": "$D = 5\\,\\text{m}$",
-      "explanation": "$D=\\dfrac{WS^{2}}{8T}=\\dfrac{2\\times200^{2}}{8\\times2000}=\\dfrac{80000}{16000}=5\\,\\text{m}$",
-      "wolfram": "2*200^2/(8*2000)"
-    },
-    {
-      "tag": "연선 구조",
-      "q": "소선을 3층으로 꼰 연선의 총 소선 수 $N$은? ($N=3n^2+3n+1$)",
-      "choices": ["19가닥", "27가닥", "37가닥", "61가닥"],
-      "correct": 2,
-      "answer": "37가닥",
-      "explanation": "$N=3n^{2}+3n+1=3\\times3^{2}+3\\times3+1=27+9+1=37$ (가닥)",
-      "wolfram": "3*3^2 + 3*3 + 1"
-    },
-    {
-      "tag": "외경 계산",
-      "q": "규격 19/2.6mm 연선의 바깥지름(외경)은? (2층 구조)",
-      "choices": ["7.8 mm", "10.4 mm", "13.0 mm", "15.6 mm"],
-      "correct": 2,
-      "answer": "13.0 mm",
-      "explanation": "2층 연선은 지름 상에 소선이 $(2n+1)=5$개 놓인다. $D=(2\\times2+1)\\times2.6=5\\times2.6=13.0\\,\\text{mm}$",
-      "wolfram": "5*2.6"
-    },
-    {
-      "tag": "전선 실제길이",
-      "q": "경간 $S=200\\,\\text{m}$, 이도 $D=5\\,\\text{m}$일 때 전선의 실제 길이 $L$은?",
-      "choices": ["약 200.03 m", "약 200.33 m", "약 201.3 m", "약 205 m"],
-      "correct": 1,
-      "answer": "$L \\approx 200.33\\,\\text{m}$",
-      "explanation": "$L=S+\\dfrac{8D^{2}}{3S}=200+\\dfrac{8\\times5^{2}}{3\\times200}=200+\\dfrac{200}{600}\\approx200.33\\,\\text{m}$",
-      "wolfram": "200 + 8*5^2/(3*200)"
-    },
-    {
-      "tag": "합성하중",
-      "q": "전선 자중 $1.2\\,\\text{kg/m}$, 빙설하중(수직) $0.5\\,\\text{kg/m}$, 풍압하중(수평) $0.9\\,\\text{kg/m}$일 때 합성하중 $W$는?",
-      "choices": ["약 1.52 kg/m", "약 1.92 kg/m", "약 2.60 kg/m", "약 3.70 kg/m"],
-      "correct": 1,
-      "answer": "$W \\approx 1.92\\,\\text{kg/m}$",
-      "explanation": "$W=\\sqrt{(W_c+W_i)^{2}+W_w^{2}}=\\sqrt{(1.2+0.5)^{2}+0.9^{2}}=\\sqrt{3.7}\\approx1.92\\,\\text{kg/m}$",
-      "wolfram": "sqrt((1.2+0.5)^2 + 0.9^2)"
-    },
-    {
-      "tag": "안전율",
-      "q": "전선의 인장하중이 $4000\\,\\text{kg}$, 허용장력이 $1600\\,\\text{kg}$일 때 안전율은?",
-      "choices": ["2.0", "2.2", "2.5", "4.0"],
-      "correct": 2,
-      "answer": "안전율 $= 2.5$",
-      "explanation": "$\\text{안전율}=\\dfrac{\\text{인장하중}}{\\text{허용장력}}=\\dfrac{4000}{1600}=2.5$",
-      "wolfram": "4000/1600"
-    },
-    {
-      "tag": "표피효과(개념)",
-      "q": "전선의 표피효과(skin effect)가 <b>커지는</b> 조건이 아닌 것은?",
-      "choices": ["주파수가 높을수록", "투자율이 클수록", "도전율이 클수록", "전선이 가늘수록"],
-      "correct": 3,
-      "answer": "④ 전선이 가늘수록 — 아님",
-      "explanation": "표피효과는 주파수·투자율·도전율이 크고 <b>전선이 굵을수록</b> 커진다. 침투깊이 $\\delta=\\dfrac{1}{\\sqrt{\\pi f\\mu k}}$가 작아질수록 심해진다."
-    },
-    {
-      "tag": "구비조건(개념)",
-      "q": "송전용 전선의 구비조건으로 <b>옳지 않은</b> 것은?",
-      "choices": ["도전율이 클 것", "기계적 강도가 클 것", "비중(밀도)이 클 것", "가선이 용이할 것"],
-      "correct": 2,
-      "answer": "③ 비중(밀도)이 클 것 — 옳지 않음",
-      "explanation": "전선은 가벼울수록 좋으므로 <b>비중은 작아야</b> 한다. 나머지는 모두 올바른 구비조건이다."
-    },
-    {
-      "tag": "보호설비(개념)",
-      "q": "빙설 탈락에 의한 전선의 <b>도약(Jump)</b>으로 생기는 상하 단락을 방지하는 설비는?",
-      "choices": ["댐퍼", "오프셋(off-set)", "아머로드", "상간 스페이서"],
-      "correct": 1,
-      "answer": "② 오프셋(off-set)",
-      "explanation": "도약(sleet jump) 대책은 층이 다른 전선을 수평으로 엇갈리게 두는 <b>오프셋</b>이다. 댐퍼·아머로드는 미풍진동, 상간 스페이서는 갤러핑 대책이다."
+      "name": "문제풀이",
+      "lectures": [
+        { "id": "sol01", "videoId": "TlyWQd0-WfY", "no": "문풀 1강",  "title": "1장 전선로", "textbook": "p.19~24", "duration": "43:36", "ready": false },
+        { "id": "sol02", "videoId": "wnw_8grvErI", "no": "문풀 2강",  "title": "2장 선로정수 및 코로나", "textbook": "p.40~44", "duration": "35:00", "ready": false },
+        { "id": "sol03", "videoId": "ZEv_93gQ4I4", "no": "문풀 3강",  "title": "3장 송전특성", "textbook": "p.60~67", "duration": "1:24:00", "ready": false },
+        { "id": "sol04", "videoId": "4buUs2iDEF8", "no": "문풀 4강",  "title": "4장 조상설비 및 전력원선도", "textbook": "p.81~84", "duration": "30:00", "ready": false },
+        { "id": "sol05", "videoId": "QQWZNqwONKk", "no": "문풀 5강",  "title": "5장 고장계산", "textbook": "p.99~101", "duration": "31:00", "ready": false },
+        { "id": "sol06", "videoId": "njjaJQEfD1o", "no": "문풀 6강",  "title": "6장 중성점 접지방식과 유도장해 및 안정도", "textbook": "p.115~119", "duration": "35:00", "ready": false },
+        { "id": "sol07", "videoId": "TiLCK9zh-VU", "no": "문풀 7강",  "title": "7장 이상전압 및 보호계전방식", "textbook": "p.138~142", "duration": "27:00", "ready": false },
+        { "id": "sol08", "videoId": "Xen9yqyr8g8", "no": "문풀 8강",  "title": "8장 변전소", "textbook": "p.164~167", "duration": "24:00", "ready": false },
+        { "id": "sol09", "videoId": "v-CTmrjwea0", "no": "문풀 9강",  "title": "9장 배전방식 및 전기공급방식", "textbook": "p.181~183", "duration": "21:00", "ready": false },
+        { "id": "sol10", "videoId": "aE3CP8Ef6BQ", "no": "문풀 10강", "title": "10장 배전선로의 부하특성 및 운용", "textbook": "p.202~205", "duration": "37:00", "ready": false },
+        { "id": "sol11", "videoId": "sm0MCTiH2RU", "no": "문풀 11강", "title": "11장 수력발전", "textbook": "p.228~230", "duration": "11:34", "ready": false },
+        { "id": "sol12", "videoId": "Qw0yv9K2OXw", "no": "문풀 12강", "title": "12장 화력발전", "textbook": "p.249~250", "duration": "7:27", "ready": false },
+        { "id": "sol13", "videoId": "YGDqBSBSSC8", "no": "문풀 13강", "title": "13장 원자력발전", "textbook": "p.264", "duration": "17:00", "ready": false },
+        { "id": "sol14", "videoId": "LFuT6vvx6Hc", "no": "문풀 14강", "title": "14장 신재생에너지발전", "textbook": "p.278", "duration": "9:00", "ready": false }
+      ]
     }
   ]
 }
-;</script>
+; window.__STANDALONE__ = true;</script>
 <script>
-/* =========================================================================
-   전력공학 강의 뷰어 — app.js
-   기능: ① 영상 재생에 맞춘 섹션 단위 자동 스크롤
-        ② 수동 스크롤 감지 → 10초 후 재개 팝업 → 선택별 동작(상태머신)
-        ③ KaTeX 수식 렌더링
-   ========================================================================= */
-(function () {
-  'use strict';
-
-  // ---------- 설정 ----------
-  var POLL_MS = 250;          // 영상 재생위치 폴링 주기
-  var IDLE_MS = 10000;        // 수동조작 멈춘 뒤 팝업까지 대기(10초)
-  var PROG_SCROLL_LOCK = 800; // 프로그램 스크롤로 간주하는 시간(ms)
-
-  // ---------- 상태 ----------
-  // AUTO      : 영상에 맞춰 자동 스크롤 중
-  // PAUSED    : 사용자가 방금 수동 스크롤함(10초 대기)
-  // PROMPTING : 재개 여부 팝업 표시 중
-  // DISABLED  : 거절 또는 수동 OFF → 시간과 무관하게 꺼짐
-  var state = 'AUTO';
-  var activeTab = 'content';   // 'content' | 'problems'
-  var lectureTime = 0;         // 탭 전환 시 강의 영상 위치 기억
-
-  var LEC = null;
-  var player = null;
-  var sections = [];          // [{ el, start }]
-  var currentIdx = -1;
-  var isPlaying = false;
-  var isProgrammaticScroll = false;
-
-  var pollTimer = null;
-  var idleTimer = null;
-  var progScrollTimer = null;
-
-  var apiReady = false, dataReady = false;
-
-  // ---------- DOM ----------
-  var contentEl   = document.getElementById('content');
-  var problemsEl  = document.getElementById('problems');
-  var tabButtons  = document.querySelectorAll('.tab');
-  var popupEl     = document.getElementById('resume-popup');
-  var reenableBtn = document.getElementById('reenable-btn');
-  var toggleBtn   = document.getElementById('toggle-btn');
-  var toggleText  = document.getElementById('toggle-text');
-  var curSecEl    = document.getElementById('cur-section');
-  var lecLabelEl  = document.getElementById('lec-label');
-  var calibBtn    = document.getElementById('calib-btn');
-  var calibBar    = document.getElementById('calib-bar');
-
-  var calibrating = false;
-  var calibData = {};   // { sectionIndex: seconds }
-
-  // ---------- 유틸 ----------
-  function parseTime(t) {
-    if (typeof t === 'number') return t;
-    if (!t) return 0;
-    var p = String(t).split(':').map(Number);
-    if (p.some(isNaN)) return 0;
-    if (p.length === 3) return p[0] * 3600 + p[1] * 60 + p[2];
-    if (p.length === 2) return p[0] * 60 + p[1];
-    return p[0];
-  }
-  function fmtTime(sec) {
-    sec = Math.max(0, Math.floor(sec));
-    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
-    var mm = (h > 0 && m < 10 ? '0' : '') + m, ss = (s < 10 ? '0' : '') + s;
-    return (h > 0 ? h + ':' : '') + mm + ':' + ss;
-  }
-
-  // ---------- 데이터 로드 ----------
-  function loadScript(src) {
-    return new Promise(function (res, rej) {
-      var s = document.createElement('script');
-      s.src = src; s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-  function loadData() {
-    // 1) 완결 HTML(빌드본)은 데이터를 window.__LECTURE_DATA__로 인라인
-    if (window.__LECTURE_DATA__) return Promise.resolve(window.__LECTURE_DATA__);
-    var id = (new URLSearchParams(location.search).get('id')) || 'lec01';
-    // 2) file:// 로컬에서도 동작하도록 <script>(전역변수) 방식 우선 시도
-    return loadScript('data/' + id + '.js')
-      .then(function () {
-        if (window.__LECTURE_DATA__) return window.__LECTURE_DATA__;
-        throw new Error('no global');
-      })
-      .catch(function () {
-        // 3) (서버 실행 시) JSON fetch 폴백
-        return fetch('data/' + id + '.json').then(function (r) {
-          if (!r.ok) throw new Error('데이터 로드 실패');
-          return r.json();
-        });
-      });
-  }
-
-  // ---------- 콘텐츠 렌더 ----------
-  function buildContent() {
-    document.title = (LEC.title || '강의 뷰어');
-    if (lecLabelEl) lecLabelEl.textContent = (LEC.no ? LEC.no + ' · ' : '') + (LEC.shortTitle || LEC.title || '');
-
-    var html = '';
-    html += '<h2 class="doc-title">' + escapeHtml(LEC.title || '') + '</h2>';
-    if (LEC.textbook) html += '<p class="doc-sub">교재 ' + escapeHtml(LEC.textbook) + '</p>';
-    if (LEC.timestampNote) {
-      html += '<div class="est-note">⚠ ' + escapeHtml(LEC.timestampNote) + '</div>';
-    }
-    (LEC.sections || []).forEach(function (sec, i) {
-      var start = parseTime(sec.t);
-      html += '<div class="section" data-idx="' + i + '" data-start="' + start + '">'
-            +   '<span class="sec-time" data-seek="' + start + '">▶ ' + fmtTime(start) + '</span>'
-            +   '<button class="calib-set" data-idx="' + i + '" type="button">⌖ 지금 위치로</button>'
-            +   (sec.heading ? '<h3>' + escapeHtml(sec.heading) + '</h3>' : '')
-            +   (sec.html || '')
-            + '</div>';
-    });
-    contentEl.innerHTML = html;
-
-    // 섹션 인덱스 구성
-    sections = Array.prototype.map.call(
-      contentEl.querySelectorAll('.section'),
-      function (el) {
-        return { el: el, idx: Number(el.getAttribute('data-idx')) || 0, start: Number(el.getAttribute('data-start')) || 0 };
-      }
-    );
-    loadCalib();
-    applyCalibration(); // 저장된 보정값 반영 + 시작시각 오름차순 정렬
-
-    // 타임스탬프 클릭 → 해당 위치로 이동
-    contentEl.addEventListener('click', function (e) {
-      var t = e.target.closest && e.target.closest('.sec-time');
-      if (!t) return;
-      var to = Number(t.getAttribute('data-seek')) || 0;
-      if (player && player.seekTo) { player.seekTo(to, true); player.playVideo && player.playVideo(); }
-      if (state === 'DISABLED') { /* 이동만, 자동은 유지 OFF */ }
-    });
-
-    renderMath(contentEl);
-  }
-
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
-
-  // KaTeX가 defer 로드라 준비될 때까지 대기 후 렌더
-  function renderMath(el, tries) {
-    tries = tries || 0;
-    if (window.renderMathInElement) {
-      try {
-        window.renderMathInElement(el, {
-          delimiters: [
-            { left: '$$', right: '$$', display: true },
-            { left: '$', right: '$', display: false }
-          ],
-          throwOnError: false
-        });
-      } catch (e) { /* noop */ }
-    } else if (tries < 40) {
-      setTimeout(function () { renderMath(el, tries + 1); }, 100);
+(async function () {
+  const listEl = document.getElementById('lecture-list');
+  let data = window.__INDEX_DATA__ || null;
+  if (!data) {
+    try {
+      const res = await fetch('data/index.json');
+      data = await res.json();
+    } catch (e) {
+      listEl.innerHTML = '<p class="error">목록을 불러오지 못했습니다. data/index.js 파일이 있는지 확인하거나, 간이 서버(예: <code>python -m http.server</code>)로 실행해 주세요.</p>';
+      return;
     }
   }
 
-  // ---------- YouTube 플레이어 ----------
-  window.onYouTubeIframeAPIReady = function () { apiReady = true; tryInit(); };
+  document.getElementById('course-title').textContent = data.course || '강의 뷰어';
+  document.getElementById('course-sub').textContent = data.subtitle || '';
 
-  function tryInit() {
-    if (apiReady && dataReady && !player) initPlayer();
-  }
+  listEl.innerHTML = '';
+  (data.groups || []).forEach(group => {
+    const section = document.createElement('section');
+    section.className = 'lecture-group';
+    const h2 = document.createElement('h2');
+    h2.textContent = group.name;
+    section.appendChild(h2);
 
-  function initPlayer() {
-    player = new YT.Player('player', {
-      videoId: LEC.videoId,
-      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
-      events: {
-        onReady: onPlayerReady,
-        onStateChange: onPlayerStateChange
-      }
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+
+    (group.lectures || []).forEach(lec => {
+      const card = document.createElement(lec.ready ? 'a' : 'div');
+      card.className = 'lec-card' + (lec.ready ? '' : ' disabled');
+      if (lec.ready) card.href = window.__STANDALONE__ ? (lec.id + '.html') : ('viewer.html?id=' + encodeURIComponent(lec.id));
+
+      card.innerHTML =
+        '<div class="lec-no">' + lec.no + '</div>' +
+        '<div class="lec-title">' + lec.title + '</div>' +
+        '<div class="lec-meta">' +
+          '<span>' + (lec.textbook || '') + '</span>' +
+          '<span>' + (lec.duration || '') + '</span>' +
+        '</div>' +
+        (lec.ready ? '<div class="lec-badge ready">열람 가능</div>'
+                   : '<div class="lec-badge">준비중</div>');
+      grid.appendChild(card);
     });
-  }
 
-  function onPlayerReady() {
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(tick, POLL_MS);
-    updateUI();
-  }
-
-  function onPlayerStateChange(e) {
-    isPlaying = (e.data === YT.PlayerState.PLAYING);
-  }
-
-  // ---------- 동기화(폴링) ----------
-  function tick() {
-    if (activeTab !== 'content' || state !== 'AUTO' || !player || !player.getCurrentTime) return;
-    var t = player.getCurrentTime() || 0;
-    var idx = findSectionIdx(t);
-    if (idx !== -1 && idx !== currentIdx) {
-      currentIdx = idx;
-      scrollToSection(idx, true);
-    }
-  }
-
-  function findSectionIdx(t) {
-    // t가 속한 마지막 섹션(start <= t) 이진탐색
-    var lo = 0, hi = sections.length - 1, res = -1;
-    while (lo <= hi) {
-      var mid = (lo + hi) >> 1;
-      if (sections[mid].start <= t) { res = mid; lo = mid + 1; }
-      else hi = mid - 1;
-    }
-    return res;
-  }
-
-  function scrollToSection(idx, smooth) {
-    var s = sections[idx];
-    if (!s) return;
-    // 활성 하이라이트
-    sections.forEach(function (o) { o.el.classList.remove('active'); });
-    s.el.classList.add('active');
-    if (curSecEl) {
-      var h = s.el.querySelector('h3');
-      curSecEl.textContent = '▷ ' + (h ? h.textContent : '');
-    }
-    // 프로그램 스크롤 잠금(사용자 조작 오인 방지)
-    isProgrammaticScroll = true;
-    if (progScrollTimer) clearTimeout(progScrollTimer);
-    progScrollTimer = setTimeout(function () { isProgrammaticScroll = false; }, PROG_SCROLL_LOCK);
-
-    // 콘텐츠 컨테이너 '안'에서만 스크롤(상위 영역/탭바가 밀려나지 않도록)
-    var cRect = contentEl.getBoundingClientRect();
-    var sRect = s.el.getBoundingClientRect();
-    var target = contentEl.scrollTop + (sRect.top - cRect.top) - 8;
-    if (target < 0) target = 0;
-    contentEl.scrollTo({ top: target, behavior: smooth ? 'smooth' : 'auto' });
-  }
-
-  // ---------- 사용자 스크롤 감지 ----------
-  var NAV_KEYS = { ArrowUp: 1, ArrowDown: 1, PageUp: 1, PageDown: 1, Home: 1, End: 1, ' ': 1, Spacebar: 1 };
-
-  function onUserScrollGesture() {
-    if (state === 'AUTO') { enterPaused(); }
-    else if (state === 'PAUSED') { resetIdle(); }
-    // PROMPTING/DISABLED 중에는 무시(팝업/버튼으로만 상태 전환)
-  }
-
-  contentEl.addEventListener('wheel', onUserScrollGesture, { passive: true });
-  contentEl.addEventListener('touchmove', onUserScrollGesture, { passive: true });
-  contentEl.addEventListener('keydown', function (e) {
-    if (NAV_KEYS[e.key]) onUserScrollGesture();
+    section.appendChild(grid);
+    listEl.appendChild(section);
   });
-  // 스크롤바 드래그 등 기타 조작 대비(프로그램 스크롤은 잠금으로 배제)
-  contentEl.addEventListener('scroll', function () {
-    if (isProgrammaticScroll) return;
-    onUserScrollGesture();
-  }, { passive: true });
-
-  // ---------- 상태 전이 ----------
-  function enterAuto() {
-    state = 'AUTO';
-    clearIdle();
-    hidePopup();
-    reenableBtn.classList.add('hidden');
-    // 현재 영상 위치로 즉시 정렬
-    currentIdx = -1;
-    if (player && player.getCurrentTime) {
-      var idx = findSectionIdx(player.getCurrentTime() || 0);
-      if (idx !== -1) { currentIdx = idx; scrollToSection(idx, true); }
-    }
-    updateUI();
-  }
-
-  function enterPaused() {
-    state = 'PAUSED';
-    hidePopup();
-    reenableBtn.classList.add('hidden');
-    resetIdle();
-    updateUI();
-  }
-
-  function enterPrompting() {
-    // 결정 D: 영상이 재생 중일 때만 팝업(멈춰 읽는 중 방해 방지)
-    if (!isPlaying) { resetIdle(); return; }
-    state = 'PROMPTING';
-    showPopup();
-    updateUI();
-  }
-
-  function enterDisabled() {
-    state = 'DISABLED';
-    clearIdle();
-    hidePopup();
-    reenableBtn.classList.remove('hidden'); // 시간과 무관하게 OFF, 버튼으로만 재활성
-    updateUI();
-  }
-
-  function resetIdle() {
-    clearIdle();
-    idleTimer = setTimeout(function () {
-      if (state === 'PAUSED') enterPrompting();
-    }, IDLE_MS);
-  }
-  function clearIdle() { if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } }
-
-  function showPopup() { popupEl.classList.remove('hidden'); }
-  function hidePopup() { popupEl.classList.add('hidden'); }
-
-  // ---------- UI 갱신 ----------
-  function updateUI() {
-    var on = (state === 'AUTO');
-    toggleBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    if (state === 'AUTO')      toggleText.textContent = '자동 스크롤 ON';
-    else if (state === 'DISABLED') toggleText.textContent = '자동 스크롤 OFF';
-    else                       toggleText.textContent = '자동 스크롤 일시중지';
-  }
-
-  // ---------- 버튼 이벤트 ----------
-  document.getElementById('resume-yes').addEventListener('click', enterAuto);
-  document.getElementById('resume-no').addEventListener('click', enterDisabled);
-  reenableBtn.addEventListener('click', enterAuto);
-  toggleBtn.addEventListener('click', function () {
-    if (state === 'AUTO') enterDisabled(); // 수동 OFF는 언제든 가능
-    else enterAuto();
-  });
-
-  // ---------- 탭 전환 ----------
-  function switchTab(tab) {
-    if (tab === activeTab) return;
-    if (activeTab === 'content' && player && player.getCurrentTime) {
-      lectureTime = player.getCurrentTime() || 0;
-    }
-    activeTab = tab;
-    tabButtons.forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-tab') === tab);
-    });
-    if (tab === 'problems') {
-      contentEl.classList.add('hidden');
-      problemsEl.classList.remove('hidden');
-      hidePopup();
-      // 메인 플레이어를 문제풀이 영상으로 전환(자동재생 아님)
-      if (player && player.cueVideoById && LEC.problemVideoId) {
-        try { player.cueVideoById(LEC.problemVideoId); } catch (e) {}
-      }
-    } else {
-      problemsEl.classList.add('hidden');
-      contentEl.classList.remove('hidden');
-      // 강의 영상으로 복귀(기억한 위치에서 대기)
-      if (player && player.cueVideoById && LEC.videoId) {
-        try { player.cueVideoById({ videoId: LEC.videoId, startSeconds: lectureTime || 0 }); } catch (e) {}
-      }
-      if (state === 'AUTO') currentIdx = -1; // 복귀 시 재정렬 유도
-    }
-  }
-  tabButtons.forEach(function (b) {
-    b.addEventListener('click', function () { switchTab(b.getAttribute('data-tab')); });
-  });
-
-  // ---------- 기출문제 렌더 ----------
-  function buildProblems() {
-    var probs = LEC.problems || [];
-    var html = '';
-    html += '<div class="prob-intro">⚠ 아래는 영상 속 <b>실제 기출 원문이 아니라</b>, 해당 장(1장 전선로) 전기기사 빈출 유형으로 제작한 <b>대표 유사문제</b>입니다. 상단 영상은 문제풀이 강의입니다. 스스로 풀어본 뒤 <b>정답·해설 보기</b>로 확인하세요.</div>';
-    // 계산기
-    html += '<div class="calc-box"><h4>🧮 계산기 (직접 풀이)</h4><div class="calc-row">'
-          + '<input id="calc-input" class="calc-input" placeholder="예: 2*200^2/(8*2000)   또는   sqrt(1.7^2+0.9^2)">'
-          + '<button id="calc-run" class="prob-btn">계산</button>'
-          + '<span id="calc-out" class="calc-result">—</span>'
-          + '<button id="calc-wa" class="prob-btn wa">Wolfram|Alpha에서 열기 ↗</button>'
-          + '</div><div class="calc-hint">함수: sqrt, sin, cos, tan, log, ln, ^(거듭제곱), pi 사용 가능 · Enter로 계산</div></div>';
-    if (!probs.length) {
-      html += '<p class="muted">등록된 문제가 없습니다.</p>';
-    }
-    probs.forEach(function (p, i) {
-      html += '<div class="problem" data-i="' + i + '">';
-      html += '<div class="prob-head"><span class="prob-no">문제 ' + (i + 1) + '</span>'
-            + (p.tag ? '<span class="prob-tag">' + escapeHtml(p.tag) + '</span>' : '') + '</div>';
-      html += '<div class="prob-q">' + (p.q || '') + '</div>';
-      if (p.choices && p.choices.length) {
-        html += '<ul class="prob-choices">';
-        p.choices.forEach(function (c, ci) {
-          html += '<li data-ci="' + ci + '">' + String.fromCharCode(9312 + ci) + ' ' + c + '</li>';
-        });
-        html += '</ul>';
-      }
-      html += '<div class="prob-actions">';
-      html += '<button class="prob-btn act-answer" type="button">정답·해설 보기</button>';
-      if (p.wolfram) html += '<button class="prob-btn wa act-wa" type="button" data-wa="' + encodeURIComponent(p.wolfram) + '">Wolfram|Alpha에서 풀기 ↗</button>';
-      html += '</div>';
-      html += '<div class="prob-answer hidden"><span class="ans-label">정답</span>' + (p.answer || '')
-            + (p.explanation ? '<div style="margin-top:8px">' + p.explanation + '</div>' : '') + '</div>';
-      html += '</div>';
-    });
-    problemsEl.innerHTML = html;
-    renderMath(problemsEl);
-    wireProblems();
-  }
-
-  function calcEval(expr) {
-    if (window.math && window.math.evaluate) return window.math.evaluate(expr);
-    // 폴백: 안전 문자만 허용한 뒤 Function 평가
-    if (!/^[-+*/%^().,0-9eEpisqrtcoslnab \t]*$/i.test(expr)) throw new Error('bad');
-    var s = expr.replace(/\^/g, '**').replace(/\bpi\b/gi, 'Math.PI')
-      .replace(/\b(sqrt|sin|cos|tan|log|abs|exp)\b/gi, 'Math.$1').replace(/\bln\b/gi, 'Math.log');
-    return Function('return (' + s + ')')();
-  }
-
-  function wireProblems() {
-    var ci = document.getElementById('calc-input');
-    var co = document.getElementById('calc-out');
-    function run() {
-      try {
-        var v = calcEval(ci.value);
-        co.textContent = (typeof v === 'number' ? +Number(v).toPrecision(6) : String(v));
-        co.style.color = 'var(--ok)';
-      } catch (e) { co.textContent = '오류'; co.style.color = '#ff6b6b'; }
-    }
-    document.getElementById('calc-run').addEventListener('click', run);
-    ci.addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
-    document.getElementById('calc-wa').addEventListener('click', function () {
-      if (ci.value.trim()) window.open('https://www.wolframalpha.com/input?i=' + encodeURIComponent(ci.value), '_blank');
-    });
-
-    problemsEl.querySelectorAll('.problem').forEach(function (pe) {
-      var idx = +pe.getAttribute('data-i');
-      var p = (LEC.problems || [])[idx] || {};
-      // 보기 선택(단일, 자율 — 즉시 채점하지 않음)
-      pe.querySelectorAll('.prob-choices li').forEach(function (li) {
-        li.addEventListener('click', function () {
-          if (pe.classList.contains('revealed')) return;
-          pe.querySelectorAll('.prob-choices li').forEach(function (x) { x.classList.remove('picked'); });
-          li.classList.add('picked');
-        });
-      });
-      // 정답·해설 보기(토글) — 열 때 정오답 표시
-      var at = pe.querySelector('.act-answer');
-      if (at) at.addEventListener('click', function () {
-        var ans = pe.querySelector('.prob-answer');
-        var show = ans.classList.contains('hidden');
-        ans.classList.toggle('hidden');
-        at.textContent = show ? '해설 접기' : '정답·해설 보기';
-        if (show && typeof p.correct === 'number') {
-          pe.classList.add('revealed');
-          pe.querySelectorAll('.prob-choices li').forEach(function (x) {
-            var xi = +x.getAttribute('data-ci');
-            if (xi === p.correct) x.classList.add('correct');
-            else if (x.classList.contains('picked')) x.classList.add('wrong');
-          });
-        }
-      });
-      var wa = pe.querySelector('.act-wa');
-      if (wa) wa.addEventListener('click', function () {
-        window.open('https://www.wolframalpha.com/input?i=' + wa.getAttribute('data-wa'), '_blank');
-      });
-    });
-  }
-
-  // ---------- 싱크 보정(캘리브레이션) ----------
-  function calibKey() { return 'calib_' + (LEC && LEC.id ? LEC.id : 'lec'); }
-  function loadCalib() {
-    try { calibData = JSON.parse(localStorage.getItem(calibKey()) || '{}') || {}; }
-    catch (e) { calibData = {}; }
-  }
-  function saveCalib() {
-    try { localStorage.setItem(calibKey(), JSON.stringify(calibData)); } catch (e) {}
-  }
-  function applyCalibration() {
-    // 저장된 보정값을 각 섹션 start에 반영
-    sections.forEach(function (s) {
-      if (calibData[s.idx] != null) s.start = Number(calibData[s.idx]);
-    });
-    // 오름차순 정렬(이진탐색용)
-    sections.sort(function (a, b) { return a.start - b.start; });
-    // ▶ 시각 라벨·seek 갱신
-    sections.forEach(function (s) {
-      var t = s.el.querySelector('.sec-time');
-      if (t) { t.textContent = '▶ ' + fmtTime(s.start); t.setAttribute('data-seek', s.start); }
-    });
-    currentIdx = -1;
-  }
-  function calibrateSection(idx) {
-    if (!player || !player.getCurrentTime) return;
-    var t = Math.floor(player.getCurrentTime() || 0);
-    calibData[idx] = t;
-    saveCalib();
-    applyCalibration();
-    // 잠깐 피드백
-    var btn = contentEl.querySelector('.calib-set[data-idx="' + idx + '"]');
-    if (btn) { var o = btn.textContent; btn.textContent = '✓ ' + fmtTime(t); setTimeout(function () { btn.textContent = o; }, 1200); }
-  }
-  function setCalibrating(on) {
-    calibrating = on;
-    document.body.classList.toggle('calibrating', on);
-    calibBar.classList.toggle('hidden', !on);
-    calibBtn.classList.toggle('on', on);
-    calibBtn.textContent = on ? '⚙ 보정 중' : '⚙ 싱크 보정';
-    if (on) {
-      if (activeTab !== 'content') switchTab('content');
-      enterDisabled(); // 보정 중에는 자동 스크롤 정지
-    }
-  }
-  if (calibBtn) calibBtn.addEventListener('click', function () { setCalibrating(!calibrating); });
-  document.getElementById('calib-done').addEventListener('click', function () { setCalibrating(false); });
-  document.getElementById('calib-reset').addEventListener('click', function () {
-    if (!confirm('이 강의의 보정값을 모두 지울까요?')) return;
-    calibData = {}; saveCalib();
-    // 원래 JSON 시각으로 복원
-    sections.forEach(function (s) { s.start = Number(s.el.getAttribute('data-start')) || 0; });
-    applyCalibration();
-  });
-  document.getElementById('calib-export').addEventListener('click', function () {
-    // 원본 섹션 순서대로 "mm:ss" 배열 + 헤딩 동봉
-    var out = sections.slice().sort(function (a, b) { return a.idx - b.idx; }).map(function (s) {
-      var h = s.el.querySelector('h3');
-      return { t: fmtTime(s.start), heading: h ? h.textContent : '' };
-    });
-    var text = JSON.stringify(out, null, 2);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { alert('보정값을 클립보드에 복사했습니다. 붙여넣어 전달하시면 영구 반영해 드립니다.'); },
-        function () { window.prompt('아래 값을 복사하세요:', text); });
-    } else { window.prompt('아래 값을 복사하세요:', text); }
-  });
-  // 섹션별 보정 버튼(이벤트 위임)
-  contentEl.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('.calib-set');
-    if (!b) return;
-    e.stopPropagation();
-    calibrateSection(Number(b.getAttribute('data-idx')));
-  });
-
-  // ---------- 시작 ----------
-  loadData().then(function (d) {
-    LEC = d;
-    buildContent();
-    buildProblems();
-    dataReady = true;
-    updateUI();
-    tryInit();
-  }).catch(function (e) {
-    contentEl.innerHTML = '<p class="error">강의 데이터를 불러오지 못했습니다.<br>'
-      + '로컬 파일을 직접 열었다면 간이 서버로 실행해 주세요 '
-      + '(예: 폴더에서 <code>python -m http.server</code> 실행 후 '
-      + '<code>http://localhost:8000/viewer.html?id=lec01</code>).</p>';
-  });
-
 })();
-
 </script>
-<!-- YouTube IFrame API -->
-<script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
