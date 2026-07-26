@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강의 뷰어</title>
+
+<!-- KaTeX (CDN) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<!-- mathjs (인라인 계산기) -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.3/math.min.js"></script>
+
+<style>
+:root {
+  --bg: #0f1419;
+  --panel: #171d26;
+  --panel-2: #1e2530;
+  --border: #2a333f;
+  --text: #e6eaf0;
+  --muted: #97a2b0;
+  --accent: #3ea6ff;
+  --accent-dim: #1c5c93;
+  --ok: #37d67a;
+  --warn: #f2b24c;
+  --hl: rgba(62,166,255,0.12);
+  --hl-border: #3ea6ff;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Pretendard", -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+.muted { color: var(--muted); }
+.error { color: #ff8080; }
+a { color: var(--accent); text-decoration: none; }
+
+/* ============ INDEX PAGE ============ */
+.index-page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+.index-header h1 { margin: 0 0 4px; font-size: 1.6rem; }
+.index-header .notice { margin-top: 10px; color: var(--muted); }
+.lecture-group { margin-top: 34px; }
+.lecture-group h2 {
+  font-size: 1.05rem; color: var(--accent);
+  border-left: 3px solid var(--accent); padding-left: 10px; margin-bottom: 14px;
+}
+.card-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.lec-card {
+  display: block; position: relative;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 14px 12px; color: var(--text);
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+a.lec-card:hover { transform: translateY(-2px); border-color: var(--accent); background: var(--panel-2); }
+.lec-card.disabled { opacity: .5; }
+.lec-no { font-weight: 700; color: var(--accent); font-size: .85rem; margin-bottom: 4px; }
+.lec-title { font-size: .98rem; min-height: 2.6em; }
+.lec-meta { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); margin-top: 8px; }
+.lec-badge {
+  position: absolute; top: 10px; right: 10px; font-size: .68rem;
+  padding: 2px 7px; border-radius: 999px; background: var(--panel-2); color: var(--muted);
+  border: 1px solid var(--border);
+}
+.lec-badge.ready { color: var(--ok); border-color: var(--ok); }
+.index-footer { margin-top: 40px; font-size: .85rem; }
+
+/* ============ VIEWER PAGE ============ */
+.viewer-page { height: 100vh; overflow: hidden; }
+.viewer-grid { display: grid; height: 100vh; }
+
+/* 넓은 화면: 좌 영상 / 우 내용 */
+@media (min-width: 900px) {
+  .viewer-grid { grid-template-columns: minmax(420px, 1fr) minmax(360px, 620px); }
+}
+/* 좁은 화면: 상 영상 / 하 내용 */
+@media (max-width: 899px) {
+  .viewer-grid { grid-template-rows: auto 1fr; }
+}
+
+.pane-video {
+  background: #000; display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+.video-wrap { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.video-wrap #player, .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+.statusbar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: var(--panel); border-top: 1px solid var(--border);
+  font-size: .85rem; flex-wrap: wrap;
+}
+.status-center { flex: 1; min-width: 100px; text-align: center; }
+.lec-label { color: var(--text); font-weight: 600; }
+.status-right { display: flex; align-items: center; gap: 10px; }
+.cur-section { font-size: .8rem; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.toggle-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-dim); color: #fff; border: 1px solid var(--accent);
+  padding: 5px 11px; border-radius: 999px; cursor: pointer; font-size: .82rem;
+}
+.toggle-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.toggle-btn[aria-pressed="false"] { background: var(--panel-2); border-color: var(--border); color: var(--muted); }
+.toggle-btn[aria-pressed="false"] .dot { background: var(--muted); }
+.back-link { color: var(--muted); }
+
+.calib-btn {
+  background: var(--panel-2); color: var(--muted); border: 1px solid var(--border);
+  padding: 5px 10px; border-radius: 999px; cursor: pointer; font-size: .8rem;
+}
+.calib-btn:hover { color: var(--text); border-color: var(--accent); }
+.calib-btn.on { background: var(--warn); color: #201500; border-color: var(--warn); font-weight: 600; }
+
+/* 섹션별 보정 버튼(보정 모드에서만 표시) */
+.calib-set {
+  display: none; margin-left: 8px; font-size: .72rem; cursor: pointer;
+  background: var(--warn); color: #201500; border: none; border-radius: 6px; padding: 2px 8px; font-weight: 600;
+}
+body.calibrating .calib-set { display: inline-block; }
+body.calibrating .section { outline: 1px dashed var(--border); outline-offset: 4px; }
+
+/* 보정 바 */
+.calib-bar {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 25;
+  background: var(--panel); border-top: 2px solid var(--warn);
+  padding: 10px 14px; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  font-size: .82rem;
+}
+.calib-actions { display: flex; gap: 6px; }
+
+.pane-content { position: relative; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; }
+
+/* 탭바 */
+.tabbar { display: flex; gap: 4px; padding: 8px 12px 0; background: var(--panel); border-bottom: 1px solid var(--border); flex: 0 0 auto; }
+.tab {
+  background: transparent; color: var(--muted); border: 1px solid transparent; border-bottom: none;
+  padding: 8px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: .9rem;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); background: var(--bg); border-color: var(--border); font-weight: 600; }
+
+.tabpanel { flex: 1 1 auto; min-height: 0; }
+.content {
+  overflow-y: auto; padding: 26px 28px 60vh;
+  scroll-behavior: auto; outline: none;
+}
+#problems.content { padding-bottom: 30vh; }
+@media (max-width: 899px) { .content { padding: 20px 18px 60vh; } }
+
+/* 기출문제 */
+.prob-intro { color: var(--muted); font-size: .88rem; margin-bottom: 16px; }
+.calc-box {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 20px; position: sticky; top: 0; z-index: 5;
+}
+.calc-box h4 { margin: 0 0 8px; font-size: .9rem; }
+.calc-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.calc-input {
+  flex: 1 1 220px; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px; font-family: ui-monospace, "Consolas", monospace; font-size: .92rem;
+}
+.calc-result { font-family: ui-monospace, monospace; color: var(--ok); min-width: 80px; font-size: .95rem; }
+.calc-hint { color: var(--muted); font-size: .76rem; margin-top: 6px; }
+
+.problem {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 18px; margin-bottom: 16px;
+}
+.prob-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.prob-no { color: var(--accent); font-weight: 700; font-size: .9rem; }
+.prob-tag { font-size: .72rem; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+.prob-q { margin: 4px 0 10px; }
+.prob-choices { list-style: none; padding: 0; margin: 0 0 12px; }
+.prob-choices li {
+  border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; margin-bottom: 6px;
+  cursor: pointer; transition: background .12s, border-color .12s;
+}
+.prob-choices li:hover { border-color: var(--accent); background: var(--panel-2); }
+.prob-choices li.picked { border-color: var(--accent); background: var(--hl); }
+.prob-choices li.correct { border-color: var(--ok); background: rgba(55,214,122,.12); }
+.prob-choices li.wrong { border-color: #ff6b6b; background: rgba(255,107,107,.1); }
+.prob-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.prob-btn {
+  background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+  padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: .82rem;
+}
+.prob-btn.wa { border-color: var(--accent-dim); color: var(--accent); }
+.prob-btn:hover { filter: brightness(1.1); }
+.prob-answer { margin-top: 12px; padding: 12px 14px; border-radius: 8px; background: var(--panel-2); border: 1px dashed var(--border); }
+.prob-answer .ans-label { color: var(--ok); font-weight: 700; margin-right: 6px; }
+.prob-video-wrap { position: relative; width: 100%; aspect-ratio: 16/9; margin-bottom: 18px; border-radius: 10px; overflow: hidden; background:#000; }
+.prob-video-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+.prob-score { position: sticky; bottom: 0; background: var(--panel); border-top: 1px solid var(--border);
+  padding: 10px 14px; font-size: .9rem; text-align: center; border-radius: 10px; margin-top: 8px; }
+
+/* 내용 섹션 */
+.section { padding: 6px 0 10px; border-radius: 10px; transition: background .25s ease; scroll-margin-top: 14px; }
+.section .sec-time {
+  display: inline-block; font-size: .72rem; color: var(--accent);
+  border: 1px solid var(--accent-dim); border-radius: 6px; padding: 0 6px; margin-bottom: 6px; cursor: pointer;
+}
+.section h3 { margin: 4px 0 8px; font-size: 1.12rem; }
+.section.active { background: var(--hl); box-shadow: inset 3px 0 0 var(--hl-border); padding-left: 12px; }
+.content h2.doc-title { font-size: 1.3rem; margin: 0 0 4px; }
+.content .doc-sub { color: var(--muted); margin: 0 0 20px; font-size: .9rem; }
+.content ul, .content ol { padding-left: 22px; }
+.content table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: .92rem; }
+.content th, .content td { border: 1px solid var(--border); padding: 6px 9px; text-align: left; }
+.content th { background: var(--panel-2); }
+.katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+
+.est-note {
+  font-size: .8rem; color: var(--warn); background: rgba(242,178,76,.08);
+  border: 1px solid rgba(242,178,76,.3); border-radius: 8px; padding: 8px 12px; margin-bottom: 18px;
+}
+
+/* 재개 팝업(토스트) */
+.resume-popup {
+  position: absolute; right: 18px; bottom: 18px; z-index: 20;
+  background: var(--panel); border: 1px solid var(--accent); border-radius: 12px;
+  padding: 14px 16px; width: min(300px, 82%); box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  animation: pop .18s ease;
+}
+@keyframes pop { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+.popup-text { font-size: .9rem; margin-bottom: 10px; }
+.popup-actions { display: flex; gap: 8px; }
+.btn { border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
+  padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: .85rem; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #041016; font-weight: 600; }
+.btn-ghost { background: transparent; }
+.btn:hover { filter: brightness(1.08); }
+
+/* 재활성 버튼 */
+.reenable-btn {
+  position: absolute; right: 18px; bottom: 18px; z-index: 15;
+  background: var(--accent); color: #041016; border: none; font-weight: 600;
+  padding: 10px 16px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.45);
+}
+.reenable-btn:hover { filter: brightness(1.08); }
+
+.hidden { display: none !important; }
+
+</style>
+</head>
+<body class="viewer-page">
+
+<div id="app" class="viewer-grid">
+
+  <!-- 좌측(넓은 화면) / 상단(좁은 화면): 영상 + 상태바 -->
+  <section class="pane-video">
+    <div class="video-wrap">
+      <div id="player"></div>
+    </div>
+
+    <div class="statusbar">
+      <a class="back-link" href="index.html">← 목록</a>
+      <div class="status-center">
+        <span id="lec-label" class="lec-label"></span>
+      </div>
+      <div class="status-right">
+        <span id="cur-section" class="cur-section muted"></span>
+        <button id="calib-btn" class="calib-btn" type="button">⚙ 싱크 보정</button>
+        <button id="toggle-btn" class="toggle-btn" type="button" aria-pressed="true">
+          <span class="dot"></span><span id="toggle-text">자동 스크롤 ON</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 우측(넓은 화면) / 하단(좁은 화면): 탭 + 스크롤 영역 -->
+  <section class="pane-content">
+    <div class="tabbar" role="tablist">
+      <button class="tab active" data-tab="content" role="tab" type="button">📘 강의 내용</button>
+      <button class="tab" data-tab="problems" role="tab" type="button">📝 기출문제 풀이</button>
+    </div>
+
+    <!-- 강의 내용 탭 -->
+    <div id="content" class="content tabpanel" tabindex="0" role="tabpanel">
+      <p class="muted">불러오는 중…</p>
+    </div>
+
+    <!-- 기출문제 탭 -->
+    <div id="problems" class="content tabpanel hidden" role="tabpanel"></div>
+
+    <!-- 싱크 보정 바 -->
+    <div id="calib-bar" class="calib-bar hidden">
+      <span class="calib-msg">🎯 <b>싱크 보정 모드</b> — 영상을 재생하다가 각 섹션의 <b>⌖ 지금 위치로</b> 버튼을 누르면 그 시각이 저장됩니다.</span>
+      <span class="calib-actions">
+        <button id="calib-export" class="btn btn-ghost" type="button">보정값 복사</button>
+        <button id="calib-reset" class="btn btn-ghost" type="button">초기화</button>
+        <button id="calib-done" class="btn btn-primary" type="button">완료</button>
+      </span>
+    </div>
+
+    <!-- 재개 여부 팝업(토스트형, 비모달) -->
+    <div id="resume-popup" class="resume-popup hidden" role="dialog" aria-live="polite">
+      <div class="popup-text">영상 위치에 맞춰 다시 자동 스크롤할까요?</div>
+      <div class="popup-actions">
+        <button id="resume-yes" class="btn btn-primary" type="button">예, 다시 맞춤</button>
+        <button id="resume-no" class="btn btn-ghost" type="button">아니오</button>
+      </div>
+    </div>
+
+    <!-- 거절 후 재활성 버튼(우하단 고정) -->
+    <button id="reenable-btn" class="reenable-btn hidden" type="button">▶ 자동 스크롤 켜기</button>
+  </section>
+
+</div>
+
+<script>window.__LECTURE_DATA__ = {
+  "id": "lec03",
+  "videoId": "GIV7k4E0rW8",
+  "no": "03강",
+  "shortTitle": "선로정수",
+  "title": "전력공학 03강 — 2장 선로정수 및 코로나①(선로정수)",
+  "textbook": "p.28~33",
+  "timestampNote": "",
+  "sections": [
+    {
+      "t": "0:09",
+      "heading": "등가 선간거리 (기하평균거리, GMD)",
+      "html": "<p><b>개념</b>: 선과 선 사이의 <b>평균 거리</b>. 단순 산술평균이 아니라 <b>기하평균</b>(모두 곱한 뒤 거듭제곱근)을 쓴다.</p><p><b>도체 배열별 등가 선간거리</b> (이웃 간 거리 $d$)</p><ul><li><b>직선(수평) 배열</b>: 거리들이 $d, d, 2d$ → $ D_e=\\sqrt[3]{d\\cdot d\\cdot 2d}=\\sqrt[3]{2}\\,d $</li><li><b>정삼각형 배열</b>: 모든 변 $d$ → $ D_e=\\sqrt[3]{d\\cdot d\\cdot d}=d $</li><li><b>정사각형 배열</b>: 외곽 $d$ 4개 + 대각선 $\\sqrt{2}d$ 2개 → $ D_e=\\sqrt[6]{d^4\\cdot(\\sqrt{2}d)^2}=\\sqrt[6]{2}\\,d $</li></ul>"
+    },
+    {
+      "t": "9:13",
+      "heading": "등가 반지름과 복도체(다도체)",
+      "html": "<p><b>단도체 vs 복도체</b>: 단도체는 도체 1개, <b>복도체(다도체)</b>는 총 단면적은 같게 유지하면서 여러 개의 소도체로 나누어 배열한 것.</p><p><b>복도체를 쓰는 이유</b>: 단도체를 여러 소도체로 나누면 전선의 <b>겉보기 지름(등가 반지름)이 크게 증가</b> → 초고압 선로에서 <b>코로나 현상 방지</b>의 핵심 대책.</p><p><b>등가 반지름</b> ($n$: 소도체 수, $r$: 소도체 반지름, $s$: 소도체 간격)</p>$$ r_e = \\sqrt[n]{\\,r \\cdot s^{\\,n-1}\\,} $$<p><b>2도체</b>($n=2$)일 때: $ r_e=\\sqrt{r\\cdot s} $</p>"
+    },
+    {
+      "t": "16:00",
+      "heading": "개념 확인 문제 (선간거리·등가반지름)",
+      "html": "<ol><li><b>일직선 배열</b>($5\\text{m},\\,5\\text{m}$)의 등가 선간거리 → $ \\sqrt[3]{5\\cdot5\\cdot10}=5\\sqrt[3]{2}\\,\\text{m} $</li><li><b>2도체</b> 소도체 반지름 $4\\text{mm}=0.4\\text{cm}$, 간격 $40\\text{cm}$ → $ r_e=\\sqrt{0.4\\times40}=\\sqrt{16}=4\\,\\text{cm} $</li></ol><p>👉 위쪽 <b>[📝 기출문제 풀이]</b> 탭에서 직접 풀어보세요.</p>"
+    },
+    {
+      "t": "20:00",
+      "heading": "선로정수 개요 · (1) 저항 R",
+      "html": "<p><b>선로정수 4요소</b>: 저항 $R$, 인덕턴스 $L$, 정전용량 $C$, 컨덕턴스 $G$.</p><p>★ <b>리액턴스는 주파수의 영향을 받으므로 선로정수가 아니다.</b></p><p><b>특징</b>: 선로정수는 전선의 <b>종류·굵기·배치 등 물리적 요소</b>로만 결정된다. (전압·전류·주파수와 무관)</p><p><b>저항 공식</b></p>$$ R = \\rho\\frac{l}{A} $$<ul><li>길이 $l$에 비례, 단면적 $A$에 반비례.</li><li>고유저항 $\\rho$ 단위: 전력공학에서는 주로 $\\Omega\\cdot\\text{mm}^2/\\text{m}$ 사용.</li></ul>"
+    },
+    {
+      "t": "29:31",
+      "heading": "(2) 작용 인덕턴스 L",
+      "html": "<p><b>개념</b>: 전류가 흐를 때 자속을 만드는 능력. 3상에서는 <b>무조건 1상분</b> 기준으로 계산.</p><p><b>구성</b>: 작용 인덕턴스 = 자기 인덕턴스 + 상호 인덕턴스.</p><p><b>단도체</b></p>$$ L = 0.05 + 0.4605\\log_{10}\\frac{D}{r}\\ [\\text{mH/km}] $$<p><b>복도체</b> ($n$: 소도체 수)</p>$$ L_n = \\frac{0.05}{n} + 0.4605\\log_{10}\\frac{D}{r_e}\\ [\\text{mH/km}] $$<p>★ <b>핵심</b>: 복도체를 쓰면 등가 반지름 $r_e$가 커져 로그의 분모가 커지므로 <b>인덕턴스 $L$은 감소</b>한다.</p>"
+    },
+    {
+      "t": "43:26",
+      "heading": "(3) 작용 정전용량 C",
+      "html": "<p><b>개념</b>: 도체–도체 사이 절연체(공기)에서 전하를 축적하는 능력.</p><p><b>구성</b>: 대지 정전용량 $C_s$ + 상호(선간) 정전용량 $C_m$.</p><ul><li>3상 3선식 작용 정전용량: $ C = C_s + 3C_m $</li><li>단상 2선식: $ C = C_s + 2C_m $</li></ul><p><b>단도체</b></p>$$ C = \\frac{0.02413}{\\log_{10}\\dfrac{D}{r}}\\ [\\mu\\text{F/km}] $$<p><b>복도체</b></p>$$ C_n = \\frac{0.02413}{\\log_{10}\\dfrac{D}{r_e}}\\ [\\mu\\text{F/km}] $$<p>★ <b>핵심</b>: 복도체를 쓰면 $r_e$가 커져 로그 값(분모)이 작아지므로 <b>정전용량 $C$는 증가</b>한다.</p>"
+    },
+    {
+      "t": "1:01:21",
+      "heading": "(4) 컨덕턴스 G · 선로정수 총정리",
+      "html": "<p><b>컨덕턴스 $G$</b>: 애자 등 절연저항의 역수로, 전류가 새어나가는 <b>누설 성분</b>. 절연이 잘 되어 있으면 값이 매우 작아 보통 <b>무시</b>한다.</p><p><b>총정리</b></p><table><tr><th>정수</th><th>역할</th></tr><tr><td>$R$</td><td>전류 흐름 방해(손실)</td></tr><tr><td>$L$</td><td>자속 발생(유도)</td></tr><tr><td>$C$</td><td>전하 축적(충전)</td></tr><tr><td>$G$</td><td>누설(무시)</td></tr></table>"
+    },
+    {
+      "t": "1:04:28",
+      "heading": "개념 확인 문제 (선로정수)",
+      "html": "<ol><li><b>복도체 사용 시 특징</b> → 인덕턴스 $L$은 <b>감소</b>, 정전용량 $C$는 <b>증가</b>.</li><li>선간거리 $2D$, 도선 <b>지름</b> $d$(반지름 $d/2$)일 때 정전용량 → 로그 분모에 $ \\dfrac{2D}{d/2}=\\dfrac{4D}{d} $ 대입.</li></ol><p>👉 <b>[📝 기출문제 풀이]</b> 탭에서 확인하세요.</p>"
+    }
+  ],
+  "problemVideoId": "wnw_8grvErI",
+  "problems": [
+    {
+      "tag": "등가 선간거리",
+      "q": "3상 전선이 일직선(수평)으로 각각 $5\\,\\text{m}$ 간격($5\\text{m},5\\text{m}$)으로 배열될 때 등가 선간거리는?",
+      "choices": ["$5\\,\\text{m}$", "$5\\sqrt[3]{2}\\,\\text{m}$", "$10\\,\\text{m}$", "$5\\sqrt{2}\\,\\text{m}$"],
+      "correct": 1,
+      "answer": "$5\\sqrt[3]{2}\\,\\text{m}$ (약 6.3 m)",
+      "explanation": "$D_e=\\sqrt[3]{5\\times5\\times10}=\\sqrt[3]{250}=5\\sqrt[3]{2}\\approx6.3\\,\\text{m}$",
+      "wolfram": "(5*5*10)^(1/3)"
+    },
+    {
+      "tag": "등가 반지름",
+      "q": "2도체에서 소도체 반지름 $r=0.4\\,\\text{cm}$, 소도체 간격 $s=40\\,\\text{cm}$일 때 등가 반지름 $r_e$는?",
+      "choices": ["2 cm", "4 cm", "8 cm", "16 cm"],
+      "correct": 1,
+      "answer": "4 cm",
+      "explanation": "$r_e=\\sqrt{r\\cdot s}=\\sqrt{0.4\\times40}=\\sqrt{16}=4\\,\\text{cm}$",
+      "wolfram": "sqrt(0.4*40)"
+    },
+    {
+      "tag": "복도체(개념)",
+      "q": "단도체를 복도체로 바꿨을 때 선로정수의 변화로 옳은 것은?",
+      "choices": ["$L$ 증가, $C$ 감소", "$L$ 감소, $C$ 증가", "$L$·$C$ 모두 증가", "$L$·$C$ 모두 감소"],
+      "correct": 1,
+      "answer": "② $L$ 감소, $C$ 증가",
+      "explanation": "복도체는 등가 반지름 $r_e$를 키운다. $L=0.05/n+0.4605\\log(D/r_e)$에서 $L$은 감소, $C=0.02413/\\log(D/r_e)$에서 $C$는 증가한다. (코로나 방지·송전용량 증대)"
+    },
+    {
+      "tag": "선로정수(개념)",
+      "q": "다음 중 <b>선로정수에 해당하지 않는</b> 것은?",
+      "choices": ["저항 $R$", "인덕턴스 $L$", "정전용량 $C$", "리액턴스 $X$"],
+      "correct": 3,
+      "answer": "④ 리액턴스 $X$",
+      "explanation": "선로정수는 $R,L,C,G$ 4가지다. 리액턴스 $X=2\\pi fL$는 <b>주파수의 영향</b>을 받으므로 선로정수가 아니다."
+    },
+    {
+      "tag": "정전용량(3상)",
+      "q": "3상 3선식 선로의 작용 정전용량을 대지정전용량 $C_s$, 선간정전용량 $C_m$으로 나타내면?",
+      "choices": ["$C_s + C_m$", "$C_s + 2C_m$", "$C_s + 3C_m$", "$3C_s + C_m$"],
+      "correct": 2,
+      "answer": "③ $C_s + 3C_m$",
+      "explanation": "3상 3선식은 $C=C_s+3C_m$, 단상 2선식은 $C=C_s+2C_m$이다."
+    },
+    {
+      "tag": "인덕턴스(계산)",
+      "q": "선간거리 $D=1\\,\\text{m}=100\\,\\text{cm}$, 전선 반지름 $r=1\\,\\text{cm}$인 단도체 1선의 작용 인덕턴스는? ($L=0.05+0.4605\\log_{10}\\frac{D}{r}$)",
+      "choices": ["약 0.05 mH/km", "약 0.46 mH/km", "약 0.97 mH/km", "약 1.20 mH/km"],
+      "correct": 2,
+      "answer": "약 0.97 mH/km",
+      "explanation": "$L=0.05+0.4605\\log_{10}(100/1)=0.05+0.4605\\times2=0.05+0.921=0.971\\,\\text{mH/km}$",
+      "wolfram": "0.05 + 0.4605*log10(100/1)"
+    },
+    {
+      "tag": "정전용량(유도)",
+      "q": "선간거리 $2D$, 도선의 <b>지름</b>이 $d$일 때 작용 정전용량 공식의 로그 분모에 들어갈 값은?",
+      "choices": ["$\\dfrac{2D}{d}$", "$\\dfrac{4D}{d}$", "$\\dfrac{D}{d}$", "$\\dfrac{2D}{d/2}$ 아님"],
+      "correct": 1,
+      "answer": "$\\dfrac{4D}{d}$",
+      "explanation": "정전용량 공식은 반지름 기준이다. 반지름 $r=d/2$, 선간거리 $2D$이므로 $\\dfrac{D_{선간}}{r}=\\dfrac{2D}{d/2}=\\dfrac{4D}{d}$."
+    }
+  ]
+}
+;</script>
+<script>
+/* =========================================================================
+   전력공학 강의 뷰어 — app.js
+   기능: ① 영상 재생에 맞춘 섹션 단위 자동 스크롤
+        ② 수동 스크롤 감지 → 10초 후 재개 팝업 → 선택별 동작(상태머신)
+        ③ KaTeX 수식 렌더링
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  // ---------- 설정 ----------
+  var POLL_MS = 250;          // 영상 재생위치 폴링 주기
+  var IDLE_MS = 10000;        // 수동조작 멈춘 뒤 팝업까지 대기(10초)
+  var PROG_SCROLL_LOCK = 800; // 프로그램 스크롤로 간주하는 시간(ms)
+
+  // ---------- 상태 ----------
+  // AUTO      : 영상에 맞춰 자동 스크롤 중
+  // PAUSED    : 사용자가 방금 수동 스크롤함(10초 대기)
+  // PROMPTING : 재개 여부 팝업 표시 중
+  // DISABLED  : 거절 또는 수동 OFF → 시간과 무관하게 꺼짐
+  var state = 'AUTO';
+  var activeTab = 'content';   // 'content' | 'problems'
+  var lectureTime = 0;         // 탭 전환 시 강의 영상 위치 기억
+
+  var LEC = null;
+  var player = null;
+  var sections = [];          // [{ el, start }]
+  var currentIdx = -1;
+  var isPlaying = false;
+  var isProgrammaticScroll = false;
+
+  var pollTimer = null;
+  var idleTimer = null;
+  var progScrollTimer = null;
+
+  var apiReady = false, dataReady = false;
+
+  // ---------- DOM ----------
+  var contentEl   = document.getElementById('content');
+  var problemsEl  = document.getElementById('problems');
+  var tabButtons  = document.querySelectorAll('.tab');
+  var popupEl     = document.getElementById('resume-popup');
+  var reenableBtn = document.getElementById('reenable-btn');
+  var toggleBtn   = document.getElementById('toggle-btn');
+  var toggleText  = document.getElementById('toggle-text');
+  var curSecEl    = document.getElementById('cur-section');
+  var lecLabelEl  = document.getElementById('lec-label');
+  var calibBtn    = document.getElementById('calib-btn');
+  var calibBar    = document.getElementById('calib-bar');
+
+  var calibrating = false;
+  var calibData = {};   // { sectionIndex: seconds }
+
+  // ---------- 유틸 ----------
+  function parseTime(t) {
+    if (typeof t === 'number') return t;
+    if (!t) return 0;
+    var p = String(t).split(':').map(Number);
+    if (p.some(isNaN)) return 0;
+    if (p.length === 3) return p[0] * 3600 + p[1] * 60 + p[2];
+    if (p.length === 2) return p[0] * 60 + p[1];
+    return p[0];
+  }
+  function fmtTime(sec) {
+    sec = Math.max(0, Math.floor(sec));
+    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    var mm = (h > 0 && m < 10 ? '0' : '') + m, ss = (s < 10 ? '0' : '') + s;
+    return (h > 0 ? h + ':' : '') + mm + ':' + ss;
+  }
+
+  // ---------- 데이터 로드 ----------
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script');
+      s.src = src; s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  function loadData() {
+    // 1) 완결 HTML(빌드본)은 데이터를 window.__LECTURE_DATA__로 인라인
+    if (window.__LECTURE_DATA__) return Promise.resolve(window.__LECTURE_DATA__);
+    var id = (new URLSearchParams(location.search).get('id')) || 'lec01';
+    // 2) file:// 로컬에서도 동작하도록 <script>(전역변수) 방식 우선 시도
+    return loadScript('data/' + id + '.js')
+      .then(function () {
+        if (window.__LECTURE_DATA__) return window.__LECTURE_DATA__;
+        throw new Error('no global');
+      })
+      .catch(function () {
+        // 3) (서버 실행 시) JSON fetch 폴백
+        return fetch('data/' + id + '.json').then(function (r) {
+          if (!r.ok) throw new Error('데이터 로드 실패');
+          return r.json();
+        });
+      });
+  }
+
+  // ---------- 콘텐츠 렌더 ----------
+  function buildContent() {
+    document.title = (LEC.title || '강의 뷰어');
+    if (lecLabelEl) lecLabelEl.textContent = (LEC.no ? LEC.no + ' · ' : '') + (LEC.shortTitle || LEC.title || '');
+
+    var html = '';
+    html += '<h2 class="doc-title">' + escapeHtml(LEC.title || '') + '</h2>';
+    if (LEC.textbook) html += '<p class="doc-sub">교재 ' + escapeHtml(LEC.textbook) + '</p>';
+    if (LEC.timestampNote) {
+      html += '<div class="est-note">⚠ ' + escapeHtml(LEC.timestampNote) + '</div>';
+    }
+    (LEC.sections || []).forEach(function (sec, i) {
+      var start = parseTime(sec.t);
+      html += '<div class="section" data-idx="' + i + '" data-start="' + start + '">'
+            +   '<span class="sec-time" data-seek="' + start + '">▶ ' + fmtTime(start) + '</span>'
+            +   '<button class="calib-set" data-idx="' + i + '" type="button">⌖ 지금 위치로</button>'
+            +   (sec.heading ? '<h3>' + escapeHtml(sec.heading) + '</h3>' : '')
+            +   (sec.html || '')
+            + '</div>';
+    });
+    contentEl.innerHTML = html;
+
+    // 섹션 인덱스 구성
+    sections = Array.prototype.map.call(
+      contentEl.querySelectorAll('.section'),
+      function (el) {
+        return { el: el, idx: Number(el.getAttribute('data-idx')) || 0, start: Number(el.getAttribute('data-start')) || 0 };
+      }
+    );
+    loadCalib();
+    applyCalibration(); // 저장된 보정값 반영 + 시작시각 오름차순 정렬
+
+    // 타임스탬프 클릭 → 해당 위치로 이동
+    contentEl.addEventListener('click', function (e) {
+      var t = e.target.closest && e.target.closest('.sec-time');
+      if (!t) return;
+      var to = Number(t.getAttribute('data-seek')) || 0;
+      if (player && player.seekTo) { player.seekTo(to, true); player.playVideo && player.playVideo(); }
+      if (state === 'DISABLED') { /* 이동만, 자동은 유지 OFF */ }
+    });
+
+    renderMath(contentEl);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  // KaTeX가 defer 로드라 준비될 때까지 대기 후 렌더
+  function renderMath(el, tries) {
+    tries = tries || 0;
+    if (window.renderMathInElement) {
+      try {
+        window.renderMathInElement(el, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ],
+          throwOnError: false
+        });
+      } catch (e) { /* noop */ }
+    } else if (tries < 40) {
+      setTimeout(function () { renderMath(el, tries + 1); }, 100);
+    }
+  }
+
+  // ---------- YouTube 플레이어 ----------
+  window.onYouTubeIframeAPIReady = function () { apiReady = true; tryInit(); };
+
+  function tryInit() {
+    if (apiReady && dataReady && !player) initPlayer();
+  }
+
+  function initPlayer() {
+    player = new YT.Player('player', {
+      videoId: LEC.videoId,
+      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange
+      }
+    });
+  }
+
+  function onPlayerReady() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(tick, POLL_MS);
+    updateUI();
+  }
+
+  function onPlayerStateChange(e) {
+    isPlaying = (e.data === YT.PlayerState.PLAYING);
+  }
+
+  // ---------- 동기화(폴링) ----------
+  function tick() {
+    if (activeTab !== 'content' || state !== 'AUTO' || !player || !player.getCurrentTime) return;
+    var t = player.getCurrentTime() || 0;
+    var idx = findSectionIdx(t);
+    if (idx !== -1 && idx !== currentIdx) {
+      currentIdx = idx;
+      scrollToSection(idx, true);
+    }
+  }
+
+  function findSectionIdx(t) {
+    // t가 속한 마지막 섹션(start <= t) 이진탐색
+    var lo = 0, hi = sections.length - 1, res = -1;
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1;
+      if (sections[mid].start <= t) { res = mid; lo = mid + 1; }
+      else hi = mid - 1;
+    }
+    return res;
+  }
+
+  function scrollToSection(idx, smooth) {
+    var s = sections[idx];
+    if (!s) return;
+    // 활성 하이라이트
+    sections.forEach(function (o) { o.el.classList.remove('active'); });
+    s.el.classList.add('active');
+    if (curSecEl) {
+      var h = s.el.querySelector('h3');
+      curSecEl.textContent = '▷ ' + (h ? h.textContent : '');
+    }
+    // 프로그램 스크롤 잠금(사용자 조작 오인 방지)
+    isProgrammaticScroll = true;
+    if (progScrollTimer) clearTimeout(progScrollTimer);
+    progScrollTimer = setTimeout(function () { isProgrammaticScroll = false; }, PROG_SCROLL_LOCK);
+
+    // 콘텐츠 컨테이너 '안'에서만 스크롤(상위 영역/탭바가 밀려나지 않도록)
+    var cRect = contentEl.getBoundingClientRect();
+    var sRect = s.el.getBoundingClientRect();
+    var target = contentEl.scrollTop + (sRect.top - cRect.top) - 8;
+    if (target < 0) target = 0;
+    contentEl.scrollTo({ top: target, behavior: smooth ? 'smooth' : 'auto' });
+  }
+
+  // ---------- 사용자 스크롤 감지 ----------
+  var NAV_KEYS = { ArrowUp: 1, ArrowDown: 1, PageUp: 1, PageDown: 1, Home: 1, End: 1, ' ': 1, Spacebar: 1 };
+
+  function onUserScrollGesture() {
+    if (state === 'AUTO') { enterPaused(); }
+    else if (state === 'PAUSED') { resetIdle(); }
+    // PROMPTING/DISABLED 중에는 무시(팝업/버튼으로만 상태 전환)
+  }
+
+  contentEl.addEventListener('wheel', onUserScrollGesture, { passive: true });
+  contentEl.addEventListener('touchmove', onUserScrollGesture, { passive: true });
+  contentEl.addEventListener('keydown', function (e) {
+    if (NAV_KEYS[e.key]) onUserScrollGesture();
+  });
+  // 스크롤바 드래그 등 기타 조작 대비(프로그램 스크롤은 잠금으로 배제)
+  contentEl.addEventListener('scroll', function () {
+    if (isProgrammaticScroll) return;
+    onUserScrollGesture();
+  }, { passive: true });
+
+  // ---------- 상태 전이 ----------
+  function enterAuto() {
+    state = 'AUTO';
+    clearIdle();
+    hidePopup();
+    reenableBtn.classList.add('hidden');
+    // 현재 영상 위치로 즉시 정렬
+    currentIdx = -1;
+    if (player && player.getCurrentTime) {
+      var idx = findSectionIdx(player.getCurrentTime() || 0);
+      if (idx !== -1) { currentIdx = idx; scrollToSection(idx, true); }
+    }
+    updateUI();
+  }
+
+  function enterPaused() {
+    state = 'PAUSED';
+    hidePopup();
+    reenableBtn.classList.add('hidden');
+    resetIdle();
+    updateUI();
+  }
+
+  function enterPrompting() {
+    // 결정 D: 영상이 재생 중일 때만 팝업(멈춰 읽는 중 방해 방지)
+    if (!isPlaying) { resetIdle(); return; }
+    state = 'PROMPTING';
+    showPopup();
+    updateUI();
+  }
+
+  function enterDisabled() {
+    state = 'DISABLED';
+    clearIdle();
+    hidePopup();
+    reenableBtn.classList.remove('hidden'); // 시간과 무관하게 OFF, 버튼으로만 재활성
+    updateUI();
+  }
+
+  function resetIdle() {
+    clearIdle();
+    idleTimer = setTimeout(function () {
+      if (state === 'PAUSED') enterPrompting();
+    }, IDLE_MS);
+  }
+  function clearIdle() { if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } }
+
+  function showPopup() { popupEl.classList.remove('hidden'); }
+  function hidePopup() { popupEl.classList.add('hidden'); }
+
+  // ---------- UI 갱신 ----------
+  function updateUI() {
+    var on = (state === 'AUTO');
+    toggleBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (state === 'AUTO')      toggleText.textContent = '자동 스크롤 ON';
+    else if (state === 'DISABLED') toggleText.textContent = '자동 스크롤 OFF';
+    else                       toggleText.textContent = '자동 스크롤 일시중지';
+  }
+
+  // ---------- 버튼 이벤트 ----------
+  document.getElementById('resume-yes').addEventListener('click', enterAuto);
+  document.getElementById('resume-no').addEventListener('click', enterDisabled);
+  reenableBtn.addEventListener('click', enterAuto);
+  toggleBtn.addEventListener('click', function () {
+    if (state === 'AUTO') enterDisabled(); // 수동 OFF는 언제든 가능
+    else enterAuto();
+  });
+
+  // ---------- 탭 전환 ----------
+  function switchTab(tab) {
+    if (tab === activeTab) return;
+    if (activeTab === 'content' && player && player.getCurrentTime) {
+      lectureTime = player.getCurrentTime() || 0;
+    }
+    activeTab = tab;
+    tabButtons.forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-tab') === tab);
+    });
+    if (tab === 'problems') {
+      contentEl.classList.add('hidden');
+      problemsEl.classList.remove('hidden');
+      hidePopup();
+      // 메인 플레이어를 문제풀이 영상으로 전환(자동재생 아님)
+      if (player && player.cueVideoById && LEC.problemVideoId) {
+        try { player.cueVideoById(LEC.problemVideoId); } catch (e) {}
+      }
+    } else {
+      problemsEl.classList.add('hidden');
+      contentEl.classList.remove('hidden');
+      // 강의 영상으로 복귀(기억한 위치에서 대기)
+      if (player && player.cueVideoById && LEC.videoId) {
+        try { player.cueVideoById({ videoId: LEC.videoId, startSeconds: lectureTime || 0 }); } catch (e) {}
+      }
+      if (state === 'AUTO') currentIdx = -1; // 복귀 시 재정렬 유도
+    }
+  }
+  tabButtons.forEach(function (b) {
+    b.addEventListener('click', function () { switchTab(b.getAttribute('data-tab')); });
+  });
+
+  // ---------- 기출문제 렌더 ----------
+  function buildProblems() {
+    var probs = LEC.problems || [];
+    var html = '';
+    html += '<div class="prob-intro">⚠ 아래는 영상 속 <b>실제 기출 원문이 아니라</b>, 해당 장(1장 전선로) 전기기사 빈출 유형으로 제작한 <b>대표 유사문제</b>입니다. 상단 영상은 문제풀이 강의입니다. 스스로 풀어본 뒤 <b>정답·해설 보기</b>로 확인하세요.</div>';
+    // 계산기
+    html += '<div class="calc-box"><h4>🧮 계산기 (직접 풀이)</h4><div class="calc-row">'
+          + '<input id="calc-input" class="calc-input" placeholder="예: 2*200^2/(8*2000)   또는   sqrt(1.7^2+0.9^2)">'
+          + '<button id="calc-run" class="prob-btn">계산</button>'
+          + '<span id="calc-out" class="calc-result">—</span>'
+          + '<button id="calc-wa" class="prob-btn wa">Wolfram|Alpha에서 열기 ↗</button>'
+          + '</div><div class="calc-hint">함수: sqrt, sin, cos, tan, log, ln, ^(거듭제곱), pi 사용 가능 · Enter로 계산</div></div>';
+    if (!probs.length) {
+      html += '<p class="muted">등록된 문제가 없습니다.</p>';
+    }
+    probs.forEach(function (p, i) {
+      html += '<div class="problem" data-i="' + i + '">';
+      html += '<div class="prob-head"><span class="prob-no">문제 ' + (i + 1) + '</span>'
+            + (p.tag ? '<span class="prob-tag">' + escapeHtml(p.tag) + '</span>' : '') + '</div>';
+      html += '<div class="prob-q">' + (p.q || '') + '</div>';
+      if (p.choices && p.choices.length) {
+        html += '<ul class="prob-choices">';
+        p.choices.forEach(function (c, ci) {
+          html += '<li data-ci="' + ci + '">' + String.fromCharCode(9312 + ci) + ' ' + c + '</li>';
+        });
+        html += '</ul>';
+      }
+      html += '<div class="prob-actions">';
+      html += '<button class="prob-btn act-answer" type="button">정답·해설 보기</button>';
+      if (p.wolfram) html += '<button class="prob-btn wa act-wa" type="button" data-wa="' + encodeURIComponent(p.wolfram) + '">Wolfram|Alpha에서 풀기 ↗</button>';
+      html += '</div>';
+      html += '<div class="prob-answer hidden"><span class="ans-label">정답</span>' + (p.answer || '')
+            + (p.explanation ? '<div style="margin-top:8px">' + p.explanation + '</div>' : '') + '</div>';
+      html += '</div>';
+    });
+    problemsEl.innerHTML = html;
+    renderMath(problemsEl);
+    wireProblems();
+  }
+
+  function calcEval(expr) {
+    if (window.math && window.math.evaluate) return window.math.evaluate(expr);
+    // 폴백: 안전 문자만 허용한 뒤 Function 평가
+    if (!/^[-+*/%^().,0-9eEpisqrtcoslnab \t]*$/i.test(expr)) throw new Error('bad');
+    var s = expr.replace(/\^/g, '**').replace(/\bpi\b/gi, 'Math.PI')
+      .replace(/\b(sqrt|sin|cos|tan|log|abs|exp)\b/gi, 'Math.$1').replace(/\bln\b/gi, 'Math.log');
+    return Function('return (' + s + ')')();
+  }
+
+  function wireProblems() {
+    var ci = document.getElementById('calc-input');
+    var co = document.getElementById('calc-out');
+    function run() {
+      try {
+        var v = calcEval(ci.value);
+        co.textContent = (typeof v === 'number' ? +Number(v).toPrecision(6) : String(v));
+        co.style.color = 'var(--ok)';
+      } catch (e) { co.textContent = '오류'; co.style.color = '#ff6b6b'; }
+    }
+    document.getElementById('calc-run').addEventListener('click', run);
+    ci.addEventListener('keydown', function (e) { if (e.key === 'Enter') run(); });
+    document.getElementById('calc-wa').addEventListener('click', function () {
+      if (ci.value.trim()) window.open('https://www.wolframalpha.com/input?i=' + encodeURIComponent(ci.value), '_blank');
+    });
+
+    problemsEl.querySelectorAll('.problem').forEach(function (pe) {
+      var idx = +pe.getAttribute('data-i');
+      var p = (LEC.problems || [])[idx] || {};
+      // 보기 선택(단일, 자율 — 즉시 채점하지 않음)
+      pe.querySelectorAll('.prob-choices li').forEach(function (li) {
+        li.addEventListener('click', function () {
+          if (pe.classList.contains('revealed')) return;
+          pe.querySelectorAll('.prob-choices li').forEach(function (x) { x.classList.remove('picked'); });
+          li.classList.add('picked');
+        });
+      });
+      // 정답·해설 보기(토글) — 열 때 정오답 표시
+      var at = pe.querySelector('.act-answer');
+      if (at) at.addEventListener('click', function () {
+        var ans = pe.querySelector('.prob-answer');
+        var show = ans.classList.contains('hidden');
+        ans.classList.toggle('hidden');
+        at.textContent = show ? '해설 접기' : '정답·해설 보기';
+        if (show && typeof p.correct === 'number') {
+          pe.classList.add('revealed');
+          pe.querySelectorAll('.prob-choices li').forEach(function (x) {
+            var xi = +x.getAttribute('data-ci');
+            if (xi === p.correct) x.classList.add('correct');
+            else if (x.classList.contains('picked')) x.classList.add('wrong');
+          });
+        }
+      });
+      var wa = pe.querySelector('.act-wa');
+      if (wa) wa.addEventListener('click', function () {
+        window.open('https://www.wolframalpha.com/input?i=' + wa.getAttribute('data-wa'), '_blank');
+      });
+    });
+  }
+
+  // ---------- 싱크 보정(캘리브레이션) ----------
+  function calibKey() { return 'calib_' + (LEC && LEC.id ? LEC.id : 'lec'); }
+  function loadCalib() {
+    try { calibData = JSON.parse(localStorage.getItem(calibKey()) || '{}') || {}; }
+    catch (e) { calibData = {}; }
+  }
+  function saveCalib() {
+    try { localStorage.setItem(calibKey(), JSON.stringify(calibData)); } catch (e) {}
+  }
+  function applyCalibration() {
+    // 저장된 보정값을 각 섹션 start에 반영
+    sections.forEach(function (s) {
+      if (calibData[s.idx] != null) s.start = Number(calibData[s.idx]);
+    });
+    // 오름차순 정렬(이진탐색용)
+    sections.sort(function (a, b) { return a.start - b.start; });
+    // ▶ 시각 라벨·seek 갱신
+    sections.forEach(function (s) {
+      var t = s.el.querySelector('.sec-time');
+      if (t) { t.textContent = '▶ ' + fmtTime(s.start); t.setAttribute('data-seek', s.start); }
+    });
+    currentIdx = -1;
+  }
+  function calibrateSection(idx) {
+    if (!player || !player.getCurrentTime) return;
+    var t = Math.floor(player.getCurrentTime() || 0);
+    calibData[idx] = t;
+    saveCalib();
+    applyCalibration();
+    // 잠깐 피드백
+    var btn = contentEl.querySelector('.calib-set[data-idx="' + idx + '"]');
+    if (btn) { var o = btn.textContent; btn.textContent = '✓ ' + fmtTime(t); setTimeout(function () { btn.textContent = o; }, 1200); }
+  }
+  function setCalibrating(on) {
+    calibrating = on;
+    document.body.classList.toggle('calibrating', on);
+    calibBar.classList.toggle('hidden', !on);
+    calibBtn.classList.toggle('on', on);
+    calibBtn.textContent = on ? '⚙ 보정 중' : '⚙ 싱크 보정';
+    if (on) {
+      if (activeTab !== 'content') switchTab('content');
+      enterDisabled(); // 보정 중에는 자동 스크롤 정지
+    }
+  }
+  if (calibBtn) calibBtn.addEventListener('click', function () { setCalibrating(!calibrating); });
+  document.getElementById('calib-done').addEventListener('click', function () { setCalibrating(false); });
+  document.getElementById('calib-reset').addEventListener('click', function () {
+    if (!confirm('이 강의의 보정값을 모두 지울까요?')) return;
+    calibData = {}; saveCalib();
+    // 원래 JSON 시각으로 복원
+    sections.forEach(function (s) { s.start = Number(s.el.getAttribute('data-start')) || 0; });
+    applyCalibration();
+  });
+  document.getElementById('calib-export').addEventListener('click', function () {
+    // 원본 섹션 순서대로 "mm:ss" 배열 + 헤딩 동봉
+    var out = sections.slice().sort(function (a, b) { return a.idx - b.idx; }).map(function (s) {
+      var h = s.el.querySelector('h3');
+      return { t: fmtTime(s.start), heading: h ? h.textContent : '' };
+    });
+    var text = JSON.stringify(out, null, 2);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { alert('보정값을 클립보드에 복사했습니다. 붙여넣어 전달하시면 영구 반영해 드립니다.'); },
+        function () { window.prompt('아래 값을 복사하세요:', text); });
+    } else { window.prompt('아래 값을 복사하세요:', text); }
+  });
+  // 섹션별 보정 버튼(이벤트 위임)
+  contentEl.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.calib-set');
+    if (!b) return;
+    e.stopPropagation();
+    calibrateSection(Number(b.getAttribute('data-idx')));
+  });
+
+  // ---------- 시작 ----------
+  loadData().then(function (d) {
+    LEC = d;
+    buildContent();
+    buildProblems();
+    dataReady = true;
+    updateUI();
+    tryInit();
+  }).catch(function (e) {
+    contentEl.innerHTML = '<p class="error">강의 데이터를 불러오지 못했습니다.<br>'
+      + '로컬 파일을 직접 열었다면 간이 서버로 실행해 주세요 '
+      + '(예: 폴더에서 <code>python -m http.server</code> 실행 후 '
+      + '<code>http://localhost:8000/viewer.html?id=lec01</code>).</p>';
+  });
+
+})();
+
+</script>
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
