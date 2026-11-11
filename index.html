@@ -24,8 +24,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15p
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:1180px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
-.lede{color:var(--muted);margin:10px 0 0;max-width:62ch}
+.lede{color:var(--muted);margin:10px 0 0;max-width:62ch;word-break:keep-all}
 .lede b{color:var(--ink);font-weight:700}
+.lede.upd{margin-top:6px;font-size:.92em}
 h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0 0 6px}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -155,7 +156,8 @@ td a{color:inherit;text-underline-offset:3px}
 <div class="wrap">
   <header>
     <h1>위스키 종합 티어표</h1>
-    <p class="lede">AI를 활용한 티어리스트를 구축하였습니다. <span id="upd"></span></p>
+    <p class="lede">여러 위스키를 마셔 보고 싶은데 어떤 병이 좋은지 한눈에 찾기가 어려워 직접 만들어 보았습니다. 여러 매체와 커뮤니티에 흩어진 위스키 티어표·순위·평점을 AI로 모아 하나의 티어로 정리했습니다. 출처마다 다른 척도를 100점 기준으로 맞추고, 같은 매체의 평가는 한 표로 묶어 특정 매체에 치우치지 않게 계산합니다. 종류·숙성년수·피트·셰리·가격대 필터로 취향과 예산에 맞는 병을 찾아보세요.</p>
+    <p class="lede upd"><span id="upd"></span></p>
   </header>
 
   <div class="bar">
@@ -264,7 +266,7 @@ function detail(id){
   const d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","");
   $("dclose").onclick=()=>d.close()}
 function methods(){
-  $("upd").textContent=`${W.length}병, ${DATA.updated} 갱신`;
+  $("upd").textContent=`${W.length}병 · 출처 ${Object.keys(META).length}곳 · ${DATA.updated} 갱신`;
   const PN={SM:"싱글몰트",BL:"블렌디드",BB:"버번",RY:"라이·아메리칸",IR:"아이리시",JP:"재패니즈",WD:"월드"};
   $("prior").textContent=Object.entries(DATA.stats.prior).map(([k,v])=>`${PN[k]} ${v.toFixed(1)}`).join(", ");
   $("sdv").textContent=DATA.stats.sd.toFixed(1);
