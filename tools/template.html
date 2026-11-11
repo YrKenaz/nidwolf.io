@@ -151,7 +151,7 @@ td a{color:inherit;text-underline-offset:3px}
 <div class="wrap">
   <header>
     <h1>위스키 종합 티어표</h1>
-    <p class="lede">한국·영어권의 티어표, 순위 리스트, 평점 리스트 <b id="nsrc"></b>개를 모아 100점 척도로 환산하고 합산했습니다. 병을 누르면 출처별 점수를 볼 수 있습니다. <span id="upd"></span></p>
+    <p class="lede">AI를 활용한 티어리스트를 구축하였습니다. <span id="upd"></span></p>
   </header>
 
   <div class="bar">
@@ -257,8 +257,7 @@ function detail(id){
   const d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","");
   $("dclose").onclick=()=>d.close()}
 function methods(){
-  $("nsrc").textContent=Object.keys(META).length;
-  $("upd").textContent=`${W.length}병 · ${DATA.updated} 갱신`;
+  $("upd").textContent=`${W.length}병, ${DATA.updated} 갱신`;
   $("scale").innerHTML=TIERS.map(([t,,r])=>`<span style="background:var(${TCOL[t][0]});color:var(${TCOL[t][1]})">${t} · ${r}</span>`).join("");
   $("stable").innerHTML=Object.entries(META).map(([k,m])=>{const n=W.filter(w=>k in w.scores).length;
     return `<tr><td><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a></td><td>${esc(m[2])}</td><td>${esc(RULE[k]||"")}</td><td class="n">${n}</td></tr>`}).join("")}
