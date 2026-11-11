@@ -16,5 +16,7 @@
  "angels-envy": {"aliases": ["엔젤스 엔비 포트 캐스크 피니시"], "queries": ["엔젤스 엔비"], "note": "기본 제품이 포트 캐스크 피니시 버번이라는 판단으로 연결. 확인 필요"},
  "writers-tears-rh": {"aliases": ["라이터즈 티얼즈 레드 헤드"], "queries": ["라이터즈 티얼즈"]},
  "oldparr-18": {"aliases": ["올드 파 18년 블렌디드 스카치 위스키"], "queries": ["올드 파 18년"]},
- "kavalan-oloroso": {"reject_price_product": true, "note": "가격에 연결된 상품이 솔리스트 CS(다른 병)라 이름 근거에서 뺌"}
+ "kavalan-oloroso": {"reject_price_product": true, "note": "가격에 연결된 상품이 솔리스트 CS(다른 병)라 이름 근거에서 뺌"},
+ "starward-twofold": {"aliases": ["스타워드 투-폴드 더블 그레인 위스키"], "queries": ["스타워드 투-폴드"]},
+ "kyro-rye": {"aliases": ["큐로 몰트 라이 위스키"], "queries": ["큐로 몰트 라이"]}
 }

@@ -85,7 +85,7 @@ def compute():
              "obs": [{"s": x["source"], "v": x["value"], "raw": x.get("raw", "")} for x in o],
              "rec": sum(1 for x in o if x["value"] is None),
              "age": b["age"], "abv": b["abv"], "style": b["style"], "cask": b["cask"], "spec": b["spec"],
-             "beg": b["beginner"], "price": b["price"], "pname": b["price_product"], "pdate": b.get("price_date"),
+             "beg": b["beginner"], "price": b["price"], "pname": b["price_product"], "pdate": b.get("price_date"), "pml": b.get("price_ml"),
              "ds": [b["ds_rating"], b["ds_reviews"]] if b.get("ds_rating") else None}
         if n == 0:
             w.update(score=None, tier="N", flag="none", lo=None, hi=None, bt=None)

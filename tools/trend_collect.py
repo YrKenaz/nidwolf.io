@@ -15,6 +15,8 @@ bottles.json, sources.json, observations.json은 읽기만 한다.
   NAVER_CLIENT_ID=.. NAVER_CLIENT_SECRET=.. python3 tools/trend_collect.py naver score   # A안
   python3 tools/trend_collect.py ds --refresh       # 저장된 값을 버리고 다시 측정
   python3 tools/trend_collect.py ds --only kc-9,jw-black
+  python3 tools/trend_collect.py score --keep-scales --freeze-existing   # 새 병만 추가(기존 값·상한 유지)
+  python3 tools/trend_collect.py score --keep-scales --rescale src       # 매체 등장 횟수 상한만 다시 잡고 전 병 재계산
 
 산식 (score 단계)
   부분 점수 = 100 × (ln(1+x) − ln(1+하한)) ÷ (ln(1+상한) − ln(1+하한)), 0~100으로 자른다
@@ -371,6 +373,16 @@ def stage_score(bottles, opts):
     sources = load(os.path.join(ROOT, "data", "sources.json"))
     obs = load(os.path.join(ROOT, "data", "observations.json"))
     out_path = os.path.join(ROOT, "data", "trends.json")
+    # 데일리샷 검색 결과는 저장돼 있지 않지만 기존 trends.json에 값이 있는 병(등록 전에 리뷰 수를 잰 병)은
+    # 그 리뷰 수를 그대로 쓰고, 위키·매체 재료와 점수만 다른 병과 같은 방식으로 다시 계산한다.
+    prev = load(out_path, {}).get("bottles", {})
+    all_ids = [b["id"] for b in bottles]
+    carried = {}
+    for b in bottles:
+        if b["id"] not in ds and b["id"] in prev:
+            pr = prev[b["id"]]["raw"]
+            ds[b["id"]] = {"rows": [], "truncated": False, "date": prev[b["id"]].get("measured"),
+                           "fixed": {"reviews": pr["ds_reviews"], "sales": pr.get("ds_sales", 0), "products": pr.get("ds_products", 0)}}
     missing = [b["id"] for b in bottles if b["id"] not in ds]
     if missing:
         print("데일리샷 측정이 없는 병 %d개. ds 단계를 먼저 끝내야 한다." % len(missing))
@@ -381,6 +393,8 @@ def stage_score(bottles, opts):
         d["matched"], d["others"], d["flags"] = match(b, d["rows"], extra)
         d["reviews"] = sum(m["reviews"] for m in d["matched"])
         d["sales"] = sum(m["sales"] for m in d["matched"])
+        if "fixed" in d:
+            d["flags"], d["reviews"], d["sales"] = [], d["fixed"]["reviews"], d["fixed"]["sales"]
     formula = "A" if all(b["id"] in naver for b in bottles) else "B"
     w = WEIGHTS[formula]
 
@@ -394,7 +408,7 @@ def stage_score(bottles, opts):
         br = brand_of(b, brands)
         wk = wiki.get(br["wiki"]) if br and br.get("wiki") else None
         flags = list(ds[b["id"]].get("flags", []))
-        if not ds[b["id"]]["matched"]:
+        if not ds[b["id"]]["matched"] and "fixed" not in ds[b["id"]]:
             flags.append("ds_no_product")
         if ds[b["id"]].get("truncated"):
             flags.append("ds_more_results")
@@ -405,7 +419,7 @@ def stage_score(bottles, opts):
         elif not br.get("sure", True):
             flags.append("wiki_unsure")
         r = {"ds_reviews": ds[b["id"]]["reviews"], "ds_sales": ds[b["id"]]["sales"],
-             "ds_products": len(ds[b["id"]]["matched"]),
+             "ds_products": ds[b["id"]]["fixed"]["products"] if "fixed" in ds[b["id"]] else len(ds[b["id"]]["matched"]),
              "wiki_en": (wk or {}).get("views", 0) if wk and not wk["missing"] else 0,
              "wiki_title": (wk or {}).get("resolved") if wk and not wk["missing"] else None,
              "src_en": src_en.get(b["id"], 0)}
@@ -415,12 +429,18 @@ def stage_score(bottles, opts):
 
     old = load(out_path, {}) if opts["keep_scales"] else {}
     scales = old.get("scales") if old.get("formula") == formula else None
-    if not scales:
-        scales = {"ds": {"lo": 0, "hi": round(pct([r["ds_reviews"] for r, _, _ in raw.values()], 0.99))},
+    fresh = None
+    if not scales or opts.get("rescale"):
+        fresh = {"ds": {"lo": 0, "hi": round(pct([r["ds_reviews"] for r, _, _ in raw.values()], 0.99))},
                   "wiki": {"lo": WIKI_LO, "hi": round(pct([r["wiki_en"] for r, _, _ in raw.values()], 0.99))},
                   "src": {"lo": 0, "hi": round(pct([r["src_en"] for r, _, _ in raw.values()], 0.99))}}
         if formula == "A":
-            scales["naver"] = {"lo": 0, "hi": round(pct([r["naver_blog"] + r["naver_cafe"] for r, _, _ in raw.values()], 0.99))}
+            fresh["naver"] = {"lo": 0, "hi": round(pct([r["naver_blog"] + r["naver_cafe"] for r, _, _ in raw.values()], 0.99))}
+    if not scales:
+        scales = fresh
+    elif fresh:
+        for k in opts["rescale"]:      # --rescale src : 그 재료의 상한만 지금 자료로 다시 잡는다
+            scales[k] = fresh[k]
 
     result = {}
     for b in bottles:
@@ -440,6 +460,13 @@ def stage_score(bottles, opts):
 
     # 등록 대기 중인 새 병(tools/trend-data/new_bottles.json)도 같은 기준으로 지수를 낸다.
     # 리뷰 수는 그 파일의 합산 값을 쓰고, 해외 매체 등장 횟수는 0이다. 상한·하한 계산에는 넣지 않는다.
+    for bid, v in carried.items():
+        result[bid] = dict(v, flags=[f for f in v.get("flags", []) if f != "new_bottle"])
+    if opts.get("freeze"):
+        # --freeze-existing: 이미 trends.json에 있는 병은 값을 그대로 두고, 없는 병만 새로 넣는다.
+        for bid, v in prev.items():
+            if bid in result:
+                result[bid] = dict(v, flags=[f for f in v.get("flags", []) if f != "new_bottle"])
     new_ids = []
     for nb in load(os.path.join(WORK, "new_bottles.json"), []):
         if nb["id"] in result:
@@ -477,7 +504,7 @@ def stage_score(bottles, opts):
         "materials": {
             "ds": "데일리샷 리뷰 수. 같은 병의 용량·패키지·구형 상품을 합산",
             "wiki": "영어 위키백과 브랜드(증류소) 문서의 최근 12개월 조회수. 브랜드 단위",
-            "src": "수집된 해외(EN) 출처에 그 병이 등장한 횟수",
+            "src": "수집된 해외 출처(매체 리스트와 리뷰어 사이트)에 그 병이 등장한 횟수",
             "naver": "네이버 검색 API의 블로그+카페 결과 건수",
         },
     }
@@ -486,7 +513,7 @@ def stage_score(bottles, opts):
     for k, v in doc_head.items():
         lines.append(" %s: %s," % (json.dumps(k), json.dumps(v, ensure_ascii=False)))
     lines.append(' "bottles": {')
-    ids = [b["id"] for b in bottles] + new_ids
+    ids = all_ids + new_ids
     for i, bid in enumerate(ids):
         lines.append("  %s: %s%s" % (json.dumps(bid), json.dumps(result[bid], ensure_ascii=False), "," if i < len(ids) - 1 else ""))
     lines.append(" }")
@@ -536,6 +563,8 @@ def write_reports(bottles, ds, result):
     for b in bottles:
         d = ds[b["id"]]
         why = []
+        if "fixed" in d:
+            continue
         if not d["matched"]:
             why.append("데일리샷에서 같은 병을 찾지 못함")
         if "price_product_numbers_differ" in d["flags"]:
@@ -563,7 +592,8 @@ def write_reports(bottles, ds, result):
 
 def main():
     args = sys.argv[1:]
-    opts = {"refresh": "--refresh" in args, "keep_scales": "--keep-scales" in args, "only": None}
+    opts = {"refresh": "--refresh" in args, "keep_scales": "--keep-scales" in args, "freeze": "--freeze-existing" in args,
+            "rescale": args[args.index("--rescale") + 1].split(",") if "--rescale" in args else None, "only": None}
     if "--only" in args:
         opts["only"] = set(args[args.index("--only") + 1].split(","))
     stages = [a for a in args if a in ("ds", "wiki", "naver", "score")] or ["ds", "wiki", "naver", "score"]
