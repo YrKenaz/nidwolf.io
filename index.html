@@ -89,6 +89,16 @@ button,input{font:inherit;color:inherit}
 .mt b{color:var(--ink);font-weight:700}
 .empty{padding:28px 12px;color:var(--muted);text-align:center;border:1px dashed var(--line);border-radius:6px}
 
+/* 로딩 */
+.loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:56px 16px;border:1px dashed var(--line);border-radius:6px;color:var(--muted);text-align:center}
+.loading b{color:var(--ink);font-weight:700}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--bar);border-top-color:var(--accent);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pic.wait{background:linear-gradient(100deg,var(--tile) 30%,#d5dbd3 50%,var(--tile) 70%);background-size:300% 100%;animation:shim 1.2s linear infinite}
+.pic.wait img{opacity:0}
+@keyframes shim{from{background-position:100% 0}to{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}.pic.wait{animation:none}}
+
 /* 상세 */
 dialog{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 32px)}
 dialog::backdrop{background:rgba(8,14,11,.6)}
@@ -159,7 +169,7 @@ td a{color:inherit;text-underline-offset:3px}
     </div>
   </div>
 
-  <main class="tiers" id="tiers"></main>
+  <main class="tiers" id="tiers" aria-live="polite"><div class="loading" role="status"><span class="spin" aria-hidden="true"></span><div><b>위스키 목록을 불러오는 중입니다</b><br>병 이미지 148장을 함께 받고 있어 몇 초 걸릴 수 있습니다.</div></div></main>
 
   <section class="method">
     <h2>점수 산출 방식</h2>
@@ -230,9 +240,10 @@ function render(){
   for(const [t,,range] of TIERS){
     const xs=list.filter(w=>w.tier===t);if(!xs.length)continue;
     html+=`<section class="tier" data-t="${t}"><div class="tlabel"><b>${t}</b><span>${range}</span><em>${xs.length}병</em></div><div class="cards">`+
-      xs.map(w=>`<button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score}점"><div class="pic">${pic(w)}${w.n<2?'<span class="one">출처 1</span>':''}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score.toFixed(1)}</b><span>${state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`).join("")+
+      xs.map(w=>`<button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score}점"><div class="pic${IMG.img[w.id]?" wait":""}">${pic(w)}${w.n<2?'<span class="one">출처 1</span>':''}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score.toFixed(1)}</b><span>${state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`).join("")+
       `</div></section>`}
   $("tiers").innerHTML=html||`<div class="empty">조건에 맞는 위스키가 없습니다. 검색어를 지우거나 다른 종류를 골라 보세요.</div>`;
+  $("tiers").querySelectorAll(".pic.wait img").forEach(im=>{const done=()=>im.parentNode.classList.remove("wait");if(im.complete&&im.naturalWidth)done();else{im.addEventListener("load",done,{once:true});im.addEventListener("error",done,{once:true})}});
   $("count").textContent=`${list.length}병 표시 중`}
 function detail(id){
   const w=W.find(x=>x.id===id);if(!w)return;const [bg,fg]=TCOL[w.tier];
