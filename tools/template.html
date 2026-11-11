@@ -139,7 +139,55 @@ td.n{font-variant-numeric:tabular-nums;text-align:right}
 th.n{text-align:right}
 td a{color:inherit;text-underline-offset:3px}
 
+[hidden]{display:none!important}
+
+/* 내 기록 · 비교 (카드 위 빠른 단추는 마우스가 있는 기기에서만 올렸을 때 보인다) */
+.cw{position:relative;min-width:0;display:flex;flex-direction:column}
+.cw .card{flex:1}
+.qa{position:absolute;inset:0 0 auto 0;aspect-ratio:1/1;display:none;align-items:flex-end;justify-content:center;flex-wrap:wrap;gap:3px;padding:5px;pointer-events:none}
+.qa button{pointer-events:auto;font-size:10.5px;line-height:1;padding:4px 5px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap}
+.qa button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+@media (hover:hover){ .cw:hover .qa{display:flex} }
+.mk{position:absolute;right:4px;top:4px;background:var(--accent);color:var(--accent-ink);font-size:10px;line-height:1;padding:3px 5px;border-radius:3px;font-weight:700}
+.cw.incmp .pic{outline:2px solid var(--accent);outline-offset:-2px}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.mine{color:var(--ink)}
+
+/* 비교 트레이 */
+body.has-tray .wrap{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(8,14,11,.12);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.tray-in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.tray h2{font-family:var(--body);font-size:13px;font-weight:700;margin:0;white-space:nowrap}
+.tray ul{list-style:none;margin:0;padding:0;display:flex;gap:6px;flex:1 1 300px;min-width:0;overflow-x:auto}
+.tray li{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:3px 4px 3px 10px;font-size:13px;white-space:nowrap}
+.tray li button{border:0;background:none;cursor:pointer;padding:2px 6px;border-radius:999px;color:var(--muted);font-size:14px;line-height:1}
+.tray .go{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:7px 14px;cursor:pointer;font-weight:700}
+.tray .reset{white-space:nowrap}
+.tray .go:disabled{opacity:.45;cursor:not-allowed}
+.tray .msg{flex-basis:100%;font-size:12px;color:var(--muted);margin:0}
+.tray .msg:empty{display:none}
+
+/* 비교 창 */
+dialog.cmp{width:min(1000px,calc(100vw - 24px))}
+.cmp h3{font-family:var(--display);font-size:20px;margin:0}
+.ctab{table-layout:fixed}
+.ctab th:first-child,.ctab td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;width:170px}
+.ctab thead th{color:var(--ink);font-size:13.5px;font-weight:700;vertical-align:bottom}
+.ctab thead .pic{width:72px;margin-bottom:6px}
+.ctab .sub{display:block;color:var(--muted);font-size:11.5px;font-weight:400}
+.ctab tr.sec th{padding-top:14px;color:var(--ink);font-weight:700;font-size:12.5px}
+.ctab td{font-variant-numeric:tabular-nums}
+h3[tabindex]:focus{outline:none}
+.unv{display:inline-block;border:1px dashed var(--muted);color:var(--muted);border-radius:999px;font-size:10.5px;padding:0 6px;margin-left:4px;font-weight:400;vertical-align:1px}
+
 @media (max-width:560px){
+  .ctab th:first-child,.ctab td:first-child{width:100px}
+  .tray-in{flex-wrap:nowrap;gap:8px}
+  .tray h2{display:none}
+  .tray ul{flex:1 1 auto}
+  .tray .go{padding:7px 10px;white-space:nowrap}
+  .tray .msg{position:absolute;left:16px;right:16px;bottom:100%;background:var(--surface);border-top:1px solid var(--line);padding:6px 0}
+  body.has-tray .wrap{padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
   .tier{grid-template-columns:minmax(0,1fr)}
   .tlabel{flex-direction:row;justify-content:flex-start;gap:10px;padding:8px 12px}
   .tlabel b{font-size:28px}
@@ -155,7 +203,7 @@ td a{color:inherit;text-underline-offset:3px}
   <header>
     <h1>위스키 종합 티어표</h1>
     <p class="lede">여러 위스키를 마셔 보고 싶은데 어떤 병이 좋은지 한눈에 찾기가 어려워 직접 만들어 보았습니다. 여러 매체와 커뮤니티에 흩어진 위스키 티어표·순위·평점을 AI로 모아 하나의 티어로 정리했습니다. 출처마다 다른 척도를 100점 기준으로 맞추고, 같은 매체의 평가는 한 표로 묶어 특정 매체에 치우치지 않게 계산합니다. 종류·숙성년수·피트·셰리·가격대 필터로 취향과 예산에 맞는 병을 찾아보세요.</p>
-    <p class="lede upd"><span id="upd"></span></p>
+    <p class="lede upd"><span id="upd"></span><span class="mine" id="minestat" hidden></span></p>
   </header>
 
   <div class="bar">
@@ -166,6 +214,7 @@ td a{color:inherit;text-underline-offset:3px}
       <label for="sort" class="check">정렬 <select class="sel" id="sort"><option value="score">점수순</option><option value="name">이름순</option><option value="age">숙성년수순</option><option value="price">가격 낮은 순</option><option value="abv">도수 높은 순</option><option value="ds">데일리샷 평점순</option></select></label>
       <label class="check"><input type="checkbox" id="multi"> 독립 출처 2곳 이상만</label>
       <label class="check"><input type="checkbox" id="beg"> 입문 추천만</label>
+      <label for="mine" class="check" id="minew" hidden>내 기록 <select class="sel" id="mine"><option value="all">전체</option><option value="undrunk">안 마신 병만</option><option value="want">마셔 볼 것만</option></select></label>
       <button class="reset" type="button" id="reset" hidden>필터 초기화</button>
       <span class="count" id="count"></span>
     </div>
@@ -190,6 +239,8 @@ td a{color:inherit;text-underline-offset:3px}
 </div>
 
 <dialog id="dlg" aria-labelledby="dname"><div class="dl" id="dbody"></div></dialog>
+<dialog id="cmpd" class="cmp" aria-labelledby="cmpt"><div class="dl" id="cbody"></div></dialog>
+<aside class="tray" id="tray" aria-label="비교 목록" hidden><div class="tray-in"><h2 id="trayh">비교</h2><ul id="trayl"></ul><button class="go" type="button" id="cmpgo">비교하기</button><button class="reset" type="button" id="cmpclr">비우기</button><p class="msg" id="traymsg" role="status" aria-live="polite"></p></div></aside>
 
 <script>
 const DATA=__DATA__;
@@ -203,7 +254,20 @@ const RULE={winter:"표의 점수 그대로 (E등급은 78)",dcintro:"목록에 
 const W=DATA.whiskies, META=DATA.meta;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=id=>document.getElementById(id);
-let state={type:"ALL",q:"",multi:false,beg:false,sort:"score",f:{}};
+const BYID=Object.fromEntries(W.map(w=>[w.id,w]));
+const fresh=()=>({type:"ALL",q:"",multi:false,beg:false,sort:"score",f:{},mine:"all"});
+let state=fresh();
+/* 저장소: 사생활 보호 모드 등에서 localStorage 접근이 막히면 메모리에만 둔다 */
+const STORE=(()=>{let ls=null;try{ls=window.localStorage;ls.setItem("__t","1");ls.removeItem("__t")}catch(e){ls=null}
+  return{ok:!!ls,get(k){try{return ls?ls.getItem(k):null}catch(e){return null}},set(k,v){try{if(ls){ls.setItem(k,v);return true}}catch(e){}return false}}})();
+const MKEY="nidwolf.mine.v1";
+/* 내 기록: 병 id → "d"(마셨음) | "w"(마셔 볼 것). 둘 중 하나만 둔다. 주소에는 넣지 않는다 */
+const MINE=(()=>{const m=new Map();try{const o=JSON.parse(STORE.get(MKEY)||"null");if(o&&typeof o==="object"){(o.d||[]).forEach(i=>typeof i==="string"&&m.set(i,"d"));(o.w||[]).forEach(i=>typeof i==="string"&&!m.has(i)&&m.set(i,"w"))}}catch(e){}return m})();
+let mineSaved=true;
+function saveMine(){const d=[],w=[];MINE.forEach((v,k)=>(v==="d"?d:w).push(k));mineSaved=STORE.set(MKEY,JSON.stringify({d,w}))}
+function setMine(id,v){MINE.get(id)===v?MINE.delete(id):MINE.set(id,v);saveMine()}
+/* 비교 목록(최대 4병, 주소에 담는다) */
+const CMAX=4;let CMP=[];
 const won=n=>n.toLocaleString("ko-KR")+"원";
 const ageB=w=>w.age==null?"nas":w.age<=10?"a10":w.age<=13?"a12":w.age<=17?"a15":"a18";
 const priceB=w=>w.price==null?"none":w.price<50000?"p1":w.price<100000?"p2":w.price<200000?"p3":"p4";
@@ -224,7 +288,7 @@ function groups(){
       return `<button class="chip" type="button" data-g="${g.k}" data-v="${esc(v)}" aria-pressed="${on}">${esc(l)}<small>${n}</small></button>`}).join("")+`</div></div>`).join("");
   const n=Object.values(state.f).reduce((a,x)=>a+x.length,0);
   $("oncount").hidden=!n;$("oncount").textContent=n+"개 적용";
-  $("reset").hidden=!(n||state.multi||state.beg||state.q||state.type!=="ALL")}
+  $("reset").hidden=!(n||state.multi||state.beg||state.q||state.type!=="ALL"||state.mine!=="all")}
 const SORT={score:(a,b)=>(b.score??0)-(a.score??0),ds:(a,b)=>(b.ds?b.ds[0]:0)-(a.ds?a.ds[0]:0)||(b.ds?b.ds[1]:0)-(a.ds?a.ds[1]:0),name:(a,b)=>a.ko.localeCompare(b.ko,"ko"),age:(a,b)=>(b.age??-1)-(a.age??-1)||(b.score??0)-(a.score??0),price:(a,b)=>(a.price??1e12)-(b.price??1e12),abv:(a,b)=>b.abv-a.abv||(b.score??0)-(a.score??0)};
 
 function pic(w){return IMG.img[w.id]?`<img src="${IMG.img[w.id]}" alt="" loading="lazy">`:`<span class="ph">${esc(w.ko[0])}</span>`}
@@ -232,6 +296,8 @@ function match(w){
   if(state.type!=="ALL"&&w.type!==state.type)return false;
   if(state.multi&&w.n<2)return false;
   if(state.beg&&!w.beg)return false;
+  if(state.mine==="undrunk"&&MINE.get(w.id)==="d")return false;
+  if(state.mine==="want"&&MINE.get(w.id)!=="w")return false;
   for(const g of GROUPS){const s=state.f[g.k];if(!s||!s.length)continue;const vs=g.get(w);
     if(g.and?!s.every(v=>vs.includes(v)):!s.some(v=>vs.includes(v)))return false}
   if(state.q){const q=state.q.toLowerCase();if(!(w.ko.toLowerCase().includes(q)||w.en.toLowerCase().includes(q)||w.ko.replace(/\s/g,"").includes(q.replace(/\s/g,""))))return false}
@@ -239,30 +305,131 @@ function match(w){
 function chips(){
   $("chips").innerHTML=TYPES.map(([k,l])=>{const n=k==="ALL"?W.length:W.filter(w=>w.type===k).length;
     return `<button class="chip" type="button" data-k="${k}" aria-pressed="${state.type===k}">${l}<small>${n}</small></button>`}).join("")}
+const MK={d:"마심",w:"볼 것"};
+function card(w){const m=MINE.get(w.id),c=CMP.includes(w.id);
+  /* 빠른 단추는 마우스용 지름길이라 탭 순서·읽기 순서에서 뺀다. 같은 조작은 병 상세 창에서 키보드로 할 수 있다 */
+  return `<div class="cw${c?" incmp":""}" data-id="${w.id}"><button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score??"미평가"}${m?" · "+(m==="d"?"마셨음":"마셔 볼 것"):""}${c?" · 비교에 담김":""}"><div class="pic${IMG.img[w.id]?" wait":""}">${pic(w)}${w.flag==="prov"?'<span class="one">잠정</span>':''}${m?`<span class="mk">${MK[m]}</span>`:""}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${state.sort==="ds"?(w.ds?"★"+w.ds[0].toFixed(1):"–"):w.flag==="border"&&state.sort==="score"?w.bt+" 경계":state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`+
+    `<div class="qa" aria-hidden="true"><button type="button" tabindex="-1" data-a="d" aria-pressed="${m==="d"}" title="마셨음 표시">마심</button><button type="button" tabindex="-1" data-a="w" aria-pressed="${m==="w"}" title="마셔 볼 것 표시">볼 것</button><button type="button" tabindex="-1" data-a="c" aria-pressed="${c}" title="비교에 담기">비교</button></div></div>`}
+function waitImgs(root){root.querySelectorAll(".pic.wait img").forEach(im=>{const done=()=>im.parentNode.classList.remove("wait");if(im.complete&&im.naturalWidth)done();else{im.addEventListener("load",done,{once:true});im.addEventListener("error",done,{once:true})}})}
+/* 카드 하나만 다시 그린다. 내 기록 필터가 걸려 있으면 목록이 바뀌므로 전체를 다시 그린다 */
+function refresh(id){
+  if(state.mine!=="all"){render();return}
+  const el=$("tiers").querySelector(`.cw[data-id="${CSS.escape(id)}"]`);if(!el)return;
+  const t=document.createElement("div");t.innerHTML=card(BYID[id]);const n=t.firstChild;el.replaceWith(n);waitImgs(n)}
+function mineStat(){
+  let d=0,w=0;MINE.forEach((v,k)=>{if(!BYID[k])return;v==="d"?d++:w++});
+  const s=[d?`${d}병 마심`:"",w?`마셔 볼 것 ${w}병`:""].filter(Boolean).join(" · ");
+  $("minestat").hidden=!s;$("minestat").textContent=s?" · "+s+(mineSaved?"":" (이 브라우저는 저장소가 막혀 있어 창을 닫으면 기록이 사라집니다)"):"";
+  $("minew").hidden=!(d||w)&&state.mine==="all"}
 function render(){
   const list=W.filter(match).sort(SORT[state.sort]);let html="";
   for(const [t,,range] of TIERS){
     const xs=list.filter(w=>w.tier===t);if(!xs.length)continue;
     html+=`<section class="tier" data-t="${t}"><div class="tlabel"><b>${TLBL[t]||t}</b><span>${range}</span><em>${xs.length}병</em></div><div class="cards">`+
-      xs.map(w=>`<button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score??"미평가"}"><div class="pic${IMG.img[w.id]?" wait":""}">${pic(w)}${w.flag==="prov"?'<span class="one">잠정</span>':''}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${state.sort==="ds"?(w.ds?"★"+w.ds[0].toFixed(1):"–"):w.flag==="border"&&state.sort==="score"?w.bt+" 경계":state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`).join("")+
-      `</div></section>`}
+      xs.map(card).join("")+`</div></section>`}
   $("tiers").innerHTML=html||`<div class="empty">조건에 맞는 위스키가 없습니다. 검색어를 지우거나 다른 종류를 골라 보세요.</div>`;
-  $("tiers").querySelectorAll(".pic.wait img").forEach(im=>{const done=()=>im.parentNode.classList.remove("wait");if(im.complete&&im.naturalWidth)done();else{im.addEventListener("load",done,{once:true});im.addEventListener("error",done,{once:true})}});
-  $("count").textContent=`${list.length}병 표시 중`}
+  waitImgs($("tiers"));
+  $("count").textContent=`${list.length}병 표시 중`;mineStat()}
 function detail(id){
   const w=W.find(x=>x.id===id);if(!w)return;const [bg,fg]=TCOL[w.tier];
   const rows=w.obs.slice().sort((a,b)=>(b.v??0)-(a.v??0)).map(o=>{const m=META[o.s];const pct=o.v==null?0:Math.max(4,Math.min(100,(o.v-76)/(98-76)*100));
     return `<div class="srow"><div><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a><div class="raw">${esc(m[5])} · ${esc(m[2])} · ${esc(o.raw||"")}</div></div><div class="v">${o.v==null?"미반영":o.v.toFixed(1)}</div>${o.v==null?"":`<div class="track"><i style="width:${pct}%"></i></div>`}</div>`}).join("");
   const FL={prov:"잠정 (독립 출처 1곳)",border:"경계 "+(w.bt||""),firm:"확정",none:"점수 출처 없음"};
-  $("dbody").innerHTML=`<div class="dhead"><div class="pic">${pic(w)}</div><div><h3 id="dname">${esc(w.ko)}</h3><div class="en">${esc(w.en)}</div>
+  $("dbody").innerHTML=`<div class="dhead"><div class="pic">${pic(w)}</div><div><h3 id="dname" tabindex="-1">${esc(w.ko)}</h3><div class="en">${esc(w.en)}</div>
     <div class="tags"><span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier==="N"?"미평가":w.tier+" 티어"}</span><span class="tag">${FL[w.flag]}</span>${w.rec?`<span class="tag">매체 추천 ${w.rec}회</span>`:""}<span class="tag">${esc(TNAME[w.type])}</span><span class="tag">${esc(w.region)}</span>${[...w.style.map(v=>"style:"+v),...w.cask.map(v=>"cask:"+v),...w.spec.map(v=>"spec:"+v)].map(k=>`<span class="tag">${esc(LBL[k])}</span>`).join("")}${w.beg?'<span class="tag">입문 추천</span>':""}</div>
     <div class="big"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${w.score==null?"점수형 출처가 아직 없습니다":`종합 점수 · 독립 출처 ${w.n}곳 · 오차 범위 ${w.lo.toFixed(1)}–${w.hi.toFixed(1)}`}</span></div></div></div>
     <dl class="facts"><div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv}%${w.style.includes("cs")?" 안팎 (배치별 상이)":""}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price):"정보 없음"}</dd></div>${w.ds?`<div><dt>데일리샷 이용자 평점</dt><dd>★ ${w.ds[0].toFixed(1)} (${w.ds[1].toLocaleString("ko-KR")}명)</dd></div>`:""}${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
     <div class="srcs">${rows}</div>
     <p class="note">막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.${IMG.src[w.id]?" 이미지: "+esc(IMG.src[w.id])+".":""}</p>
-    <button class="close" type="button" id="dclose">닫기</button>`;
-  const d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","");
-  $("dclose").onclick=()=>d.close()}
+    <button class="close" type="button" data-close>닫기</button>`;
+  $("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<div class="acts" id="dacts" role="group" aria-label="내 기록과 비교">${dacts(w)}</div>`);
+  return true}
+function dacts(w){const m=MINE.get(w.id),c=CMP.includes(w.id);
+  return `<button class="chip" type="button" data-a="d" aria-pressed="${m==="d"}">마셨음</button><button class="chip" type="button" data-a="w" aria-pressed="${m==="w"}">마셔 볼 것</button><button class="chip" type="button" data-a="c" aria-pressed="${c}">${c?"비교에 담김":"비교에 담기"}</button>`}
+/* 비교 */
+function toggleCmp(id){const i=CMP.indexOf(id);
+  if(i>=0)CMP.splice(i,1);else if(CMP.length>=CMAX){$("traymsg").textContent=`비교는 ${CMAX}병까지 담을 수 있습니다. 하나를 빼고 다시 담아 주세요.`;return false}else CMP.push(id);
+  $("traymsg").textContent="";tray();return true}
+function tray(){
+  const t=$("tray");t.hidden=!CMP.length;document.body.classList.toggle("has-tray",!!CMP.length);
+  $("trayh").textContent=`비교 ${CMP.length}/${CMAX}`;
+  $("trayl").innerHTML=CMP.map(id=>`<li>${esc(BYID[id].ko)}<button type="button" data-rm="${id}" aria-label="${esc(BYID[id].ko)} 비교에서 빼기">×</button></li>`).join("");
+  $("cmpgo").disabled=CMP.length<2;$("cmpgo").textContent=CMP.length<2?"2병부터 비교":`${CMP.length}병 비교하기`}
+function compare(){
+  const ws=CMP.map(id=>BYID[id]);if(ws.length<2)return false;
+  const FL={prov:"잠정",border:"경계",firm:"확정",none:"점수 출처 없음"};
+  const U='<span class="unv" title="원문 대조 없이 입력된 값입니다">미검증</span>';
+  const row=(l,f,cls)=>`<tr${cls?` class="${cls}"`:""}><th scope="row">${l}</th>${ws.map(w=>`<td>${f(w)}</td>`).join("")}</tr>`;
+  const sec=l=>`<tr class="sec"><th scope="rowgroup">${l}</th><td colspan="${ws.length}"></td></tr>`;
+  const attr=(w,k)=>w[k].length?w[k].map(v=>esc(LBL[k+":"+v])).join(", "):"–";
+  const srcs=Object.keys(META).filter(k=>ws.some(w=>w.obs.some(o=>o.s===k)));
+  let h=`<h3 id="cmpt" tabindex="-1">병 나란히 비교</h3><div class="tw"><table class="ctab" style="min-width:${(innerWidth<=560?100:170)+ws.length*150}px"><thead><tr><th scope="col"><span class="sub">항목</span></th>`+
+    ws.map(w=>`<th scope="col"><div class="pic">${pic(w)}</div>${esc(w.ko)}<span class="sub">${esc(w.en)}</span></th>`).join("")+`</tr></thead><tbody>`;
+  h+=sec("점수");
+  h+=row("티어",w=>{const [bg,fg]=TCOL[w.tier];return `<span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier==="N"?"미평가":w.tier+" 티어"}</span>`});
+  h+=row("종합 점수",w=>w.score==null?"–":`<b>${w.score.toFixed(1)}</b><span class="sub">오차 범위 ${w.lo.toFixed(1)}–${w.hi.toFixed(1)}</span>`);
+  h+=row("확신도",w=>FL[w.flag]+(w.flag==="border"&&w.bt?` ${w.bt}`:""));
+  h+=row("독립 출처",w=>`${w.n}곳${w.rec?`<span class="sub">매체 추천 ${w.rec}회</span>`:""}`);
+  h+=sec("출처별 환산 점수");
+  h+=srcs.map(k=>row(`${esc(META[k][0])}<span class="sub">${esc(META[k][5])}</span>`,w=>{const o=w.obs.find(o=>o.s===k);return !o?"–":o.v==null?`추천<span class="sub">점수 미반영</span>`:`${o.v.toFixed(1)}<span class="sub">${esc(o.raw||"")}</span>`})).join("");
+  h+=sec("가격·이용자 평점");
+  h+=row("데일리샷 가격",w=>w.price?`${won(w.price)}<span class="sub">${w.pdate?esc(w.pdate)+" 확인":"확인일 없음"}${w.pname?" · "+esc(w.pname):""}</span>`:"정보 없음");
+  h+=row("데일리샷 평점",w=>w.ds?`★ ${w.ds[0].toFixed(1)}<span class="sub">리뷰 ${w.ds[1].toLocaleString("ko-KR")}건</span>`:"–");
+  h+=sec("제품 정보");
+  h+=row("종류·지역",w=>`${esc(TNAME[w.type])}<span class="sub">${esc(w.region)}</span>`);
+  h+=row("숙성년수",w=>w.age?w.age+"년":"미표기(NAS)");
+  h+=row("도수"+U,w=>`${w.abv}%${w.style.includes("cs")?'<span class="sub">배치별 상이</span>':""}`);
+  h+=row("스타일"+U,w=>attr(w,"style"));
+  h+=row("캐스크"+U,w=>attr(w,"cask"));
+  if(ws.some(w=>w.spec.length))h+=row("버번·라이 스펙"+U,w=>attr(w,"spec"));
+  h+=row("입문 추천",w=>w.beg?"예":"–");
+  h+=`</tbody></table></div><p class="note">‘미검증’ 표시가 붙은 값은 원문과 대조하지 않고 입력한 것이라 틀릴 수 있습니다. 가격은 확인일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있습니다.</p><button class="close" type="button" data-close>닫기</button>`;
+  $("cbody").innerHTML=h;return true}
+/* 공유 주소: 종류·상세 필터·정렬·검색어·비교 목록·열린 창을 해시에 담는다. 내 기록과 내 기록 필터는 담지 않는다 */
+const enc=v=>encodeURIComponent(v).replace(/%3A/gi,":").replace(/%2C/gi,",");
+function toHash(m){const p=[];
+  if(state.type!=="ALL")p.push(["type",state.type]);
+  const fs=[];GROUPS.forEach(g=>(state.f[g.k]||[]).forEach(v=>fs.push(g.k+":"+v)));if(fs.length)p.push(["f",fs.join(",")]);
+  if(state.sort!=="score")p.push(["sort",state.sort]);
+  if(state.q)p.push(["q",state.q]);
+  if(state.multi)p.push(["multi","1"]);if(state.beg)p.push(["beg","1"]);
+  if(CMP.length)p.push(["cmp",CMP.join(",")]);
+  if(m&&m.b)p.push(["b",m.b]);if(m&&m.show)p.push(["show",m.show]);
+  return p.length?"#"+p.map(([k,v])=>k+"="+enc(v)).join("&"):location.pathname+location.search}
+function fromHash(){
+  let p;try{p=new URLSearchParams(location.hash.replace(/^#/,""))}catch(e){p=new URLSearchParams()}
+  const s=fresh();s.mine=state.mine;
+  const t=p.get("type");if(t&&TNAME[t])s.type=t;
+  const so=p.get("sort");if(so&&SORT[so])s.sort=so;
+  s.q=(p.get("q")||"").trim().slice(0,60);s.multi=p.get("multi")==="1";s.beg=p.get("beg")==="1";
+  (p.get("f")||"").split(",").forEach(x=>{const i=x.indexOf(":");if(i<1)return;const k=x.slice(0,i),v=x.slice(i+1);if(LBL[k+":"+v]===undefined)return;const a=s.f[k]||(s.f[k]=[]);if(!a.includes(v))a.push(v)});
+  const c=[...new Set((p.get("cmp")||"").split(",").filter(id=>BYID[id]))].slice(0,CMAX);
+  const b=p.get("b");return{s,c,m:{b:b&&BYID[b]?b:null,show:p.get("show")==="cmp"&&c.length>=2?"cmp":null}}}
+let modal={b:null,show:null};
+function syncHash(push){const h=toHash(modal);try{push?history.pushState(null,"",h):history.replaceState(null,"",h)}catch(e){}}
+function controls(){$("q").value=state.q;$("multi").checked=state.multi;$("beg").checked=state.beg;$("sort").value=state.sort;$("mine").value=state.mine}
+function apply(){controls();chips();groups();render();tray()}
+/* 창 열기·닫기. 사용자가 연 창은 기록을 하나 쌓아 뒤로 가기로 닫히게 한다 */
+function openModal(kind,id,push){
+  const d=kind==="b"?$("dlg"):$("cmpd");
+  if(!(kind==="b"?detail(id):compare()))return;
+  modal=kind==="b"?{b:id,show:null}:{b:null,show:"cmp"};
+  if(!d.open){if(d.showModal)d.showModal();else d.setAttribute("open","")}
+  /* 첫 단추(맨 아래 닫기 등)로 초점이 가며 창이 아래로 밀리지 않게, 제목에 초점을 두고 맨 위에서 연다 */
+  d.scrollTop=0;const h=d.querySelector("h3[tabindex]");if(h)h.focus({preventScroll:true});d.scrollTop=0;
+  d._pushed=!!push;if(push)syncHash(true);else syncHash(false)}
+function closeModal(d,silent){if(!d.open)return;d._silent=!!silent;if(d.close)d.close();else{d.removeAttribute("open");d.dispatchEvent(new Event("close"))}}
+let leaving=false;
+["dlg","cmpd"].forEach(k=>{const d=$(k);
+  d.addEventListener("close",()=>{if(d._silent){d._silent=false;return}modal={b:null,show:null};
+    if(d._pushed){d._pushed=false;leaving=true;history.back()}else syncHash(false)});
+  d.addEventListener("click",e=>{if(e.target===d||e.target.closest("[data-close]"))closeModal(d)})});
+window.addEventListener("popstate",()=>{
+  const r=fromHash(),dl=$("dlg"),cd=$("cmpd");
+  /* 창을 닫으며 돌아온 경우: 창 안에서 바꾼 비교 목록을 잃지 않게 지금 상태로 주소를 고쳐 쓴다 */
+  if(leaving||((dl.open&&!r.m.b)||(cd.open&&!r.m.show))){leaving=false;modal={b:null,show:null};dl._pushed=cd._pushed=false;closeModal(dl,true);closeModal(cd,true);syncHash(false);return}
+  const before=toHash({});state=r.s;CMP=r.c;if(toHash({})!==before)apply();else tray();
+  if(r.m.b)openModal("b",r.m.b,false);else if(r.m.show)openModal("cmp",null,false)});
 function methods(){
   $("upd").textContent=`${W.length}병 · 출처 ${Object.keys(META).length}곳 · ${DATA.updated} 갱신`;
   const PN={SM:"싱글몰트",BL:"블렌디드",BB:"버번",RY:"라이·아메리칸",IR:"아이리시",JP:"재패니즈",WD:"월드"};
@@ -271,14 +438,26 @@ function methods(){
   $("scale").innerHTML=TIERS.filter(x=>x[0]!=="N").map(([t,,r])=>`<span style="background:var(${TCOL[t][0]});color:var(${TCOL[t][1]})">${t} · ${r}</span>`).join("");
   $("stable").innerHTML=Object.entries(META).map(([k,m])=>{const n=W.filter(w=>w.obs.some(o=>o.s===k)).length;
     return `<tr><td><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a></td><td>${esc(m[5])}</td><td>${esc(m[2])}</td><td>${esc(m[4])}</td><td class="n">${n}</td></tr>`}).join("")}
-$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.type=b.dataset.k;chips();groups();render()});
-$("q").addEventListener("input",e=>{state.q=e.target.value.trim();groups();render()});
-$("multi").addEventListener("change",e=>{state.multi=e.target.checked;groups();render()});
-$("beg").addEventListener("change",e=>{state.beg=e.target.checked;groups();render()});
-$("sort").addEventListener("change",e=>{state.sort=e.target.value;render()});
-$("groups").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;const a=state.f[b.dataset.g]||(state.f[b.dataset.g]=[]);const i=a.indexOf(b.dataset.v);i<0?a.push(b.dataset.v):a.splice(i,1);groups();render()});
-$("reset").addEventListener("click",()=>{state={type:"ALL",q:"",multi:false,beg:false,sort:state.sort,f:{}};$("q").value="";$("multi").checked=false;$("beg").checked=false;chips();groups();render()});
-$("tiers").addEventListener("click",e=>{const c=e.target.closest(".card");if(c)detail(c.dataset.id)});
-$("dlg").addEventListener("click",e=>{if(e.target===$("dlg"))$("dlg").close()});
-chips();groups();render();methods();
+$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.type=b.dataset.k;chips();groups();render();syncHash()});
+$("q").addEventListener("input",e=>{state.q=e.target.value.trim();groups();render();syncHash()});
+$("multi").addEventListener("change",e=>{state.multi=e.target.checked;groups();render();syncHash()});
+$("beg").addEventListener("change",e=>{state.beg=e.target.checked;groups();render();syncHash()});
+$("sort").addEventListener("change",e=>{state.sort=e.target.value;render();syncHash()});
+$("mine").addEventListener("change",e=>{state.mine=e.target.value;groups();render()});
+$("groups").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;const a=state.f[b.dataset.g]||(state.f[b.dataset.g]=[]);const i=a.indexOf(b.dataset.v);i<0?a.push(b.dataset.v):a.splice(i,1);groups();render();syncHash()});
+$("reset").addEventListener("click",()=>{state={...fresh(),sort:state.sort};controls();chips();groups();render();syncHash()});
+/* 내 기록·비교 조작(카드의 빠른 단추와 상세 창이 같은 처리를 쓴다) */
+function act(a,id){
+  if(a==="c")toggleCmp(id);else setMine(id,a);
+  refresh(id);mineStat();syncHash()}
+$("tiers").addEventListener("click",e=>{const q=e.target.closest(".qa button");
+  if(q){act(q.dataset.a,q.closest(".cw").dataset.id);return}
+  const c=e.target.closest(".card");if(c)openModal("b",c.dataset.id,true)});
+$("dbody").addEventListener("click",e=>{const b=e.target.closest("#dacts button");if(!b||!modal.b)return;act(b.dataset.a,modal.b);$("dacts").innerHTML=dacts(BYID[modal.b]);$("dacts").querySelector(`[data-a="${b.dataset.a}"]`).focus()});
+$("trayl").addEventListener("click",e=>{const b=e.target.closest("[data-rm]");if(!b)return;const id=b.dataset.rm;toggleCmp(id);refresh(id);syncHash();
+  const n=$("trayl").querySelector("button")||$("cmpgo");n.focus()});
+$("cmpgo").addEventListener("click",()=>openModal("cmp",null,true));
+$("cmpclr").addEventListener("click",()=>{const ids=CMP.slice();CMP=[];$("traymsg").textContent="";tray();ids.forEach(refresh);syncHash()});
+{const r=fromHash();state=r.s;CMP=r.c;apply();methods();
+  if(r.m.b)openModal("b",r.m.b,false);else if(r.m.show)openModal("cmp",null,false)}
 </script>
