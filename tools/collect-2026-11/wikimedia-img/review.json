@@ -1,0 +1,673 @@
+{
+ "jim-beam-white|File:Jim Beam White Label New.jpg": {
+  "bottle": "jim-beam-white",
+  "title": "File:Jim Beam White Label New.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Jim_Beam_White_Label_New.jpg",
+  "verdict": "Y",
+  "why": "현행 라벨(2020, 파일명 New), 병 전체"
+ },
+ "jim-beam-white|File:Jim Beam Four Bottles.jpg": {
+  "bottle": "jim-beam-white",
+  "title": "File:Jim Beam Four Bottles.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Jim_Beam_Four_Bottles.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "makers|File:Maker's Mark.jpg": {
+  "bottle": "makers",
+  "title": "File:Maker's Mark.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Maker%27s_Mark.jpg",
+  "verdict": "Y",
+  "why": "현행 라벨, 병 전체, 선명"
+ },
+ "makers|File:Maker's Mark Bourbon Whisky.jpg": {
+  "bottle": "makers",
+  "title": "File:Maker's Mark Bourbon Whisky.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Maker%27s_Mark_Bourbon_Whisky.jpg",
+  "verdict": "N",
+  "why": "다른 병(101)"
+ },
+ "makers|File:Hopf maker's mark.jpg": {
+  "bottle": "makers",
+  "title": "File:Hopf maker's mark.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Hopf_maker%27s_mark.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "makers|File:Maker's mark Power & Son.jpg": {
+  "bottle": "makers",
+  "title": "File:Maker's mark Power & Son.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Maker%27s_mark_Power_%26_Son.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "monkey-shoulder|File:Monkey Shoulder Whisky.jpg": {
+  "bottle": "monkey-shoulder",
+  "title": "File:Monkey Shoulder Whisky.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Monkey_Shoulder_Whisky.jpg",
+  "verdict": "Y",
+  "why": "현행, 흰 배경, 선명"
+ },
+ "famous-grouse|File:Viking Cinderella, 20221123, The Famous Grouse, Etage 28.jpg": {
+  "bottle": "famous-grouse",
+  "title": "File:Viking Cinderella, 20221123, The Famous Grouse, Etage 28.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Viking_Cinderella,_20221123,_The_Famous_Grouse,_Etage_28.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "famous-grouse|File:The Famous Grouse Hotel.jpg": {
+  "bottle": "famous-grouse",
+  "title": "File:The Famous Grouse Hotel.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:The_Famous_Grouse_Hotel.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "famous-grouse|File:The Famous Grouse Lincoln 061.jpg": {
+  "bottle": "famous-grouse",
+  "title": "File:The Famous Grouse Lincoln 061.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:The_Famous_Grouse_Lincoln_061.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "cuttysark|File:Cutty Sark Frontage, Greenwich.jpg": {
+  "bottle": "cuttysark",
+  "title": "File:Cutty Sark Frontage, Greenwich.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Cutty_Sark_Frontage,_Greenwich.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "cuttysark|File:Cutty Sark (January 2024) 04.jpg": {
+  "bottle": "cuttysark",
+  "title": "File:Cutty Sark (January 2024) 04.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Cutty_Sark_(January_2024)_04.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "cuttysark|File:Cutty Sark (January 2024) 05.jpg": {
+  "bottle": "cuttysark",
+  "title": "File:Cutty Sark (January 2024) 05.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Cutty_Sark_(January_2024)_05.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "cuttysark|File:Cutty Sark (January 2024) 03.jpg": {
+  "bottle": "cuttysark",
+  "title": "File:Cutty Sark (January 2024) 03.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Cutty_Sark_(January_2024)_03.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "jw-red|File:Johnnie Walker Red Label Blended Scotch Whisky 01.jpg": {
+  "bottle": "jw-red",
+  "title": "File:Johnnie Walker Red Label Blended Scotch Whisky 01.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Johnnie_Walker_Red_Label_Blended_Scotch_Whisky_01.jpg",
+  "verdict": "Y",
+  "why": "현행(2024), 병 전체"
+ },
+ "jw-red|File:Johnnie Walker Red Label Blended Scotch Whisky 02.jpg": {
+  "bottle": "jw-red",
+  "title": "File:Johnnie Walker Red Label Blended Scotch Whisky 02.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Johnnie_Walker_Red_Label_Blended_Scotch_Whisky_02.jpg",
+  "verdict": "N",
+  "why": "잘린 사진"
+ },
+ "jw-red|File:Johnnie Walker Red Label 2.jpg": {
+  "bottle": "jw-red",
+  "title": "File:Johnnie Walker Red Label 2.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Johnnie_Walker_Red_Label_2.jpg",
+  "verdict": "N",
+  "why": "잘린 사진·실내 배경"
+ },
+ "ardbeg-10|File:Ardbeg 10 Jahre Flasche.jpg": {
+  "bottle": "ardbeg-10",
+  "title": "File:Ardbeg 10 Jahre Flasche.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Ardbeg_10_Jahre_Flasche.jpg",
+  "verdict": "Y",
+  "why": "현행(2024), 흰 배경"
+ },
+ "cuttysark-pro|File:Cutty Sark and Cutty Sark Prohibition.jpg": {
+  "bottle": "cuttysark-pro",
+  "title": "File:Cutty Sark and Cutty Sark Prohibition.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Cutty_Sark_and_Cutty_Sark_Prohibition.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "laphroaig-10|File:Laphroaig 10.jpg": {
+  "bottle": "laphroaig-10",
+  "title": "File:Laphroaig 10.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_10.jpg",
+  "verdict": "N",
+  "why": "잘린 사진"
+ },
+ "laphroaig-10|File:Laphroaig - 10 years old - Scotch Whisky.JPG": {
+  "bottle": "laphroaig-10",
+  "title": "File:Laphroaig - 10 years old - Scotch Whisky.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_-_10_years_old_-_Scotch_Whisky.JPG",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(2021 촬영, 이후 리뉴얼 가능)"
+ },
+ "naked-malt|File:Naked malt biski.jpg": {
+  "bottle": "naked-malt",
+  "title": "File:Naked malt biski.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Naked_malt_biski.jpg",
+  "verdict": "N",
+  "why": "매장 배경·아래 잘림"
+ },
+ "naked-malt|File:Naked Grouse.png": {
+  "bottle": "naked-malt",
+  "title": "File:Naked Grouse.png",
+  "page": "https://commons.wikimedia.org/wiki/File:Naked_Grouse.png",
+  "verdict": "N",
+  "why": "옛 이름(Naked Grouse)"
+ },
+ "jameson|File:Jameson Irish Whiskey.JPG": {
+  "bottle": "jameson",
+  "title": "File:Jameson Irish Whiskey.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Jameson_Irish_Whiskey.JPG",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음"
+ },
+ "jameson|File:Jameson Thomas.png": {
+  "bottle": "jameson",
+  "title": "File:Jameson Thomas.png",
+  "page": "https://commons.wikimedia.org/wiki/File:Jameson_Thomas.png",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "jameson|File:Jameson Thomas's gravestone.png": {
+  "bottle": "jameson",
+  "title": "File:Jameson Thomas's gravestone.png",
+  "page": "https://commons.wikimedia.org/wiki/File:Jameson_Thomas%27s_gravestone.png",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "lagavulin-16|File:Lagavulin Single Malt Scotch Whisky Aged 16 Years.jpg": {
+  "bottle": "lagavulin-16",
+  "title": "File:Lagavulin Single Malt Scotch Whisky Aged 16 Years.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Lagavulin_Single_Malt_Scotch_Whisky_Aged_16_Years.jpg",
+  "verdict": "N",
+  "why": "어둡고 라벨이 읽히지 않음"
+ },
+ "talisker-10|File:Talisker 10 Jahre alt, 2022er Edition, mit Geschenkverpackung.JPG": {
+  "bottle": "talisker-10",
+  "title": "File:Talisker 10 Jahre alt, 2022er Edition, mit Geschenkverpackung.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Talisker_10_Jahre_alt,_2022er_Edition,_mit_Geschenkverpackung.JPG",
+  "verdict": "C",
+  "why": "2022년판 표기, 병만 잘라 사용"
+ },
+ "ew-black|File:Evan Williams white label and black label whiskey bottles.jpg": {
+  "bottle": "ew-black",
+  "title": "File:Evan Williams white label and black label whiskey bottles.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Evan_Williams_white_label_and_black_label_whiskey_bottles.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "royalsalute-21|File:Royal Salute scotch whiskey.jpg": {
+  "bottle": "royalsalute-21",
+  "title": "File:Royal Salute scotch whiskey.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Royal_Salute_scotch_whiskey.jpg",
+  "verdict": "N",
+  "why": "현행인지 확신 없음·어두움"
+ },
+ "suntory-old|File:Suntory Old tiger2022.jpg": {
+  "bottle": "suntory-old",
+  "title": "File:Suntory Old tiger2022.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Suntory_Old_tiger2022.jpg",
+  "verdict": "N",
+  "why": "한정판(띠 에디션)"
+ },
+ "suntory-old|File:Suntory Old2022.jpg": {
+  "bottle": "suntory-old",
+  "title": "File:Suntory Old2022.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Suntory_Old2022.jpg",
+  "verdict": "Y",
+  "why": "현행(2023), 병 전체"
+ },
+ "glenmorangie-10|File:Glenmorangie - 10 years old -Scotch Whisky.JPG": {
+  "bottle": "glenmorangie-10",
+  "title": "File:Glenmorangie - 10 years old -Scotch Whisky.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Glenmorangie_-_10_years_old_-Scotch_Whisky.JPG",
+  "verdict": "N",
+  "why": "옛 라벨(2021 촬영, 이후 리뉴얼)"
+ },
+ "laphroaig-qc|File:Laphroaig Quarter Cask Dram.jpg": {
+  "bottle": "laphroaig-qc",
+  "title": "File:Laphroaig Quarter Cask Dram.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Quarter_Cask_Dram.jpg",
+  "verdict": "N",
+  "why": "잔이 겹침·현행 라벨인지 확신 없음"
+ },
+ "laphroaig-qc|File:Laphroaig Quarter Cask Triple Wood.jpg": {
+  "bottle": "laphroaig-qc",
+  "title": "File:Laphroaig Quarter Cask Triple Wood.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Quarter_Cask_Triple_Wood.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "laphroaig-qc|File:Laphroaig Quarter Cask.jpg": {
+  "bottle": "laphroaig-qc",
+  "title": "File:Laphroaig Quarter Cask.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Quarter_Cask.jpg",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(2021 촬영, 이후 리뉴얼 가능)"
+ },
+ "laphroaig-qc|File:Laphroaig Qarter Cask Triple Wood Drams.jpg": {
+  "bottle": "laphroaig-qc",
+  "title": "File:Laphroaig Qarter Cask Triple Wood Drams.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Qarter_Cask_Triple_Wood_Drams.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "bushmills-10|File:Bushmills 10 Years Old Single Malt.JPG": {
+  "bottle": "bushmills-10",
+  "title": "File:Bushmills 10 Years Old Single Malt.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Bushmills_10_Years_Old_Single_Malt.JPG",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(2022 촬영, 이후 리뉴얼 가능)"
+ },
+ "fourroses-sib|File:Pieroni Creative- Small Batch Select-3082.jpg": {
+  "bottle": "fourroses-sib",
+  "title": "File:Pieroni Creative- Small Batch Select-3082.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Pieroni_Creative-_Small_Batch_Select-3082.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "ardbeg-corry|File:Ardbeg Corryvreckan.jpg": {
+  "bottle": "ardbeg-corry",
+  "title": "File:Ardbeg Corryvreckan.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Ardbeg_Corryvreckan.jpg",
+  "verdict": "N",
+  "why": "상태 불량(잔·상자와 함께, 타일 배경)"
+ },
+ "auchentoshan-12|File:Auchentoshan 12.jpg": {
+  "bottle": "auchentoshan-12",
+  "title": "File:Auchentoshan 12.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Auchentoshan_12.jpg",
+  "verdict": "N",
+  "why": "잘린 사진"
+ },
+ "chivas-12|File:Chivas Regal 4.5 Litre bottle.jpg": {
+  "bottle": "chivas-12",
+  "title": "File:Chivas Regal 4.5 Litre bottle.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Chivas_Regal_4.5_Litre_bottle.jpg",
+  "verdict": "N",
+  "why": "다른 병(4.5L 대형)"
+ },
+ "chivas-12|File:Chivas regal 12yo.jpg": {
+  "bottle": "chivas-12",
+  "title": "File:Chivas regal 12yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Chivas_regal_12yo.jpg",
+  "verdict": "C",
+  "why": "2022 촬영 신형 병, 병만 잘라 사용"
+ },
+ "glenfarclas-15|File:A bottle of Glenfarclas 15 Years Old.png": {
+  "bottle": "glenfarclas-15",
+  "title": "File:A bottle of Glenfarclas 15 Years Old.png",
+  "page": "https://commons.wikimedia.org/wiki/File:A_bottle_of_Glenfarclas_15_Years_Old.png",
+  "verdict": "N",
+  "why": "잔이 병을 가림"
+ },
+ "black-bottle|File:Black bottle pen.jpg": {
+  "bottle": "black-bottle",
+  "title": "File:Black bottle pen.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Black_bottle_pen.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "black-bottle|File:Black & White (whisky) bottle 03.jpg": {
+  "bottle": "black-bottle",
+  "title": "File:Black & White (whisky) bottle 03.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Black_%26_White_(whisky)_bottle_03.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "black-bottle|File:Black & White (whisky) bottle 02.jpg": {
+  "bottle": "black-bottle",
+  "title": "File:Black & White (whisky) bottle 02.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Black_%26_White_(whisky)_bottle_02.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "black-bottle|File:Black & White (whisky) bottle 04.jpg": {
+  "bottle": "black-bottle",
+  "title": "File:Black & White (whisky) bottle 04.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Black_%26_White_(whisky)_bottle_04.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "jw-18|File:Johnnie Walker Gold Label 18-Year.jpg": {
+  "bottle": "jw-18",
+  "title": "File:Johnnie Walker Gold Label 18-Year.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Johnnie_Walker_Gold_Label_18-Year.jpg",
+  "verdict": "N",
+  "why": "옛 라벨(Gold Label 18 Centenary)"
+ },
+ "jw-18|File:Johnnie Walker Gold Label \"The Centenary Blend\" (Pre-2013 with 18-Year Age Statement).jpg": {
+  "bottle": "jw-18",
+  "title": "File:Johnnie Walker Gold Label \"The Centenary Blend\" (Pre-2013 with 18-Year Age Statement).jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Johnnie_Walker_Gold_Label_%22The_Centenary_Blend%22_(Pre-2013_with_18-Year_Age_Statement).jpg",
+  "verdict": "N",
+  "why": "옛 라벨(Gold Label 18 Centenary)"
+ },
+ "aberlour-abunadh|File:Aberlour A'bunadh Batch 59.jpg": {
+  "bottle": "aberlour-abunadh",
+  "title": "File:Aberlour A'bunadh Batch 59.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Aberlour_A%27bunadh_Batch_59.jpg",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(2019 배치 59)"
+ },
+ "clynelish-14|File:Clynelish Single Malt Scotch Whisky 14 Years.jpg": {
+  "bottle": "clynelish-14",
+  "title": "File:Clynelish Single Malt Scotch Whisky 14 Years.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Clynelish_Single_Malt_Scotch_Whisky_14_Years.jpg",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(2019 촬영)"
+ },
+ "dalmore-12|File:Dalmore 12yo.jpg": {
+  "bottle": "dalmore-12",
+  "title": "File:Dalmore 12yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Dalmore_12yo.jpg",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(2023 리뉴얼 가능)"
+ },
+ "bowmore-15|File:Bowmore 15yo.jpg": {
+  "bottle": "bowmore-15",
+  "title": "File:Bowmore 15yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Bowmore_15yo.jpg",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(이후 리뉴얼 가능)"
+ },
+ "hp-12|File:Highland Park 12 yo new.png": {
+  "bottle": "hp-12",
+  "title": "File:Highland Park 12 yo new.png",
+  "page": "https://commons.wikimedia.org/wiki/File:Highland_Park_12_yo_new.png",
+  "verdict": "N",
+  "why": "옛 라벨(2020 촬영, 이후 병 리뉴얼)"
+ },
+ "blantons|File:Blanton's Bourbon.jpg": {
+  "bottle": "blantons",
+  "title": "File:Blanton's Bourbon.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Blanton%27s_Bourbon.jpg",
+  "verdict": "N",
+  "why": "잔이 병을 가림·병 일부 잘림"
+ },
+ "glenmorangie-signet|File:GlenmorangieSignet.jpg": {
+  "bottle": "glenmorangie-signet",
+  "title": "File:GlenmorangieSignet.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:GlenmorangieSignet.jpg",
+  "verdict": "N",
+  "why": "상자 안 사진"
+ },
+ "caolila-12|File:Caol Ila Aged 12 Years.jpg": {
+  "bottle": "caolila-12",
+  "title": "File:Caol Ila Aged 12 Years.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Caol_Ila_Aged_12_Years.jpg",
+  "verdict": "N",
+  "why": "병이 작고 주변이 어수선함"
+ },
+ "fr-yellow|File:Four Roses Bourbon.jpg": {
+  "bottle": "fr-yellow",
+  "title": "File:Four Roses Bourbon.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Four_Roses_Bourbon.jpg",
+  "verdict": "Y",
+  "why": "현행 라벨, 병 전체, 2019"
+ },
+ "fr-yellow|File:Pieroni Creative- Small Batch Select-3082.jpg": {
+  "bottle": "fr-yellow",
+  "title": "File:Pieroni Creative- Small Batch Select-3082.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Pieroni_Creative-_Small_Batch_Select-3082.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "kilchoman-sanaig|File:Kilchoman Sanaig 0061.jpg": {
+  "bottle": "kilchoman-sanaig",
+  "title": "File:Kilchoman Sanaig 0061.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Kilchoman_Sanaig_0061.jpg",
+  "verdict": "Y",
+  "why": "현행(2025), 흰 배경"
+ },
+ "glenscotia-victoriana|File:Glen Scotia Victoriana Single Malt .jpg": {
+  "bottle": "glenscotia-victoriana",
+  "title": "File:Glen Scotia Victoriana Single Malt .jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Glen_Scotia_Victoriana_Single_Malt_.jpg",
+  "verdict": "N",
+  "why": "잔이 병을 가림"
+ },
+ "edradour-10|File:Edradour 10 Years Old Single Malt.JPG": {
+  "bottle": "edradour-10",
+  "title": "File:Edradour 10 Years Old Single Malt.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Edradour_10_Years_Old_Single_Malt.JPG",
+  "verdict": "C",
+  "why": "2022 촬영, 병만 잘라 사용"
+ },
+ "balvenie-14peat|File:Balvenie TheWeekofPeat14Years 2019.jpg": {
+  "bottle": "balvenie-14peat",
+  "title": "File:Balvenie TheWeekofPeat14Years 2019.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Balvenie_TheWeekofPeat14Years_2019.jpg",
+  "verdict": "C",
+  "why": "2020 촬영, 병만 잘라 사용"
+ },
+ "fr-sb|File:Pieroni Creative- Small Batch Select-3082.jpg": {
+  "bottle": "fr-sb",
+  "title": "File:Pieroni Creative- Small Batch Select-3082.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Pieroni_Creative-_Small_Batch_Select-3082.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "ardbeg-anoa|File:Ardbeg An Oa.jpg": {
+  "bottle": "ardbeg-anoa",
+  "title": "File:Ardbeg An Oa.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Ardbeg_An_Oa.jpg",
+  "verdict": "N",
+  "why": "병이 작고 잔이 겹침"
+ },
+ "cc-premium|File:Canadian Club 1.14L, Canada (reverse), 2026-03-11.jpg": {
+  "bottle": "cc-premium",
+  "title": "File:Canadian Club 1.14L, Canada (reverse), 2026-03-11.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Canadian_Club_1.14L,_Canada_(reverse),_2026-03-11.jpg",
+  "verdict": "N",
+  "why": "뒷면 라벨"
+ },
+ "cc-premium|File:Canadian Club 1.14L, Canada (obverse), 2026-03-11.jpg": {
+  "bottle": "cc-premium",
+  "title": "File:Canadian Club 1.14L, Canada (obverse), 2026-03-11.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Canadian_Club_1.14L,_Canada_(obverse),_2026-03-11.jpg",
+  "verdict": "Y",
+  "why": "2026 촬영, 흰 배경(1.14L 병)"
+ },
+ "basil-hayden|File:Basil Hayden.jpg": {
+  "bottle": "basil-hayden",
+  "title": "File:Basil Hayden.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Basil_Hayden.jpg",
+  "verdict": "N",
+  "why": "병 사진 아님 또는 다른 대상"
+ },
+ "ledaig-10|File:Ledaig 10yo.jpg": {
+  "bottle": "ledaig-10",
+  "title": "File:Ledaig 10yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Ledaig_10yo.jpg",
+  "verdict": "Y",
+  "why": "2023 촬영, 흰 배경"
+ },
+ "jura-18|File:Jura -18 years old - Scotch Whisky.jpg": {
+  "bottle": "jura-18",
+  "title": "File:Jura -18 years old - Scotch Whisky.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Jura_-18_years_old_-_Scotch_Whisky.jpg",
+  "verdict": "N",
+  "why": "다른 병(Travel Exclusive)"
+ },
+ "oldpulteney-12|File:Bottle of Old Pulteney 12.jpg": {
+  "bottle": "oldpulteney-12",
+  "title": "File:Bottle of Old Pulteney 12.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Bottle_of_Old_Pulteney_12.jpg",
+  "verdict": "C",
+  "why": "2019 촬영, 병만 잘라 사용"
+ },
+ "cb-orchard|File:COMPASS BOX Orchard House.jpg": {
+  "bottle": "cb-orchard",
+  "title": "File:COMPASS BOX Orchard House.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:COMPASS_BOX_Orchard_House.jpg",
+  "verdict": "Y",
+  "why": "2023 촬영, 흰 배경"
+ },
+ "bigpeat|File:BIG PEAT.jpg": {
+  "bottle": "bigpeat",
+  "title": "File:BIG PEAT.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:BIG_PEAT.jpg",
+  "verdict": "Y",
+  "why": "2023 촬영, 흰 배경"
+ },
+ "bushmills-21|File:Bushmills 21 Years Old Single Malt.JPG": {
+  "bottle": "bushmills-21",
+  "title": "File:Bushmills 21 Years Old Single Malt.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Bushmills_21_Years_Old_Single_Malt.JPG",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(이후 리뉴얼 가능)"
+ },
+ "chivas-25|File:Chivas Regal scotch whiskey.jpg": {
+  "bottle": "chivas-25",
+  "title": "File:Chivas Regal scotch whiskey.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Chivas_Regal_scotch_whiskey.jpg",
+  "verdict": "N",
+  "why": "빈 병"
+ },
+ "kilchoman-lochgorm|File:Kilchoman Loch Gorm.jpg": {
+  "bottle": "kilchoman-lochgorm",
+  "title": "File:Kilchoman Loch Gorm.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Kilchoman_Loch_Gorm.jpg",
+  "verdict": "N",
+  "why": "연도판·아래 잘림"
+ },
+ "craigellachie-13|File:Craigellachie 13 years.jpg": {
+  "bottle": "craigellachie-13",
+  "title": "File:Craigellachie 13 years.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Craigellachie_13_years.jpg",
+  "verdict": "N",
+  "why": "잘린 사진"
+ },
+ "cb-peat-monster|File:Compass Box The Peat Monster.jpg": {
+  "bottle": "cb-peat-monster",
+  "title": "File:Compass Box The Peat Monster.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Compass_Box_The_Peat_Monster.jpg",
+  "verdict": "N",
+  "why": "병이 작고 잔이 겹침"
+ },
+ "tomatin-14|File:Tomatin 14.jpg": {
+  "bottle": "tomatin-14",
+  "title": "File:Tomatin 14.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Tomatin_14.jpg",
+  "verdict": "N",
+  "why": "잘린 사진"
+ },
+ "laphroaig-triplewood|File:Laphroaig Triple Wood Dram.jpg": {
+  "bottle": "laphroaig-triplewood",
+  "title": "File:Laphroaig Triple Wood Dram.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Triple_Wood_Dram.jpg",
+  "verdict": "N",
+  "why": "잔이 병을 가림"
+ },
+ "laphroaig-triplewood|File:Laphroaig Triple Wood.jpg": {
+  "bottle": "laphroaig-triplewood",
+  "title": "File:Laphroaig Triple Wood.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Triple_Wood.jpg",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음"
+ },
+ "laphroaig-triplewood|File:Laphroaig Qarter Cask Triple Wood Drams.jpg": {
+  "bottle": "laphroaig-triplewood",
+  "title": "File:Laphroaig Qarter Cask Triple Wood Drams.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Qarter_Cask_Triple_Wood_Drams.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "laphroaig-triplewood|File:Laphroaig Quarter Cask Triple Wood.jpg": {
+  "bottle": "laphroaig-triplewood",
+  "title": "File:Laphroaig Quarter Cask Triple Wood.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Laphroaig_Quarter_Cask_Triple_Wood.jpg",
+  "verdict": "N",
+  "why": "여러 병"
+ },
+ "kyro-rye|File:Kyrö Malt Rye Whisky bottle and package.jpg": {
+  "bottle": "kyro-rye",
+  "title": "File:Kyrö Malt Rye Whisky bottle and package.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Kyr%C3%B6_Malt_Rye_Whisky_bottle_and_package.jpg",
+  "verdict": "C",
+  "why": "2020 촬영, 병만 잘라 사용"
+ },
+ "tullamore-dew|File:Tullamore Dew plastic bottle.jpg": {
+  "bottle": "tullamore-dew",
+  "title": "File:Tullamore Dew plastic bottle.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Tullamore_Dew_plastic_bottle.jpg",
+  "verdict": "N",
+  "why": "다른 병(플라스틱 소용량)"
+ },
+ "writers-tears|File:New Copper Pot.jpg": {
+  "bottle": "writers-tears",
+  "title": "File:New Copper Pot.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:New_Copper_Pot.jpg",
+  "verdict": "N",
+  "why": "홍보용 제품 사진으로 보임"
+ },
+ "glenmoray-18|File:Glen Moray Single Malt Scotch Whisky.jpg": {
+  "bottle": "glenmoray-18",
+  "title": "File:Glen Moray Single Malt Scotch Whisky.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Glen_Moray_Single_Malt_Scotch_Whisky.jpg",
+  "verdict": "N",
+  "why": "상자만 찍힘"
+ },
+ "cardhu-gold|File:Cardhu Gold Reserve - Scotch Whisky.JPG": {
+  "bottle": "cardhu-gold",
+  "title": "File:Cardhu Gold Reserve - Scotch Whisky.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Cardhu_Gold_Reserve_-_Scotch_Whisky.JPG",
+  "verdict": "C",
+  "why": "2021 촬영, 병만 잘라 사용"
+ },
+ "glenscotia-15|File:GlenScotia15yo.jpg": {
+  "bottle": "glenscotia-15",
+  "title": "File:GlenScotia15yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:GlenScotia15yo.jpg",
+  "verdict": "N",
+  "why": "현행 라벨인지 확신 없음(2023 촬영, 이후 리뉴얼 가능)·거의 빈 병",
+  "found_by": "저작자 업로드 목록"
+ },
+ "glenallachie-12|File:Glen allachie 12yo.jpg": {
+  "bottle": "glenallachie-12",
+  "title": "File:Glen allachie 12yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Glen_allachie_12yo.jpg",
+  "verdict": "N",
+  "why": "옛 라벨 가능성(2023 촬영, 이후 리뉴얼)",
+  "found_by": "저작자 업로드 목록"
+ },
+ "glenallachie-15|File:Glen allachie 15yo.jpg": {
+  "bottle": "glenallachie-15",
+  "title": "File:Glen allachie 15yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Glen_allachie_15yo.jpg",
+  "verdict": "N",
+  "why": "옛 라벨 가능성(2023 촬영, 이후 리뉴얼)",
+  "found_by": "저작자 업로드 목록"
+ },
+ "jw-green|File:Johnnie Walker Greenlabel15yo.jpg": {
+  "bottle": "jw-green",
+  "title": "File:Johnnie Walker Greenlabel15yo.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Johnnie_Walker_Greenlabel15yo.jpg",
+  "verdict": "Y",
+  "why": "2023 촬영, 흰 배경, 병 전체",
+  "found_by": "저작자 업로드 목록"
+ },
+ "tomatin-12|File:Tomatin - 12 years old after tasting.JPG": {
+  "bottle": "tomatin-12",
+  "title": "File:Tomatin - 12 years old after tasting.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Tomatin_-_12_years_old_after_tasting.JPG",
+  "verdict": "N",
+  "why": "거의 빈 병·상자와 함께",
+  "found_by": "저작자 업로드 목록"
+ },
+ "hp-12|File:Highland Park 12 Years Old Single Malt.JPG": {
+  "bottle": "hp-12",
+  "title": "File:Highland Park 12 Years Old Single Malt.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Highland_Park_12_Years_Old_Single_Malt.JPG",
+  "verdict": "N",
+  "why": "옛 병(리뉴얼 전 디자인)",
+  "found_by": "저작자 업로드 목록"
+ }
+}

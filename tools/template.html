@@ -242,6 +242,11 @@ h3[tabindex]:focus{outline:none}
 .rlist button:hover{background:var(--surface)}
 .rlist b{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
 .rlist .rv{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.credit{margin:-6px 0 0;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.credit a,.crlist a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.credits summary{font-size:13.5px}
+.crlist{margin:0;padding:8px 14px 12px 34px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px;max-height:420px;overflow:auto}
+.crlist b{color:var(--ink);font-weight:500}
 .near{display:flex;flex-direction:column;gap:6px}
 .near:empty{display:none}
 .near p{margin:0;font-size:13px;color:var(--muted)}
@@ -328,7 +333,8 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
     </table></div>
     <p>상세 필터의 속성은 다음 기준으로 붙였습니다. 숙성년수는 라벨 표기 기준이고 표기가 없으면 NAS입니다. 피트는 훈연 향이 뚜렷한 제품(약피트 포함), 셰리는 셰리 캐스크 숙성·피니시가 풍미의 중심인 제품, CS는 캐스크 스트렝스·배럴 프루프로 표기된 제품입니다. 도수는 표준 병입 도수이고 CS 제품은 배치마다 다릅니다. 가격은 수집일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있어 대략적인 구간으로만 보세요. 입문 추천은 입문자 추천 글과 저가·가성비 리스트에 오른 병입니다.</p>
     <div id="trendm" hidden></div>
-    <p class="note">병 사진은 사용 허락을 받은 출처를 찾을 때까지 싣지 않습니다. 데일리샷 이용자 평점은 참고 정보이며 점수에 넣지 않습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
+    <p class="note"><span id="imgnote">병 사진은 사용 허락을 받은 출처를 찾을 때까지 싣지 않습니다.</span> 데일리샷 이용자 평점은 참고 정보이며 점수에 넣지 않습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
+    <details class="adv credits" id="credits" hidden><summary>사진 출처 <span class="on" id="crn"></span></summary><ol class="crlist" id="crlist"></ol></details>
   </section>
 </div>
 
@@ -444,8 +450,9 @@ function detail(id){
     <dl class="facts"><div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv==null?"정보 없음":w.abv+"%"+(w.style.includes("cs")?" 안팎 (배치별 상이)":"")}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price)+(w.pml?` (${vol(w.pml)} 기준)`:""):"정보 없음"}</dd></div>${w.ds?`<div><dt>데일리샷 이용자 평점</dt><dd>★ ${w.ds[0].toFixed(1)} (${w.ds[1].toLocaleString("ko-KR")}명)</dd></div>`:""}${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
     ${trendBox(w)}
     ${rows?`<div class="srcs">${rows}</div>`:`<p class="note srcs-empty">이 병을 다룬 평가 출처가 아직 없어 티어를 매기지 않았습니다. 출처가 모이면 점수가 생깁니다.</p>`}
-    <p class="note">${rows?"막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.":""}${IMG.src[w.id]?" 이미지: "+esc(IMG.src[w.id])+".":""}</p>
+    <p class="note">${rows?"막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.":""}</p>
     <button class="close" type="button" data-close>닫기</button>`;
+  if(IMG.img[w.id])$("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<p class="credit">${credit(w)}</p>`);
   $("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<div class="acts" id="dacts" role="group" aria-label="내 기록과 비교">${dacts(w)}</div>`);
   return true}
 function trendBox(w){
@@ -462,6 +469,14 @@ function trendBox(w){
     ${nods(w)?`<p class="note"><span class="nods">국내 판매 자료 없음</span> 데일리샷에서 이 병을 찾지 못해 국내 점수가 0으로 들어갔습니다. 해외에서 알려진 병이어도 지수가 낮게 나옵니다.</p>`:""}
     <div class="tbar" aria-hidden="true"><i style="width:${Math.max(2,t.i)}%"></i></div>
     <dl class="tparts">${parts}</dl><p class="note">${notes}</p></section>`}
+/* 사진 출처 표시(저작자 · 라이선스 링크 · 원본 파일 페이지 링크 · 변경 내용). 위키미디어 공용 사진의 이용 조건이다 */
+const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
+function credit(w,withName){const c=(IMG.cr||{})[w.id]||{},lk=(u,t)=>safeUrl(u)?`<a href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`:t;
+  return [withName?`<b>${esc(w.ko)}</b>`:"사진",
+    c.a?esc(c.a):"",
+    c.l?lk(c.lu,esc(c.l)):"라이선스 정보 없음",
+    lk(c.p,(/wikimedia/i.test(c.s||"")?"위키미디어 공용":esc(c.s||""))+" 원본"),
+    c.c?"변경: "+esc(c.c):""].filter(Boolean).join(" · ")}
 function dacts(w){const m=MINE.get(w.id),c=CMP.includes(w.id);
   return `<button class="chip" type="button" data-a="d" aria-pressed="${m==="d"}">마셨음</button><button class="chip" type="button" data-a="w" aria-pressed="${m==="w"}">마셔 볼 것</button><button class="chip" type="button" data-a="c" aria-pressed="${c}">${c?"비교에 담김":"비교에 담기"}</button>`}
 /* 지도 보기 두 가지. 세로는 종합 점수, 가로는 트렌드지수(view=map) 또는 가격(view=price, 로그 눈금).
@@ -602,7 +617,7 @@ function compare(){
   h+=row("캐스크"+U,w=>attr(w,"cask"));
   if(ws.some(w=>w.spec.length))h+=row("버번·라이 스펙"+U,w=>attr(w,"spec"));
   h+=row("입문 추천",w=>w.beg?"예":"–");
-  h+=`</tbody></table></div><p class="note">‘미검증’ 표시가 붙은 값은 원문과 대조하지 않고 입력한 것이라 틀릴 수 있습니다. 가격은 확인일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있습니다.</p><button class="close" type="button" data-close>닫기</button>`;
+  h+=`</tbody></table></div><p class="note">${ws.some(w=>IMG.img[w.id])?"사진의 저작자·라이선스는 각 병 상세 창과 페이지 아래 ‘사진 출처’ 목록에 있습니다. ":""}‘미검증’ 표시가 붙은 값은 원문과 대조하지 않고 입력한 것이라 틀릴 수 있습니다. 가격은 확인일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있습니다.</p><button class="close" type="button" data-close>닫기</button>`;
   $("cbody").innerHTML=h;return true}
 /* 공유 주소: 종류·상세 필터·정렬·검색어·비교 목록·열린 창을 해시에 담는다. 내 기록과 내 기록 필터는 담지 않는다 */
 const enc=v=>encodeURIComponent(v).replace(/%3A/gi,":").replace(/%2C/gi,",");
@@ -652,7 +667,13 @@ window.addEventListener("popstate",()=>{
   if(leaving||((dl.open&&!r.m.b)||(cd.open&&!r.m.show))){leaving=false;modal={b:null,show:null};dl._pushed=cd._pushed=false;closeModal(dl,true);closeModal(cd,true);syncHash(false);return}
   const before=toHash({});state=r.s;CMP=r.c;if(toHash({})!==before)apply();else tray();
   if(r.m.b)openModal("b",r.m.b,false);else if(r.m.show)openModal("cmp",null,false)});
-function methods(){
+function credits(){
+  const ws=W.filter(w=>IMG.img[w.id]).sort((a,b)=>a.ko.localeCompare(b.ko,"ko"));
+  if(!ws.length)return;
+  $("imgnote").textContent="병 사진은 위키미디어 공용의 자유 이용 사진만 쓰며, 사진마다 저작자와 라이선스를 표시합니다. 맞는 사진이 없는 병은 사진 없이 표시합니다.";
+  $("credits").hidden=false;$("crn").textContent=ws.length+"장";
+  $("crlist").innerHTML=ws.map(w=>`<li>${credit(w,true)}</li>`).join("")}
+function methods(){credits();
   $("upd").textContent=`${W.length}병 · 출처 ${Object.keys(META).length}곳 · ${DATA.updated} 갱신`;
   const PN={SM:"싱글몰트",BL:"블렌디드",BB:"버번",RY:"라이·아메리칸",IR:"아이리시",JP:"재패니즈",WD:"월드"};
   $("prior").textContent=Object.entries(DATA.stats.prior).map(([k,v])=>`${PN[k]} ${v.toFixed(1)}`).join(", ");

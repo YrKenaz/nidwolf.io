@@ -15,3 +15,7 @@ tools/collect-2026-11/reviewer-scores/staged-img/
 tools/trend-data/ds_cache.json
 tools/trend-data/wiki_cache.json
 __pycache__/
+tools/collect-2026-11/wikimedia-img/search.json
+tools/collect-2026-11/wikimedia-img/userfiles.json
+tools/collect-2026-11/backup-20261111/
+img/
