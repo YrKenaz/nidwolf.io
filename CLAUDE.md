@@ -13,8 +13,11 @@ data/bottles.json       병 마스터 (한 줄에 한 병)
 data/observations.json  관측값: 병 × 출처 (한 줄에 한 건)
 tools/build.py          검증 + 점수 계산 + index.html 생성
 tools/template.html     페이지 틀(디자인·필터·스크립트)
-tools/collect-2026-11/  최초 수집에 쓴 스크립트(참고용, 그대로는 실행되지 않음)
+tools/check_page.js      생성된 페이지를 jsdom으로 열어 카드 수를 세는 점검 스크립트
+tools/collect-2026-11/  최초 수집에 쓴 스크립트와 중간 산출물(참고용, 그대로는 실행되지 않음)
 ```
+
+프로젝트 전체 인계 문서는 `H:\Dev\Tier\Whiskey\docs\HANDOFF.md`다(현재 상태, 두 갈래 파이프라인의 관계, 남은 일). 새 세션은 그 문서부터 읽는다.
 
 방법론 리서치와 권장 로드맵은 `H:\Dev\Tier\Whiskey\docs\research\`에 있다(01 방법론, 02 적용안). 수집 규칙의 근거는 02의 6장이다.
 

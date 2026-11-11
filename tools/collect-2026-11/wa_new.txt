@@ -1,0 +1,119 @@
+arran-10|아란 10년|Arran 10|SM|아란 섬|Arran Malt 10yo|46 b
+arran-18|아란 18년|Arran 18|SM|아란 섬|Arran Malt 18yo|46 S b
+arran-port|아란 포트 캐스크 피니시|Arran Port Cask Finish|SM|아란 섬|Arran Malt Port Cask Finish|50 w
+arran-amarone|아란 아마로네 캐스크 피니시|Arran Amarone Cask Finish|SM|아란 섬|Arran Malt Amarone Cask Finish|50 w
+balvenie-21|발베니 21년 포트우드|Balvenie 21 PortWood|SM|스페이사이드|Balvenie 21yo Port Wood|40 w b
+benriach-curiositas|벤리악 큐리오시타스 10년|BenRiach Curiositas 10|SM|스페이사이드|BenRiach 10yo Curiositas|46 P b
+benromach-organic|벤로막 오가닉|Benromach Organic|SM|스페이사이드|Benromach Organic|43
+benromach-peatsmoke|벤로막 피트 스모크|Benromach Peat Smoke|SM|스페이사이드|Benromach Peat Smoke|46 P b
+bigpeat|빅피트|Big Peat|BL|아일라|Big Peat (Douglas Laing)|46 P
+laddie-islay-barley|브룩라디 아일라 발리|Bruichladdich Islay Barley|SM|아일라|Bruichladdich Islay Barley (all vintages)|50 b
+bunnahabhain-18|부나하벤 18년|Bunnahabhain 18|SM|아일라|Bunnahabhain 18yo|46.3 S
+bunnahabhain-25|부나하벤 25년|Bunnahabhain 25|SM|아일라|Bunnahabhain 25yo|46.3 S
+caolila-18|쿨일라 18년|Caol Ila 18|SM|아일라|Caol Ila 18yo|43 P b
+caolila-de|쿨일라 디스틸러스 에디션|Caol Ila Distillers Edition|SM|아일라|Caol Ila Distiller's Edition (all editions)|43 P w
+cb-spice-tree|컴파스박스 스파이스 트리|Compass Box Spice Tree|BL|스코틀랜드|Compass Box Spice Tree|46
+cb-flaming-heart|컴파스박스 플레이밍 하트|Compass Box Flaming Heart|BL|스코틀랜드|Compass Box Flaming Heart (all editions)|48.9 P
+dalmore-18|달모어 18년|Dalmore 18|SM|하이랜드|Dalmore 18yo|43 S b
+glendronach-21|글렌드로낙 21년 팔리아먼트|GlenDronach 21 Parliament|SM|하이랜드|GlenDronach 21yo Parliament|48 S
+glenfarclas-10|글렌파클라스 10년|Glenfarclas 10|SM|스페이사이드|Glenfarclas 10yo|40 S
+glenfarclas-17|글렌파클라스 17년|Glenfarclas 17|SM|스페이사이드|Glenfarclas 17yo|43 S
+glenfarclas-21|글렌파클라스 21년|Glenfarclas 21|SM|스페이사이드|Glenfarclas 21yo|43 S
+glenfarclas-25|글렌파클라스 25년|Glenfarclas 25|SM|스페이사이드|Glenfarclas 25yo|43 S
+glenfiddich-21|글렌피딕 21년 그랑 레제르바|Glenfiddich 21 Gran Reserva|SM|스페이사이드|Glenfiddich 21yo Gran Reserva|40 r b
+glengoyne-18|글렌고인 18년|Glengoyne 18|SM|하이랜드|Glengoyne 18yo|43 S
+glengoyne-21|글렌고인 21년|Glengoyne 21|SM|하이랜드|Glengoyne 21yo|43 S
+glengoyne-25|글렌고인 25년|Glengoyne 25|SM|하이랜드|Glengoyne 25yo|48 S
+glenlivet-15|글렌리벳 15년 프렌치 오크|Glenlivet 15 French Oak Reserve|SM|스페이사이드|Glenlivet 15yo French Oak|40 b
+glenlivet-fr|글렌리벳 파운더스 리저브|Glenlivet Founder's Reserve|SM|스페이사이드|Glenlivet Founder's Reserve|40 b
+glenmorangie-lasanta|글렌모렌지 라산타|Glenmorangie Lasanta|SM|하이랜드|Glenmorangie Lasanta|43 S b
+glenmorangie-signet|글렌모렌지 시그넷|Glenmorangie Signet|SM|하이랜드|Glenmorangie Signet|46 S b
+glengarioch-fr|글렌기리 파운더스 리저브|Glen Garioch Founder's Reserve|SM|하이랜드|Glen Garioch Founder's Reserve|48 S b
+hp-10|하이랜드파크 10년|Highland Park 10|SM|오크니|Highland Park 10yo (all reviews)|40 P S
+hp-18|하이랜드파크 18년|Highland Park 18|SM|오크니|Highland Park 18yo|43 P S
+hp-21|하이랜드파크 21년|Highland Park 21|SM|오크니|Highland Park 21yo|46 P S
+hp-25|하이랜드파크 25년|Highland Park 25|SM|오크니|Highland Park 25yo|46 P S
+jura-10|주라 10년|Jura 10|SM|주라 섬|Jura 10yo Origin|40 S b
+kilchoman-100islay|킬호만 100% 아일라|Kilchoman 100% Islay|SM|아일라|Kilchoman 100% Islay (all editions)|50 P b
+lagavulin-de|라가불린 디스틸러스 에디션|Lagavulin Distillers Edition|SM|아일라|Lagavulin Distiller's Edition (All Vintages)|43 P S
+laphroaig-10cs|라프로익 10년 CS|Laphroaig 10 Cask Strength|SM|아일라|Laphroaig 10yo Cask Strength (all batches)|58 P C b
+laphroaig-25|라프로익 25년|Laphroaig 25|SM|아일라|Laphroaig 25yo|48.9 P S b
+laphroaig-lore|라프로익 로어|Laphroaig Lore|SM|아일라|Laphroaig Lore|48 P S b
+laphroaig-triplewood|라프로익 트리플 우드|Laphroaig Triple Wood|SM|아일라|Laphroaig Triple Wood|48 P S b
+ledaig-18|레칙 18년|Ledaig 18|SM|멀 섬|Ledaig 18yo|46.3 P S
+longrow-18|롱로우 18년|Longrow 18|SM|캠벨타운|Longrow 18yo|46 P S b
+macallan-18sherry|맥캘란 18년 셰리 오크|Macallan 18 Sherry Oak|SM|스페이사이드|Macallan 18yo Sherry Oak|43 S
+springbank-18|스프링뱅크 18년|Springbank 18|SM|캠벨타운|Springbank 18yo|46 P S b
+talisker-18|탈리스커 18년|Talisker 18|SM|스카이 섬|Talisker 18yo|45.8 P S b
+talisker-25|탈리스커 25년|Talisker 25|SM|스카이 섬|Talisker 25yo|45.8 P b
+talisker-portruighe|탈리스커 포트 리|Talisker Port Ruighe|SM|스카이 섬|Talisker Port Ruighe|45.8 P w
+dewars-white|듀어스 화이트 라벨|Dewar's White Label|BL|스코틀랜드|Dewar's White Label|40
+grouse-smoky|페이머스 그라우스 스모키 블랙|Famous Grouse Smoky Black|BL|스코틀랜드|Famous Grouse Smoky Black (Black Grouse)|40 P
+tullamore-dew|툴라모어 듀|Tullamore D.E.W.|IR|아일랜드|Tullamore Dew Original Blended|40
+green-spot|그린스팟|Green Spot|IR|아일랜드|Green Spot|40 S b
+bushmills-10|부쉬밀 10년|Bushmills 10|IR|아일랜드|Bushmills 10yo Single Malt|40 S b
+bushmills-original|부쉬밀 오리지널|Bushmills Original|IR|아일랜드|Bushmills Original Blended|40
+connemara|코네마라 피티드|Connemara Peated Single Malt|IR|아일랜드|Connemara Peated Single Malt|40 P
+redbreast-12cs|레드브레스트 12년 CS|Redbreast 12 Cask Strength|IR|아일랜드|Redbreast 12yo Cask Strength|57 S C b
+redbreast-21|레드브레스트 21년|Redbreast 21|IR|아일랜드|Redbreast 21yo|46 S b
+redbreast-lustau|레드브레스트 루스타우|Redbreast Lustau Edition|IR|아일랜드|Redbreast Lustau Edition|46 S
+tyrconnell|티어코넬 싱글몰트|Tyrconnell Single Malt|IR|아일랜드|Tyrconnell Single Malt Irish Whiskey|43 b
+writers-tears|라이터스 티어스 코퍼 팟|Writers' Tears Copper Pot|IR|아일랜드|Writers Tears Pot Still Irish Whiskey|40 b
+yellow-spot|옐로우스팟 12년|Yellow Spot 12|IR|아일랜드|Yellow Spot 12yo|46 S b w
+hibiki-17|히비키 17년|Hibiki 17|JP|일본|Hibiki 17yo|43 S m
+nikka-coffey-grain|닛카 카페 그레인|Nikka Coffey Grain|JP|일본|Nikka Coffey Grain|45 b
+nikka-coffey-malt|닛카 카페 몰트|Nikka Coffey Malt|JP|일본|Nikka Coffey Malt|45
+yamazaki-18|야마자키 18년|Yamazaki 18|JP|일본|Yamazaki 18yo|43 S m
+yamazaki-dr|야마자키 디스틸러스 리저브|Yamazaki Distiller's Reserve|JP|일본|Yamazaki Distiller's Reserve|43 S w m
+hakushu-18|하쿠슈 18년|Hakushu 18|JP|일본|Hakushu 18yo|43 P S
+hakushu-dr|하쿠슈 디스틸러스 리저브|Hakushu Distiller's Reserve|JP|일본|Hakushu Distiller's Reserve|43 P
+bakers-7|베이커스 7년|Baker's 7|BB|켄터키|Baker’s 7yo Small Batch Bourbon|53.5 SiB
+basil-hayden|베이질 헤이든|Basil Hayden|BB|켄터키|Basil Hayden’s Kentucky Bourbon|40 SmB
+blantons-gold|블랑톤 골드|Blanton's Gold Edition|BB|켄터키|Blanton's Gold Kentucky Straight Bourbon|51.5 SiB
+bulleit|불렛 버번|Bulleit Bourbon|BB|켄터키|Bulleit Bourbon|45
+bulleit-10|불렛 10년|Bulleit 10|BB|켄터키|Bulleit 10yo|45.6
+eagle-rare-10|이글레어 10년|Eagle Rare 10|BB|켄터키|Eagle Rare 10yo|45
+elmer-t-lee|엘머 T. 리|Elmer T. Lee Single Barrel|BB|켄터키|Elmer T. Lee Single Barrel Bourbon|45 SiB
+jim-beam-white|짐빔 화이트|Jim Beam White Label|BB|켄터키|Jim Beam White Label|40
+jim-beam-black|짐빔 블랙|Jim Beam Black|BB|켄터키|Jim Beam Black Label|43
+kc-sib|놉 크릭 싱글배럴 리저브|Knob Creek Single Barrel Reserve|BB|켄터키|Knob Creek Single Barrel Reserve Bourbon|60 SiB
+michters-us1|믹터스 US*1 스몰배치 버번|Michter's US*1 Small Batch Bourbon|BB|켄터키|Michter's Small Batch US*1 Bourbon|45.7 SmB
+weller-107|웰러 앤틱 107|Weller Antique 107|BB|켄터키|Old Weller Antique 107|53.5 Wh
+weller-12|웰러 12년|Weller 12|BB|켄터키|W.L. Weller 12yo|45 Wh
+wt-kentucky-spirit|와일드터키 켄터키 스피릿|Wild Turkey Kentucky Spirit|BB|켄터키|Wild Turkey Kentucky Spirit Single Barrel|50.5 SiB
+fr-yellow|포로지스 버번|Four Roses Bourbon|BB|켄터키|Four Roses (Yellow Label)|40
+ew-black|에반 윌리엄스 블랙|Evan Williams Black Label|BB|켄터키|Evan Williams (Black Label)|43
+mellow-corn|멜로우 콘 BiB|Mellow Corn Bottled-in-Bond|RY|미국|Mellow Corn BiB|50 BiB
+bernheim|번하임 오리지널 위트 7년|Bernheim Original Wheat 7|RY|미국|Bernheim Original Straight Wheat 7yo Small Batch|45 SmB
+bulleit-rye|불렛 라이|Bulleit Rye|RY|미국|Bulleit Rye|45
+george-dickel-12|조지 디켈 No.12|George Dickel No.12|RY|테네시|George Dickel No.12|45
+jd-no7|잭 다니엘 올드 No.7|Jack Daniel's Old No.7|RY|테네시|Jack Daniel's Old No. 7|40
+jd-sib|잭 다니엘 싱글배럴|Jack Daniel's Single Barrel Select|RY|테네시|Jack Daniel's Single Barrel|47 SiB
+pikesville|파이크스빌 라이|Pikesville Straight Rye|RY|미국|Pikesville Straight Rye|55
+sazerac-rye|사제락 라이|Sazerac Rye|RY|미국|Sazerac Straight Rye|45
+sazerac-18|사제락 18년|Sazerac 18|RY|미국|Sazerac 18yo|45
+handy|토마스 H. 핸디 사제락|Thomas H. Handy Sazerac|RY|미국|Thomas H. Handy Sazerac|64 C BP
+whistlepig-10|휘슬피그 10년|WhistlePig 10|RY|미국|Whistlepig 10yo|50
+highwest-rendezvous|하이 웨스트 랑데부 라이|High West Rendezvous Rye|RY|미국|High West Rendezvous Rye (all bottlings)|46
+highwest-campfire|하이 웨스트 캠프파이어|High West Campfire|RY|미국|High West Campfire|46 P
+balcones-sm|발코네스 텍사스 싱글몰트|Balcones Texas Single Malt|RY|미국|Balcones Texas Single Malt Whisky|53
+westland-ao|웨스트랜드 아메리칸 오크|Westland American Oak|RY|미국|Westland American Single Malt (American Oak)|46
+crown-royal|크라운 로얄|Crown Royal|WD|캐나다|Crown Royal|40
+crown-royal-nhr|크라운 로얄 노던 하베스트 라이|Crown Royal Northern Harvest Rye|WD|캐나다|Crown Royal Northern Harvest Rye|45
+lot-40|로트 40|Lot No. 40|WD|캐나다|Lot 40|43
+cc-premium|캐나디언 클럽|Canadian Club|WD|캐나다|Canadian Club (Premium)|40
+wisers-18|J.P. 와이저스 18년|J.P. Wiser's 18|WD|캐나다|J.P. Wiser's 18yo|40
+forty-creek|포티 크릭 배럴 셀렉트|Forty Creek Barrel Select|WD|캐나다|Forty Creek Barrel Select|40
+amrut-sm|암룻 인디언 싱글몰트|Amrut Indian Single Malt|WD|인도|Amrut Indian Single Malt|46 b
+amrut-peated-cs|암룻 피티드 CS|Amrut Peated Cask Strength|WD|인도|Amrut Peated Cask Strength|62.8 P C b
+amrut-portonova|암룻 포르토노바|Amrut Portonova|WD|인도|Amrut Portonova|62.1 C w
+amrut-intermediate|암룻 인터미디엇 셰리|Amrut Intermediate Sherry|WD|인도|Amrut Intermediate Sherry|57.1 S C
+amrut-kadhambam|암룻 카담밤|Amrut Kadhambam|WD|인도|Amrut Kadhambam|50 S r
+kavalan-classic|카발란 클래식|Kavalan Classic Single Malt|WD|대만|Kavalan Single Malt Whisky|40
+kavalan-concertmaster|카발란 콘서트마스터|Kavalan Concertmaster Port Cask|WD|대만|Kavalan Concertmaster Port Cask|40 w
+kavalan-solist-bourbon|카발란 솔리스트 ex-버번|Kavalan Solist ex-Bourbon|WD|대만|Kavalan Solist Ex-Bourbon|57 C b
+kavalan-solist-sherry|카발란 솔리스트 셰리|Kavalan Solist Sherry|WD|대만|Kavalan Solist Sherry Cask|57 S C
+kavalan-solist-port|카발란 솔리스트 포트|Kavalan Solist Port|WD|대만|Kavalan Solist Port Cask|57 C w
+pauljohn-brilliance|폴존 브릴리언스|Paul John Brilliance|WD|인도|Paul John Brilliance|46 b
+pauljohn-bold|폴존 볼드|Paul John Bold|WD|인도|Paul John Bold|46 P b
+pauljohn-edited|폴존 에디티드|Paul John Edited|WD|인도|Paul John Edited|46 P b
