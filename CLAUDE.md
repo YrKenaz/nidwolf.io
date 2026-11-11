@@ -67,8 +67,17 @@ tools/collect-2026-11/  최초 수집에 쓴 스크립트와 중간 산출물(�
 - **비교:** 카드 빠른 단추·상세 창에서 담고, 화면 아래 트레이에서 2~4병을 비교 창으로 연다. 스타일·캐스크·스펙·도수 줄에는 `미검증` 표기를 붙인다(위 "지켜야 할 것"의 미대조 값). 가격 줄은 `price_date`(빌드 출력 `pdate`)를 확인일로 보인다. 출처 줄은 비교 중인 병 가운데 한 병이라도 환산 점수가 있는 출처만 두고, 점수 없이 추천만 한 출처는 `매체 추천` 한 줄로 모은다.
 - **공유 주소(해시):** `type`, `f`(`그룹:값`을 쉼표로, 예 `f=style:peat,age:a12`), `sort`, `q`, `multi=1`, `beg=1`, `cmp`(병 id 쉼표 목록), `b`(열린 병 상세), `show=cmp`(비교 창). 알 수 없는 값은 무시한다. 필터 변경은 `replaceState`, 창 열기만 `pushState`라 뒤로 가기는 창을 닫는다. **내 기록과 내 기록 필터는 주소에 넣지 않는다**(개인 기록이 링크로 새지 않게).
 - **휴대폰 폭(560px 이하):** 필터 바를 고정하지 않는다(PC는 상단 고정). 필터 바가 화면 밖으로 나가면 오른쪽 아래에 `필터로 ↑` 단추가 뜨고, 누르면 필터 바로 올라가 고른 종류 칩에 초점을 둔다(검색칸에 두면 자판이 떠 화면을 가린다).
-- 새 지표(예: 트렌드지수)를 붙일 때는 `build.py`의 병 출력 dict에 필드를 더하고, 템플릿의 `SORT`(정렬), `GROUPS`(상세 필터), `detail()`의 `facts`, `compare()`의 줄을 늘린다. 정렬·필터 키는 공유 주소에도 그대로 쓰이므로 한번 정한 키 이름은 바꾸지 않는다.
+- 새 지표를 붙일 때는 `build.py`의 병 출력 dict에 필드를 더하고, 템플릿의 `SORT`(정렬), `GROUPS`(상세 필터), `detail()`의 `facts`, `compare()`의 줄을 늘린다. 정렬·필터 키는 공유 주소에도 그대로 쓰이므로 한번 정한 키 이름은 바꾸지 않는다.
 - **점검:** `node tools/check_page.js index.html`은 jsdom이 필요하다. 저장소에 `node_modules`를 두지 말고 다른 폴더에 `npm i jsdom` 한 뒤 `NODE_PATH=<그 폴더>/node_modules`로 실행한다. 조작 시험(주소 왕복, 뒤로 가기, 저장소 차단, 휴대폰 폭)은 Windows 크롬 헤드리스를 `--remote-debugging-port`로 띄우고 Windows 쪽 node + `puppeteer-core`로 붙여 했다(WSL에서는 Windows 크롬의 디버깅 포트에 닿지 않는다).
+
+## 트렌드지수 (`data/trends.json`)
+
+- 병이 얼마나 알려져 있는지를 0~100점으로 나타낸 **누적 인지도**다. 티어·종합 점수·확신도 계산(`compute()`)에는 넣지 않는다. 화면 문구에 "최근", "급상승"처럼 유행을 뜻하는 표현을 쓰지 않는다.
+- `trends.json`은 트렌드 담당이 만든다(형식·합산 규칙은 `H:\Dev\Tier\Whiskey\docs\research\05-트렌드지수.md` 9절). 재측정은 요청이 있을 때만 한다: `python3 tools/trend_collect.py ds wiki score`(B안), 네이버 키가 있으면 `NAVER_CLIENT_ID=.. NAVER_CLIENT_SECRET=.. python3 tools/trend_collect.py naver score`(A안). 그 뒤 `python3 tools/build.py`.
+- `build.py`의 `add_trends()`가 병마다 `tr`(지수 `i`, 국내 `d`·해외 `o`, 재료별 `p`={재료: [부분 점수, 원자료]}, 위키 문서 `wt`, 점검 표시 `f`, 측정일 `m`)를 붙이고, 산식 정보(측정일·비중·재료 설명·산식 설명)를 `stats.trend`로 내보낸다. 재료 이름·비중·설명은 `trends.json`의 `weights`·`materials`에서 읽으므로 산식이 바뀌어도 화면 코드는 고치지 않는다. 재료별 원자료 필드는 `RAW_KEYS`(ds→`ds_reviews`, wiki→`wiki_en`, src→`src_en`)가 기본이고, `trends.json`에 `raw_keys`가 있으면 그것을 쓴다(새 재료는 `raw_keys`를 함께 적어야 원자료가 보인다).
+- 파일이 없거나 깨져도, 어떤 병의 지수가 없어도 빌드는 계속한다(정렬 메뉴·설명 절이 숨고, 상세 창에 "측정값 없음"). `bottles.json`에 없는 id(등록 대기 병)는 건너뛴다. `--check` 요약 둘째 줄에 지수가 있는 병 수가 나온다.
+- 화면: 상세 창의 점선 상자(파란 계열 `--trend`, 종합 점수와 구분), 정렬 `트렌드지수순`(주소 `sort=trend`, 카드에 `트렌드 N`), 비교 표 `인지도 (티어와 별개)` 줄, 점수 산출 방식 절의 `트렌드지수` 설명(수치는 `trends.json`에서 채움).
+- `flags`에 `ds_no_product`가 있는 병(데일리샷에서 찾지 못함)은 국내 점수가 0이라 지수가 낮게 나오므로 "국내 판매 자료 없음"을 붙인다. 카드에서는 `*`로 표시하고 정렬 시 표시 수 옆에 설명을 둔다.
 
 ## 지켜야 할 것
 

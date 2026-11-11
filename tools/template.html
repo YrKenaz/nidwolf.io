@@ -5,7 +5,7 @@
 /* 레이아웃: 병 유리빛 중성색 바탕 위에, 위스키 색상 스케일(마호가니→페일 스트로)로 칠한 티어 행 */
 :root{
   --bg:#eef1ec; --surface:#f8faf6; --tile:#ffffff; --ink:#14201a; --muted:#56675d; --line:#d2d9d1;
-  --accent:#1e5a43; --accent-ink:#ffffff; --bar:#c9d2c9;
+  --accent:#1e5a43; --accent-ink:#ffffff; --bar:#c9d2c9; --trend:#2f5d8a;
   --t-s:#5a1a12; --t-a:#8a3414; --t-b:#b85c16; --t-c:#d98a1f; --t-d:#e9b949; --t-e:#f0dc8c;
   --t-dark-ink:#fff7ea; --t-light-ink:#231603;
   --display:"Noto Serif KR","Nanum Myeongjo","Batang",serif;
@@ -13,10 +13,10 @@
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#0f1613; --surface:#17211c; --tile:#e4e9e1; --ink:#e8eee9; --muted:#95a59b; --line:#2b3931;
-  --accent:#74c7a3; --accent-ink:#0f1613; --bar:#34453b; color-scheme:dark } }
+  --accent:#74c7a3; --accent-ink:#0f1613; --bar:#34453b; --trend:#8fb3dd; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#0f1613; --surface:#17211c; --tile:#e4e9e1; --ink:#e8eee9; --muted:#95a59b; --line:#2b3931;
-  --accent:#74c7a3; --accent-ink:#0f1613; --bar:#34453b; color-scheme:dark }
+  --accent:#74c7a3; --accent-ink:#0f1613; --bar:#34453b; --trend:#8fb3dd; color-scheme:dark }
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
@@ -128,6 +128,8 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
 /* 방법 */
 .method{margin-top:44px;display:flex;flex-direction:column;gap:14px}
 .method p{margin:0;max-width:68ch}
+#trendm{display:flex;flex-direction:column;gap:12px;border-top:1px dashed var(--trend);padding-top:16px}
+.mh{font-family:var(--display);font-size:18px;margin:0;color:var(--trend)}
 .formula{font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;max-width:68ch}
 .scale{display:flex;flex-wrap:wrap;gap:6px}
 .scale span{padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -180,6 +182,23 @@ dialog.cmp{width:min(1000px,calc(100vw - 24px))}
 h3[tabindex]:focus{outline:none}
 .unv{display:inline-block;border:1px dashed var(--muted);color:var(--muted);border-radius:999px;font-size:10.5px;padding:0 6px;margin-left:4px;font-weight:400;vertical-align:1px}
 
+/* 트렌드지수: 티어 점수와 다른 지표임을 보이도록 점선 테두리·파란 계열로 구분한다 */
+.trend{border:1px dashed var(--trend);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.trhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.trhead h4{margin:0;font-size:14px;color:var(--trend)}
+.trhead h4 small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+.trv{display:flex;align-items:baseline;gap:6px;color:var(--trend);font-variant-numeric:tabular-nums}
+.trv b{font-size:26px;line-height:1}
+.trv span{font-size:12px;color:var(--muted)}
+.tbar{height:5px;background:var(--bar);border-radius:3px;position:relative}
+.tbar i{position:absolute;inset:0 auto 0 0;background:var(--trend);border-radius:3px}
+.nods{display:inline-block;border:1px solid var(--trend);color:var(--trend);border-radius:999px;font-size:11px;padding:0 7px;font-weight:500;white-space:nowrap}
+.tparts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 16px;margin:0}
+.tparts dt{font-size:11.5px;color:var(--muted)}
+.tparts dd{margin:0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.tparts dd small{color:var(--muted);font-size:11.5px}
+.mt .tri{color:var(--trend);font-weight:700}
+
 /* 필터로 돌아가기 단추(휴대폰 폭에서 필터 바가 화면 밖으로 나가면 보인다) */
 .totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:7;border:1px solid var(--accent);background:var(--surface);color:var(--accent);border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(8,14,11,.18)}
 body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
@@ -216,7 +235,7 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
     <details class="adv" id="adv"><summary>상세 필터 <span class="on" id="oncount" hidden></span></summary><div class="groups" id="groups"></div></details>
     <div class="tools">
       <input class="search" id="q" type="search" placeholder="이름 검색 (예: 라가불린, Ardbeg)" aria-label="이름 검색">
-      <label for="sort" class="check">정렬 <select class="sel" id="sort"><option value="score">점수순</option><option value="name">이름순</option><option value="age">숙성년수순</option><option value="price">가격 낮은 순</option><option value="abv">도수 높은 순</option><option value="ds">데일리샷 평점순</option></select></label>
+      <label for="sort" class="check">정렬 <select class="sel" id="sort"><option value="score">점수순</option><option value="name">이름순</option><option value="age">숙성년수순</option><option value="price">가격 낮은 순</option><option value="abv">도수 높은 순</option><option value="ds">데일리샷 평점순</option><option value="trend">트렌드지수순</option></select></label>
       <label class="check"><input type="checkbox" id="multi"> 독립 출처 2곳 이상만</label>
       <label class="check"><input type="checkbox" id="beg"> 입문 추천만</label>
       <label for="mine" class="check" id="minew" hidden>내 기록 <select class="sel" id="mine"><option value="all">전체</option><option value="undrunk">안 마신 병만</option><option value="want">마셔 볼 것만</option></select></label>
@@ -239,6 +258,7 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
       <tbody id="stable"></tbody>
     </table></div>
     <p>상세 필터의 속성은 다음 기준으로 붙였습니다. 숙성년수는 라벨 표기 기준이고 표기가 없으면 NAS입니다. 피트는 훈연 향이 뚜렷한 제품(약피트 포함), 셰리는 셰리 캐스크 숙성·피니시가 풍미의 중심인 제품, CS는 캐스크 스트렝스·배럴 프루프로 표기된 제품입니다. 도수는 표준 병입 도수이고 CS 제품은 배치마다 다릅니다. 가격은 수집일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있어 대략적인 구간으로만 보세요. 입문 추천은 입문자 추천 글과 저가·가성비 리스트에 오른 병입니다.</p>
+    <div id="trendm" hidden></div>
     <p class="note">병 이미지는 티어리스트 원본(한국 티어표의 병 사진은 80px 내외, Uproxx 과거 이미지는 삭제됨)의 화질 문제로 데일리샷 상품 이미지를 주로 쓰고, 일부는 BoozeMakers·Man of Many 기사 이미지를 썼습니다. 적당한 이미지를 찾지 못한 병은 글자로 대신했습니다. 데일리샷 이용자 평점은 참고 정보이며 점수에 넣지 않습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
   </section>
 </div>
@@ -295,7 +315,13 @@ function groups(){
   const n=Object.values(state.f).reduce((a,x)=>a+x.length,0);
   $("oncount").hidden=!n;$("oncount").textContent=n+"개 적용";
   $("reset").hidden=!(n||state.multi||state.beg||state.q||state.type!=="ALL"||state.mine!=="all")}
-const SORT={score:(a,b)=>(b.score??0)-(a.score??0),ds:(a,b)=>(b.ds?b.ds[0]:0)-(a.ds?a.ds[0]:0)||(b.ds?b.ds[1]:0)-(a.ds?a.ds[1]:0),name:(a,b)=>a.ko.localeCompare(b.ko,"ko"),age:(a,b)=>(b.age??-1)-(a.age??-1)||(b.score??0)-(a.score??0),price:(a,b)=>(a.price??1e12)-(b.price??1e12),abv:(a,b)=>b.abv-a.abv||(b.score??0)-(a.score??0)};
+const SORT={score:(a,b)=>(b.score??0)-(a.score??0),ds:(a,b)=>(b.ds?b.ds[0]:0)-(a.ds?a.ds[0]:0)||(b.ds?b.ds[1]:0)-(a.ds?a.ds[1]:0),name:(a,b)=>a.ko.localeCompare(b.ko,"ko"),age:(a,b)=>(b.age??-1)-(a.age??-1)||(b.score??0)-(a.score??0),price:(a,b)=>(a.price??1e12)-(b.price??1e12),abv:(a,b)=>b.abv-a.abv||(b.score??0)-(a.score??0),
+  trend:(a,b)=>(b.tr?b.tr.i:-1)-(a.tr?a.tr.i:-1)||(b.score??0)-(a.score??0)};
+/* 트렌드지수(인지도). 티어 점수와 별개이며 재료·비중·측정일은 data/trends.json 에서 온다 */
+const TR=DATA.stats.trend||null;
+const nods=w=>!!(w.tr&&w.tr.f.includes("ds_no_product"));
+const mat=k=>{const t=(TR&&TR.materials&&TR.materials[k])||k;return t.split(/[.。]/)[0].trim()};
+if(!TR){const o=document.querySelector('#sort option[value="trend"]');if(o)o.remove();delete SORT.trend}
 
 function pic(w){return IMG.img[w.id]?`<img src="${IMG.img[w.id]}" alt="" loading="lazy">`:`<span class="ph">${esc(w.ko[0])}</span>`}
 function match(w){
@@ -314,7 +340,7 @@ function chips(){
 const MK={d:"마심",w:"볼 것"};
 function card(w){const m=MINE.get(w.id),c=CMP.includes(w.id);
   /* 빠른 단추는 마우스용 지름길이라 탭 순서·읽기 순서에서 뺀다. 같은 조작은 병 상세 창에서 키보드로 할 수 있다 */
-  return `<div class="cw${c?" incmp":""}" data-id="${w.id}"><button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score??"미평가"}${m?" · "+(m==="d"?"마셨음":"마셔 볼 것"):""}${c?" · 비교에 담김":""}"><div class="pic${IMG.img[w.id]?" wait":""}">${pic(w)}${w.flag==="prov"?'<span class="one">잠정</span>':''}${m?`<span class="mk">${MK[m]}</span>`:""}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${state.sort==="ds"?(w.ds?"★"+w.ds[0].toFixed(1):"–"):w.flag==="border"&&state.sort==="score"?w.bt+" 경계":state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`+
+  return `<div class="cw${c?" incmp":""}" data-id="${w.id}"><button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score??"미평가"}${m?" · "+(m==="d"?"마셨음":"마셔 볼 것"):""}${c?" · 비교에 담김":""}${state.sort==="trend"?(w.tr?` · 트렌드지수 ${w.tr.i}${nods(w)?", 국내 판매 자료 없음":""}`:" · 트렌드지수 없음"):""}"><div class="pic${IMG.img[w.id]?" wait":""}">${pic(w)}${w.flag==="prov"?'<span class="one">잠정</span>':''}${m?`<span class="mk">${MK[m]}</span>`:""}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${state.sort==="trend"?(w.tr?`<span class="tri">트렌드 ${w.tr.i}${nods(w)?"*":""}</span>`:"–"):state.sort==="ds"?(w.ds?"★"+w.ds[0].toFixed(1):"–"):w.flag==="border"&&state.sort==="score"?w.bt+" 경계":state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`+
     `<div class="qa" aria-hidden="true"><button type="button" tabindex="-1" data-a="d" aria-pressed="${m==="d"}" title="마셨음 표시">마심</button><button type="button" tabindex="-1" data-a="w" aria-pressed="${m==="w"}" title="마셔 볼 것 표시">볼 것</button><button type="button" tabindex="-1" data-a="c" aria-pressed="${c}" title="비교에 담기">비교</button></div></div>`}
 function waitImgs(root){root.querySelectorAll(".pic.wait img").forEach(im=>{const done=()=>im.parentNode.classList.remove("wait");if(im.complete&&im.naturalWidth)done();else{im.addEventListener("load",done,{once:true});im.addEventListener("error",done,{once:true})}})}
 /* 카드 하나만 다시 그린다. 내 기록 필터가 걸려 있으면 목록이 바뀌므로 전체를 다시 그린다 */
@@ -335,7 +361,7 @@ function render(){
       xs.map(card).join("")+`</div></section>`}
   $("tiers").innerHTML=html||`<div class="empty">조건에 맞는 위스키가 없습니다. 검색어를 지우거나 다른 종류를 골라 보세요.</div>`;
   waitImgs($("tiers"));
-  $("count").textContent=`${list.length}병 표시 중`;mineStat()}
+  $("count").textContent=`${list.length}병 표시 중`+(state.sort==="trend"?" · * 국내 판매 자료 없음":"");mineStat()}
 function detail(id){
   const w=W.find(x=>x.id===id);if(!w)return;const [bg,fg]=TCOL[w.tier];
   const rows=w.obs.slice().sort((a,b)=>(b.v??0)-(a.v??0)).map(o=>{const m=META[o.s];const pct=o.v==null?0:Math.max(4,Math.min(100,(o.v-76)/(98-76)*100));
@@ -345,11 +371,26 @@ function detail(id){
     <div class="tags"><span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier==="N"?"미평가":w.tier+" 티어"}</span><span class="tag">${FL[w.flag]}</span>${w.rec?`<span class="tag">매체 추천 ${w.rec}회</span>`:""}<span class="tag">${esc(TNAME[w.type])}</span><span class="tag">${esc(w.region)}</span>${[...w.style.map(v=>"style:"+v),...w.cask.map(v=>"cask:"+v),...w.spec.map(v=>"spec:"+v)].map(k=>`<span class="tag">${esc(LBL[k])}</span>`).join("")}${w.beg?'<span class="tag">입문 추천</span>':""}</div>
     <div class="big"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${w.score==null?"점수형 출처가 아직 없습니다":`종합 점수 · 독립 출처 ${w.n}곳 · 오차 범위 ${w.lo.toFixed(1)}–${w.hi.toFixed(1)}`}</span></div></div></div>
     <dl class="facts"><div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv}%${w.style.includes("cs")?" 안팎 (배치별 상이)":""}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price):"정보 없음"}</dd></div>${w.ds?`<div><dt>데일리샷 이용자 평점</dt><dd>★ ${w.ds[0].toFixed(1)} (${w.ds[1].toLocaleString("ko-KR")}명)</dd></div>`:""}${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
+    ${trendBox(w)}
     <div class="srcs">${rows}</div>
     <p class="note">막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.${IMG.src[w.id]?" 이미지: "+esc(IMG.src[w.id])+".":""}</p>
     <button class="close" type="button" data-close>닫기</button>`;
   $("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<div class="acts" id="dacts" role="group" aria-label="내 기록과 비교">${dacts(w)}</div>`);
   return true}
+function trendBox(w){
+  if(!TR)return "";
+  const t=w.tr,head=`<div class="trhead"><h4>트렌드지수<small>얼마나 알려졌는지(누적 인지도) · 티어 점수와 별개</small></h4>`;
+  if(!t)return `<section class="trend" aria-label="트렌드지수">${head}<div class="trv"><b>–</b></div></div><p class="note">이 병은 트렌드지수 측정값이 없습니다.</p></section>`;
+  const parts=Object.keys(TR.weights||{}).map(k=>{const [ps,raw]=t.p[k]||[];
+    return `<div><dt>${esc(mat(k))} <small>(비중 ${TR.weights[k]})</small></dt><dd>${raw==null?"–":typeof raw==="number"?raw.toLocaleString("ko-KR"):esc(raw)} <small>→ ${ps==null?"–":Math.round(ps)}점</small></dd></div>`}).join("");
+  const notes=[t.d!=null&&t.o!=null?`국내 ${t.d} · 해외 ${t.o}`:"",
+    t.wt?`위키 조회수는 브랜드 문서(${esc(t.wt)}) 기준`:"",
+    t.f.includes("wiki_unsure")?"위키 문서 대응이 확실하지 않음":"",t.f.includes("wiki_no_article")?"위키 문서 없음":"",
+    `측정 ${esc(t.m||TR.measured||"")}`].filter(Boolean).join(" · ");
+  return `<section class="trend" aria-label="트렌드지수">${head}<div class="trv"><b>${t.i}</b><span>/ 100</span></div></div>
+    ${nods(w)?`<p class="note"><span class="nods">국내 판매 자료 없음</span> 데일리샷에서 이 병을 찾지 못해 국내 점수가 0으로 들어갔습니다. 해외에서 알려진 병이어도 지수가 낮게 나옵니다.</p>`:""}
+    <div class="tbar" aria-hidden="true"><i style="width:${Math.max(2,t.i)}%"></i></div>
+    <dl class="tparts">${parts}</dl><p class="note">${notes}</p></section>`}
 function dacts(w){const m=MINE.get(w.id),c=CMP.includes(w.id);
   return `<button class="chip" type="button" data-a="d" aria-pressed="${m==="d"}">마셨음</button><button class="chip" type="button" data-a="w" aria-pressed="${m==="w"}">마셔 볼 것</button><button class="chip" type="button" data-a="c" aria-pressed="${c}">${c?"비교에 담김":"비교에 담기"}</button>`}
 /* 비교 */
@@ -382,6 +423,8 @@ function compare(){
   h+=srcs.map(k=>row(`${esc(META[k][0])}<span class="sub">${esc(META[k][5])}</span>`,w=>{const o=w.obs.find(o=>o.s===k);return !o?"–":o.v==null?`추천<span class="sub">점수 미반영</span>`:`${o.v.toFixed(1)}<span class="sub">${esc(o.raw||"")}</span>`})).join("");
   if(ws.some(w=>recOnly(w).length))h+=row(`매체 추천<span class="sub">점수 미반영</span>`,w=>{const r=recOnly(w);return r.length?`${r.length}곳<span class="sub">${r.map(esc).join(", ")}</span>`:"–"});
   if(!srcs.length&&!ws.some(w=>recOnly(w).length))h+=row("출처",()=>"–");
+  if(TR){h+=sec("인지도 (티어와 별개)");
+    h+=row("트렌드지수",w=>w.tr?`<b style="color:var(--trend)">${w.tr.i}</b>${w.tr.d!=null&&w.tr.o!=null?`<span class="sub">국내 ${w.tr.d} · 해외 ${w.tr.o}</span>`:""}${nods(w)?'<span class="nods">국내 판매 자료 없음</span>':""}`:"측정값 없음")}
   h+=sec("가격·이용자 평점");
   h+=row("데일리샷 가격",w=>w.price?`${won(w.price)}<span class="sub">${w.pdate?esc(w.pdate)+" 확인":"확인일 없음"}${w.pname?" · "+esc(w.pname):""}</span>`:"정보 없음");
   h+=row("데일리샷 평점",w=>w.ds?`★ ${w.ds[0].toFixed(1)}<span class="sub">리뷰 ${w.ds[1].toLocaleString("ko-KR")}건</span>`:"–");
@@ -447,7 +490,16 @@ function methods(){
   $("sdv").textContent=DATA.stats.sd.toFixed(1);
   $("scale").innerHTML=TIERS.filter(x=>x[0]!=="N").map(([t,,r])=>`<span style="background:var(${TCOL[t][0]});color:var(${TCOL[t][1]})">${t} · ${r}</span>`).join("");
   $("stable").innerHTML=Object.entries(META).map(([k,m])=>{const n=W.filter(w=>w.obs.some(o=>o.s===k)).length;
-    return `<tr><td><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a></td><td>${esc(m[5])}</td><td>${esc(m[2])}</td><td>${esc(m[4])}</td><td class="n">${n}</td></tr>`}).join("")}
+    return `<tr><td><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a></td><td>${esc(m[5])}</td><td>${esc(m[2])}</td><td>${esc(m[4])}</td><td class="n">${n}</td></tr>`}).join("");
+  if(TR){const wt=TR.weights||{},ks=Object.keys(wt),dom=TR.domestic_parts||[];
+    const li=k=>{const full=(TR.materials&&TR.materials[k])||k,sh=mat(k),rest=full.slice(sh.length).replace(/^[.。\s]+/,"").trim();return `${esc(sh)} <b>${wt[k]}</b>${rest?` (${esc(rest)})`:""}`};
+    const nd=W.filter(nods).length,nt=W.filter(w=>w.tr).length;
+    $("trendm").hidden=false;
+    $("trendm").innerHTML=`<h3 class="mh">트렌드지수</h3>
+      <p>병이 얼마나 알려져 있는지를 0~100점으로 나타낸 <b>누적 인지도</b> 지표입니다. <b>티어·종합 점수·확신도 계산에는 넣지 않습니다.</b> 맛이나 품질 평가가 아니라, 얼마나 많이 팔리고 이야기되는지를 가늠하는 참고 값입니다. ${nt}병에 값이 있고 ${esc(TR.measured||"")}에 측정했습니다.</p>
+      <p><b>재료와 비중</b> (합 ${ks.reduce((a,k)=>a+wt[k],0)}): ${ks.map(li).join(" · ")}.${dom.length?` 이 가운데 ${dom.map(k=>esc(mat(k))).join("·")}는 국내 점수, 나머지는 해외 점수로 따로 보입니다.`:""}</p>
+      ${TR.formula_note?`<div class="formula">${esc(TR.formula_note)}</div>`:""}
+      <p><b>한계.</b> 위키백과 조회수는 병이 아니라 브랜드(증류소) 문서 단위라 같은 브랜드 병끼리는 해외 점수가 비슷하게 나옵니다. 데일리샷에서 찾지 못한 병(${nd}병)은 국내 점수가 0으로 들어가 해외에서 알려진 병도 지수가 낮게 나오므로 ‘국내 판매 자료 없음’으로 표시합니다. 같은 병의 용량·패키지·구형 상품은 합쳐서 셉니다.</p>`}}
 $("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.type=b.dataset.k;chips();groups();render();syncHash()});
 $("q").addEventListener("input",e=>{state.q=e.target.value.trim();groups();render();syncHash()});
 $("multi").addEventListener("change",e=>{state.multi=e.target.checked;groups();render();syncHash()});
@@ -469,11 +521,12 @@ $("trayl").addEventListener("click",e=>{const b=e.target.closest("[data-rm]");if
 $("cmpgo").addEventListener("click",()=>openModal("cmp",null,true));
 $("cmpclr").addEventListener("click",()=>{const ids=CMP.slice();CMP=[];$("traymsg").textContent="";tray();ids.forEach(refresh);syncHash()});
 /* 휴대폰 폭에서는 필터 바가 스크롤과 함께 올라가므로, 화면 밖으로 나가면 '필터로' 단추를 띄운다 */
-{const mq=window.matchMedia("(max-width:560px)");let out=false;
-  const upd=()=>{$("totop").hidden=!(mq.matches&&out)};
+/* matchMedia 가 없는 환경(구형 브라우저·jsdom)에서는 단추를 띄우지 않는다 */
+{const mm=q=>window.matchMedia?window.matchMedia(q):null;const mq=mm("(max-width:560px)");let out=false;
+  const upd=()=>{$("totop").hidden=!(mq&&mq.matches&&out)};
   if("IntersectionObserver" in window)new IntersectionObserver(es=>{out=!es[0].isIntersecting;upd()}).observe(document.querySelector(".bar"));
-  mq.addEventListener?mq.addEventListener("change",upd):mq.addListener(upd);
-  $("totop").addEventListener("click",()=>{const r=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if(mq)mq.addEventListener?mq.addEventListener("change",upd):mq.addListener(upd);
+  $("totop").addEventListener("click",()=>{const rm=mm("(prefers-reduced-motion:reduce)"),r=!!(rm&&rm.matches);
     document.querySelector(".bar").scrollIntoView({behavior:r?"auto":"smooth",block:"start"});/* 검색칸에 초점을 주면 휴대폰 자판이 떠 화면을 가리므로 고른 종류 칩에 둔다 */const c=document.querySelector('#chips [aria-pressed="true"]');if(c)c.focus({preventScroll:true})})}
 {const r=fromHash();state=r.s;CMP=r.c;apply();methods();
   if(r.m.b)openModal("b",r.m.b,false);else if(r.m.show)openModal("cmp",null,false)}

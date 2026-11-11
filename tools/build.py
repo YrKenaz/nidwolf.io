@@ -128,13 +128,46 @@ def full(t):
     t = t.replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "")
     return HEAD + t.replace('<div class="wrap">', '</head><body>\n<div class="wrap">', 1) + "\n</body></html>\n"
 
+# 트렌드지수 원자료: 재료 key → trends.json raw 의 대표 값. trends.json 에 "raw_keys" 가 있으면 그것을 쓴다
+RAW_KEYS = {"ds": "ds_reviews", "wiki": "wiki_en", "src": "src_en"}
+TREND_FLAGS = {"ds_no_product", "wiki_no_article", "wiki_unsure", "no_brand"}   # 화면에서 쓰는 점검 표시
+
+def add_trends(ws):
+    """data/trends.json(트렌드 담당 산출물)을 읽어 병마다 트렌드지수를 붙인다. 티어 점수 계산(compute)과 무관하다.
+    파일이 없거나 형식이 어긋나도 빌드는 계속한다. bottles.json 에 없는 id(등록 대기 병)는 건너뛴다."""
+    p = os.path.join(ROOT, "data", "trends.json")
+    if not os.path.exists(p): return None, "trends.json 없음"
+    try:
+        with open(p, encoding="utf-8") as f: t = json.load(f)
+        tb = t.get("bottles") or {}
+        weights = t.get("weights") or {}
+    except Exception as e:
+        return None, f"trends.json 읽기 실패({e.__class__.__name__}) — 지수 없이 빌드"
+    rk = {**RAW_KEYS, **(t.get("raw_keys") or {})}
+    n = nods = 0
+    for w in ws:
+        x = tb.get(w["id"])
+        if not isinstance(x, dict) or not isinstance(x.get("index"), (int, float)): continue
+        raw, parts = x.get("raw") or {}, x.get("parts") or {}
+        flags = [f for f in (x.get("flags") or []) if f in TREND_FLAGS]
+        w["tr"] = {"i": round(x["index"]), "d": x.get("domestic"), "o": x.get("overseas"), "brand": x.get("brand"),
+                   "p": {k: [parts.get(k), raw.get(rk.get(k, ""))] for k in weights},
+                   "wt": raw.get("wiki_title"), "dsp": raw.get("ds_products"), "f": flags, "m": x.get("measured")}
+        n += 1; nods += "ds_no_product" in flags
+    keep = ("measured", "formula", "formula_note", "weights", "scales", "materials", "domestic_parts")
+    info = {k: t.get(k) for k in keep}
+    info.update(n=n, nods=nods, pending=sum(1 for k in tb if k not in {w["id"] for w in ws}))
+    return info, f"트렌드지수 {n}병(국내 판매 자료 없음 {nods}) · 미등록 {info['pending']}병 건너뜀 · 측정 {t.get('measured')} · 산식 {t.get('formula')}"
+
 def main():
     a = sys.argv[1:]
     ws, meta, bottles, errs, stats = compute()
     for e in errs: print("오류:", e)
     if errs: sys.exit(1)
+    stats["trend"], tmsg = add_trends(ws)
     c = collections.Counter(w["tier"] for w in ws)
     print(f"{len(ws)}병 · 출처 {len(meta)}개 · " + " ".join(f"{t}{c[t]}" for t, _ in TIERS) + f" 미평가{c['N']}" + f" · 잠정 {sum(1 for w in ws if w['flag']=='prov')} 경계 {sum(1 for w in ws if w['flag']=='border')} 확정 {sum(1 for w in ws if w['flag']=='firm')} · 경계 {stats['tiers']} · 병 내 sd {stats['sd']} · 사전 평균 {stats['prior']}" + f" · 이미지 {sum(1 for b in bottles if b.get('img'))}장")
+    print(tmsg)
     if "--check" in a: return
     with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
         f.write(full(render(ws, meta, bottles, False, stats)))
