@@ -8,3 +8,10 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+
+# Collection working files (third-party page copies, caches)
+tools/collect-2026-11/reviewer-scores/raw/
+tools/collect-2026-11/reviewer-scores/staged-img/
+tools/trend-data/ds_cache.json
+tools/trend-data/wiki_cache.json
+__pycache__/

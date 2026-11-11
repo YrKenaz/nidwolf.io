@@ -61,8 +61,9 @@ def compute():
             bad = set(b[key]) - allowed
             if bad: errs.append(f"{b['id']}: {key} 값 오류 {bad}")
         if b.get("img") and not os.path.exists(os.path.join(ROOT, b["img"])): errs.append(f"{b['id']}: 이미지 파일 없음 {b['img']}")
-        o = by.get(b["id"])
-        if not o: errs.append(f"{b['id']}: 관측값이 하나도 없음"); continue
+        # 관측값이 0건인 병(출처 제외·평가 출처 없이 등록된 병)은 지우지 않고 '미평가'로 둔다.
+        # gm 이 비어 있으므로 사전 평균·병 내 표준편차·티어 백분위 모수에 들어가지 않는다(점수형 출처 없는 병과 같은 경로)
+        o = by.get(b["id"], [])
         g = collections.defaultdict(list)
         for x in o:
             if x["value"] is not None: g[sources[x["source"]]["group"]].append(x["value"])
@@ -168,6 +169,8 @@ def main():
     c = collections.Counter(w["tier"] for w in ws)
     print(f"{len(ws)}병 · 출처 {len(meta)}개 · " + " ".join(f"{t}{c[t]}" for t, _ in TIERS) + f" 미평가{c['N']}" + f" · 잠정 {sum(1 for w in ws if w['flag']=='prov')} 경계 {sum(1 for w in ws if w['flag']=='border')} 확정 {sum(1 for w in ws if w['flag']=='firm')} · 경계 {stats['tiers']} · 병 내 sd {stats['sd']} · 사전 평균 {stats['prior']}" + f" · 이미지 {sum(1 for b in bottles if b.get('img'))}장")
     print(tmsg)
+    z = [w["id"] for w in ws if not w["obs"]]
+    print(f"관측값 0건 {len(z)}병" + (f" (미평가 줄에 표시. 의도한 것이 아니면 관측값 누락을 확인할 것): {', '.join(z[:20])}{' …' if len(z) > 20 else ''}" if z else ""))
     if "--check" in a: return
     with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
         f.write(full(render(ws, meta, bottles, False, stats)))

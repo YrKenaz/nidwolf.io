@@ -1,0 +1,266 @@
+import sys,re,os,json
+sys.path.insert(0,sys.argv[1]+'/bin')
+D=sys.argv[1]+'/dl/'
+exec(open(sys.argv[1]+'/bin/asm.py').read().split("n2=0")[0].replace("json.dump(out,open(D+'cand_raw.json','w'),indent=1,ensure_ascii=False)",""))  # rebuild 'out' with fixed wf
+R=out
+M=json.load(open(D+'matches.json'))
+def wnurl(tid,sub): return [u for u in M[tid]['wn'] if sub in u][0]
+X='x'  # drop marker
+# (final_id, target_id, ko, en, type, selectors, note, match)
+F=[
+# ---------- SM
+('ardbeg-wee-beastie',None,'아드벡 위 비스티 5년','Ardbeg Wee Beastie 5','SM',{},'','없음'),
+('ardbeg-traigh-bhan-19',None,'아드벡 트라이 반 19년','Ardbeg Traigh Bhan 19','SM',{},'연간 배치 제품(WF=배치 4, WN=배치 2)','없음'),
+('ardbeg-25',None,'아드벡 25년','Ardbeg 25','SM',{},'','없음'),
+('glen-scotia-15',None,'글렌 스코시아 15년','Glen Scotia 15','SM',{'df':{'raw':'Score: 8/10, 7/10, 7/10 (리뷰어 3명)'}},'','없음'),
+('glen-scotia-18',None,'글렌 스코시아 18년','Glen Scotia 18','SM',{},'','없음'),
+('glen-scotia-double-cask',None,'글렌 스코시아 더블 캐스크','Glen Scotia Double Cask','SM',{},'','없음'),
+('kilkerran-16',None,'킬커란 16년','Kilkerran 16','SM',{'wn':'21/134','df':'2024'},'연간 배치. WN 2020판 88, Dramface 2021판 6/10도 있음','없음'),
+('kilkerran-8-cs',None,'킬커란 8년 캐스크 스트렝스','Kilkerran 8 Cask Strength','SM',{'df':'Sherry Cask'},'배치마다 캐스크가 다름(WF=배치5 올로로소 2021, WN=셰리 2023, Dramface=셰리 2024)','애매함'),
+('hazelburn-10',None,'헤이즐번 10년','Hazelburn 10','SM',{},'','없음'),
+('macallan-15-double-cask',None,'맥캘란 15년 더블 캐스크','Macallan 15 Double Cask','SM',{},'','없음'),
+('macallan-rare-cask',None,'맥캘란 레어 캐스크','Macallan Rare Cask','SM',{'wn':'Batch #1'},'WF는 2015년 병, WN은 2019 배치 1','없음'),
+('glenlivet-nadurra-oloroso','glenlivet-nadurra','글렌리벳 나두라 올로로소','Glenlivet Nadurra Oloroso','SM',{},'배치 제품(OL0818). 현재 판매 여부 확인 못 함','없음'),
+('glenlivet-21','glenlivet-21','글렌리벳 21년 샘플 룸 컬렉션','Glenlivet 21 Sample Room Collection','SM',{},'WF 표기 그대로 Sample Room Collection','없음'),
+('glenfiddich-14-bourbon-barrel','glenfiddich-14-bourbon','글렌피딕 14년 버번 배럴 리저브','Glenfiddich 14 Bourbon Barrel Reserve','SM',{},'','없음'),
+('glenfiddich-fire-and-cane','glenfiddich-fire-cane','글렌피딕 파이어 앤 케인','Glenfiddich Fire & Cane','SM',{},'','없음'),
+('glenfiddich-23-grand-cru',None,'글렌피딕 23년 그랑 크루','Glenfiddich 23 Grand Cru','SM',{'bb':X},'','없음'),
+('balvenie-16-french-oak',None,'발베니 16년 프렌치 오크','Balvenie 16 French Oak','SM',{},'','없음'),
+('balvenie-17-doublewood',None,'발베니 17년 더블우드','Balvenie 17 DoubleWood','SM',{},'단종 여부 확인 못 함','없음'),
+('aberlour-14',None,'아벨라워 14년 더블 캐스크','Aberlour 14 Double Cask','SM',{},'','없음'),
+('aberlour-18',None,'아벨라워 18년','Aberlour 18','SM',{},'WF는 "18 yo (43%, OB, 50cl, +/-2022)", WN은 "Double Sherry Cask Finish" 2022 배치. 같은 병으로 묶을지 결정 필요','애매함'),
+('aberlour-casg-annamh',None,'아벨라워 카스크 아나브','Aberlour Casg Annamh','SM',{},'','없음'),
+('glenallachie-18',None,'글렌알라키 18년','GlenAllachie 18','SM',{},'','없음'),
+('glenallachie-8',None,'글렌알라키 8년','GlenAllachie 8','SM',{'wn':'OB 2022'},'Dramface 페이지 표기 도수가 48%(WF·WN은 46%)라 판이 다를 수 있음','애매함'),
+('ardmore-legacy',None,'아드모어 레거시','Ardmore Legacy','SM',{},'','없음'),
+('old-pulteney-18',None,'올드 풀트니 18년','Old Pulteney 18','SM',{},'','없음'),
+('old-pulteney-huddart',None,'올드 풀트니 허다트','Old Pulteney Huddart','SM',{'df':{'raw':'Score: 6/10'}},'Dramface 페이지는 허다트(6/10)와 SMWS 병(4/10)을 함께 다룸','없음'),
+('dalwhinnie-winters-gold',None,'달위니 윈터스 골드','Dalwhinnie Winter\'s Gold','SM',{},'','없음'),
+('talisker-skye',None,'탈리스커 스카이','Talisker Skye','SM',{},'','없음'),
+('talisker-57-north',None,'탈리스커 57° 노스','Talisker 57° North','SM',{},'WF가 시음한 병은 +/-2009 병. 현재 판매 여부 확인 못 함','없음'),
+('oban-little-bay',None,'오반 리틀 베이','Oban Little Bay','SM',{},'','없음'),
+('cardhu-15',None,'카듀 15년','Cardhu 15','SM',{},'','없음'),
+('cardhu-18',None,'카듀 18년','Cardhu 18','SM',{'wn':'2023'},'','없음'),
+('cardhu-gold-reserve',None,'카듀 골드 리저브','Cardhu Gold Reserve','SM',{},'','없음'),
+('mortlach-16',None,'몰트락 16년 디스틸러스 드램','Mortlach 16 Distiller\'s Dram','SM',{'wn':'Distiller','df':{'raw':'Score: 4/10, 6/10 (리뷰어 2명)'}},'마스터 표기는 "Mortlach 12"(몰트락)','없음'),
+('tomatin-18',None,'토마틴 18년','Tomatin 18','SM',{},'','없음'),
+('deanston-18',None,'딘스톤 18년','Deanston 18','SM',{'wn':'2023','df':{'raw':'Score: 7/10, 7/10, 7/10, 8/10, 7/10, 8/10 (리뷰어 6명)'}},'','없음'),
+('deanston-virgin-oak',None,'딘스톤 버진 오크','Deanston Virgin Oak','SM',{'df':X,'wn':{'raw':'81 (score box, 글의 첫 병)','name':'Deanston Virgin Oak (46,3%, OB +/- 2022)','sub':'deanston-virgin-oak'}},'','없음'),
+('ncnean-organic',None,'닉닌 오가닉 싱글몰트','Nc\'nean Organic Single Malt','SM',{},'배치 제품','없음'),
+('ardnamurchan-ad',None,'아드나머칸 AD/','Ardnamurchan AD/','SM',{'wn':{'raw':'87 (score box, 글의 첫 병)','name':'Ardnamurchan AD/07.21:05 (46,8%, OB 2021, bourbon + sherry','sub':'ardnamurchan-ad07-21'},'df':'2025-07'},'배치 제품(AD/07.21:05 등). Dramface 2026 글은 별개 제품 AD/10(7/10)','없음'),
+('torabhaig-allt-gleann',None,'토라베이그 알트 글린','Torabhaig Allt Gleann','SM',{'wn':X,'df':X},'WN(86)·Dramface는 Batch Strength(61.1%) 리뷰라 제외','없음'),
+('wolfburn-northland',None,'울프번 노스랜드','Wolfburn Northland','SM',{},'','없음'),
+('wolfburn-morven',None,'울프번 모븐','Wolfburn Morven','SM',{},'','없음'),
+('lagg-kilmory',None,'라그 킬모리 에디션','Lagg Kilmory Edition','SM',{},'','없음'),
+('lagg-corriecravie',None,'라그 코리크레비 에디션','Lagg Corriecravie Edition','SM',{},'','없음'),
+('tamnavulin-double-cask',None,'탐나불린 더블 캐스크','Tamnavulin Double Cask','SM',{},'','없음'),
+('tullibardine-sovereign',None,'툴리바딘 소버린','Tullibardine Sovereign','SM',{},'','없음'),
+('benrinnes-15',None,'벤리네스 15년 플로라 앤 파우나','Benrinnes 15 Flora & Fauna','SM',{},'','없음'),
+('knockando-12',None,'노칸두 12년','Knockando 12','SM',{},'빈티지 표기 제품(WF=2004)','없음'),
+('longmorn-18',None,'롱몬 18년','Longmorn 18','SM',{},'','없음'),
+('longmorn-16',None,'롱몬 16년','Longmorn 16','SM',{'df':X},'Dramface 글은 구형·신형 비교라 점수 대응이 불명확해 제외','없음'),
+('bladnoch-vinaya',None,'블라드녹 비나야','Bladnoch Vinaya','SM',{'wn':{'raw':'86 (score box, 글의 첫 병)','name':'Bladnoch Vinaya (46,7%, OB 2022, first fill bourbon + first','sub':'bladnoch-vinaya'}},'','없음'),
+('bladnoch-11',None,'블라드녹 11년','Bladnoch 11','SM',{},'','없음'),
+('bladnoch-14',None,'블라드녹 14년','Bladnoch 14','SM',{},'','없음'),
+('bowmore-25',None,'보모어 25년','Bowmore 25','SM',{'wn':'OB +/- 2018'},'','없음'),
+('laphroaig-16',None,'라프로익 16년','Laphroaig 16','SM',{'wn':X},'WN 2015 리뷰는 43% 면세점 35cl 구형이라 제외','없음'),
+('laphroaig-18',None,'라프로익 18년','Laphroaig 18','SM',{},'WF는 2024년 병, WN은 +/-2016 병(둘 다 48%). 같은 판인지 확인 못 함','애매함'),
+('caol-ila-moch',None,'쿨일라 모크','Caol Ila Moch','SM',{},'','없음'),
+('bunnahabhain-stiuireadair',None,'부나하벤 스튜라더','Bunnahabhain Stiùireadair','SM',{},'','없음'),
+('bunnahabhain-12-cs',None,'부나하벤 12년 캐스크 스트렝스','Bunnahabhain 12 Cask Strength','SM',{},'WN 표기 OB 2021','없음'),
+('glendronach-8-hielan',None,'글렌드로낙 8년 더 힐런','GlenDronach 8 The Hielan','SM',{},'단종 여부 확인 못 함(2015 출시)','없음'),
+('glenfarclas-18',None,'글렌파클라스 18년','Glenfarclas 18','SM',{'wn':'Glenfarclas 18'},'','없음'),
+('balblair-15',None,'발블레어 15년','Balblair 15','SM',{},'','없음'),
+('balblair-18',None,'발블레어 18년','Balblair 18','SM',{},'','없음'),
+('ancnoc-18',None,'아녹 18년','anCnoc 18','SM',{},'','없음'),
+('ancnoc-24',None,'아녹 24년','anCnoc 24','SM',{},'','없음'),
+('glencadam-10',None,'글렌카담 10년','Glencadam 10','SM',{},'','없음'),
+('royal-brackla-18',None,'로열 브라클라 18년','Royal Brackla 18','SM',{},'','없음'),
+('aultmore-21',None,'올트모어 21년','Aultmore 21','SM',{},'','없음'),
+('craigellachie-23',None,'크라이겔라키 23년','Craigellachie 23','SM',{},'','없음'),
+('glenglassaugh-sandend',None,'글렌글라사 샌드엔드','Glenglassaugh Sandend','SM',{},'','없음'),
+('glenglassaugh-portsoy',None,'글렌글라사 포트소이','Glenglassaugh Portsoy','SM',{},'','없음'),
+('glenturret-10-peat-smoked','glenturret-10-peat','글렌터렛 10년 피트 스모크드','Glenturret 10 Peat Smoked','SM',{},'연간 릴리스(2024)','없음'),
+('glenrothes-18',None,'글렌로시스 18년','Glenrothes 18','SM',{},'','없음'),
+('tamdhu-18',None,'탐듀 18년','Tamdhu 18','SM',{'df':{'raw':'Score: 7/10, 6/10 (리뷰어 2명)'}},'','없음'),
+('arran-quarter-cask','arran-quarter-cask','아란 쿼터 캐스크 (더 보시)','Arran Quarter Cask "The Bothy"','SM',{'wn':'2019'},'배치 제품','없음'),
+('arran-21',None,'아란 21년','Arran 21','SM',{'wn':'Arran 21 Year Old'},'','없음'),
+# ---------- BL
+('whyte-mackay-special','whyte-mackay','화이트 앤 맥케이 스페셜','Whyte & Mackay Special','BL',{},'','없음'),
+('white-horse',None,'화이트 호스','White Horse','BL',{},'','없음'),
+('jw-island-green',None,'조니워커 아일랜드 그린','Johnnie Walker Island Green','BL',{'df':X},'면세점 제품','없음'),
+('jw-blonde','jw-blonde2','조니워커 블론드','Johnnie Walker Blonde','BL',{},'','없음'),
+('jw-black-ruby',None,'조니워커 블랙 루비','Johnnie Walker Black Ruby','BL',{},'','없음'),
+('scallywag',None,'스캘리왜그','Scallywag','BL',{'wn':X},'WN 리뷰는 캐스크 스트렝스판이라 제외','없음'),
+('shackleton',None,'섀클턴','Mackinlay\'s Shackleton','BL',{},'','없음'),
+('dewars-25',None,'듀어스 25년','Dewar\'s 25','BL',{},'','없음'),
+('ardray',None,'아드레이','Ardray','BL',{},'','없음'),
+# ---------- JP
+('nikka-tailored',None,'닛카 테일러드','Nikka Tailored','JP',{},'','없음'),
+('nikka-session',None,'닛카 세션','Nikka Session','JP',{},'','없음'),
+('nikka-days',None,'닛카 데이즈','Nikka Days','JP',{},'','없음'),
+('super-nikka','nikka-super','슈퍼 닛카','Super Nikka','JP',{},'WF 표기는 "Super Nikka Revival"(복각판)','애매함'),
+('hakushu-25',None,'하쿠슈 25년','Hakushu 25','JP',{},'','없음'),
+('yamazaki-25',None,'야마자키 25년','Yamazaki 25','JP',{},'','없음'),
+('chichibu-the-first-ten','chichibu-first-ten','치치부 더 퍼스트 텐','Chichibu The First Ten','JP',{},'5,000병 한정(2020)','없음'),
+('mars-maltage-cosmo',None,'마르스 몰티지 코스모','Mars Maltage Cosmo','JP',{},'','없음'),
+('suntory-royal',None,'산토리 로열','Suntory Royal','JP',{},'','없음'),
+('shizuoka-united-s','shizuoka','시즈오카 유나이티드 S','Shizuoka United S','JP',{'wn':'Winter 2023','df':'United S'},'계절판(WN=Winter 2023). WN 2024 글의 초판은 85(score box)','없음'),
+('kurayoshi-sherry-cask','kurayoshi','마쓰이 구라요시 셰리 캐스크','The Kurayoshi Sherry Cask','JP',{},'','없음'),
+# ---------- IR
+('redbreast-18',None,'레드브레스트 18년','Redbreast 18','IR',{},'','없음'),
+('redbreast-px-edition','redbreast-px','레드브레스트 PX 에디션','Redbreast PX Edition','IR',{},'','없음'),
+('blue-spot',None,'블루 스팟 7년 캐스크 스트렝스','Blue Spot 7 Cask Strength','IR',{},'','없음'),
+('gold-spot-9','gold-spot','골드 스팟 9년','Gold Spot 9','IR',{'wn':'9 yo'},'135주년 한정판','없음'),
+('powers-gold-label',None,'파워스 골드 라벨','Powers Gold Label','IR',{},'','없음'),
+('jameson-caskmates-ipa','jameson-caskmates-stout','제임슨 캐스크메이츠 IPA','Jameson Caskmates IPA Edition','IR',{},'','없음'),
+('knappogue-castle-12','knappogue-12','나포그 캐슬 12년','Knappogue Castle 12','IR',{},'','없음'),
+('teeling-single-grain',None,'틸링 싱글 그레인','Teeling Single Grain','IR',{},'WF 시음은 2013년 병(2015 게시)','없음'),
+('tullamore-dew-12','tullamore-12','툴라모어 듀 12년','Tullamore D.E.W. 12','IR',{},'','없음'),
+('tullamore-dew-14','tullamore-14','툴라모어 듀 14년 싱글몰트','Tullamore D.E.W. 14 Single Malt','IR',{},'','없음'),
+('bushmills-21',None,'부시밀 21년','Bushmills 21','IR',{'wn':'Bushmills 21 Year Old'},'WN 2026 글은 별개 제품 Three Wood(46%)라 제외','없음'),
+('dingle-single-malt',None,'딩글 싱글몰트','Dingle Single Malt','IR',{},'','없음'),
+('glendalough-double-barrel',None,'글렌달록 더블 배럴','Glendalough Double Barrel','IR',{},'','없음'),
+('roe-and-co','roe-co','로 앤 코','Roe & Co','IR',{},'','없음'),
+('kilbeggan-single-pot-still','kilbeggan','킬베간 싱글 팟 스틸','Kilbeggan Single Pot Still','IR',{},'','없음'),
+('method-and-madness-sps','method-madness-sps','메소드 앤 매드니스 싱글 팟 스틸','Method and Madness Single Pot Still','IR',{},'','없음'),
+('drumshanbo-single-pot-still','drumshanbo','드럼샨보 싱글 팟 스틸','Drumshanbo Single Pot Still','IR',{},'','없음'),
+('fercullen-falls',None,'퍼컬렌 폴스','Fercullen Falls','IR',{'wn':X},'','없음'),
+# ---------- WD
+('kavalan-distillery-select-1','kavalan-distillery-select-1','카발란 디스틸러리 셀렉트 No.1','Kavalan Distillery Select No.1','WD',{'wf':X},'','없음'),
+('kavalan-distillery-select-2','kavalan-distillery-select-1','카발란 디스틸러리 셀렉트 No.2','Kavalan Distillery Select No.2','WD',{'wn':X},'','없음'),
+('kavalan-king-car',None,'카발란 킹 카','Kavalan King Car','WD',{},'WF 표기는 "King Car"(+/-2013 병). 현행 King Car Conductor와 같은 제품인지 확인 못 함','애매함'),
+('kavalan-podium',None,'카발란 포디움','Kavalan Podium','WD',{},'','없음'),
+('kavalan-triple-sherry',None,'카발란 트리플 셰리 캐스크','Kavalan Triple Sherry Cask','WD',{},'','없음'),
+('kavalan-solist-fino',None,'카발란 솔리스트 피노','Kavalan Solist Fino Sherry Cask','WD',{},'단일 캐스크 제품(2017 병)','없음'),
+('starward-two-fold',None,'스타워드 투폴드','Starward Two-Fold','WD',{},'','없음'),
+('starward-nova',None,'스타워드 노바','Starward Nova','WD',{},'','없음'),
+('mackmyra-brukswhisky','mackmyra','맥미라 브룩스위스키','Mackmyra Brukswhisky','WD',{},'현재 판매 여부 확인 못 함','없음'),
+('high-coast-hav','high-coast','하이 코스트 하브','High Coast Hav','WD',{},'','없음'),
+('stauning-kaos','stauning','스타우닝 카오스','Stauning Kaos','WD',{},'','없음'),
+('cotswolds-signature','cotswolds','코츠월드 시그니처 싱글몰트','Cotswolds Signature Single Malt','WD',{'wf':X,'wn':{'raw':'82 (score box, 글의 첫 병)','name':'Cotswolds Signature (46%, OB +/- 2022, 6200 btl.)','sub':'cotswolds-signature'}},'','없음'),
+('cotswolds-founders-choice','cotswolds','코츠월드 파운더스 초이스','Cotswolds Founder\'s Choice','WD',{'wn':X,'df':X},'','없음'),
+('rampur-double-cask','rampur','람푸르 더블 캐스크','Rampur Double Cask','WD',{},'','없음'),
+('indri-agneya','indri','인드리 아그네야','Indri Agneya','WD',{'wn':'Agneya'},'','없음'),
+('indri-trini','indri','인드리 트리니 (트리플 캐스크)','Indri Trini – The Three Wood','WD',{'df':X,'wn':{'raw':'86 (score box, 글의 첫 병)','name':'Indri Single Malt – Triple Cask (46%, OB +/- 2024)','sub':'indri-triple-cask'}},'WN 표기는 "Indri Single Malt – Triple Cask". Trini와 같은 제품인지 확인 필요','애매함'),
+('milk-and-honey-classic','milk-honey-classic','밀크 앤 허니 클래식','Milk & Honey Classic','WD',{},'','없음'),
+('milk-and-honey-elements-sherry','milk-honey-elements','밀크 앤 허니 엘리먼츠 셰리 캐스크','Milk & Honey Elements Sherry Cask','WD',{},'','없음'),
+('armorik-classic',None,'아모릭 클래식','Armorik Classic','WD',{},'','없음'),
+('armorik-double-maturation','armorik-double','아모릭 더블 머추레이션','Armorik Double Maturation','WD',{},'','없음'),
+('kyro-malt-rye','kyro','쿠로 몰트 라이','Kyrö Malt Rye','WD',{'wn':X},'','없음'),
+('paul-john-classic-select-cask','paul-john-classic','폴 존 클래식 셀렉트 캐스크','Paul John Classic Select Cask','WD',{},'','없음'),
+('paul-john-peated-select-cask','paul-john-peated','폴 존 피티드 셀렉트 캐스크','Paul John Peated Select Cask','WD',{},'','없음'),
+('millstone-100-rye','zuidam-millstone','밀스톤 100 라이','Millstone 100 Rye','WD',{},'','없음'),
+('alberta-premium-cask-strength-rye','alberta-premium-cs','앨버타 프리미엄 캐스크 스트렝스 라이','Alberta Premium Cask Strength Rye','WD',{},'배치마다 도수가 다름','없음'),
+# ---------- RY
+('willett-family-estate-4-rye','willett-4-rye','윌렛 패밀리 에스테이트 4년 라이','Willett Family Estate 4 Year Rye','RY',{},'','없음'),
+('whistlepig-12-old-world','whistlepig-12','휘슬피그 12년 올드 월드','WhistlePig 12 Old World','RY',{},'','없음'),
+('woodford-reserve-rye','woodford-rye','우드포드 리저브 라이','Woodford Reserve Rye','RY',{},'','없음'),
+('jack-daniels-triple-mash','jd-triple-mash','잭 다니엘스 트리플 매시','Jack Daniel\'s Triple Mash','RY',{},'','없음'),
+('jack-daniels-bonded','jd-bonded','잭 다니엘스 본디드','Jack Daniel\'s Bonded','RY',{},'','없음'),
+('jack-daniels-sb-barrel-proof','jd-sbbp','잭 다니엘스 싱글 배럴 배럴 프루프','Jack Daniel\'s Single Barrel Barrel Proof','RY',{},'마스터의 "Single Barrel Select"와 다른 병(CS)','없음'),
+('gentleman-jack','jd-gentleman-jack','젠틀맨 잭','Gentleman Jack','RY',{},'','없음'),
+('jack-daniels-rye','jd-rye','잭 다니엘스 테네시 라이','Jack Daniel\'s Tennessee Rye','RY',{},'','없음'),
+('george-dickel-barrel-select','dickel-barrel-select','조지 디켈 배럴 셀렉트','George Dickel Barrel Select','RY',{},'','없음'),
+('george-dickel-bottled-in-bond','dickel-bib','조지 디켈 보틀드 인 본드','George Dickel Bottled in Bond','RY',{},'빈티지별 릴리스','없음'),
+('george-dickel-8-bourbon','dickel-8-bourbon','조지 디켈 8년 버번','George Dickel 8 Year Bourbon','RY',{'bb':'George Dickel Bourbon'},'종류를 BB로 볼지 RY(테네시)로 볼지 결정 필요','없음'),
+('uncle-nearest-1856',None,'엉클 니어리스트 1856','Uncle Nearest 1856','RY',{},'','없음'),
+('uncle-nearest-1884',None,'엉클 니어리스트 1884','Uncle Nearest 1884','RY',{},'','없음'),
+('westland-sherry-wood','westland-sherry','웨스트랜드 셰리 우드','Westland Sherry Wood','RY',{},'WF 시음은 2014년 병','없음'),
+('wild-turkey-101-rye',None,'와일드 터키 101 라이','Wild Turkey 101 Rye','RY',{},'','없음'),
+('russells-reserve-6-rye',None,'러셀 리저브 6년 라이','Russell\'s Reserve 6 Year Rye','RY',{},'','없음'),
+('russells-reserve-sb-rye',None,'러셀 리저브 싱글 배럴 라이','Russell\'s Reserve Single Barrel Rye','RY',{},'','없음'),
+('old-forester-rye',None,'올드 포레스터 라이','Old Forester Rye','RY',{},'','없음'),
+('old-overholt-bonded','old-overholt-bib','올드 오버홀트 본디드','Old Overholt Bonded','RY',{},'','없음'),
+('old-overholt',None,'올드 오버홀트','Old Overholt','RY',{},'','없음'),
+('michters-barrel-strength-rye',None,'믹터스 US*1 배럴 스트렝스 라이','Michter\'s US*1 Barrel Strength Rye','RY',{},'','없음'),
+('michters-sour-mash',None,'믹터스 US*1 사워 매시','Michter\'s US*1 Sour Mash','RY',{},'','없음'),
+('whistlepig-piggyback-rye','whistlepig-piggyback','휘슬피그 피기백 라이','WhistlePig PiggyBack Rye','RY',{'bb':'PiggyBack Rye'},'','없음'),
+('stranahans-original','stranahans','스트라나한스 콜로라도 위스키','Stranahan\'s Colorado Whiskey','RY',{},'2015년 리뷰','없음'),
+('elijah-craig-rye',None,'일라이저 크레이그 스트레이트 라이','Elijah Craig Straight Rye','RY',{},'마스터의 "Barrel Proof Rye"와 다른 병(94프루프)','없음'),
+('angels-envy-rye',None,'엔젤스 엔비 라이','Angel\'s Envy Rye','RY',{'bb':'Finished Rye'},'','없음'),
+('basil-hayden-dark-rye',None,'바질 헤이든 다크 라이','Basil Hayden Dark Rye','RY',{},'','없음'),
+('eh-taylor-straight-rye','eh-taylor-rye','E.H. 테일러 스트레이트 라이','Colonel E.H. Taylor Straight Rye','RY',{},'','없음'),
+# ---------- BB
+('noahs-mill',None,'노아스 밀','Noah\'s Mill','BB',{},'','없음'),
+('rowans-creek',None,'로완스 크릭','Rowan\'s Creek','BB',{},'','없음'),
+('willett-pot-still-reserve','willett-pot-still','윌렛 팟 스틸 리저브','Willett Pot Still Reserve','BB',{},'','없음'),
+('widow-jane-10',None,'위도우 제인 10년','Widow Jane 10','BB',{},'싱글 배럴 제품','없음'),
+('wild-turkey-longbranch',None,'와일드 터키 롱브랜치','Wild Turkey Longbranch','BB',{},'','없음'),
+('ezra-brooks-99',None,'에즈라 브룩스 99','Ezra Brooks 99','BB',{},'','없음'),
+('rebel-100',None,'레벨 100','Rebel 100','BB',{'bb':'Rebel Yell 100'},'원문 표기는 Rebel Yell 100(WF·BB)','없음'),
+('david-nicholson-reserve','david-nicholson','데이비드 니콜슨 리저브','David Nicholson Reserve','BB',{},'','없음'),
+('yellowstone-select',None,'옐로스톤 셀렉트','Yellowstone Select','BB',{},'','없음'),
+('jim-beam-double-oak',None,'짐 빔 더블 오크','Jim Beam Double Oak','BB',{},'','없음'),
+('jeffersons-ocean',None,'제퍼슨스 오션','Jefferson\'s Ocean Aged at Sea','BB',{},'항해(Voyage)별 배치. BB는 2014년 Voyage 2(4)·3(3)','없음'),
+('pappy-van-winkle-20','pappy-20','패피 반 윙클 20년','Pappy Van Winkle 20','BB',{},'','없음'),
+('blantons-straight-from-the-barrel','blantons-sftb','블랑톤 스트레이트 프롬 더 배럴','Blanton\'s Straight From The Barrel','BB',{},'','없음'),
+('michters-toasted-barrel-bourbon','michters-toasted','믹터스 US*1 토스티드 배럴 버번','Michter\'s US*1 Toasted Barrel Finish Bourbon','BB',{},'','없음'),
+('legent',None,'리젠트','Legent','BB',{},'','없음'),
+('old-ezra-7-barrel-strength','old-ezra-7','올드 에즈라 7년 배럴 스트렝스','Old Ezra 7 Barrel Strength','BB',{},'','없음'),
+('elijah-craig-18',None,'일라이저 크레이그 18년','Elijah Craig 18','BB',{},'','없음'),
+('elijah-craig-toasted-barrel','elijah-craig-toasted','일라이저 크레이그 토스티드 배럴','Elijah Craig Toasted Barrel','BB',{},'','없음'),
+('heaven-hill-7-bib','heaven-hill-bib-7','헤븐 힐 7년 보틀드 인 본드','Heaven Hill 7 Bottled in Bond','BB',{},'','없음'),
+('new-riff-bib-bourbon','new-riff-bib','뉴 리프 보틀드 인 본드 버번','New Riff Bottled in Bond Bourbon','BB',{},'','없음'),
+('still-austin-the-musician','still-austin','스틸 오스틴 더 뮤지션','Still Austin The Musician','BB',{},'','없음'),
+('russells-reserve-13',None,'러셀 리저브 13년','Russell\'s Reserve 13','BB',{'bb':'2026'},'연간 릴리스(2022판도 4.5)','없음'),
+('russells-reserve-15',None,'러셀 리저브 15년','Russell\'s Reserve 15','BB',{},'BB 표기 (2024)','없음'),
+('four-roses-small-batch-select','four-roses-sb-select','포 로지스 스몰 배치 셀렉트','Four Roses Small Batch Select','BB',{},'','없음'),
+('knob-creek-15',None,'놉 크릭 15년','Knob Creek 15','BB',{},'','없음'),
+('knob-creek-18',None,'놉 크릭 18년','Knob Creek 18','BB',{},'','없음'),
+('larceny-small-batch','larceny-sb','라세니 스몰 배치','Larceny Small Batch','BB',{},'마스터의 "Larceny Barrel Proof"와 다른 병','없음'),
+('penelope-four-grain','penelope','페넬로피 포 그레인','Penelope Four Grain','BB',{'bb':'Four Grain'},'','없음'),
+('weller-full-proof',None,'웰러 풀 프루프','Weller Full Proof','BB',{'bb':'2022'},'','없음'),
+('weller-cypb',None,'웰러 C.Y.P.B.','Weller C.Y.P.B.','BB',{},'','없음'),
+('weller-single-barrel',None,'웰러 싱글 배럴','Weller Single Barrel','BB',{'bb':'2024'},'','없음'),
+('rock-hill-farms',None,'록 힐 팜스','Rock Hill Farms','BB',{},'','없음'),
+('hancocks-presidents-reserve','hancocks','핸콕스 프레지던츠 리저브','Hancock\'s President\'s Reserve','BB',{},'','없음'),
+('benchmark-bonded','benchmark','벤치마크 본디드','Benchmark Bonded','BB',{'bb':'Bonded'},'','없음'),
+('ancient-age',None,'에인션트 에이지','Ancient Age','BB',{},'','없음'),
+('early-times-bib','early-times-bib','얼리 타임스 보틀드 인 본드','Early Times Bottled in Bond','BB',{'bb':'2022'},'','없음'),
+('old-forester-1870',None,'올드 포레스터 1870','Old Forester 1870 Original Batch','BB',{},'','없음'),
+('old-forester-1897',None,'올드 포레스터 1897','Old Forester 1897 Bottled in Bond','BB',{},'','없음'),
+('old-forester-1924',None,'올드 포레스터 1924 10년','Old Forester 1924 10 Year','BB',{'bb':'2025'},'','없음'),
+('old-forester-statesman',None,'올드 포레스터 스테이츠맨','Old Forester Statesman','BB',{},'','없음'),
+('smoke-wagon-small-batch','smoke-wagon','스모크 왜건 스몰 배치','Smoke Wagon Small Batch','BB',{},'','없음'),
+('basil-hayden-toast',None,'바질 헤이든 토스트','Basil Hayden Toast','BB',{},'','없음'),
+('george-remus',None,'조지 리머스','George Remus Bourbon','BB',{},'','없음'),
+('garrison-brothers-small-batch','garrison-brothers','개리슨 브라더스 스몰 배치','Garrison Brothers Small Batch','BB',{},'','없음'),
+('wyoming-whiskey-small-batch','wyoming-whiskey','와이오밍 위스키 스몰 배치','Wyoming Whiskey Small Batch','BB',{},'','없음'),
+('frey-ranch-bourbon','frey-ranch','프레이 랜치 스트레이트 버번','Frey Ranch Straight Bourbon','BB',{},'','없음'),
+('bakers-13','baker-13','베이커스 13년','Baker\'s 13','BB',{'bb':'2025'},'마스터의 "Baker\'s 7"과 다른 병','없음'),
+]
+import urllib.parse
+res=[]
+def pick(xs,sel):
+    if sel is None: return xs[0]
+    if isinstance(sel,dict):
+        if 'sub' in sel: return None
+        d=dict(xs[0]); d.update(sel); return d
+    for x in xs:
+        if sel in x['name'] or sel in str(x.get('date')) or sel in x['url']: return x
+    raise SystemExit('selector fail '+sel+' '+str([x['name'] for x in xs]))
+for fid,tid,ko,en,ty,sel,note,match in F:
+    tid=tid or fid
+    if tid not in R: print('MISSING',fid,tid); continue
+    o={}
+    for s in ['wf','wn','df','bb']:
+        se=sel.get(s)
+        if se==X: continue
+        if isinstance(se,dict) and 'sub' in se:
+            u=[u for v in M.values() for u in v['wn'] if se['sub'] in u][0]
+            o[s]={'raw':se['raw'],'name':se['name'],'url':u,'date':u.split('/')[3]}; continue
+        xs=R[tid]['obs'].get(s)
+        if not xs:
+            if se is not None: print('NOOBS',fid,s)
+            continue
+        o[s]=pick(xs,se)
+    if not o: print('EMPTY',fid); continue
+    res.append({'id':fid,'ko':ko,'en':en,'type':ty,'obs':o,'note':note,'match':match})
+json.dump(res,open(D+'final.json','w'),indent=1,ensure_ascii=False)
+ids=[r['id'] for r in res]; assert len(ids)==len(set(ids))
+import collections
+n_ind=lambda r: sum(1 for s in r['obs'] if s!='bb')
+print(len(res),'final;',sum(1 for r in res if n_ind(r)>=2),'with 2+ (wf/wn/df);',sum(1 for r in res if n_ind(r)==1),'with 1;',sum(1 for r in res if n_ind(r)==0),'bb only')
+print(collections.Counter(r['type'] for r in res))
+print(collections.Counter((r['type'],min(n_ind(r),2)) for r in res))

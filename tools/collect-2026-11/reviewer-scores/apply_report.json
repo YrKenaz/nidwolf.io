@@ -1,0 +1,841 @@
+{
+ "new_bottles": [
+  {
+   "id": "ardbeg-weebeastie",
+   "cand_id": "ardbeg-wee-beastie",
+   "region_fallback": false,
+   "ds": {
+    "price": 60000,
+    "price_product": "아드벡 위 비스티 5년",
+    "ds_rating": 4.8,
+    "ds_reviews": 501,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/5388c249-b696-417e-ba9f-f9b7ed310e4b.webp",
+    "names": [
+     "아드벡 위 비스티 5년"
+    ]
+   }
+  },
+  {
+   "id": "ardbeg-19",
+   "cand_id": "ardbeg-traigh-bhan-19",
+   "region_fallback": false,
+   "ds": {
+    "price": 499000,
+    "price_product": "아드벡 트라이 반 19년 배치 7",
+    "ds_rating": 5.0,
+    "ds_reviews": 110,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/f1b84f01-f140-4772-a20a-f4481ff7477e.webp",
+    "names": [
+     "[창고 대방출 한정수량] 아드벡 트라이 반 19년 배치5",
+     "아드벡 트라이 반 19년 배치 7",
+     "아드벡 트라이 반 19년 배치6"
+    ]
+   }
+  },
+  {
+   "id": "glenscotia-15",
+   "cand_id": "glen-scotia-15",
+   "region_fallback": false,
+   "ds": {
+    "price": 178000,
+    "price_product": "글렌스코샤 15년",
+    "ds_rating": 4.9,
+    "ds_reviews": 8,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/d521b155-59ba-4d5b-8031-023bf698ebd8.webp",
+    "names": [
+     "글렌스코샤 15년"
+    ]
+   }
+  },
+  {
+   "id": "glenscotia-18",
+   "cand_id": "glen-scotia-18",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "kilkerran-16",
+   "cand_id": "kilkerran-16",
+   "region_fallback": false,
+   "ds": {
+    "price": 359000,
+    "price_product": "[2025 소량 맛돌이] 킬커란 16년",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/b6cffa89-a553-407f-8783-804333e224cf.webp",
+    "names": [
+     "[2025 소량 맛돌이] 킬커란 16년"
+    ]
+   }
+  },
+  {
+   "id": "hazelburn-10",
+   "cand_id": "hazelburn-10",
+   "region_fallback": true,
+   "ds": {
+    "price": 380000,
+    "price_product": "헤이즐번 10년",
+    "ds_rating": 4.9,
+    "ds_reviews": 20,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/cf78ad73-dd0d-47c2-87f9-e4309792ada8.webp",
+    "names": [
+     "헤이즐번 10년"
+    ]
+   }
+  },
+  {
+   "id": "glenfiddich-23",
+   "cand_id": "glenfiddich-23-grand-cru",
+   "region_fallback": false,
+   "ds": {
+    "price": 479000,
+    "price_product": "글렌피딕 그랑 크루 23년",
+    "ds_rating": 5.0,
+    "ds_reviews": 10,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/528cb03a-8474-4c58-a64a-afda9f84b11f.webp",
+    "names": [
+     "글렌피딕 그랑 크루 23년"
+    ]
+   }
+  },
+  {
+   "id": "balvenie-16",
+   "cand_id": "balvenie-16-french-oak",
+   "region_fallback": false,
+   "ds": {
+    "price": 269000,
+    "price_product": "발베니 16년 프렌치 오크",
+    "ds_rating": 4.9,
+    "ds_reviews": 97,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/83f37137-5e1f-4770-9435-437d0244d4c6.webp",
+    "names": [
+     "발베니 16년 프렌치 오크"
+    ]
+   }
+  },
+  {
+   "id": "aberlour-14",
+   "cand_id": "aberlour-14",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "oldpulteney-18",
+   "cand_id": "old-pulteney-18",
+   "region_fallback": false,
+   "ds": {
+    "price": 245000,
+    "price_product": "올드 풀트니 18년",
+    "ds_rating": 5.0,
+    "ds_reviews": 6,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/7ec3ef7f-5582-41dc-807b-48baeab7c374.webp",
+    "names": [
+     "올드 풀트니 18년"
+    ]
+   }
+  },
+  {
+   "id": "oban-littlebay",
+   "cand_id": "oban-little-bay",
+   "region_fallback": false,
+   "ds": {
+    "price": 150000,
+    "price_product": "오반 리틀 베이",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/84116868-a4e8-4753-a04d-05dcb4823a75.webp",
+    "names": [
+     "오반 리틀 베이",
+     "오반 리틀 베이 1L"
+    ]
+   }
+  },
+  {
+   "id": "cardhu-18",
+   "cand_id": "cardhu-18",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "cardhu-gold",
+   "cand_id": "cardhu-gold-reserve",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "mortlach-16",
+   "cand_id": "mortlach-16",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "deanston-18",
+   "cand_id": "deanston-18",
+   "region_fallback": false,
+   "ds": {
+    "price": 255000,
+    "price_product": "딘스톤 18년",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/cbc19857-f875-492d-bbbb-6573d42f890e.webp",
+    "names": [
+     "딘스톤 18년"
+    ]
+   }
+  },
+  {
+   "id": "deanston-virgin",
+   "cand_id": "deanston-virgin-oak",
+   "region_fallback": false,
+   "ds": {
+    "price": 55000,
+    "price_product": "딘스톤 버진 오크",
+    "ds_rating": 4.6,
+    "ds_reviews": 76,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/190dd3a6-d1ec-4352-9c83-b2fda534d124.webp",
+    "names": [
+     "딘스톤 버진 오크"
+    ]
+   }
+  },
+  {
+   "id": "ncnean",
+   "cand_id": "ncnean-organic",
+   "region_fallback": true,
+   "ds": {
+    "price": 149000,
+    "price_product": "낵닌 오가닉 싱글 몰트",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/68f69d96-010e-475a-a76b-cfcb8988b1fc.webp",
+    "names": [
+     "낵닌 오가닉 싱글 몰트"
+    ]
+   }
+  },
+  {
+   "id": "ardnamurchan",
+   "cand_id": "ardnamurchan-ad",
+   "region_fallback": true,
+   "ds": null
+  },
+  {
+   "id": "lagg-kilmory",
+   "cand_id": "lagg-kilmory",
+   "region_fallback": true,
+   "ds": {
+    "price": 160000,
+    "price_product": "라그 킬모리 에디션",
+    "ds_rating": 4.4,
+    "ds_reviews": 5,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/9c2217cf-5a73-424a-9e7a-a7ace0fb4e94.webp",
+    "names": [
+     "라그 킬모리 에디션"
+    ]
+   }
+  },
+  {
+   "id": "lagg-corriecravie",
+   "cand_id": "lagg-corriecravie",
+   "region_fallback": true,
+   "ds": {
+    "price": 154000,
+    "price_product": "라그 코리크라비 에디션",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/39917e18-a198-4454-9597-ab25b9d47921.webp",
+    "names": [
+     "라그 코리크라비 에디션"
+    ]
+   }
+  },
+  {
+   "id": "longmorn-18",
+   "cand_id": "longmorn-18",
+   "region_fallback": true,
+   "ds": null
+  },
+  {
+   "id": "bladnoch-vinaya",
+   "cand_id": "bladnoch-vinaya",
+   "region_fallback": true,
+   "ds": {
+    "price": 88000,
+    "price_product": "블라드녹 비나야",
+    "ds_rating": 4.8,
+    "ds_reviews": 242,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/f95a8735-de0d-40e7-a6a1-31fe46dc48cf.webp",
+    "names": [
+     "블라드녹 비나야"
+    ]
+   }
+  },
+  {
+   "id": "bladnoch-14",
+   "cand_id": "bladnoch-14",
+   "region_fallback": true,
+   "ds": null
+  },
+  {
+   "id": "bowmore-25",
+   "cand_id": "bowmore-25",
+   "region_fallback": false,
+   "ds": {
+    "price": 1050000,
+    "price_product": "[한정수량 초특가] 보모어 25년",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/67fdc2e9-6340-4671-aaa7-8a6274585528.webp",
+    "names": [
+     "[한정수량 초특가] 보모어 25년"
+    ]
+   }
+  },
+  {
+   "id": "laphroaig-16",
+   "cand_id": "laphroaig-16",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "balblair-15",
+   "cand_id": "balblair-15",
+   "region_fallback": false,
+   "ds": {
+    "price": 299000,
+    "price_product": "발블레어 15년",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/7184b758-fc3d-4e12-8738-dc1b9dbdfa00.webp",
+    "names": [
+     "발블레어 15년",
+     "발블레어 15년 1L"
+    ]
+   }
+  },
+  {
+   "id": "glencadam-10",
+   "cand_id": "glencadam-10",
+   "region_fallback": false,
+   "ds": {
+    "price": 79000,
+    "price_product": "글렌카담 10년",
+    "ds_rating": 4.9,
+    "ds_reviews": 40,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/731be2f3-17f1-463f-817f-cb59cee7829a.webp",
+    "names": [
+     "글렌카담 10년"
+    ]
+   }
+  },
+  {
+   "id": "royalbrackla-18",
+   "cand_id": "royal-brackla-18",
+   "region_fallback": false,
+   "ds": {
+    "price": 220000,
+    "price_product": "로얄 브라클라 18년",
+    "ds_rating": 4.9,
+    "ds_reviews": 46,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/09ba6b99-26ef-4c0d-b940-70130a3c2a8f.webp",
+    "names": [
+     "로얄 브라클라 18년"
+    ]
+   }
+  },
+  {
+   "id": "glenglassaugh-sandend",
+   "cand_id": "glenglassaugh-sandend",
+   "region_fallback": false,
+   "ds": {
+    "price": 89000,
+    "price_product": "글렌글라사 샌드엔드",
+    "ds_rating": 4.9,
+    "ds_reviews": 120,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/0ba47e8b-6799-41a1-a509-8abc26980748.webp",
+    "names": [
+     "글렌글라사 샌드엔드"
+    ]
+   }
+  },
+  {
+   "id": "glenglassaugh-portsoy",
+   "cand_id": "glenglassaugh-portsoy",
+   "region_fallback": false,
+   "ds": {
+    "price": 119000,
+    "price_product": "글렌글라사 포트소이",
+    "ds_rating": 4.9,
+    "ds_reviews": 14,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/0de4a04f-312e-49e0-807c-efc9567f8fd5.webp",
+    "names": [
+     "글렌글라사 포트소이"
+    ]
+   }
+  },
+  {
+   "id": "glenrothes-18",
+   "cand_id": "glenrothes-18",
+   "region_fallback": false,
+   "ds": {
+    "price": 295000,
+    "price_product": "글렌로티스 18년",
+    "ds_rating": 4.7,
+    "ds_reviews": 6,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/dd51d89a-c431-4931-b8a4-65fb4b5cc859.webp",
+    "names": [
+     "글렌로티스 18년"
+    ]
+   }
+  },
+  {
+   "id": "tamdhu-18",
+   "cand_id": "tamdhu-18",
+   "region_fallback": false,
+   "ds": {
+    "price": 449000,
+    "price_product": "탐두 18년",
+    "ds_rating": 4.7,
+    "ds_reviews": 15,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/aed67ec0-ab47-4248-badf-6bc6bc720f17.webp",
+    "names": [
+     "탐두 18년"
+    ]
+   }
+  },
+  {
+   "id": "arran-qc",
+   "cand_id": "arran-quarter-cask",
+   "region_fallback": false,
+   "ds": {
+    "price": 100600,
+    "price_product": "아란 쿼터 캐스크",
+    "ds_rating": 4.8,
+    "ds_reviews": 200,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/584b6a26-0dc0-41c4-a5c5-9830bb86fc86.webp",
+    "names": [
+     "아란 쿼터 캐스크"
+    ]
+   }
+  },
+  {
+   "id": "arran-21",
+   "cand_id": "arran-21",
+   "region_fallback": false,
+   "ds": {
+    "price": 649000,
+    "price_product": "아란 21년",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/6e68d776-b21a-4f5d-b7f5-8363816eaaf0.webp",
+    "names": [
+     "아란 21년"
+    ]
+   }
+  },
+  {
+   "id": "nikka-tailored",
+   "cand_id": "nikka-tailored",
+   "region_fallback": false,
+   "ds": {
+    "price": 179000,
+    "price_product": "닛카 테일러드 위스키",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/0aaa7e93-92d4-46bd-9f8d-c892ba868b9f.webp",
+    "names": [
+     "닛카 테일러드 위스키"
+    ]
+   }
+  },
+  {
+   "id": "nikka-session",
+   "cand_id": "nikka-session",
+   "region_fallback": false,
+   "ds": {
+    "price": 73800,
+    "price_product": "닛카 세션",
+    "ds_rating": 4.5,
+    "ds_reviews": 16,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/f31524ca-2239-4f27-8fc9-db9c55839765.webp",
+    "names": [
+     "닛카 세션"
+    ]
+   }
+  },
+  {
+   "id": "nikka-days",
+   "cand_id": "nikka-days",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "hakushu-25",
+   "cand_id": "hakushu-25",
+   "region_fallback": false,
+   "ds": {
+    "price": 6980000,
+    "price_product": "하쿠슈 25년",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/b5c9ccfe-14fd-4d8f-988d-eba4488524cb.webp",
+    "names": [
+     "하쿠슈 25년"
+    ]
+   }
+  },
+  {
+   "id": "yamazaki-25",
+   "cand_id": "yamazaki-25",
+   "region_fallback": false,
+   "ds": {
+    "price": 11480000,
+    "price_product": "야마자키 25년",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/433a7201-0f51-41fe-b8f0-42b82a2e8fa1.webp",
+    "names": [
+     "야마자키 25년"
+    ]
+   }
+  },
+  {
+   "id": "chichibu-first10",
+   "cand_id": "chichibu-the-first-ten",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "shizuoka-united",
+   "cand_id": "shizuoka-united-s",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "redbreast-18",
+   "cand_id": "redbreast-18",
+   "region_fallback": false,
+   "ds": {
+    "price": null,
+    "price_product": null,
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/73e94bfd-5150-4c6b-8621-e5e9499e20ae.webp",
+    "names": [
+     "레드 브레스트 18년"
+    ]
+   }
+  },
+  {
+   "id": "redbreast-px",
+   "cand_id": "redbreast-px-edition",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "blue-spot",
+   "cand_id": "blue-spot",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "gold-spot",
+   "cand_id": "gold-spot-9",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "powers-gold",
+   "cand_id": "powers-gold-label",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "jameson-ipa",
+   "cand_id": "jameson-caskmates-ipa",
+   "region_fallback": false,
+   "ds": {
+    "price": 68000,
+    "price_product": "제임슨 캐스크메이츠 IPA 에디션",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/45852f41-1622-407b-bb39-c273537343e2.webp",
+    "names": [
+     "제임슨 캐스크메이츠 IPA 에디션",
+     "제임슨 캐스크메이츠 IPA 에디션 1L"
+    ]
+   }
+  },
+  {
+   "id": "knappogue-12",
+   "cand_id": "knappogue-castle-12",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "tullamore-12",
+   "cand_id": "tullamore-dew-12",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "tullamore-14",
+   "cand_id": "tullamore-dew-14",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "bushmills-21",
+   "cand_id": "bushmills-21",
+   "region_fallback": false,
+   "ds": {
+    "price": 428000,
+    "price_product": "[특가세일] 부쉬밀 21년",
+    "ds_rating": 5.0,
+    "ds_reviews": 11,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/2f66fb46-ee7f-4727-b48d-e71f170700ff.webp",
+    "names": [
+     "[특가세일] 부쉬밀 21년"
+    ]
+   }
+  },
+  {
+   "id": "dingle-sm",
+   "cand_id": "dingle-single-malt",
+   "region_fallback": false,
+   "ds": {
+    "price": 93000,
+    "price_product": "딩글 싱글몰트 위스키",
+    "ds_rating": 5.0,
+    "ds_reviews": 11,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/2f1291b1-a7b2-4ca9-bc75-0aeb6db07131.webp",
+    "names": [
+     "딩글 싱글몰트 위스키"
+    ]
+   }
+  },
+  {
+   "id": "glendalough-db",
+   "cand_id": "glendalough-double-barrel",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "kilbeggan-sps",
+   "cand_id": "kilbeggan-single-pot-still",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "drumshanbo-sps",
+   "cand_id": "drumshanbo-single-pot-still",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "fercullen-falls",
+   "cand_id": "fercullen-falls",
+   "region_fallback": false,
+   "ds": {
+    "price": 45000,
+    "price_product": "퍼컬렌 폴스",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/a740bd13-1990-4344-8c20-5b2d98ce66ce.webp",
+    "names": [
+     "퍼컬렌 폴스"
+    ]
+   }
+  },
+  {
+   "id": "kavalan-ds1",
+   "cand_id": "kavalan-distillery-select-1",
+   "region_fallback": false,
+   "ds": {
+    "price": 77000,
+    "price_product": "카발란 디스틸러리 셀렉트 No.1",
+    "ds_rating": 4.8,
+    "ds_reviews": 310,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/5879fa00-5fb8-459c-b5c9-1cd3043ceb50.webp",
+    "names": [
+     "카발란 디스틸러리 셀렉트 No.1",
+     "카발란 디스틸러리 셀렉트 No.1(구형)"
+    ]
+   }
+  },
+  {
+   "id": "kavalan-ds2",
+   "cand_id": "kavalan-distillery-select-2",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "kavalan-triple-sherry",
+   "cand_id": "kavalan-triple-sherry",
+   "region_fallback": false,
+   "ds": {
+    "price": 159000,
+    "price_product": "카발란 트리플 셰리 캐스크",
+    "ds_rating": 4.8,
+    "ds_reviews": 22,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/7ea5cf4f-940f-4fa0-af52-fa943a277c4c.webp",
+    "names": [
+     "[점포정리] 카발란 트리플 셰리 캐스크",
+     "카발란 트리플 셰리 캐스크"
+    ]
+   }
+  },
+  {
+   "id": "kavalan-solist-fino",
+   "cand_id": "kavalan-solist-fino",
+   "region_fallback": false,
+   "ds": {
+    "price": 480000,
+    "price_product": "카발란 솔리스트 피노 셰리 CS",
+    "ds_rating": 4.8,
+    "ds_reviews": 10,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/954fc16a-57f4-405e-b89f-209b9977c874.webp",
+    "names": [
+     "카발란 솔리스트 피노 셰리 CS",
+     "카발란 솔리스트 피노 셰리 CS 1L"
+    ]
+   }
+  },
+  {
+   "id": "starward-twofold",
+   "cand_id": "starward-two-fold",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "highcoast-hav",
+   "cand_id": "high-coast-hav",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "stauning-kaos",
+   "cand_id": "stauning-kaos",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "cotswolds-signature",
+   "cand_id": "cotswolds-signature",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "cotswolds-fc",
+   "cand_id": "cotswolds-founders-choice",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "rampur-dc",
+   "cand_id": "rampur-double-cask",
+   "region_fallback": false,
+   "ds": {
+    "price": 115000,
+    "price_product": "람푸르 더블 캐스크",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/0def7510-33ef-4ac2-a359-e551677f86d7.webp",
+    "names": [
+     "람푸르 더블 캐스크"
+    ]
+   }
+  },
+  {
+   "id": "indri-agneya",
+   "cand_id": "indri-agneya",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "mh-classic",
+   "cand_id": "milk-and-honey-classic",
+   "region_fallback": false,
+   "ds": {
+    "price": 84000,
+    "price_product": "[한정수량 초특가] 밀크앤허니 클래식",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/ff4ce578-b989-457d-887b-1cb0680183de.webp",
+    "names": [
+     "[한정수량 초특가] 밀크앤허니 클래식",
+     "밀크앤허니 클래식"
+    ]
+   }
+  },
+  {
+   "id": "mh-sherry",
+   "cand_id": "milk-and-honey-elements-sherry",
+   "region_fallback": false,
+   "ds": {
+    "price": 149000,
+    "price_product": "밀크앤허니 엘리먼츠 셰리 캐스크 싱글몰트 위스키",
+    "ds_rating": 4.5,
+    "ds_reviews": 11,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/e21a58ba-7603-43c7-b631-2f6cb768b755.webp",
+    "names": [
+     "밀크앤허니 엘리먼츠 셰리 캐스크 싱글몰트 위스키"
+    ]
+   }
+  },
+  {
+   "id": "armorik-classic",
+   "cand_id": "armorik-classic",
+   "region_fallback": false,
+   "ds": {
+    "price": 75000,
+    "price_product": "아모릭 클래식",
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/core/product/thumbnail/01910114-8545-4e9e-abef-fe936b059359.webp",
+    "names": [
+     "아모릭 클래식"
+    ]
+   }
+  },
+  {
+   "id": "armorik-dm",
+   "cand_id": "armorik-double-maturation",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "kyro-rye",
+   "cand_id": "kyro-malt-rye",
+   "region_fallback": false,
+   "ds": {
+    "price": null,
+    "price_product": null,
+    "ds_rating": null,
+    "ds_reviews": null,
+    "img_url": "https://d1e2y5wc27crnp.cloudfront.net/media/smartorder_reservation/product/thumbnail/ee00fb91-cd9d-46d3-9858-d7a8267c423e.webp",
+    "names": [
+     "큐로 몰트 라이 위스키"
+    ]
+   }
+  },
+  {
+   "id": "millstone-100",
+   "cand_id": "millstone-100-rye",
+   "region_fallback": false,
+   "ds": null
+  },
+  {
+   "id": "alberta-cs",
+   "cand_id": "alberta-premium-cask-strength-rye",
+   "region_fallback": false,
+   "ds": null
+  }
+ ],
+ "wash25_kept": [
+  "bardstown-bib",
+  "ec-bp-rye",
+  "green-river",
+  "vob-100"
+ ]
+}

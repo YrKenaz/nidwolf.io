@@ -109,17 +109,6 @@
   "group_name": "Man of Many",
   "in_score": false
  },
- "wash25": {
-  "name": "The Whiskey Wash — 25 American Whiskeys for 2026",
-  "lang": "EN",
-  "kind": "추천 목록",
-  "url": "https://thewhiskeywash.com/whiskey-articles/25-american-whiskeys-to-try-in-2026-ranked-by-type-of-drinker/",
-  "rule": "점수에 넣지 않고 추천 횟수로만 센다",
-  "collected": "2026-11-11",
-  "group": "whiskeywash",
-  "group_name": "The Whiskey Wash",
-  "in_score": false
- },
  "minnick10": {
   "name": "Fred Minnick — 10 Best Bourbons Around $40",
   "lang": "EN",
@@ -153,5 +142,41 @@
   "group_name": "WhiskyAnalysis",
   "in_score": true,
   "note": "표 최종 갱신 2023-01-20. 리뉴얼된 제품은 구판 평가일 수 있다."
+ },
+ "whiskyfun": {
+  "name": "Whiskyfun (Serge Valentin·Angus MacRaild 시음 기록)",
+  "lang": "EN",
+  "kind": "100점 평점",
+  "url": "https://www.whiskyfun.com/",
+  "rule": "점수 × 0.6646 + 33.039 (기존 병과의 공통 134병에서 기존 관측값 평균과 평균·표준편차를 맞춘 선형 변환, 상관 0.56). 2019년 이후 리뷰만. 같은 병을 여러 번 시음했으면 가장 최근 병입분",
+  "collected": "2026-11-11",
+  "group": "whiskyfun",
+  "group_name": "Whiskyfun",
+  "in_score": true,
+  "note": "원문 표기 SGP:xxx - NN points. 근거는 Whiskey/data/snapshots/whiskyfun__20261111.txt"
+ },
+ "whiskynotes": {
+  "name": "WhiskyNotes (Ruben Luyten 리뷰)",
+  "lang": "EN",
+  "kind": "100점 평점",
+  "url": "https://www.whiskynotes.be/",
+  "rule": "점수 × 0.7258 + 28.251 (기존 병과의 공통 61병에서 기존 관측값 평균과 평균·표준편차를 맞춘 선형 변환, 상관 0.572). 2019년 이후 리뷰만. 같은 병의 리뷰가 여럿이면 가장 최근 것",
+  "collected": "2026-11-11",
+  "group": "whiskynotes",
+  "group_name": "WhiskyNotes",
+  "in_score": true,
+  "note": "근거는 Whiskey/data/snapshots/whiskynotes__20261111.txt"
+ },
+ "dramface": {
+  "name": "Dramface (필진 리뷰)",
+  "lang": "EN",
+  "kind": "10점 평점",
+  "url": "https://www.dramface.com/all-reviews",
+  "rule": "10점 척도 점수 × 1.8588 + 77.444 (기존 병과의 공통 43병에서 기존 관측값 평균과 평균·표준편차를 맞춘 선형 변환, 상관 0.577). 2019년 이후 리뷰만. 한 글에 여러 명이 채점했으면 평균",
+  "collected": "2026-11-11",
+  "group": "dramface",
+  "group_name": "Dramface",
+  "in_score": true,
+  "note": "근거는 Whiskey/data/snapshots/dramface__20261111.txt"
  }
 }
