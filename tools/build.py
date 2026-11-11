@@ -12,8 +12,9 @@
 import json, os, sys, base64, datetime, collections
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PRIOR, K = 86.0, 1.0                      # 종합 = (환산 점수 합 + PRIOR*K) / (출처 수 + K)
-TIERS = [("S", 91), ("A", 89.5), ("B", 88.5), ("C", 87.5), ("D", 86), ("E", -1)]
+K = 1.0                                   # 종합 = (매체 그룹별 점수 합 + 종류별 사전 평균*K) / (독립 출처 수 + K)
+SHARE = [("S", 0.05), ("A", 0.15), ("B", 0.25), ("C", 0.25), ("D", 0.20), ("E", 0.10)]   # 티어별 비율(점수 상위부터). 경계 점수는 빌드 때 계산
+TIERS = []
 TYPES = {"SM", "BL", "BB", "RY", "IR", "JP", "WD"}
 STYLE, CASK, SPEC = {"peat", "sherry", "cs"}, {"bourbon", "wine", "rum", "mizunara"}, {"SiB", "SmB", "BiB", "BP", "Wh"}
 
@@ -24,19 +25,36 @@ def load(name):
 def tier(s):
     return next(t for t, lo in TIERS if s >= lo)
 
+def set_tiers(scores):
+    """점수 분포의 백분위로 티어 경계를 정한다."""
+    s = sorted(scores, reverse=True); n = len(s); cum = 0; TIERS.clear()
+    for name, share in SHARE[:-1]:
+        cum += share; TIERS.append((name, s[min(n - 1, max(0, round(cum * n) - 1))]))
+    TIERS.append((SHARE[-1][0], -1))
+
 def compute():
+    """규칙(docs/research 02의 1단계):
+    1) 같은 매체(group)의 리스트는 먼저 평균해 한 표로 센다.
+    2) 순서 없는 추천 목록(in_score=false)은 점수에 넣지 않고 추천 횟수로만 센다.
+    3) 사전 평균은 종류(type)별 평균을 쓴다.
+    4) 독립 출처 1곳이면 '잠정', 점수 ± 표준오차가 티어 경계를 넘으면 '경계'로 표시한다."""
     sources, bottles, obs = load("sources.json"), load("bottles.json"), load("observations.json")
     errs, ids = [], [b["id"] for b in bottles]
+    idset = set(ids)
     for i, c in collections.Counter(ids).items():
         if c > 1: errs.append(f"병 id 중복: {i}")
-    by = collections.defaultdict(dict)
+    by, seen = collections.defaultdict(list), set()
     for o in obs:
-        if o["bottle"] not in set(ids): errs.append(f"관측값의 병 id 없음: {o['bottle']}")
-        if o["source"] not in sources: errs.append(f"관측값의 출처 id 없음: {o['source']}")
-        if o["source"] in by[o["bottle"]]: errs.append(f"관측값 중복: {o['bottle']} × {o['source']}")
-        if not (50 <= o["value"] <= 100): errs.append(f"환산 점수 범위 밖: {o}")
-        by[o["bottle"]][o["source"]] = o
-    out = []
+        if o["bottle"] not in idset: errs.append(f"관측값의 병 id 없음: {o['bottle']}"); continue
+        if o["source"] not in sources: errs.append(f"관측값의 출처 id 없음: {o['source']}"); continue
+        if (o["bottle"], o["source"]) in seen: errs.append(f"관측값 중복: {o['bottle']} × {o['source']}")
+        seen.add((o["bottle"], o["source"]))
+        s = sources[o["source"]]
+        if s["in_score"]:
+            if o["value"] is None or not (50 <= o["value"] <= 100): errs.append(f"환산 점수 없음/범위 밖: {o}")
+        elif o["value"] is not None: errs.append(f"추천 목록 출처에 점수가 있음: {o}")
+        by[o["bottle"]].append(o)
+    rows = []
     for b in bottles:
         if b["type"] not in TYPES: errs.append(f"{b['id']}: 알 수 없는 type {b['type']}")
         for key, allowed in (("style", STYLE), ("cask", CASK), ("spec", SPEC)):
@@ -45,17 +63,43 @@ def compute():
         if b.get("img") and not os.path.exists(os.path.join(ROOT, b["img"])): errs.append(f"{b['id']}: 이미지 파일 없음 {b['img']}")
         o = by.get(b["id"])
         if not o: errs.append(f"{b['id']}: 관측값이 하나도 없음"); continue
-        n = len(o); score = round((sum(x["value"] for x in o.values()) + PRIOR * K) / (n + K), 1)
-        out.append({"id": b["id"], "ko": b["ko"], "en": b["en"], "type": b["type"], "region": b["region"],
-                    "score": score, "tier": tier(score), "n": n,
-                    "scores": {k: x["value"] for k, x in o.items()}, "raw": {k: x.get("raw", "") for k, x in o.items()},
-                    "age": b["age"], "abv": b["abv"], "style": b["style"], "cask": b["cask"], "spec": b["spec"],
-                    "beg": b["beginner"], "price": b["price"], "pname": b["price_product"]})
-    out.sort(key=lambda w: (-w["score"], w["ko"]))
-    meta = {k: [s["name"], s["lang"], s["kind"], s["url"], s["rule"]] for k, s in sources.items()}
-    return out, meta, bottles, errs
+        g = collections.defaultdict(list)
+        for x in o:
+            if x["value"] is not None: g[sources[x["source"]]["group"]].append(x["value"])
+        rows.append((b, o, [sum(v) / len(v) for v in g.values()]))
+    if errs: return [], {}, bottles, errs, {}
+    # 종류별 사전 평균, 병 내 표준편차(독립 출처 2곳 이상인 병으로 추정)
+    tm = collections.defaultdict(list); ss = df = 0
+    for b, o, gm in rows:
+        if gm:
+            m = sum(gm) / len(gm); tm[b["type"]].append(m)
+            if len(gm) > 1: ss += sum((x - m) ** 2 for x in gm); df += len(gm) - 1
+    prior = {t: sum(v) / len(v) for t, v in tm.items()}
+    sd = (ss / df) ** 0.5 if df else 2.0
+    set_tiers([round((sum(gm) + prior[b["type"]] * K) / (len(gm) + K), 1) for b, o, gm in rows if gm])
+    out = []
+    for b, o, gm in rows:
+        n = len(gm)
+        w = {"id": b["id"], "ko": b["ko"], "en": b["en"], "type": b["type"], "region": b["region"], "n": n,
+             "obs": [{"s": x["source"], "v": x["value"], "raw": x.get("raw", "")} for x in o],
+             "rec": sum(1 for x in o if x["value"] is None),
+             "age": b["age"], "abv": b["abv"], "style": b["style"], "cask": b["cask"], "spec": b["spec"],
+             "beg": b["beginner"], "price": b["price"], "pname": b["price_product"],
+             "ds": [b["ds_rating"], b["ds_reviews"]] if b.get("ds_rating") else None}
+        if n == 0:
+            w.update(score=None, tier="N", flag="none", lo=None, hi=None, bt=None)
+        else:
+            sc = (sum(gm) + prior[b["type"]] * K) / (n + K); se = sd / (n + K) ** 0.5
+            lo, hi = sc - se, sc + se; t1, t2 = tier(hi), tier(lo)
+            w.update(score=round(sc, 1), tier=tier(round(sc, 1)), lo=round(lo, 1), hi=round(hi, 1),
+                     flag="prov" if n == 1 else ("border" if t1 != t2 else "firm"), bt=f"{t1}~{t2}" if t1 != t2 else None)
+        out.append(w)
+    out.sort(key=lambda w: (-(w["score"] if w["score"] is not None else 0), w["ko"]))
+    meta = {k: [s["name"], s["lang"], s["kind"], s["url"], s["rule"], s["group_name"], s["in_score"]] for k, s in sources.items()}
+    stats = {"prior": {t: round(v, 1) for t, v in prior.items()}, "sd": round(sd, 2), "k": K, "tiers": [[t, lo] for t, lo in TIERS]}
+    return out, meta, bottles, errs, stats
 
-def render(ws, meta, bottles, embed):
+def render(ws, meta, bottles, embed, stats):
     img, src = {}, {}
     for b in bottles:
         if not b.get("img"): continue
@@ -66,7 +110,7 @@ def render(ws, meta, bottles, embed):
             img[b["id"]] = b["img"]
         if b.get("img_source"): src[b["id"]] = b["img_source"]
     updated = datetime.date.today().isoformat()
-    data = json.dumps({"whiskies": ws, "meta": meta, "updated": updated}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    data = json.dumps({"whiskies": ws, "meta": meta, "updated": updated, "stats": stats}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     with open(os.path.join(ROOT, "tools", "template.html"), encoding="utf-8") as f:
         t = f.read()
     return t.replace("__DATA__", data).replace("__IMAGES__", json.dumps({"img": img, "src": src}, ensure_ascii=False, separators=(",", ":")))
@@ -86,25 +130,25 @@ def full(t):
 
 def main():
     a = sys.argv[1:]
-    ws, meta, bottles, errs = compute()
+    ws, meta, bottles, errs, stats = compute()
     for e in errs: print("오류:", e)
     if errs: sys.exit(1)
     c = collections.Counter(w["tier"] for w in ws)
-    print(f"{len(ws)}병 · 출처 {len(meta)}개 · " + " ".join(f"{t}{c[t]}" for t, _ in TIERS) + f" · 이미지 {sum(1 for b in bottles if b.get('img'))}장")
+    print(f"{len(ws)}병 · 출처 {len(meta)}개 · " + " ".join(f"{t}{c[t]}" for t, _ in TIERS) + f" 미평가{c['N']}" + f" · 잠정 {sum(1 for w in ws if w['flag']=='prov')} 경계 {sum(1 for w in ws if w['flag']=='border')} 확정 {sum(1 for w in ws if w['flag']=='firm')} · 경계 {stats['tiers']} · 병 내 sd {stats['sd']} · 사전 평균 {stats['prior']}" + f" · 이미지 {sum(1 for b in bottles if b.get('img'))}장")
     if "--check" in a: return
     with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
-        f.write(full(render(ws, meta, bottles, False)))
+        f.write(full(render(ws, meta, bottles, False, stats)))
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                 f'  <url><loc>https://nidwolf.com/</loc><lastmod>{datetime.date.today().isoformat()}</lastmod></url>\n</urlset>\n')
     print("index.html 생성")
     if "--single" in a:
         p = a[a.index("--single") + 1]
-        with open(p, "w", encoding="utf-8") as f: f.write(full(render(ws, meta, bottles, True)))
+        with open(p, "w", encoding="utf-8") as f: f.write(full(render(ws, meta, bottles, True, stats)))
         print("단일 파일:", p)
     if "--fragment" in a:
         p = a[a.index("--fragment") + 1]
-        with open(p, "w", encoding="utf-8") as f: f.write(render(ws, meta, bottles, True))
+        with open(p, "w", encoding="utf-8") as f: f.write(render(ws, meta, bottles, True, stats))
         print("조각 파일:", p)
 
 if __name__ == "__main__":

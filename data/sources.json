@@ -5,15 +5,21 @@
   "kind": "점수표",
   "url": "https://www.fmkorea.com/8231491027",
   "rule": "표의 점수 그대로 (E등급은 78)",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "winter",
+  "group_name": "윈터/위스키코냑클럽",
+  "in_score": true
  },
  "dcintro": {
   "name": "입문자를 위한 위스키 추천제품 v02 (세계 주류 마이너 갤러리)",
   "lang": "KR",
   "kind": "추천 목록",
   "url": "https://m.dcinside.com/board/nuncestbibendum/6464",
-  "rule": "목록에 있으면 87",
-  "collected": "2026-11-11"
+  "rule": "점수에 넣지 않고 추천 횟수로만 센다",
+  "collected": "2026-11-11",
+  "group": "dc",
+  "group_name": "세계 주류 마이너 갤러리",
+  "in_score": false
  },
  "boozemakers": {
   "name": "BoozeMakers 2026 리뷰·랭킹 (13개 리스트)",
@@ -21,7 +27,10 @@
   "kind": "100점 평점",
   "url": "https://www.boozemakers.com/articles/top-10-scotch-2026",
   "rule": "평점 그대로, 리뷰가 여럿이면 평균",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "boozemakers",
+  "group_name": "BoozeMakers",
+  "in_score": true
  },
  "uproxx_scotch100": {
   "name": "Uproxx — 100 Best Scotch Under $100",
@@ -29,7 +38,10 @@
   "kind": "순위",
   "url": "https://uproxx.com/life/100-best-scotch-whiskeys-under-100-ranked-2023",
   "rule": "1위 94 → 100위 82 (선형)",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "uproxx",
+  "group_name": "Uproxx",
+  "in_score": true
  },
  "uproxx_sm10": {
   "name": "Uproxx — Sipping Single Malts Under $100",
@@ -37,7 +49,10 @@
   "kind": "순위",
   "url": "https://uproxx.com/life/best-sipping-single-malt-whisky-under-100-ranked",
   "rule": "1위 95 → 10위 89 (선형)",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "uproxx",
+  "group_name": "Uproxx",
+  "in_score": true
  },
  "uproxx_bourbon100": {
   "name": "Uproxx — 100 Best Bourbons of 2025",
@@ -45,7 +60,10 @@
   "kind": "순위",
   "url": "https://uproxx.com/life/100-best-bourbons-of-2025/",
   "rule": "1위 96 → 100위 86 (선형)",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "uproxx",
+  "group_name": "Uproxx",
+  "in_score": true
  },
  "uproxx_irish20": {
   "name": "Uproxx — 20 Best Irish Whiskeys",
@@ -53,7 +71,10 @@
   "kind": "순위",
   "url": "https://uproxx.com/life/20-best-irish-whiskeys-ranked-march-2024/",
   "rule": "1위 95 → 20위 86 (선형)",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "uproxx",
+  "group_name": "Uproxx",
+  "in_score": true
  },
  "uproxx_intl35": {
   "name": "Uproxx — 35 Best International Whiskeys",
@@ -61,31 +82,43 @@
   "kind": "순위",
   "url": "https://uproxx.com/life/best-international-whiskeys-of-2023-list/",
   "rule": "1위 96 → 35위 88 (선형)",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "uproxx",
+  "group_name": "Uproxx",
+  "in_score": true
  },
  "mom_scotch": {
   "name": "Man of Many — 24 Best Scotch Whiskies",
   "lang": "EN",
-  "kind": "순위",
+  "kind": "추천 목록",
   "url": "https://manofmany.com/culture/drinks/best-scotch-whisky-brands",
-  "rule": "1번 92 → 24번 86 (선형)",
-  "collected": "2026-11-11"
+  "rule": "점수에 넣지 않고 추천 횟수로만 센다",
+  "collected": "2026-11-11",
+  "group": "manofmany",
+  "group_name": "Man of Many",
+  "in_score": false
  },
  "mom_jp": {
   "name": "Man of Many — 12 Best Japanese Whiskies",
   "lang": "EN",
-  "kind": "순위",
+  "kind": "추천 목록",
   "url": "https://manofmany.com/culture/drinks/best-japanese-whisky",
-  "rule": "1번 92 → 12번 86 (선형)",
-  "collected": "2026-11-11"
+  "rule": "점수에 넣지 않고 추천 횟수로만 센다",
+  "collected": "2026-11-11",
+  "group": "manofmany",
+  "group_name": "Man of Many",
+  "in_score": false
  },
  "wash25": {
   "name": "The Whiskey Wash — 25 American Whiskeys for 2026",
   "lang": "EN",
   "kind": "추천 목록",
   "url": "https://thewhiskeywash.com/whiskey-articles/25-american-whiskeys-to-try-in-2026-ranked-by-type-of-drinker/",
-  "rule": "목록에 있으면 89",
-  "collected": "2026-11-11"
+  "rule": "점수에 넣지 않고 추천 횟수로만 센다",
+  "collected": "2026-11-11",
+  "group": "whiskeywash",
+  "group_name": "The Whiskey Wash",
+  "in_score": false
  },
  "minnick10": {
   "name": "Fred Minnick — 10 Best Bourbons Around $40",
@@ -93,7 +126,10 @@
   "kind": "순위",
   "url": "https://www.fredminnick.com/2022/03/20/10-best-bourbons-around-40-ranked/",
   "rule": "1위 92 → 10위 86 (선형)",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "minnick",
+  "group_name": "Fred Minnick",
+  "in_score": true
  },
  "vinepair26": {
   "name": "VinePair — Best Whiskeys to Drink in 2026",
@@ -101,6 +137,21 @@
   "kind": "부문 선정",
   "url": "https://vinepair.com/buy-this-booze/best-whiskey-brands-2026/",
   "rule": "부문 1위 94, 차점 91",
-  "collected": "2026-11-11"
+  "collected": "2026-11-11",
+  "group": "vinepair",
+  "group_name": "VinePair",
+  "in_score": true
+ },
+ "whiskyanalysis": {
+  "name": "WhiskyAnalysis Meta-Critic (리뷰어 다수의 정규화 합의 점수)",
+  "lang": "EN",
+  "kind": "메타 평점",
+  "url": "https://whiskyanalysis.com/index.php/database/",
+  "rule": "메타 점수 × 8.94 + 12.2 (공통 75병의 평균·표준편차를 맞춘 선형 변환). 리뷰어 3명 이상인 항목만",
+  "collected": "2026-11-11",
+  "group": "whiskyanalysis",
+  "group_name": "WhiskyAnalysis",
+  "in_score": true,
+  "note": "표 최종 갱신 2023-01-20. 리뉴얼된 제품은 구판 평가일 수 있다."
  }
 }

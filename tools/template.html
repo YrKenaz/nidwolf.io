@@ -76,6 +76,8 @@ button,input{font:inherit;color:inherit}
 .tier[data-t="C"] .tlabel{background:var(--t-c);color:var(--t-light-ink)}
 .tier[data-t="D"] .tlabel{background:var(--t-d);color:var(--t-light-ink)}
 .tier[data-t="E"] .tlabel{background:var(--t-e);color:var(--t-light-ink)}
+.tier[data-t="N"] .tlabel{background:var(--bar);color:var(--ink)}
+.tier[data-t="N"] .tlabel b{font-size:26px}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;padding:12px;align-content:start}
 .card{background:none;border:0;padding:0;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:5px;min-width:0}
 .pic{background:var(--tile);border-radius:4px;aspect-ratio:1/1;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border:1px solid var(--line)}
@@ -159,8 +161,8 @@ td a{color:inherit;text-underline-offset:3px}
     <details class="adv" id="adv"><summary>상세 필터 <span class="on" id="oncount" hidden></span></summary><div class="groups" id="groups"></div></details>
     <div class="tools">
       <input class="search" id="q" type="search" placeholder="이름 검색 (예: 라가불린, Ardbeg)" aria-label="이름 검색">
-      <label for="sort" class="check">정렬 <select class="sel" id="sort"><option value="score">점수순</option><option value="name">이름순</option><option value="age">숙성년수순</option><option value="price">가격 낮은 순</option><option value="abv">도수 높은 순</option></select></label>
-      <label class="check"><input type="checkbox" id="multi"> 출처 2곳 이상만</label>
+      <label for="sort" class="check">정렬 <select class="sel" id="sort"><option value="score">점수순</option><option value="name">이름순</option><option value="age">숙성년수순</option><option value="price">가격 낮은 순</option><option value="abv">도수 높은 순</option><option value="ds">데일리샷 평점순</option></select></label>
+      <label class="check"><input type="checkbox" id="multi"> 독립 출처 2곳 이상만</label>
       <label class="check"><input type="checkbox" id="beg"> 입문 추천만</label>
       <button class="reset" type="button" id="reset" hidden>필터 초기화</button>
       <span class="count" id="count"></span>
@@ -171,16 +173,17 @@ td a{color:inherit;text-underline-offset:3px}
 
   <section class="method">
     <h2>점수 산출 방식</h2>
-    <p>출처마다 형식이 달라서 먼저 100점 척도로 맞췄습니다. 점수표는 점수를 그대로 쓰고, 순위 리스트는 1위부터 마지막 순위까지를 일정 구간에 고르게 펼쳤고, 순서 없는 추천 목록은 고정 점수를 줬습니다.</p>
-    <div class="formula">종합 점수 = (출처별 환산 점수의 합 + 86) ÷ (출처 수 + 1)</div>
-    <p>86점짜리 가상의 출처를 하나 더한 것과 같아서, 한 곳에서만 높게 평가된 병은 86점 쪽으로 당겨지고 여러 곳에서 고르게 좋은 평가를 받은 병이 위로 올라갑니다. 한 곳에서만 언급된 병도 모두 싣되 ‘출처 1’ 표시를 붙였습니다. 이런 병의 티어는 잠정값으로 보세요.</p>
+    <p>출처마다 형식이 달라서 먼저 100점 척도로 맞춥니다. 점수표와 평점은 점수를 그대로(메타 평점은 공통 병 기준으로 선형 변환) 쓰고, 순위 리스트는 1위부터 마지막 순위까지를 일정 구간에 고르게 폅니다.</p>
+    <div class="formula">종합 점수 = (매체 그룹별 점수의 합 + 종류별 사전 평균) ÷ (독립 출처 수 + 1)</div>
+    <p><b>같은 매체는 한 표.</b> 한 매체가 낸 여러 리스트는 먼저 평균해 하나의 독립 출처로 셉니다. <b>추천 목록은 점수에 넣지 않습니다.</b> 순서 없는 추천 목록에 고정 점수를 주면 좋은 병의 점수를 깎기 때문에 ‘매체 추천 N회’로만 표시합니다. <b>사전 평균은 종류별</b>로 둡니다(<span id="prior"></span>). 출처가 적은 병일수록 이 값 쪽으로 당겨집니다.</p>
+    <p><b>확신도.</b> 독립 출처가 1곳뿐이면 ‘잠정’입니다. 2곳 이상이어도 점수 ± 표준오차(병 내 표준편차 <span id="sdv"></span>점 ÷ √(출처 수 + 1))가 티어 경계를 넘으면 ‘경계’로 표시합니다. 지금은 출처 수가 적어 대부분의 병이 잠정이거나 경계입니다. 티어는 점수 상위부터 5·15·25·25·20·10% 비율로 나누며, 경계 점수는 갱신할 때마다 다시 계산합니다.</p>
     <div class="scale" id="scale"></div>
     <div class="tw"><table>
-      <thead><tr><th>출처</th><th>형식</th><th>환산 규칙</th><th class="n">반영된 병</th></tr></thead>
+      <thead><tr><th>출처</th><th>매체 그룹</th><th>형식</th><th>반영 방식</th><th class="n">병 수</th></tr></thead>
       <tbody id="stable"></tbody>
     </table></div>
     <p>상세 필터의 속성은 다음 기준으로 붙였습니다. 숙성년수는 라벨 표기 기준이고 표기가 없으면 NAS입니다. 피트는 훈연 향이 뚜렷한 제품(약피트 포함), 셰리는 셰리 캐스크 숙성·피니시가 풍미의 중심인 제품, CS는 캐스크 스트렝스·배럴 프루프로 표기된 제품입니다. 도수는 표준 병입 도수이고 CS 제품은 배치마다 다릅니다. 가격은 수집일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있어 대략적인 구간으로만 보세요. 입문 추천은 입문자 추천 글과 저가·가성비 리스트에 오른 병입니다.</p>
-    <p class="note">병 이미지는 티어리스트 원본(한국 티어표의 병 사진은 80px 내외, Uproxx 과거 이미지는 삭제됨)의 화질 문제로 데일리샷 상품 이미지를 주로 쓰고, 일부는 BoozeMakers·Man of Many 기사 이미지를 썼습니다. 적당한 이미지를 찾지 못한 병은 글자로 대신했습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
+    <p class="note">병 이미지는 티어리스트 원본(한국 티어표의 병 사진은 80px 내외, Uproxx 과거 이미지는 삭제됨)의 화질 문제로 데일리샷 상품 이미지를 주로 쓰고, 일부는 BoozeMakers·Man of Many 기사 이미지를 썼습니다. 적당한 이미지를 찾지 못한 병은 글자로 대신했습니다. 데일리샷 이용자 평점은 참고 정보이며 점수에 넣지 않습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
   </section>
 </div>
 
@@ -191,8 +194,9 @@ const DATA=__DATA__;
 const IMG=__IMAGES__;
 const TYPES=[["ALL","전체"],["SM","싱글몰트 스카치"],["BL","블렌디드 스카치"],["BB","버번"],["RY","라이·아메리칸"],["IR","아이리시"],["JP","재패니즈"],["WD","월드"]];
 const TNAME=Object.fromEntries(TYPES);
-const TIERS=[["S",91,"91점 이상"],["A",89.5,"89.5 – 90.9"],["B",88.5,"88.5 – 89.4"],["C",87.5,"87.5 – 88.4"],["D",86,"86.0 – 87.4"],["E",0,"86점 미만"]];
-const TCOL={S:["--t-s","--t-dark-ink"],A:["--t-a","--t-dark-ink"],B:["--t-b","--t-dark-ink"],C:["--t-c","--t-light-ink"],D:["--t-d","--t-light-ink"],E:["--t-e","--t-light-ink"]};
+const TIERS=DATA.stats.tiers.map(([t,lo],i,a)=>[t,lo,i===0?`${lo.toFixed(1)}점 이상`:lo<0?`${a[i-1][1].toFixed(1)}점 미만`:`${lo.toFixed(1)} – ${(a[i-1][1]-0.1).toFixed(1)}`]).concat([["N",null,"점수 출처 없음"]]);
+const TLBL={N:"미평가"};
+const TCOL={S:["--t-s","--t-dark-ink"],A:["--t-a","--t-dark-ink"],B:["--t-b","--t-dark-ink"],C:["--t-c","--t-light-ink"],D:["--t-d","--t-light-ink"],E:["--t-e","--t-light-ink"],N:["--bar","--ink"]};
 const RULE={winter:"표의 점수 그대로 (E등급은 78)",dcintro:"목록에 있으면 87",boozemakers:"평점 그대로, 리뷰가 여럿이면 평균",uproxx_scotch100:"1위 94 → 100위 82",uproxx_sm10:"1위 95 → 10위 89",uproxx_bourbon100:"1위 96 → 100위 86",uproxx_irish20:"1위 95 → 20위 86",uproxx_intl35:"1위 96 → 35위 88",mom_scotch:"1번 92 → 24번 86",mom_jp:"1번 92 → 12번 86",wash25:"목록에 있으면 89",minnick10:"1위 92 → 10위 86",vinepair26:"부문 1위 94, 차점 91"};
 const W=DATA.whiskies, META=DATA.meta;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -219,7 +223,7 @@ function groups(){
   const n=Object.values(state.f).reduce((a,x)=>a+x.length,0);
   $("oncount").hidden=!n;$("oncount").textContent=n+"개 적용";
   $("reset").hidden=!(n||state.multi||state.beg||state.q||state.type!=="ALL")}
-const SORT={score:(a,b)=>b.score-a.score,name:(a,b)=>a.ko.localeCompare(b.ko,"ko"),age:(a,b)=>(b.age??-1)-(a.age??-1)||b.score-a.score,price:(a,b)=>(a.price??1e12)-(b.price??1e12),abv:(a,b)=>b.abv-a.abv||b.score-a.score};
+const SORT={score:(a,b)=>(b.score??0)-(a.score??0),ds:(a,b)=>(b.ds?b.ds[0]:0)-(a.ds?a.ds[0]:0)||(b.ds?b.ds[1]:0)-(a.ds?a.ds[1]:0),name:(a,b)=>a.ko.localeCompare(b.ko,"ko"),age:(a,b)=>(b.age??-1)-(a.age??-1)||(b.score??0)-(a.score??0),price:(a,b)=>(a.price??1e12)-(b.price??1e12),abv:(a,b)=>b.abv-a.abv||(b.score??0)-(a.score??0)};
 
 function pic(w){return IMG.img[w.id]?`<img src="${IMG.img[w.id]}" alt="" loading="lazy">`:`<span class="ph">${esc(w.ko[0])}</span>`}
 function match(w){
@@ -237,30 +241,34 @@ function render(){
   const list=W.filter(match).sort(SORT[state.sort]);let html="";
   for(const [t,,range] of TIERS){
     const xs=list.filter(w=>w.tier===t);if(!xs.length)continue;
-    html+=`<section class="tier" data-t="${t}"><div class="tlabel"><b>${t}</b><span>${range}</span><em>${xs.length}병</em></div><div class="cards">`+
-      xs.map(w=>`<button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score}점"><div class="pic${IMG.img[w.id]?" wait":""}">${pic(w)}${w.n<2?'<span class="one">출처 1</span>':''}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score.toFixed(1)}</b><span>${state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`).join("")+
+    html+=`<section class="tier" data-t="${t}"><div class="tlabel"><b>${TLBL[t]||t}</b><span>${range}</span><em>${xs.length}병</em></div><div class="cards">`+
+      xs.map(w=>`<button class="card" type="button" data-id="${w.id}" aria-label="${esc(w.ko)} ${w.score??"미평가"}"><div class="pic${IMG.img[w.id]?" wait":""}">${pic(w)}${w.flag==="prov"?'<span class="one">잠정</span>':''}</div><div class="nm">${esc(w.ko)}</div><div class="mt"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${state.sort==="ds"?(w.ds?"★"+w.ds[0].toFixed(1):"–"):w.flag==="border"&&state.sort==="score"?w.bt+" 경계":state.sort==="price"?(w.price?Math.round(w.price/10000)+"만 원":"–"):state.sort==="abv"?w.abv+"%":state.type==="ALL"?esc(TNAME[w.type].split(" ")[0]):esc(w.region)}</span></div></button>`).join("")+
       `</div></section>`}
   $("tiers").innerHTML=html||`<div class="empty">조건에 맞는 위스키가 없습니다. 검색어를 지우거나 다른 종류를 골라 보세요.</div>`;
   $("tiers").querySelectorAll(".pic.wait img").forEach(im=>{const done=()=>im.parentNode.classList.remove("wait");if(im.complete&&im.naturalWidth)done();else{im.addEventListener("load",done,{once:true});im.addEventListener("error",done,{once:true})}});
   $("count").textContent=`${list.length}병 표시 중`}
 function detail(id){
   const w=W.find(x=>x.id===id);if(!w)return;const [bg,fg]=TCOL[w.tier];
-  const rows=Object.entries(w.scores).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{const m=META[k];const pct=Math.max(4,Math.min(100,(v-76)/(98-76)*100));
-    return `<div class="srow"><div><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a><div class="raw">${esc(m[2])} · ${esc(w.raw[k]||"")}</div></div><div class="v">${v.toFixed(1)}</div><div class="track"><i style="width:${pct}%"></i></div></div>`}).join("");
+  const rows=w.obs.slice().sort((a,b)=>(b.v??0)-(a.v??0)).map(o=>{const m=META[o.s];const pct=o.v==null?0:Math.max(4,Math.min(100,(o.v-76)/(98-76)*100));
+    return `<div class="srow"><div><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a><div class="raw">${esc(m[5])} · ${esc(m[2])} · ${esc(o.raw||"")}</div></div><div class="v">${o.v==null?"미반영":o.v.toFixed(1)}</div>${o.v==null?"":`<div class="track"><i style="width:${pct}%"></i></div>`}</div>`}).join("");
+  const FL={prov:"잠정 (독립 출처 1곳)",border:"경계 "+(w.bt||""),firm:"확정",none:"점수 출처 없음"};
   $("dbody").innerHTML=`<div class="dhead"><div class="pic">${pic(w)}</div><div><h3 id="dname">${esc(w.ko)}</h3><div class="en">${esc(w.en)}</div>
-    <div class="tags"><span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier} 티어</span><span class="tag">${esc(TNAME[w.type])}</span><span class="tag">${esc(w.region)}</span>${[...w.style.map(v=>"style:"+v),...w.cask.map(v=>"cask:"+v),...w.spec.map(v=>"spec:"+v)].map(k=>`<span class="tag">${esc(LBL[k])}</span>`).join("")}${w.beg?'<span class="tag">입문 추천</span>':""}</div>
-    <div class="big"><b>${w.score.toFixed(1)}</b><span>종합 점수 · 출처 ${w.n}곳</span></div></div></div>
-    <dl class="facts"><div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv}%${w.style.includes("cs")?" 안팎 (배치별 상이)":""}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price):"정보 없음"}</dd></div>${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
+    <div class="tags"><span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier==="N"?"미평가":w.tier+" 티어"}</span><span class="tag">${FL[w.flag]}</span>${w.rec?`<span class="tag">매체 추천 ${w.rec}회</span>`:""}<span class="tag">${esc(TNAME[w.type])}</span><span class="tag">${esc(w.region)}</span>${[...w.style.map(v=>"style:"+v),...w.cask.map(v=>"cask:"+v),...w.spec.map(v=>"spec:"+v)].map(k=>`<span class="tag">${esc(LBL[k])}</span>`).join("")}${w.beg?'<span class="tag">입문 추천</span>':""}</div>
+    <div class="big"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${w.score==null?"점수형 출처가 아직 없습니다":`종합 점수 · 독립 출처 ${w.n}곳 · 오차 범위 ${w.lo.toFixed(1)}–${w.hi.toFixed(1)}`}</span></div></div></div>
+    <dl class="facts"><div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv}%${w.style.includes("cs")?" 안팎 (배치별 상이)":""}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price):"정보 없음"}</dd></div>${w.ds?`<div><dt>데일리샷 이용자 평점</dt><dd>★ ${w.ds[0].toFixed(1)} (${w.ds[1].toLocaleString("ko-KR")}명)</dd></div>`:""}${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
     <div class="srcs">${rows}</div>
-    <p class="note">막대는 출처별 환산 점수(76–98점 구간)입니다.${IMG.src[w.id]?" 이미지: "+esc(IMG.src[w.id])+".":""}</p>
+    <p class="note">막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.${IMG.src[w.id]?" 이미지: "+esc(IMG.src[w.id])+".":""}</p>
     <button class="close" type="button" id="dclose">닫기</button>`;
   const d=$("dlg");if(d.showModal)d.showModal();else d.setAttribute("open","");
   $("dclose").onclick=()=>d.close()}
 function methods(){
   $("upd").textContent=`${W.length}병, ${DATA.updated} 갱신`;
-  $("scale").innerHTML=TIERS.map(([t,,r])=>`<span style="background:var(${TCOL[t][0]});color:var(${TCOL[t][1]})">${t} · ${r}</span>`).join("");
-  $("stable").innerHTML=Object.entries(META).map(([k,m])=>{const n=W.filter(w=>k in w.scores).length;
-    return `<tr><td><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a></td><td>${esc(m[2])}</td><td>${esc(RULE[k]||"")}</td><td class="n">${n}</td></tr>`}).join("")}
+  const PN={SM:"싱글몰트",BL:"블렌디드",BB:"버번",RY:"라이·아메리칸",IR:"아이리시",JP:"재패니즈",WD:"월드"};
+  $("prior").textContent=Object.entries(DATA.stats.prior).map(([k,v])=>`${PN[k]} ${v.toFixed(1)}`).join(", ");
+  $("sdv").textContent=DATA.stats.sd.toFixed(1);
+  $("scale").innerHTML=TIERS.filter(x=>x[0]!=="N").map(([t,,r])=>`<span style="background:var(${TCOL[t][0]});color:var(${TCOL[t][1]})">${t} · ${r}</span>`).join("");
+  $("stable").innerHTML=Object.entries(META).map(([k,m])=>{const n=W.filter(w=>w.obs.some(o=>o.s===k)).length;
+    return `<tr><td><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a></td><td>${esc(m[5])}</td><td>${esc(m[2])}</td><td>${esc(m[4])}</td><td class="n">${n}</td></tr>`}).join("")}
 $("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.type=b.dataset.k;chips();groups();render()});
 $("q").addEventListener("input",e=>{state.q=e.target.value.trim();groups();render()});
 $("multi").addEventListener("change",e=>{state.multi=e.target.checked;groups();render()});
