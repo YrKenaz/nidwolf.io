@@ -181,7 +181,12 @@ dialog.cmp{width:min(1000px,calc(100vw - 24px))}
 h3[tabindex]:focus{outline:none}
 .unv{display:inline-block;border:1px dashed var(--muted);color:var(--muted);border-radius:999px;font-size:10.5px;padding:0 6px;margin-left:4px;font-weight:400;vertical-align:1px}
 
+/* 필터로 돌아가기 단추(휴대폰 폭에서 필터 바가 화면 밖으로 나가면 보인다) */
+.totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:7;border:1px solid var(--accent);background:var(--surface);color:var(--accent);border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(8,14,11,.18)}
+body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+
 @media (max-width:560px){
+  .bar{position:static}
   .ctab th:first-child,.ctab td:first-child{width:100px}
   .tray-in{flex-wrap:nowrap;gap:8px}
   .tray h2{display:none}
@@ -241,6 +246,7 @@ h3[tabindex]:focus{outline:none}
 </div>
 
 <dialog id="dlg" aria-labelledby="dname"><div class="dl" id="dbody"></div></dialog>
+<button class="totop" type="button" id="totop" hidden>필터로 ↑</button>
 <dialog id="cmpd" class="cmp" aria-labelledby="cmpt"><div class="dl" id="cbody"></div></dialog>
 <aside class="tray" id="tray" aria-label="비교 목록" hidden><div class="tray-in"><h2 id="trayh">비교</h2><ul id="trayl"></ul><button class="go" type="button" id="cmpgo">비교하기</button><button class="reset" type="button" id="cmpclr">비우기</button><p class="msg" id="traymsg" role="status" aria-live="polite"></p></div></aside>
 
@@ -364,7 +370,9 @@ function compare(){
   const row=(l,f,cls)=>`<tr${cls?` class="${cls}"`:""}><th scope="row">${l}</th>${ws.map(w=>`<td>${f(w)}</td>`).join("")}</tr>`;
   const sec=l=>`<tr class="sec"><th scope="rowgroup">${l}</th><td colspan="${ws.length}"></td></tr>`;
   const attr=(w,k)=>w[k].length?w[k].map(v=>esc(LBL[k+":"+v])).join(", "):"–";
-  const srcs=Object.keys(META).filter(k=>ws.some(w=>w.obs.some(o=>o.s===k)));
+  /* 출처 줄은 비교 중인 병 가운데 한 병이라도 환산 점수가 있는 출처만 둔다. 점수 없이 추천만 한 출처는 '매체 추천' 한 줄로 모은다 */
+  const srcs=Object.keys(META).filter(k=>ws.some(w=>w.obs.some(o=>o.s===k&&o.v!=null)));
+  const recOnly=w=>w.obs.filter(o=>o.v==null&&!srcs.includes(o.s)).map(o=>META[o.s][0]);
   let h=`<h3 id="cmpt" tabindex="-1">병 나란히 비교</h3><div class="tw"><table class="ctab" style="min-width:${(innerWidth<=560?100:170)+ws.length*150}px"><thead><tr><th scope="col"><span class="sub">항목</span></th>`+
     ws.map(w=>`<th scope="col"><div class="pic">${pic(w)}</div>${esc(w.ko)}<span class="sub">${esc(w.en)}</span></th>`).join("")+`</tr></thead><tbody>`;
   h+=sec("점수");
@@ -374,6 +382,8 @@ function compare(){
   h+=row("독립 출처",w=>`${w.n}곳${w.rec?`<span class="sub">매체 추천 ${w.rec}회</span>`:""}`);
   h+=sec("출처별 환산 점수");
   h+=srcs.map(k=>row(`${esc(META[k][0])}<span class="sub">${esc(META[k][5])}</span>`,w=>{const o=w.obs.find(o=>o.s===k);return !o?"–":o.v==null?`추천<span class="sub">점수 미반영</span>`:`${o.v.toFixed(1)}<span class="sub">${esc(o.raw||"")}</span>`})).join("");
+  if(ws.some(w=>recOnly(w).length))h+=row(`매체 추천<span class="sub">점수 미반영</span>`,w=>{const r=recOnly(w);return r.length?`${r.length}곳<span class="sub">${r.map(esc).join(", ")}</span>`:"–"});
+  if(!srcs.length&&!ws.some(w=>recOnly(w).length))h+=row("출처",()=>"–");
   h+=sec("가격·이용자 평점");
   h+=row("데일리샷 가격",w=>w.price?`${won(w.price)}<span class="sub">${w.pdate?esc(w.pdate)+" 확인":"확인일 없음"}${w.pname?" · "+esc(w.pname):""}</span>`:"정보 없음");
   h+=row("데일리샷 평점",w=>w.ds?`★ ${w.ds[0].toFixed(1)}<span class="sub">리뷰 ${w.ds[1].toLocaleString("ko-KR")}건</span>`:"–");
@@ -460,6 +470,13 @@ $("trayl").addEventListener("click",e=>{const b=e.target.closest("[data-rm]");if
   const n=$("trayl").querySelector("button")||$("cmpgo");n.focus()});
 $("cmpgo").addEventListener("click",()=>openModal("cmp",null,true));
 $("cmpclr").addEventListener("click",()=>{const ids=CMP.slice();CMP=[];$("traymsg").textContent="";tray();ids.forEach(refresh);syncHash()});
+/* 휴대폰 폭에서는 필터 바가 스크롤과 함께 올라가므로, 화면 밖으로 나가면 '필터로' 단추를 띄운다 */
+{const mq=window.matchMedia("(max-width:560px)");let out=false;
+  const upd=()=>{$("totop").hidden=!(mq.matches&&out)};
+  if("IntersectionObserver" in window)new IntersectionObserver(es=>{out=!es[0].isIntersecting;upd()}).observe(document.querySelector(".bar"));
+  mq.addEventListener?mq.addEventListener("change",upd):mq.addListener(upd);
+  $("totop").addEventListener("click",()=>{const r=matchMedia("(prefers-reduced-motion:reduce)").matches;
+    document.querySelector(".bar").scrollIntoView({behavior:r?"auto":"smooth",block:"start"});/* 검색칸에 초점을 주면 휴대폰 자판이 떠 화면을 가리므로 고른 종류 칩에 둔다 */const c=document.querySelector('#chips [aria-pressed="true"]');if(c)c.focus({preventScroll:true})})}
 {const r=fromHash();state=r.s;CMP=r.c;apply();methods();
   if(r.m.b)openModal("b",r.m.b,false);else if(r.m.show)openModal("cmp",null,false)}
 </script>
