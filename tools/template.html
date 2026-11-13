@@ -242,6 +242,9 @@ h3[tabindex]:focus{outline:none}
 .rlist button:hover{background:var(--surface)}
 .rlist b{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
 .rlist .rv{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.plinks{margin:-4px 0 0;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;font-size:13.5px}
+.plinks a{color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+.plinks small{color:var(--muted);font-size:11.5px;margin-left:6px}
 .credit{margin:-6px 0 0;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
 .credit a,.crlist a{color:inherit;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
 .credits summary{font-size:13.5px}
@@ -333,7 +336,7 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
     </table></div>
     <p>상세 필터의 속성은 다음 기준으로 붙였습니다. 숙성년수는 라벨 표기 기준이고 표기가 없으면 NAS입니다. 피트는 훈연 향이 뚜렷한 제품(약피트 포함), 셰리는 셰리 캐스크 숙성·피니시가 풍미의 중심인 제품, CS는 캐스크 스트렝스·배럴 프루프로 표기된 제품입니다. 도수는 표준 병입 도수이고 CS 제품은 배치마다 다릅니다. 가격은 수집일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있어 대략적인 구간으로만 보세요. 입문 추천은 입문자 추천 글과 저가·가성비 리스트에 오른 병입니다.</p>
     <div id="trendm" hidden></div>
-    <p class="note"><span id="imgnote">병 사진은 사용 허락을 받은 출처를 찾을 때까지 싣지 않습니다.</span> 데일리샷 이용자 평점은 참고 정보이며 점수에 넣지 않습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
+    <p class="note"><span id="imgnote">병 사진은 싣지 않습니다. 대신 병 상세 창에서 사진을 볼 수 있는 외부 페이지(데일리샷 상품 페이지, 위키미디어 공용)로 연결합니다.</span> 데일리샷 이용자 평점은 참고 정보이며 점수에 넣지 않습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
     <details class="adv credits" id="credits" hidden><summary>사진 출처 <span class="on" id="crn"></span></summary><ol class="crlist" id="crlist"></ol></details>
   </section>
 </div>
@@ -453,6 +456,7 @@ function detail(id){
     <p class="note">${rows?"막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.":""}</p>
     <button class="close" type="button" data-close>닫기</button>`;
   if(IMG.img[w.id])$("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<p class="credit">${credit(w)}</p>`);
+  {const pl=photoLinks(w);if(pl)$("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",pl)}
   $("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<div class="acts" id="dacts" role="group" aria-label="내 기록과 비교">${dacts(w)}</div>`);
   return true}
 function trendBox(w){
@@ -477,6 +481,13 @@ function credit(w,withName){const c=(IMG.cr||{})[w.id]||{},lk=(u,t)=>safeUrl(u)?
     c.l?lk(c.lu,esc(c.l)):"라이선스 정보 없음",
     lk(c.p,(/wikimedia/i.test(c.s||"")?"위키미디어 공용":esc(c.s||""))+" 원본"),
     c.c?"변경: "+esc(c.c):""].filter(Boolean).join(" · ")}
+/* 사진 보기 링크: 사진을 싣지 않는 대신 사진이 있는 외부 페이지로 보낸다. 데일리샷 링크는 이 줄 한 곳에만 둔다(가격·평점 칸에는 링크 없음).
+   사진을 실제로 싣고 있으면 위키미디어 원본 링크는 사진 출처 줄에 이미 있으므로 여기서는 뺀다 */
+function photoLinks(w){
+  const out=[],a=(u,t,d)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${t}<span aria-hidden="true"> ↗</span></a>${d?`<small>${d}</small>`:""}`;
+  if(/^https:\/\//i.test(w.dsu||""))out.push(a(w.dsu,"데일리샷에서 사진 보기","주류 판매 사이트로 이동"));
+  if(/^https:\/\//i.test(w.wp||"")&&!IMG.img[w.id])out.push(a(w.wp,"위키미디어 공용에서 사진 보기",""));
+  return out.length?`<p class="plinks" aria-label="사진 보기 (새 창)">${out.join("")}</p>`:""}
 function dacts(w){const m=MINE.get(w.id),c=CMP.includes(w.id);
   return `<button class="chip" type="button" data-a="d" aria-pressed="${m==="d"}">마셨음</button><button class="chip" type="button" data-a="w" aria-pressed="${m==="w"}">마셔 볼 것</button><button class="chip" type="button" data-a="c" aria-pressed="${c}">${c?"비교에 담김":"비교에 담기"}</button>`}
 /* 지도 보기 두 가지. 세로는 종합 점수, 가로는 트렌드지수(view=map) 또는 가격(view=price, 로그 눈금).

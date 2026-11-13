@@ -75,6 +75,9 @@ def compute():
         # 사진 파일 검사: 사진을 싣는 경우에는 늘 한다. 싣지 않는 동안에는 img/ 가 배포 저장소에서 빠져 있을 수 있으므로 폴더가 있을 때만 한다
         if b.get("img") and (photos_on(bottles) or os.path.isdir(os.path.join(ROOT, "img"))) and not os.path.exists(os.path.join(ROOT, b["img"])):
             errs.append(f"{b['id']}: 이미지 파일 없음 {b['img']}")
+        # 사진 보기 링크(상세 창): 데일리샷 상품 페이지, 위키미디어 공용 파일 페이지. https 주소만 받는다
+        for k in ("ds_url", "img_page"):
+            if b.get(k) and not str(b[k]).startswith("https://"): errs.append(f"{b['id']}: {k} 가 https:// 주소가 아님 ({b[k]!r})")
         if b.get("img"):
             # 사진은 위키미디어 공용의 자유 이용 사진만 쓴다. 저작자·라이선스·원본 페이지 표시가 빠지면 라이선스 위반이므로 빌드를 멈춘다
             for k in ("img_license", "img_page"):
@@ -111,6 +114,7 @@ def compute():
              "rec": sum(1 for x in o if x["value"] is None),
              "age": b["age"], "abv": b["abv"], "style": b["style"], "cask": b["cask"], "spec": b["spec"],
              "beg": b["beginner"], "price": b["price"], "pname": b["price_product"], "pdate": b.get("price_date"), "pml": b.get("price_ml"),
+             "dsu": b.get("ds_url"), "wp": b.get("img_page"),   # 사진 보기 링크용. 사진 공개 기준과 무관하게 내보낸다(사진 자체는 싣지 않음)
              "ds": [b["ds_rating"], b["ds_reviews"]] if b.get("ds_rating") else None}
         if n == 0:
             w.update(score=None, tier="N", flag="none", lo=None, hi=None, bt=None)
