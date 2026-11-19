@@ -1215,5 +1215,12 @@
 {"bottle": "kyro-rye", "source": "whiskyfun", "value": 90.9, "raw": "87 points · Kyrö 'Malt Rye' (47.2%, OB, Finland, +/-2023) · 2024-08-05 Serge Valentin"},
 {"bottle": "millstone-100", "source": "dramface", "value": 90.5, "raw": "Score: 7/10 · Millstone 100 Rye · 2024-01-09 Aengus McCloud"},
 {"bottle": "alberta-cs", "source": "dramface", "value": 88.6, "raw": "Score: 6/10 · Alberta Premium Cask Strength · 2025-03-11 Aengus McCloud"},
-{"bottle": "jw-black-ruby", "source": "dramface", "value": 86.7, "raw": "Score: 5/10 · Johnnie Walker Black Ruby · 2025-05-15"}
+{"bottle": "jw-black-ruby", "source": "dramface", "value": 86.7, "raw": "Score: 5/10 · Johnnie Walker Black Ruby · 2025-05-15"},
+{"bottle": "glenlivet-21", "source": "whiskyfun", "value": 90.9, "raw": "87 points · Glenlivet 21 yo 'Sample Room Collection' (43%, OB, +/-2022) · 2022-12-26 Serge Valentin"},
+{"bottle": "glenlivet-21", "source": "whiskyanalysis", "value": 91.0, "raw": "메타 8.81 (리뷰어 15명) · Glenlivet 21yo Archive (all batches) · 구판(Archive) 평가"},
+{"bottle": "glenlivet-25", "source": "whiskyfun", "value": 91.5, "raw": "88 points · Glenlivet 25 yo (43%, OB, The Sample Room Collection, PX & cognac, +/-2023) · 2025-10-07 Serge Valentin"},
+{"bottle": "glenlivet-25", "source": "whiskyanalysis", "value": 91.8, "raw": "메타 8.90 (리뷰어 14명) · Glenlivet XXV 25yo · 구판(XXV) 평가"},
+{"bottle": "glenturret-15", "source": "whiskyfun", "value": 89.5, "raw": "85 points · Glenturret 15 yo (55%, OB, Maiden Release, 2020) · 2020 릴리스 · 2021-04-06 Serge Valentin"},
+{"bottle": "glenturret-30", "source": "whiskyfun", "value": 92.9, "raw": "90 points · Glenturret 30 yo (45.7%, OB, Maiden Release, 750 bottles, 2020) · 2020 릴리스 · 2021-04-06 Serge Valentin"},
+{"bottle": "glenturret-10-peat", "source": "whiskyfun", "value": 86.9, "raw": "81 points · Glenturret 10 yo 'Peat Smoked' (50%, OB, Maiden Release, 2020) · 2020 릴리스 · 2021-04-06 Serge Valentin"}
 ]
