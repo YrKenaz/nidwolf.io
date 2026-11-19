@@ -166,8 +166,13 @@ def match(b, rows, extra):
     _, accept, flags = bottle_names(b, extra)
     prefixes = [norm(p) for p in extra.get(b["id"], {}).get("prefixes", [])]
     ko_sig = sig(b["ko"])
+    # exclude_pids: 이름 규칙으로는 같아 보이지만 다른 병으로 등록된 상품(구형·면세판 등)을 번호로 뺀다.
+    excluded = set(extra.get(b["id"], {}).get("exclude_pids", []))
     matched, others = [], []
     for r in rows:
+        if r["pid"] in excluded:
+            others.append(r)
+            continue
         n = norm(r["name"])
         rule = accept.get(n)
         if not rule and sig(r["name"]) == ko_sig:
@@ -464,8 +469,9 @@ def stage_score(bottles, opts):
         result[bid] = dict(v, flags=[f for f in v.get("flags", []) if f != "new_bottle"])
     if opts.get("freeze"):
         # --freeze-existing: 이미 trends.json에 있는 병은 값을 그대로 두고, 없는 병만 새로 넣는다.
+        # --recompute id,id 로 지정한 병은 예외로 다시 계산한다.
         for bid, v in prev.items():
-            if bid in result:
+            if bid in result and bid not in (opts.get("recompute") or ()):
                 result[bid] = dict(v, flags=[f for f in v.get("flags", []) if f != "new_bottle"])
     new_ids = []
     for nb in load(os.path.join(WORK, "new_bottles.json"), []):
@@ -593,7 +599,8 @@ def write_reports(bottles, ds, result):
 def main():
     args = sys.argv[1:]
     opts = {"refresh": "--refresh" in args, "keep_scales": "--keep-scales" in args, "freeze": "--freeze-existing" in args,
-            "rescale": args[args.index("--rescale") + 1].split(",") if "--rescale" in args else None, "only": None}
+            "rescale": args[args.index("--rescale") + 1].split(",") if "--rescale" in args else None, "only": None,
+            "recompute": set(args[args.index("--recompute") + 1].split(",")) if "--recompute" in args else None}
     if "--only" in args:
         opts["only"] = set(args[args.index("--only") + 1].split(","))
     stages = [a for a in args if a in ("ds", "wiki", "naver", "score")] or ["ds", "wiki", "naver", "score"]

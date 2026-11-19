@@ -18,5 +18,8 @@
  "oldparr-18": {"aliases": ["올드 파 18년 블렌디드 스카치 위스키"], "queries": ["올드 파 18년"]},
  "kavalan-oloroso": {"reject_price_product": true, "note": "가격에 연결된 상품이 솔리스트 CS(다른 병)라 이름 근거에서 뺌"},
  "starward-twofold": {"aliases": ["스타워드 투-폴드 더블 그레인 위스키"], "queries": ["스타워드 투-폴드"]},
- "kyro-rye": {"aliases": ["큐로 몰트 라이 위스키"], "queries": ["큐로 몰트 라이"]}
+ "kyro-rye": {"aliases": ["큐로 몰트 라이 위스키"], "queries": ["큐로 몰트 라이"]},
+ "glenlivet-21": {"exclude_pids": [5429], "note": "구형 상품은 glenlivet-21-archive로 분리"},
+ "glenlivet-21-archive": {"exclude_pids": [20147], "note": "현행 상품은 glenlivet-21"},
+ "glenlivet-nadurra-ff": {"exclude_pids": [6340], "note": "1L 면세판(48%)은 다른 상품이라 합치지 않음"}
 }
