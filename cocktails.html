@@ -139,7 +139,7 @@ a{color:var(--accent)}
 .big .cka-step,.big .cka-garnish,.big .cka-steam{transition:opacity .4s ease}
 .big .cka-step.off,.big .cka-garnish.off,.big .cka-steam.off{opacity:0}
 .big .cka-layer.off{opacity:1}
-.big .cka-layer>*{transform-origin:0 var(--y0,0px);transition:transform .55s ease}
+.big .cka-layer>*{transform-box:view-box;transform-origin:0 var(--y0,0px);transition:transform .55s ease}   /* clip-path 는 묶음(g)에 걸려 있으므로 묶음이 아니라 안쪽 요소만 변형한다 */
 .big .cka-layer.off>*{transform:scaleY(0)}   /* 층은 경계 아래(data-y0)에서 위로 차오른다 */
 @media (prefers-reduced-motion:reduce){.cgrid>.cpanel,.story [data-s],.big .cka-step,.big .cka-layer>*{transition:none}}
 @media print{*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}}
