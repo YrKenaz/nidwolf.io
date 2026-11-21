@@ -98,6 +98,11 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
 </div>
 <dialog class="cd" id="cd" aria-labelledby="cdh"><div class="cdb" id="cdb"></div></dialog>
 <script>
+/* 주소 보정: 배포 주소(nidwolf.com)에서는 이 페이지 자신을 /cocktails 로(호스팅의 308 리다이렉트를 건너뜀),
+   로컬 파일(file://)에서는 티어표 링크 ./ 가 폴더 목록으로 열리므로 index.html 로 바꾼다. 정적 href 는 배포용 ./ 그대로 둔다 */
+(()=>{const live=/(^|\.)nidwolf\.com$/.test(location.hostname),file=location.protocol==="file:";
+  document.querySelectorAll('a[href="cocktails.html"],a[href^="./"]').forEach(a=>{const h=a.getAttribute("href");
+    if(h==="cocktails.html"){if(live)a.href="/cocktails"}else if(file)a.setAttribute("href","index.html"+h.slice(2))})})();
 (()=>{
 const $=id=>document.getElementById(id),D=document.documentElement;D.classList.add("js");
 const N=__COUNT__,f={base:[],diff:[],method:[]};$("cbar").hidden=false;

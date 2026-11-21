@@ -167,9 +167,9 @@ def head(title, desc, url):
             '<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>\n')
 
 HEAD = head("위스키 종합 티어표", DESC, "https://nidwolf.com/")
-CK_HEAD = head("위스키 칵테일 제조법", CK_DESC, "https://nidwolf.com/cocktails.html")
+CK_HEAD = head("위스키 칵테일 제조법", CK_DESC, "https://nidwolf.com/cocktails")   # 호스팅이 cocktails.html → /cocktails 로 308 리다이렉트하므로 표기를 /cocktails 로 통일
 
-SITE_NAV = re.compile(r'\n?  <nav class="site"[^\n]*</nav>')
+SITE_NAV = re.compile(r'\n?  <nav class="site"[^\n]*</nav>(?:\n  <script>/\* 배포 주소[^\n]*\n[^\n]*</script>)?')   # 메뉴 뒤의 /cocktails 주소 바꾸기 스크립트까지 함께 뺀다
 
 def site_nav(t, on):
     """칵테일 페이지를 만들지 않는 빌드에서는 티어표의 사이트 메뉴를 빼서 죽은 링크가 생기지 않게 한다"""
@@ -571,7 +571,7 @@ def main():
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                 f'  <url><loc>https://nidwolf.com/</loc><lastmod>{today}</lastmod></url>\n'
-                + (f'  <url><loc>https://nidwolf.com/cocktails.html</loc><lastmod>{today}</lastmod></url>\n' if ck else "") + '</urlset>\n')
+                + (f'  <url><loc>https://nidwolf.com/cocktails</loc><lastmod>{today}</lastmod></url>\n' if ck else "") + '</urlset>\n')
     print("index.html 생성" + (" · cocktails.html 생성" if ck else ""))
     if "--single" in a:
         p = a[a.index("--single") + 1]

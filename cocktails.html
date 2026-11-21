@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="버번·라이·스카치 등 위스키로 만드는 칵테일 제조법. 투명한 잔에 재료를 넣는 순서대로 양에 비례해 층층이 쌓은 그림으로 따라 하기 쉽게 보여 줍니다."><link rel="canonical" href="https://nidwolf.com/cocktails.html"><link rel="icon" href="/Nidwolf-ico.ico"><meta property="og:title" content="위스키 칵테일 제조법"><meta property="og:description" content="버번·라이·스카치 등 위스키로 만드는 칵테일 제조법. 투명한 잔에 재료를 넣는 순서대로 양에 비례해 층층이 쌓은 그림으로 따라 하기 쉽게 보여 줍니다."><meta property="og:type" content="website"><meta property="og:url" content="https://nidwolf.com/cocktails.html"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="버번·라이·스카치 등 위스키로 만드는 칵테일 제조법. 투명한 잔에 재료를 넣는 순서대로 양에 비례해 층층이 쌓은 그림으로 따라 하기 쉽게 보여 줍니다."><link rel="canonical" href="https://nidwolf.com/cocktails"><link rel="icon" href="/Nidwolf-ico.ico"><meta property="og:title" content="위스키 칵테일 제조법"><meta property="og:description" content="버번·라이·스카치 등 위스키로 만드는 칵테일 제조법. 투명한 잔에 재료를 넣는 순서대로 양에 비례해 층층이 쌓은 그림으로 따라 하기 쉽게 보여 줍니다."><meta property="og:type" content="website"><meta property="og:url" content="https://nidwolf.com/cocktails"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>위스키 칵테일 제조법 — 잔 그림으로 보는 재료 순서와 양</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@700;900&display=swap">
 <style>
@@ -113,6 +113,11 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
 </div>
 <dialog class="cd" id="cd" aria-labelledby="cdh"><div class="cdb" id="cdb"></div></dialog>
 <script>
+/* 주소 보정: 배포 주소(nidwolf.com)에서는 이 페이지 자신을 /cocktails 로(호스팅의 308 리다이렉트를 건너뜀),
+   로컬 파일(file://)에서는 티어표 링크 ./ 가 폴더 목록으로 열리므로 index.html 로 바꾼다. 정적 href 는 배포용 ./ 그대로 둔다 */
+(()=>{const live=/(^|\.)nidwolf\.com$/.test(location.hostname),file=location.protocol==="file:";
+  document.querySelectorAll('a[href="cocktails.html"],a[href^="./"]').forEach(a=>{const h=a.getAttribute("href");
+    if(h==="cocktails.html"){if(live)a.href="/cocktails"}else if(file)a.setAttribute("href","index.html"+h.slice(2))})})();
 (()=>{
 const $=id=>document.getElementById(id),D=document.documentElement;D.classList.add("js");
 const N=20,f={base:[],diff:[],method:[]};$("cbar").hidden=false;
