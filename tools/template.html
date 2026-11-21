@@ -43,7 +43,7 @@ h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0 0 6px}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* 사이트 메뉴(페이지 이동: 티어표 ↔ 칵테일). 아래 보기 전환(상자형 단추 .views)과 구분되게 글자 탭 + 밑줄로 둔다. cocktails_template.html 과 같은 모양 */
-.site{display:flex;gap:22px;border-bottom:1px solid var(--line);margin:-8px 0 22px;font-size:14.5px}
+.site{display:flex;flex-wrap:wrap;gap:4px 22px;border-bottom:1px solid var(--line);margin:-8px 0 22px;font-size:14.5px}
 .site a{color:var(--muted);text-decoration:none;padding:6px 0 9px;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:500}
 .site a:hover{color:var(--ink)}
 .site a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
@@ -51,6 +51,14 @@ button,input{font:inherit;color:inherit}
 /* 필터 바 */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-top:22px;padding-block:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
+/* 용어 도움말(? 단추와 말풍선). 말풍선은 position:fixed 라 필터 줄 높이를 바꾸지 않는다. 상세 창 안에서는 창(top layer) 안으로 옮겨 붙인다 */
+.gq{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:700 11.5px/1 var(--body);cursor:pointer;vertical-align:2px;margin-left:5px;padding:0;flex:0 0 auto}
+.chips>.gq{align-self:center}
+.gq:hover,.gq[aria-expanded="true"]{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
+.gtip{position:fixed;z-index:80;width:max-content;max-width:min(340px,calc(100vw - 24px));background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.28);padding:10px 34px 10px 12px;font-size:13.5px;line-height:1.5;word-break:keep-all;text-align:left;font-weight:400}
+.gtip p{margin:0}.gtip p+p{margin-top:7px}
+.gtip a{color:var(--accent);font-weight:500;white-space:nowrap}
+.gtip .gx{position:absolute;top:4px;right:4px;width:26px;height:26px;border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;border-radius:6px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px;display:inline-flex;gap:6px;align-items:baseline;white-space:nowrap}
 .chip small{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
@@ -416,7 +424,7 @@ const GROUPS=[
  {k:"region",l:"생산 지역",opts:REG,get:w=>[w.region]}];
 const LBL={};GROUPS.forEach(g=>g.opts.forEach(([v,l])=>LBL[g.k+":"+v]=l));
 function groups(){
-  $("groups").innerHTML=GROUPS.map(g=>`<div class="grp"><h3>${g.l} <small>${g.and?"· 고른 것 모두 해당":"· 고른 것 중 하나"}</small></h3><div class="chips">`+
+  $("groups").innerHTML=GROUPS.map(g=>`<div class="grp"><h3>${g.l}${gq(GQ[g.k]||[],g.l)} <small>${g.and?"· 고른 것 모두 해당":"· 고른 것 중 하나"}</small></h3><div class="chips">`+
     g.opts.map(([v,l])=>{const n=W.filter(w=>g.get(w).includes(v)).length;const on=(state.f[g.k]||[]).includes(v);
       return `<button class="chip" type="button" data-g="${g.k}" data-v="${esc(v)}" aria-pressed="${on}">${esc(l)}<small>${n}</small></button>`}).join("")+`</div></div>`).join("");
   const n=Object.values(state.f).reduce((a,x)=>a+x.length,0);
@@ -441,9 +449,31 @@ function match(w){
     if(g.and?!s.every(v=>vs.includes(v)):!s.some(v=>vs.includes(v)))return false}
   if(state.q){const q=state.q.toLowerCase();if(!(w.ko.toLowerCase().includes(q)||w.en.toLowerCase().includes(q)||w.ko.replace(/\s/g,"").includes(q.replace(/\s/g,""))))return false}
   return true}
+/* 용어 도움말: 용어 사전(glossary.html)을 만든 빌드에서만 DATA.stats.gl 이 있다. 필터 묶음 → 용어 id */
+const GL=DATA.stats.gl||null,GQ={type:["single-malt","blended","blended-malt","bourbon","rye","irish","japanese"],age:["age-statement"],style:["peat","cask-strength","cask"],cask:["cask","finish"],spec:["single-barrel","small-batch","bottled-in-bond"],abv:["abv-proof"],region:["tennessee"]};
+function gq(ids,label){ids=GL?ids.filter(i=>GL[i]):[];if(!ids.length)return"";
+  return `<button type="button" class="gq" data-gl="${ids.join(",")}" aria-label="${esc(label)} 용어 설명" aria-expanded="false" aria-haspopup="dialog">?</button>`}
+let gtipBtn=null;
+function gtipClose(back){const t=$("gtip");if(!t||t.hidden)return;t.hidden=true;if(gtipBtn){gtipBtn.setAttribute("aria-expanded","false");if(back)gtipBtn.focus({preventScroll:true})}gtipBtn=null}
+function gtipOpen(b){let t=$("gtip");if(!t){t=document.createElement("div");t.id="gtip";t.className="gtip";t.setAttribute("role","dialog");t.hidden=true}
+  if(gtipBtn===b){gtipClose(true);return}gtipClose(false);
+  (b.closest("dialog")||document.body).append(t);   /* 모달 창 안의 단추면 창 안에 붙여야 위에 보인다 */
+  const href=h=>window.siteHref?siteHref(h):h,ids=b.dataset.gl.split(",");
+  t.setAttribute("aria-label",b.getAttribute("aria-label"));
+  t.innerHTML=ids.map(i=>`<p><b>${esc(GL[i][0])}</b> ${esc(GL[i][1])} <a href="${esc(href("glossary.html#g-"+i))}">자세히 →</a></p>`).join("")+`<button type="button" class="gx" aria-label="닫기">×</button>`;
+  t.hidden=false;gtipBtn=b;b.setAttribute("aria-expanded","true");
+  const r=b.getBoundingClientRect(),w=t.offsetWidth,h=t.offsetHeight,M=12;
+  t.style.left=Math.max(M,Math.min(r.left-10,innerWidth-w-M))+"px";
+  t.style.top=(r.bottom+6+h>innerHeight-M&&r.top-6-h>M?r.top-6-h:r.bottom+6)+"px";
+  t.querySelector("a").focus({preventScroll:true})}
+document.addEventListener("click",e=>{const b=e.target.closest(".gq");if(b){e.preventDefault();e.stopPropagation();gtipOpen(b);return}
+  if(e.target.closest(".gx")){gtipClose(true);return}if(!e.target.closest("#gtip"))gtipClose(false)},true);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&gtipBtn){e.preventDefault();e.stopPropagation();gtipClose(true)}},true);
+document.addEventListener("scroll",e=>{if(gtipBtn&&!(e.target.closest&&e.target.closest("#gtip")))gtipClose(false)},true);
+addEventListener("resize",()=>gtipClose(false));
 function chips(){
   $("chips").innerHTML=TYPES.map(([k,l])=>{const n=k==="ALL"?W.length:W.filter(w=>w.type===k).length;
-    return `<button class="chip" type="button" data-k="${k}" aria-pressed="${state.type===k}">${l}<small>${n}</small></button>`}).join("")}
+    return `<button class="chip" type="button" data-k="${k}" aria-pressed="${state.type===k}">${l}<small>${n}</small></button>`}).join("")+gq(GQ.type,"위스키 종류")}
 const MK={d:"마심",w:"볼 것"};
 function card(w){const m=MINE.get(w.id),c=CMP.includes(w.id);
   /* 빠른 단추는 마우스용 지름길이라 탭 순서·읽기 순서에서 뺀다. 같은 조작은 병 상세 창에서 키보드로 할 수 있다 */
@@ -477,7 +507,7 @@ function detail(id){
     return `<div class="srow"><div><a href="${esc(m[3])}" target="_blank" rel="noopener">${esc(m[0])}</a><div class="raw">${esc(m[5])} · ${esc(m[2])} · ${esc(o.raw||"")}</div></div><div class="v">${o.v==null?"미반영":o.v.toFixed(1)}</div>${o.v==null?"":`<div class="track"><i style="width:${pct}%"></i></div>`}</div>`}).join("");
   const FL={prov:"잠정 (독립 출처 1곳)",border:"경계 "+(w.bt||""),firm:"확정",none:"점수 출처 없음"};
   $("dbody").innerHTML=`<div class="dhead${IMG.img[w.id]?" has-pic":""}">${IMG.img[w.id]?`<div class="pic">${pic(w)}</div>`:""}<div><h3 id="dname" tabindex="-1">${esc(w.ko)}</h3><div class="en">${esc(w.en)}</div>
-    <div class="tags"><span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier==="N"?"미평가":w.tier+" 티어"}</span><span class="tag">${FL[w.flag]}</span>${w.rec?`<span class="tag">매체 추천 ${w.rec}회</span>`:""}${w.vin?'<span class="tag vin">옛 병</span>':""}<span class="tag">${esc(TNAME[w.type])}</span>${w.region?`<span class="tag">${esc(w.region)}</span>`:""}${[...w.style.map(v=>"style:"+v),...w.cask.map(v=>"cask:"+v),...w.spec.map(v=>"spec:"+v)].map(k=>`<span class="tag">${esc(LBL[k])}</span>`).join("")}${w.beg?'<span class="tag">입문 추천</span>':""}</div>
+    <div class="tags"><span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier==="N"?"미평가":w.tier+" 티어"}</span><span class="tag">${FL[w.flag]}${gq(["tier"],"확신도")}</span>${w.rec?`<span class="tag">매체 추천 ${w.rec}회</span>`:""}${w.vin?`<span class="tag vin">옛 병${gq(["trend-vintage"],"옛 병")}</span>`:""}<span class="tag">${esc(TNAME[w.type])}</span>${w.region?`<span class="tag">${esc(w.region)}</span>`:""}${[...w.style.map(v=>"style:"+v),...w.cask.map(v=>"cask:"+v),...w.spec.map(v=>"spec:"+v)].map(k=>`<span class="tag">${esc(LBL[k])}</span>`).join("")}${w.beg?'<span class="tag">입문 추천</span>':""}</div>
     <div class="big"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${w.score==null?(w.obs.length?"점수형 출처가 아직 없습니다":"평가 출처가 아직 없습니다"):`종합 점수 · 독립 출처 ${w.n}곳 · 오차 범위 ${w.lo.toFixed(1)}–${w.hi.toFixed(1)}`}</span></div>${w.vin?'<p class="vnote">지금은 구하기 어려운 옛 병입니다. 티어 경계와 종류별 평균 계산에는 넣지 않았습니다.</p>':""}</div></div>
     <dl class="facts"><div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv==null?"정보 없음":w.abv+"%"+(w.style.includes("cs")?" 안팎 (배치별 상이)":"")}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price)+(w.pml?` (${vol(w.pml)} 기준)`:""):"정보 없음"}</dd></div>${w.ds?`<div><dt>데일리샷 이용자 평점</dt><dd>★ ${w.ds[0].toFixed(1)} (${w.ds[1].toLocaleString("ko-KR")}명)</dd></div>`:""}${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
     ${trendBox(w)}
@@ -496,7 +526,7 @@ function ckBox(w){const ck=DATA.stats.ck;if(!ck||w.vin)return"";const xs=ck.filt
   return `<section class="ckl" aria-label="이 종류로 만드는 칵테일"><h4>이 종류(${tn})로 만드는 칵테일</h4><ul>`+xs.map(c=>`<li><a href="${esc(href("cocktails.html#c="+c.id))}">${c.a?`<img src="art/cocktails/${c.id}-s.svg" alt="" width="28" height="42" loading="lazy" decoding="async">`:""}<span>${esc(c.ko)}</span></a></li>`).join("")+`</ul></section>`}
 function trendBox(w){
   if(!TR)return "";
-  const t=w.tr,head=`<div class="trhead"><h4>트렌드지수<small>얼마나 알려졌는지(누적 인지도) · 티어 점수와 별개</small></h4>`;
+  const t=w.tr,head=`<div class="trhead"><h4>트렌드지수${gq(["trend-vintage"],"트렌드지수")}<small>얼마나 알려졌는지(누적 인지도) · 티어 점수와 별개</small></h4>`;
   if(!t)return `<section class="trend" aria-label="트렌드지수">${head}<div class="trv"><b>–</b></div></div><p class="note">이 병은 트렌드지수 측정값이 없습니다.</p></section>`;
   const parts=Object.keys(TR.weights||{}).map(k=>{const [ps,raw]=t.p[k]||[];
     return `<div><dt>${esc(mat(k))} <small>(비중 ${TR.weights[k]})</small></dt><dd>${raw==null?"–":typeof raw==="number"?raw.toLocaleString("ko-KR"):esc(raw)} <small>→ ${ps==null?"–":Math.round(ps)}점</small></dd></div>`}).join("");

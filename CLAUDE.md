@@ -8,15 +8,18 @@
 ```
 index.html              배포 페이지. 직접 고치지 않는다(빌드 산출물)
 cocktails.html          칵테일 제조법 페이지. 빌드 산출물(data/cocktails.json + tools/cocktails_template.html 이 둘 다 있을 때만 생성)
+glossary.html           용어 사전 페이지. 빌드 산출물(data/glossary.json + tools/glossary_template.html 이 둘 다 있을 때만 생성)
 img/<병 id>.webp        병 사진 (위키미디어 공용 자유 이용 사진만, 긴 변 340px 이하 WebP)
 hero.webp               머리 장식 일러스트(사용자 제공, 1100×547). PC(900px 이상)에서 제목·소개글 오른쪽에만 보인다
 data/sources.json       출처 대장
 data/bottles.json       병 마스터 (한 줄에 한 병)
 data/observations.json  관측값: 병 × 출처 (한 줄에 한 건)
 data/cocktails.json     칵테일 레시피(배열, 스키마는 아래 '칵테일 제조법 페이지' 절)
+data/glossary.json      용어 사전 자료(배열, 스키마는 아래 '용어 사전' 절)
 tools/build.py          검증 + 점수 계산 + index.html 생성
 tools/template.html     페이지 틀(디자인·필터·스크립트)
 tools/cocktails_template.html  칵테일 페이지 틀(목록·필터·상세 창 스크립트). 색 토큰은 build.py 가 template.html 에서 가져와 끼운다
+tools/glossary_template.html  용어 사전 페이지 틀(JS 없음). 색 토큰·메뉴는 build.py 가 끼운다
 tools/check_page.js      생성된 페이지를 jsdom으로 열어 카드 수를 세는 점검 스크립트
 tools/collect-2026-11/  최초 수집에 쓴 스크립트와 중간 산출물(참고용, 그대로는 실행되지 않음)
 ```
@@ -100,6 +103,12 @@ tools/collect-2026-11/  최초 수집에 쓴 스크립트와 중간 산출물(�
 - **칵테일 ↔ 티어표 잇기(N1, 2026-11-21):** 칵테일 상세의 "이 칵테일에 쓰는 종류의 병"은 빌드 때 `cocktail_bottles()`가 고른다. `base` 종류마다 옛 병·미평가 병을 빼고 데일리샷 가격 `CK_PRICE_MAX`(10만 원) 이하·700/750ml(용량 표기 없음 포함)인 병을 점수순으로 `CK_BOTTLES`(5)병까지, 티어·가격과 함께 `./#b=<id>` 링크로 싣고 끝에 `<종류> 전체 보기 →`(`./#type=XX`)를 둔다. 고른 규칙은 화면에 `CK_BOTTLE_RULE` 문장으로 그대로 밝힌다. 문구는 사실만 쓴다("칵테일에 좋은 병", "추천" 금지, 티어는 칵테일용 평가가 아니라는 안내 포함). 거꾸로 티어표 병 상세 맨 아래에는 그 병의 type 이 `base`에 든 칵테일을 "이 종류(버번)로 만드는 칵테일" 칩으로 잇는다(`ckBox()`, 링크 `cocktails.html#c=<id>`를 `siteHref()`로 보정). 칵테일 목록은 빌드가 `DATA.stats.ck`(id·이름·base·작은 그림 유무)로만 넣고, 작은 그림은 상세를 열 때 `art/cocktails/<id>-s.svg`를 `<img loading=lazy>`로 불러 index 용량을 늘리지 않는다. 옛 병과 해당 칵테일이 없는 종류(월드 등)에는 구역이 없다. 칵테일 페이지를 만들지 않는 빌드에서는 `DATA.stats.ck`가 없어 구역도 없다.
 - **전담 그림:** 잔 그림을 넣는 자리는 `build.py`의 `cocktail_art()` 한 곳이다. `art/cocktails/<id>.svg`(상세), `art/cocktails/<id>-s.svg`(목록)가 있으면 그 SVG를 인라인으로 넣고(XML 선언·주석 제거, `<svg`로 시작해야 함), 없으면 `glass_svg()` 임시 그림을 쓴다. 전담 그림 안의 id는 칵테일마다 달라야 한다(목록·상세가 한 페이지에 같이 있음).
 - **사이트 메뉴·주소 보정:** 페이지 목록은 `build.py`의 `PAGES` 한 곳에서 관리한다(키·정적 href·메뉴 이름·배포 주소). 각 템플릿의 `__NAV__` 자리에 `nav_html()`이 메뉴와 주소 보정 스크립트를 넣는다. 스크립트는 배포 주소에서 `*.html` 링크를 짧은 주소로, file://에서 `./` 링크를 `index.html`로 바꾸고, 스크립트로 나중에 만드는 링크용 `window.siteHref()`를 제공한다. 새 페이지는 `PAGES`에 한 줄 더하고 템플릿에 `__NAV__`를 두면 된다. 메뉴는 두 페이지 맨 위에 `.site`(위스키 티어표 | 칵테일 제조법) 글자 탭 + 밑줄로 둔다. 티어표 안의 보기 전환(상자형 단추 `.views`)과 위계가 다르게 보이도록 모양을 나눴다. 메뉴는 실제로 만들어지는 페이지가 둘 이상일 때만 넣는다(칵테일 페이지를 만들지 않는 빌드와 `--single`·`--fragment` 오프라인 파일에는 메뉴 없음, 죽은 링크 방지).
+
+## 용어 사전 (`glossary.html`, N4, 2026-11-21)
+
+- **만드는 방법:** `build.py`가 `data/glossary.json`을 검증하고 `tools/glossary_template.html`에 목차·용어 본문을 정적으로 채워 `glossary.html`을 만든다(배포 주소 `/glossary`, head 는 `GL_HEAD`). 둘 중 하나라도 없으면 페이지·메뉴 항목·티어표 도움말을 모두 만들지 않는다. 묶음(위스키 종류·라벨 표기·맛과 숙성·이 사이트의 표시)은 `GL_GROUPS`에서 정하고, 목록에 없는 id 는 "그 밖의 용어"로 간다. 항목 앵커는 `#g-<id>`, `filter`가 있으면 "티어표에서 보기 →"(`./#<filter>`), 근거 자료는 접히는 목록(`cite`는 화면에 내지 않음).
+- **스키마:** `id`(영문 소문자·숫자·하이픈), `ko`, `en`, `short`(70자 이하), `body`, `filter`(`type=XX` / `f=묶음:값` / `view=map|price` / null), `sources`[{`name`, `url`(https 또는 null), `cite`}]. `--check`가 필수 필드·id 중복·short 길이·filter 형식과 값(종류 코드, 필터 값은 `GL_FILTER_VALUES`, region 은 실제 병의 region)·출처 주소를 검사한다. `GL_FILTER_VALUES`는 template.html `GROUPS`의 값과 같게 유지한다.
+- **티어표 ? 도움말:** 용어 사전을 만든 빌드에서만 `DATA.stats.gl`({id: [ko, short]})을 싣는다(약 4KB). 종류 칩 줄 끝, 상세 필터 묶음 제목 옆(`GQ` 연결표: 숙성년수·스타일·캐스크·피니시·버번·라이 스펙·도수·생산 지역), 병 상세의 확신도 태그·옛 병 태그·트렌드지수 제목 옆에 `?`(`.gq`)를 둔다. 칩마다 두지 않는다(지저분함). 누르면 그 용어들의 `short`와 "자세히 →"(`glossary.html#g-<id>`, `siteHref` 보정) 말풍선(`#gtip`, position:fixed, 상세 창 안에서는 창 안으로 옮겨 붙임)이 열리고 첫 링크로 포커스가 간다. Esc(창은 닫지 않음)·바깥 누름·스크롤·× 단추로 닫히고, Esc·× 는 포커스를 `?`로 돌린다. 필터 줄 높이는 도움말 유무와 같다.
 
 ## 트렌드지수 (`data/trends.json`)
 

@@ -167,11 +167,13 @@ def head(title, desc, url):
             '<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>\n')
 
 HEAD = head("위스키 종합 티어표", DESC, "https://nidwolf.com/")
+GL_DESC = "싱글몰트·버번·캐스크 스트렝스·보틀드 인 본드·피트·NAS 등 위스키 라벨과 티어표에 나오는 용어를 법령·공식 자료 근거와 함께 풀이한 용어 사전."
+GL_HEAD = head("위스키 용어 사전", GL_DESC, "https://nidwolf.com/glossary")
 CK_HEAD = head("위스키 칵테일 제조법", CK_DESC, "https://nidwolf.com/cocktails")   # 호스팅이 cocktails.html → /cocktails 로 308 리다이렉트하므로 표기를 /cocktails 로 통일
 
 # 사이트 페이지 목록(메뉴 순서). 새 페이지는 여기에만 더한다: (키, 정적 href, 메뉴 이름, 배포 주소)
 # 정적 href 는 로컬 서버에서도 열리는 파일 이름, 배포 주소는 호스팅(Cloudflare)이 .html 을 308 로 돌리는 짧은 주소
-PAGES = [("index", "./", "위스키 티어표", "/"), ("cocktails", "cocktails.html", "칵테일 제조법", "/cocktails")]
+PAGES = [("index", "./", "위스키 티어표", "/"), ("cocktails", "cocktails.html", "칵테일 제조법", "/cocktails"), ("glossary", "glossary.html", "용어 사전", "/glossary")]
 
 def nav_html(cur, built):
     """두 페이지 이상 만들어질 때만 메뉴를 넣는다(없는 페이지로 가는 죽은 링크 방지). 주소 보정 스크립트는 늘 넣는다"""
@@ -572,11 +574,83 @@ def load_cocktails():
         return None, [f"cocktails.json 읽기 실패: {e}"]
     return cs, check_cocktails(cs)
 
+# ───────────── 용어 사전(glossary.html, N4) ─────────────
+# data/glossary.json + tools/glossary_template.html 이 둘 다 있을 때만 만든다. 티어표 필터·상세 배지의 ? 도움말도 이때만 켠다
+GL_SLUG = CK_SLUG
+GL_FILTER_VALUES = {"age": {"nas", "a10", "a12", "a15", "a18"}, "style": STYLE, "cask": CASK, "spec": SPEC,
+                    "abv": {"v1", "v2", "v3", "none"}, "price": {"p1", "p2", "p3", "p4", "none"}}   # template.html 의 GROUPS 값과 같게 둔다
+# 용어 사전 페이지의 묶음(자료에 묶음 필드가 없어 여기서 정한다). 목록에 없는 id 는 "그 밖의 용어"로
+GL_GROUPS = [("위스키 종류", ["single-malt", "blended", "blended-malt", "bourbon", "rye", "tennessee", "irish", "japanese"]),
+             ("라벨 표기", ["age-statement", "cask-strength", "single-barrel", "small-batch", "bottled-in-bond", "abv-proof", "ncf-natural-colour"]),
+             ("맛과 숙성", ["peat", "cask", "finish"]),
+             ("이 사이트의 표시", ["tier", "trend-vintage"])]
+
+def check_glossary(gs, bottles):
+    if not isinstance(gs, list): return ["glossary.json 은 배열이어야 함"]
+    errs, regions = [], {b.get("region") for b in bottles if b.get("region")}
+    for i, n in collections.Counter(g.get("id") for g in gs if isinstance(g, dict)).items():
+        if n > 1: errs.append(f"용어 id 중복: {i}")
+    for g in gs:
+        if not isinstance(g, dict): errs.append(f"용어 항목이 객체가 아님: {g!r}"); continue
+        gid = g.get("id") or "?"; e = lambda m: errs.append(f"용어 {gid}: {m}")
+        miss = [k for k in ("id", "ko", "en", "short", "body", "filter", "sources") if k not in g]
+        if miss: e(f"필수 필드 없음 {miss}"); continue
+        if not isinstance(g["id"], str) or not GL_SLUG.match(g["id"]): e("id 는 영문 소문자·숫자·하이픈만")
+        for k in ("ko", "en", "short", "body"):
+            if not isinstance(g[k], str) or not g[k].strip(): e(f"{k} 가 빈 문자열")
+        if isinstance(g["short"], str) and len(g["short"]) > 70: e(f"short 가 70자 초과({len(g['short'])}자)")
+        f = g["filter"]
+        if f is not None:
+            m = re.match(r"^(type)=(\w+)$|^f=(\w+):(.+)$|^view=(map|price)$", f) if isinstance(f, str) else None
+            if not m: e(f"filter 형식 오류 {f!r} (type=XX, f=묶음:값, view=map|price 또는 null)")
+            elif m.group(1) and m.group(2) not in TYPES: e(f"filter 의 종류 코드 오류 {f!r}")
+            elif m.group(3):
+                grp, val = m.group(3), m.group(4)
+                ok = (val in regions) if grp == "region" else (val in GL_FILTER_VALUES.get(grp, ()))
+                if not ok: e(f"filter 값이 티어표 필터에 없음 {f!r}")
+        if not isinstance(g["sources"], list) or not g["sources"]: e("sources 가 비어 있음")
+        else:
+            for x in g["sources"]:
+                if not isinstance(x, dict) or not x.get("name"): e(f"출처에 name 이 없음 ({x!r})")
+                elif x.get("url") is not None and not str(x["url"]).startswith("https://"): e(f"출처 url 은 https:// 또는 null ({x['url']!r})")
+    return errs
+
+def load_glossary(bottles):
+    p = os.path.join(ROOT, "data", "glossary.json")
+    if not os.path.exists(p): return None, []
+    try:
+        with open(p, encoding="utf-8") as f: gs = json.load(f)
+    except Exception as e:
+        return None, [f"glossary.json 읽기 실패: {e}"]
+    return gs, check_glossary(gs, bottles)
+
+def render_glossary(gs):
+    by = {g["id"]: g for g in gs}; used = set(); secs = []; toc = []
+    groups = [(n, [i for i in ids if i in by]) for n, ids in GL_GROUPS]
+    rest = [g["id"] for g in gs if g["id"] not in {i for _, ids in GL_GROUPS for i in ids}]
+    if rest: groups.append(("그 밖의 용어", rest))
+    for k, (name, ids) in enumerate(groups):
+        if not ids: continue
+        toc.append(f'<li><span class="tg">{esc_html(name)}</span>' + "".join(f'<a href="#g-{i}">{esc_html(by[i]["ko"])}</a>' for i in ids) + "</li>")
+        items = []
+        for i in ids:
+            g = by[i]
+            src = "".join(f'<li>{"<a href=\"" + esc_attr(x["url"]) + "\" target=\"_blank\" rel=\"noopener\">" + esc_html(x["name"]) + "<span aria-hidden=\"true\"> ↗</span></a>" if x.get("url") else esc_html(x["name"])}</li>' for x in g["sources"])
+            items.append(f'<article class="term" id="g-{i}" aria-labelledby="gh-{i}"><h3 id="gh-{i}">{esc_html(g["ko"])} <small lang="en">{esc_html(g["en"])}</small></h3>'
+                         f'<p class="short">{esc_html(g["short"])}</p><p class="body">{esc_html(g["body"])}</p>'
+                         + (f'<p class="go"><a href="./#{esc_attr(g["filter"])}">티어표에서 보기 →</a></p>' if g["filter"] else "")
+                         + f'<details class="src"><summary>근거 자료 {len(g["sources"])}건</summary><ul>{src}</ul></details></article>')
+        secs.append(f'<section class="gsec" aria-labelledby="gs-{k}"><h2 id="gs-{k}">{esc_html(name)}</h2>{"".join(items)}</section>')
+    with open(os.path.join(ROOT, "tools", "glossary_template.html"), encoding="utf-8") as f: t = f.read()
+    return t.replace("__TOKENS__", tokens_css()).replace("__TOC__", "".join(toc)).replace("__TERMS__", "".join(secs)).replace("__COUNT__", str(len(gs)))
+
 def main():
     a = sys.argv[1:]
     ws, meta, bottles, errs, stats = compute()
     cs, cerrs = load_cocktails(); errs = errs + cerrs
     ck_tpl = os.path.exists(os.path.join(ROOT, "tools", "cocktails_template.html"))
+    gs, gerrs = load_glossary(bottles); errs = errs + gerrs
+    gl_tpl = os.path.exists(os.path.join(ROOT, "tools", "glossary_template.html"))
     for e in errs: print("오류:", e)
     if errs: sys.exit(1)
     stats["trend"], tmsg = add_trends(ws)
@@ -591,9 +665,13 @@ def main():
     else:
         print(f"칵테일 {len(cs)}종 · 잔 {dict(collections.Counter(c['glass'] for c in cs))} · 출처 없는 레시피 {sum(1 for c in cs if not c['sources'])}종"
               + ("" if ck_tpl else " · tools/cocktails_template.html 없음 — cocktails.html 을 만들지 않음"))
+    if gs is None: print("용어 사전: data/glossary.json 없음 — glossary.html 을 만들지 않음")
+    else: print(f"용어 사전 {len(gs)}항목 · 필터 연결 {sum(1 for g in gs if g['filter'])}항목" + ("" if gl_tpl else " · tools/glossary_template.html 없음 — glossary.html 을 만들지 않음"))
     if "--check" in a: return
     ck = cs is not None and ck_tpl   # 칵테일 페이지를 만들 때만 티어표에 사이트 메뉴와 칵테일 연결을 둔다
-    built = {"index"} | ({"cocktails"} if ck else set())
+    gl = gs is not None and gl_tpl   # 용어 사전을 만들 때만 티어표에 ? 도움말을 둔다(자세히 → 링크가 죽지 않게)
+    built = {"index"} | ({"cocktails"} if ck else set()) | ({"glossary"} if gl else set())
+    if gl: stats["gl"] = {g["id"]: [g["ko"], g["short"]] for g in gs}
     if ck:   # 티어표 병 상세의 "이 종류로 만드는 칵테일"용: 이름·베이스·작은 그림 파일 유무만(그림은 상세를 열 때 img 로 불러 index 용량을 늘리지 않는다)
         stats["ck"] = [{"id": c["id"], "ko": c["ko"], "b": c["base"], "a": os.path.exists(os.path.join(ROOT, ART_DIR, f"{c['id']}-s.svg"))} for c in cs]
     with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
@@ -601,12 +679,14 @@ def main():
     if ck:
         with open(os.path.join(ROOT, "cocktails.html"), "w", encoding="utf-8") as f:
             f.write(full(site_nav(render_cocktails(cs, ws), "cocktails", built), CK_HEAD))
+    if gl:
+        with open(os.path.join(ROOT, "glossary.html"), "w", encoding="utf-8") as f:
+            f.write(full(site_nav(render_glossary(gs), "glossary", built), GL_HEAD))
     today = datetime.date.today().isoformat()
-    with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
+    with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:   # 배포 주소는 PAGES 의 짧은 주소
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-                f'  <url><loc>https://nidwolf.com/</loc><lastmod>{today}</lastmod></url>\n'
-                + (f'  <url><loc>https://nidwolf.com/cocktails</loc><lastmod>{today}</lastmod></url>\n' if ck else "") + '</urlset>\n')
-    print("index.html 생성" + (" · cocktails.html 생성" if ck else ""))
+                + "".join(f'  <url><loc>https://nidwolf.com{u}</loc><lastmod>{today}</lastmod></url>\n' for k, h, n, u in PAGES if k in built) + '</urlset>\n')
+    print("index.html 생성" + (" · cocktails.html 생성" if ck else "") + (" · glossary.html 생성" if gl else ""))
     if "--single" in a:
         p = a[a.index("--single") + 1]
         with open(p, "w", encoding="utf-8") as f: f.write(full(site_nav(render(ws, meta, bottles, True, stats), "index", {"index"})))   # 오프라인 보관용: 다른 페이지 링크 없음

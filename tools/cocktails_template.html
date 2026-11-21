@@ -10,7 +10,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15p
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:1180px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 /* 사이트 메뉴(페이지 이동). 티어표 안의 보기 전환(상자형 단추)과 구분되게 글자 탭 + 밑줄로 둔다 */
-.site{display:flex;gap:22px;border-bottom:1px solid var(--line);margin:0 0 22px;font-size:14.5px}
+.site{display:flex;flex-wrap:wrap;gap:4px 22px;border-bottom:1px solid var(--line);margin:0 0 22px;font-size:14.5px}
 .site a{color:var(--muted);text-decoration:none;padding:6px 0 9px;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:500}
 .site a:hover{color:var(--ink)}
 .site a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
