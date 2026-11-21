@@ -92,11 +92,20 @@ def compute():
         # 관측값이 0건인 병(출처 제외·평가 출처 없이 등록된 병)은 지우지 않고 '미평가'로 둔다.
         # gm 이 비어 있으므로 사전 평균·병 내 표준편차·티어 백분위 모수에 들어가지 않는다(점수형 출처 없는 병과 같은 경로)
         if "vintage" in b and not isinstance(b["vintage"], bool): errs.append(f"{b['id']}: vintage 는 true/false 만 허용 ({b['vintage']!r})")
+        # 증류소 라인업(N3): distillery(영문 묶음 키)·distillery_ko·brand·bottler 는 문자열 또는 null
+        for k in ("distillery", "distillery_ko", "brand", "bottler"):
+            if b.get(k) is not None and (not isinstance(b[k], str) or not b[k].strip()): errs.append(f"{b['id']}: {k} 는 빈 아닌 문자열 또는 null ({b[k]!r})")
+        if b.get("distillery") and not b.get("distillery_ko"): errs.append(f"{b['id']}: distillery 가 있는데 distillery_ko 가 없음")
         o = by.get(b["id"], [])
         g = collections.defaultdict(list)
         for x in o:
             if x["value"] is not None: g[sources[x["source"]]["group"]].append(x["value"])
         rows.append((b, o, [sum(v) / len(v) for v in g.values()]))
+    dko = collections.defaultdict(set)
+    for b in bottles:
+        if isinstance(b.get("distillery"), str) and b.get("distillery_ko"): dko[b["distillery"]].add(b["distillery_ko"])
+    for d, v in dko.items():
+        if len(v) > 1: errs.append(f"증류소 {d}: distillery_ko 가 병마다 다름 {sorted(v)}")
     if errs: return [], {}, bottles, errs, {}
     # 종류별 사전 평균, 병 내 표준편차(독립 출처 2곳 이상인 병으로 추정)
     # 옛 병(vintage: true, 지금은 구하기 어려운 수집가용 병)은 사전 평균·병 내 표준편차·티어 경계 모수에서 모두 뺀다(사용자 결정 2026-11-21).
@@ -123,6 +132,8 @@ def compute():
              "dsu": b.get("ds_url"), "wp": b.get("img_page"),   # 사진 보기 링크용. 사진 공개 기준과 무관하게 내보낸다(사진 자체는 싣지 않음)
              "ds": [b["ds_rating"], b["ds_reviews"]] if b.get("ds_rating") else None,
              "vin": bool(b.get("vintage"))}
+        # 증류소 라인업용(값이 있을 때만 내보내 용량을 아낀다): di 증류소 키, dk 한글 이름, br 브랜드, bo 독립병입 회사
+        w.update({k: b[f] for k, f in (("di", "distillery"), ("br", "brand"), ("bo", "bottler")) if b.get(f)})   # 한글 증류소 이름은 stats["dk"] 표 하나로(병마다 반복하지 않음)
         if n == 0:
             w.update(score=None, tier="N", flag="none", lo=None, hi=None, bt=None)
         else:
@@ -133,7 +144,8 @@ def compute():
         out.append(w)
     out.sort(key=lambda w: (-(w["score"] if w["score"] is not None else 0), w["ko"]))
     meta = {k: [s["name"], s["lang"], s["kind"], s["url"], s["rule"], s["group_name"], s["in_score"]] for k, s in sources.items()}
-    stats = {"prior": {t: round(v, 1) for t, v in prior.items()}, "sd": round(sd, 2), "k": K, "tiers": [[t, lo] for t, lo in TIERS]}
+    stats = {"dk": {d: sorted(v)[0] for d, v in sorted(dko.items())},
+             "prior": {t: round(v, 1) for t, v in prior.items()}, "sd": round(sd, 2), "k": K, "tiers": [[t, lo] for t, lo in TIERS]}
     return out, meta, bottles, errs, stats
 
 def render(ws, meta, bottles, embed, stats):
@@ -657,6 +669,8 @@ def main():
     c = collections.Counter(w["tier"] for w in ws)
     print(f"{len(ws)}병 · 출처 {len(meta)}개 · " + " ".join(f"{t}{c[t]}" for t, _ in TIERS) + f" 미평가{c['N']}" + f" · 잠정 {sum(1 for w in ws if w['flag']=='prov')} 경계 {sum(1 for w in ws if w['flag']=='border')} 확정 {sum(1 for w in ws if w['flag']=='firm')} · 경계 {stats['tiers']} · 병 내 sd {stats['sd']} · 사전 평균 {stats['prior']}" + f" · 이미지 {sum(1 for b in bottles if b.get('img'))}장({photo_coverage(bottles) * 100:.1f}%, " + (f"기준 {PHOTO_MIN_COVERAGE * 100:g}% 이상이라 화면에 실음" if photos_on(bottles) else f"기준 {PHOTO_MIN_COVERAGE * 100:g}% 미만이라 화면에 싣지 않음") + "".join(f", {k} {v}" for k, v in collections.Counter(b.get("img_license") or "라이선스 없음" for b in bottles if b.get("img")).most_common()) + ")")
     print(tmsg)
+    dd = collections.Counter(w["di"] for w in ws if w.get("di"))
+    print(f"증류소 {len(dd)}곳(2병 이상 {sum(1 for n in dd.values() if n > 1)}곳) · 증류소 표기 {sum(dd.values())}병 · 증류소 없이 브랜드만 {sum(1 for w in ws if not w.get('di') and w.get('br'))}병 · 둘 다 없음 {sum(1 for w in ws if not w.get('di') and not w.get('br'))}병 · 독립병입 {sum(1 for w in ws if w.get('bo'))}병")
     v = [w["id"] for w in ws if w["vin"]]
     print(f"옛 병 {len(v)}병(경계 계산 제외)" + (f": {', '.join(v)}" if v else ""))
     z = [w["id"] for w in ws if not w["obs"]]
