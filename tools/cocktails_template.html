@@ -135,9 +135,13 @@ a{color:var(--accent)}
 .story .steps>li.now .stx{font-weight:700}
 .story .rtail{transition:opacity .2s ease;opacity:.32}.story .rtail.now,.story .rtail.past{opacity:1}
 .story .sth{margin-top:var(--s1,0px)}
-.cphint{display:none}
-.story .cphint{display:block;margin:10px 0 0;font-size:13.5px;color:var(--muted)}
-.story .cphint::after{content:" ↓";display:inline-block;animation:cpb 1.6s ease-in-out infinite}
+/* 스크롤 안내 도움말(화면 우측 하단 고정). 연출 중에만, 단계가 2 이상이 되거나 × 를 누르거나 접으면 사라진다 */
+.cphelp{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;max-width:min(300px,calc(100vw - 32px));display:flex;align-items:center;gap:8px;
+  background:var(--ink);color:var(--bg);border-radius:12px;padding:9px 6px 9px 14px;font-size:13.5px;line-height:1.45;box-shadow:0 6px 22px rgba(0,0,0,.28);word-break:keep-all;opacity:0;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease}
+.cphelp.show{opacity:1;transform:none}
+.cphelp .arr{display:inline-block;animation:cpb 1.6s ease-in-out infinite;margin-left:2px}
+.cphelp button{flex:0 0 auto;width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:inherit;font-size:16px;cursor:pointer;opacity:.75}
+.cphelp button:hover,.cphelp button:focus-visible{opacity:1;background:rgba(127,127,127,.25)}
 @keyframes cpb{50%{transform:translateY(4px)}}
 /* 그림: 재료(data-i)·얼음·가니시·김을 단계에 맞춰 켠다. 한 단계에 재료가 여럿이면 넣는 순서대로 짧은 시차 */
 .big .cka-step,.big .cka-garnish,.big .cka-steam,.big .cka-ice{transition:opacity .3s ease}
@@ -146,16 +150,16 @@ a{color:var(--accent)}
 .big .cka-layer>*{transform-box:view-box;transform-origin:0 var(--y0,0px);transition:transform .35s ease;transition-delay:inherit}   /* clip-path 는 묶음(g)에 걸려 있으므로 안쪽만 변형한다 */
 .big .cka-layer.off>*{transform:scaleY(0);transition-delay:0s!important}
 .cpanel.jump .big *{transition:none!important}   /* 빠르게 여러 단계를 건너뛰면 즉시 반영 */
-@media (prefers-reduced-motion:reduce){.cgrid>.cpanel,.story .steps>li,.big .cka-step,.big .cka-layer>*{transition:none}.story .cphint::after{animation:none}}
-@media print{*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}.story .steps>li,.story .rtail{opacity:1!important}}
+@media (prefers-reduced-motion:reduce){.cgrid>.cpanel,.story .steps>li,.big .cka-step,.big .cka-layer>*,.cphelp{transition:none}.cphelp .arr{animation:none}}
+@media print{.cphelp{display:none!important}*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}.story .steps>li,.story .rtail{opacity:1!important}}
 @media (max-width:760px){
   .recipe{grid-template-columns:minmax(0,1fr);gap:14px}
   .big{max-width:420px}
   /* 좁은 화면: 이름 띠 + 그림이 위에 붙는다(합쳐서 화면의 40% 이하) */
   .cpanel .big{max-width:none;top:var(--bandh,52px);z-index:3;background:var(--surface);padding:4px 0 2px;border-bottom:1px solid var(--line)}
   .cpanel .big>svg{max-height:36vh;width:auto;max-width:100%;margin:0 auto}
-  .cpanel.story .big>svg{max-height:26vh}
-  .cpanel.story .big figcaption{display:none}
+  .cpanel.story .big>svg{max-height:24vh}
+  .cpanel.story .big figcaption{font-size:10.5px;line-height:1.35;margin:1px 0 0;text-align:center}   /* 셰이커 단계에서 잔이 차는 어색함을 덜도록 안내 문장은 연출 중에도 작게 둔다 */
   .cpanel .big figcaption{font-size:11px;margin:2px 0 0}
 }
 @media (max-width:560px){
@@ -241,20 +245,25 @@ function open(id){const a=$("c-"+id);if(!a||openId===id&&P)return;if(P)collapse(
   /* 이름 띠(sticky): 이름·영문·속성과 단추. 본문 제목은 화면 낭독·포커스용으로 남긴다 */
   P.innerHTML=`<div class="cpin"><div class="cpbody"><div class="cpband"><div class="cpname" aria-hidden="true"><b>${esc(nm)}</b><small>${esc(en)}</small><span class="cptags">${a.querySelector(".rmeta").innerHTML}</span></div><div class="cptool">${RM.matches?"":`<button type="button" class="chip cpmode" aria-pressed="${mode==="all"}">전체 한 번에 보기</button>`}<button type="button" class="chip cpclose" aria-label="${esc(nm)} 접기">접기 ✕</button></div></div></div></div>`;
   a._ph=document.createComment("");a.before(a._ph);P.querySelector(".cpbody").append(a);
-  if(!a.querySelector(".cphint"))a.querySelector(".sth").insertAdjacentHTML("beforebegin",'<p class="cphint" aria-hidden="true">아래로 내리면 만드는 법 단계마다 그 단계에서 넣는 재료가 잔에 채워집니다</p>');
   liOf(id).after(P);place();if(card)card.setAttribute("aria-expanded","true");
   setup();
   const toTop=b=>{if(P)scrollTo({top:Math.max(0,P.getBoundingClientRect().top+scrollY-8),behavior:b})};
   const done=()=>{if(P){P.classList.add("done");toTop("auto");setup()}};   /* 펼침이 끝나 페이지 높이가 늘어난 뒤 다시 맞춘다(주소로 바로 열 때 위치가 모자라지 않게) */
   if(RM.matches){P.classList.add("open");done()}else{requestAnimationFrame(()=>requestAnimationFrame(()=>P&&P.classList.add("open")));setTimeout(done,450)}
-  h3.focus({preventScroll:true});
+  h3.focus({preventScroll:true});helpShow();
   requestAnimationFrame(()=>toTop(RM.matches?"auto":"smooth"))}
 function collapse(){if(!P)return;const a=P.querySelector("article");
   a.querySelectorAll(".off,.now,.past").forEach(x=>x.classList.remove("off","now","past"));a.querySelectorAll(".big [style]").forEach(x=>x.style.transitionDelay="");
   const d=a.querySelector(".ingall");if(d)d.open=true;["--s1","--steph","--bandh"].forEach(k=>a.style.removeProperty(k));
   if(a._ph){a._ph.replaceWith(a);a._ph=null}
-  const card=cardOf(openId);if(card)card.setAttribute("aria-expanded","false");P.remove();P=null;openId=null;stages=[];lastCur=null}
-var lastCur=null;
+  const card=cardOf(openId);if(card)card.setAttribute("aria-expanded","false");P.remove();P=null;openId=null;stages=[];lastCur=null;helpHide()}
+var lastCur=null,help=null;const HKEY="nidwolf.ckhelp.v1";
+/* 우측 하단 스크롤 안내. × 로 닫으면 localStorage 에 기억해 다시 띄우지 않는다 */
+function helpShow(){if(help||!story())return;try{if(localStorage.getItem(HKEY)==="off")return}catch(e){}
+  help=document.createElement("div");help.className="cphelp";help.setAttribute("role","status");document.body.append(help);
+  requestAnimationFrame(()=>{if(!help)return;help.innerHTML=`<span>${MOB.matches?"아래로 내리면":"아래로 스크롤하면"} 만드는 순서대로 재료가 잔에 채워집니다<span class="arr" aria-hidden="true">↓</span></span><button type="button" aria-label="스크롤 안내 닫기">×</button>`;help.classList.add("show")});
+  help.addEventListener("click",e=>{if(e.target.closest("button")){try{localStorage.setItem(HKEY,"off")}catch(err){}helpHide()}})}
+function helpHide(){if(!help)return;const h=help;help=null;h.classList.remove("show");setTimeout(()=>h.remove(),RM.matches?0:260)}
 /* 읽는 자리: PC 는 화면 가운데, 좁은 화면은 위에 붙은 이름 띠·그림 아래 영역의 가운데 */
 function readLine(){if(!P)return innerHeight/2;if(!MOB.matches)return innerHeight*.5;
   const top=(P.querySelector(".cpband").offsetHeight||0)+(P.querySelector(".big").offsetHeight||0);return top+(innerHeight-top)/2}
@@ -283,7 +292,8 @@ function update(){raf=0;if(!P)return;const a=P.querySelector("article"),on=story
   /* 가니시·김의 단계가 정해져 있지 않으면 마지막(꼬리) 단계에서 보인다 */
   a.querySelectorAll(".big .cka-garnish").forEach(g=>g.classList.toggle("off",!at(a.dataset.garn||a.dataset.last)));
   a.querySelectorAll(".big .cka-steam").forEach(g=>g.classList.toggle("off",!at(a.dataset.steam||a.dataset.last)));
-  a.dataset.cur=cur>=1e9?"all":cur;lastCur=cur}
+  a.dataset.cur=cur>=1e9?"all":cur;lastCur=cur;
+  if(!on||cur>=2)helpHide()}
 addEventListener("scroll",()=>{if(P&&!raf)raf=requestAnimationFrame(update)},{passive:true});
 let rz=0;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{if(P){place();setup()}},120)});
 function route(){const id=idOf();if(id)open(id);else if(P){collapse();if(lastCard){lastCard.focus({preventScroll:true});lastCard=null}}}

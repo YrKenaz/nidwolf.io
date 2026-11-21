@@ -305,7 +305,8 @@ def check_step_adds(c):
         elif sorted(flat) != list(range(n)): errs.append(f"칵테일 {cid}: step_adds 에 재료 순번 0~{n - 1} 이 빠짐없이 한 번씩 있어야 함 ({flat})")
         elif flat != sorted(flat): errs.append(f"칵테일 {cid}: step_adds 의 재료 순번은 단계 순서대로 줄어들지 않아야 함 ({flat})")
     ist = c.get("ice_step", -1)
-    if type(ist) is not int or not (-1 <= ist < m): errs.append(f"칵테일 {cid}: ice_step 은 -1(처음부터) 또는 0~{m - 1} ({ist!r})")
+    if type(ist) is not int or not (-1 <= ist < m): errs.append(f"칵테일 {cid}: ice_step 은 -1(얼음 없는 잔) 또는 0~{m - 1} ({ist!r})")
+    elif (c.get("ice") == "none") != (ist == -1): errs.append(f"칵테일 {cid}: ice 가 none 이면 ice_step 은 -1, 얼음이 있으면 0~{m - 1} 이어야 함 (ice={c.get('ice')!r}, ice_step={ist})")
     gst = c.get("garnish_step")
     if gst is not None and (type(gst) is not int or not (0 <= gst < m)): errs.append(f"칵테일 {cid}: garnish_step 은 null 또는 0~{m - 1} ({gst!r})")
     return errs
@@ -601,13 +602,13 @@ def bottle_block(c, ws):
 
 def step_plan(c):
     """스크롤 연출 계획: 단계 s(0 = 시작, k+1 = 만드는 법 k번째, m+1 = 꼬리). 재료마다 나타나는 단계, 얼음·가니시·김의 단계.
-    step_adds 가 없으면 임시로 모든 재료를 첫 단계, 얼음은 처음부터, 가니시는 마지막 단계에 둔다"""
+    step_adds 가 없으면 임시로 모든 재료를 첫 단계, 얼음은 첫 단계, 가니시는 마지막 단계에 둔다"""
     m, n = len(c["steps"]), len(c["ingredients"])
     sa = c.get("step_adds") or ([list(range(n))] + [[] for _ in range(m - 1)] if m else [])
     ist = [0] * n
     for k, xs in enumerate(sa):
         for i in xs: ist[i] = k + 1
-    ice = c.get("ice_step", -1); ice = 0 if ice is None or ice < 0 else ice + 1
+    ice = c.get("ice_step", -1); ice = 0 if ice is None or ice < 0 else ice + 1   # -1 은 얼음 없는 잔(그림에 얼음 묶음 없음), n 은 n번째 단계에서 등장
     gst = c.get("garnish_step", (m - 1) if (c["garnish"] and "step_adds" not in c) else None)
     garn = "" if gst is None else gst + 1
     steam = ""
