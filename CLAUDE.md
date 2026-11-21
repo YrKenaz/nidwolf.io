@@ -9,6 +9,8 @@
 index.html              배포 페이지. 직접 고치지 않는다(빌드 산출물)
 cocktails.html          칵테일 제조법 페이지. 빌드 산출물(data/cocktails.json + tools/cocktails_template.html 이 둘 다 있을 때만 생성)
 glossary.html           용어 사전 페이지. 빌드 산출물(data/glossary.json + tools/glossary_template.html 이 둘 다 있을 때만 생성)
+learn.html              그림으로 배우는 위스키 페이지. 빌드 산출물(data/learn.json + tools/learn_template.html 이 둘 다 있을 때만 생성)
+art/learn/<그림>.svg, <그림>-m.svg  그림으로 배우기 그림(PC 720×460, 휴대폰 360×880). 이미지 에이전트 산출물
 img/<병 id>.webp        병 사진 (위키미디어 공용 자유 이용 사진만, 긴 변 340px 이하 WebP)
 hero.webp               머리 장식 일러스트(사용자 제공, 1100×547). PC(900px 이상)에서 제목·소개글 오른쪽에만 보인다
 data/sources.json       출처 대장
@@ -17,10 +19,12 @@ data/observations.json  관측값: 병 × 출처 (한 줄에 한 건)
 data/cocktails.json     칵테일 레시피(배열, 스키마는 아래 '칵테일 제조법 페이지' 절)
 data/cocktail_groups.json  칵테일 재료 묶음(가진 재료로 찾기). {id, ko, kind, common}
 data/glossary.json      용어 사전 자료(배열, 스키마는 아래 '용어 사전' 절)
+data/learn.json         그림으로 배우기 장 자료(배열, 스키마는 아래 '그림으로 배우는 위스키' 절)
 tools/build.py          검증 + 점수 계산 + index.html 생성
 tools/template.html     페이지 틀(디자인·필터·스크립트)
 tools/cocktails_template.html  칵테일 페이지 틀(목록·필터·상세 창 스크립트). 색 토큰은 build.py 가 template.html 에서 가져와 끼운다
 tools/glossary_template.html  용어 사전 페이지 틀(JS 없음). 색 토큰·메뉴는 build.py 가 끼운다
+tools/learn_template.html  그림으로 배우기 페이지 틀(JS 없음)
 tools/check_page.js      생성된 페이지를 jsdom으로 열어 카드 수를 세는 점검 스크립트
 tools/collect-2026-11/  최초 수집에 쓴 스크립트와 중간 산출물(참고용, 그대로는 실행되지 않음)
 ```
@@ -113,6 +117,13 @@ tools/collect-2026-11/  최초 수집에 쓴 스크립트와 중간 산출물(�
 - **만드는 방법:** `build.py`가 `data/glossary.json`을 검증하고 `tools/glossary_template.html`에 목차·용어 본문을 정적으로 채워 `glossary.html`을 만든다(배포 주소 `/glossary`, head 는 `GL_HEAD`). 둘 중 하나라도 없으면 페이지·메뉴 항목·티어표 도움말을 모두 만들지 않는다. 묶음(위스키 종류·라벨 표기·맛과 숙성·이 사이트의 표시)은 `GL_GROUPS`에서 정하고, 목록에 없는 id 는 "그 밖의 용어"로 간다. 항목 앵커는 `#g-<id>`, `filter`가 있으면 "티어표에서 보기 →"(`./#<filter>`), 근거 자료는 접히는 목록(`cite`는 화면에 내지 않음).
 - **스키마:** `id`(영문 소문자·숫자·하이픈), `ko`, `en`, `short`(70자 이하), `body`, `filter`(`type=XX` / `f=묶음:값` / `view=map|price` / null), `sources`[{`name`, `url`(https 또는 null), `cite`}]. `--check`가 필수 필드·id 중복·short 길이·filter 형식과 값(종류 코드, 필터 값은 `GL_FILTER_VALUES`, region 은 실제 병의 region)·출처 주소를 검사한다. `GL_FILTER_VALUES`는 template.html `GROUPS`의 값과 같게 유지한다.
 - **티어표 ? 도움말:** 용어 사전을 만든 빌드에서만 `DATA.stats.gl`({id: [ko, short]})을 싣는다(약 4KB). 종류 칩 줄 끝, 상세 필터 묶음 제목 옆(`GQ` 연결표: 숙성년수·스타일·캐스크·피니시·버번·라이 스펙·도수·생산 지역), 병 상세의 확신도 태그·옛 병 태그·트렌드지수 제목 옆에 `?`(`.gq`)를 둔다. 칩마다 두지 않는다(지저분함). 누르면 그 용어들의 `short`와 "자세히 →"(`glossary.html#g-<id>`, `siteHref` 보정) 말풍선(`#gtip`, position:fixed, 상세 창 안에서는 창 안으로 옮겨 붙임)이 열리고 첫 링크로 포커스가 간다. Esc(창은 닫지 않음)·바깥 누름·스크롤·× 단추로 닫히고, Esc·× 는 포커스를 `?`로 돌린다. 필터 줄 높이는 도움말 유무와 같다.
+
+## 그림으로 배우는 위스키 (`learn.html`, N2, 2026-11-21)
+
+- **만드는 방법:** `build.py`가 `data/learn.json`을 검증하고 `tools/learn_template.html`에 장(그림)을 정적으로 채운다(배포 주소 `/learn`, 메뉴 "그림으로 배우기", head 는 `LN_HEAD`). 둘 중 하나라도 없으면 페이지와 메뉴 항목을 만들지 않는다. 장마다 "그림 N"·제목·요지·그림·설명 문단·"티어표에서 보기" 링크·"용어 사전" 링크·접히는 근거 표. 장 앵커 `#l-<id>`. 맨 아래에 `(예시)` 안내와 칵테일 페이지와 같은 음주 안내(`CK_WARN`).
+- **그림:** `art/learn/<art>.svg`(PC)와 `<art>-m.svg`(휴대폰)를 둘 다 인라인으로 넣고 560px 이하에서 휴대폰 판만 보인다(`display:none`이라 숨긴 판은 보조 기술에서도 빠짐). 두 판의 id 접두어가 달라 한 페이지에 함께 있어도 겹치지 않는다. 그림은 색 토큰(`--ink` 등)을 쓴다.
+- **스키마:** `id`, `title`, `lead`, `art`(그림 파일 이름, 두 판이 모두 있어야 함), `paras`(문단 배열), `evidence`[{`what`, `src`, `url`(https 또는 null)}], `links`[{`text`, `href`: `./#…`(티어표) 또는 `#l-<id>`(다른 장)}], `glossary`(용어 사전 id 배열). `--check`가 필수 필드·id 중복·그림 파일·링크 형식·없는 장·용어 사전에 없는 id 를 검사한다. 본문 문구는 기획 문서(`docs/ideas/06-…`)의 것을 그대로 옮긴다.
+- **용어 사전 연결:** 장의 `glossary`에 든 용어는 용어 사전 항목에 "그림으로 보기(<장 제목>) →"(`learn.html#l-<id>`) 링크가 붙는다(그림 페이지를 만든 빌드에서만).
 
 ## 트렌드지수 (`data/trends.json`)
 

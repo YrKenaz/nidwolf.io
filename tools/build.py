@@ -180,12 +180,15 @@ def head(title, desc, url):
 
 HEAD = head("위스키 종합 티어표", DESC, "https://nidwolf.com/")
 GL_DESC = "싱글몰트·버번·캐스크 스트렝스·보틀드 인 본드·피트·NAS 등 위스키 라벨과 티어표에 나오는 용어를 법령·공식 자료 근거와 함께 풀이한 용어 사전."
+LN_DESC = "위스키 종류, 만드는 과정, 통 숙성과 숙성년수 표기를 그림 세 장으로 정리했습니다. 스코틀랜드·미국 법령 등 근거 자료를 함께 답니다."
+LN_HEAD = head("그림으로 배우는 위스키", LN_DESC, "https://nidwolf.com/learn")
 GL_HEAD = head("위스키 용어 사전", GL_DESC, "https://nidwolf.com/glossary")
 CK_HEAD = head("위스키 칵테일 제조법", CK_DESC, "https://nidwolf.com/cocktails")   # 호스팅이 cocktails.html → /cocktails 로 308 리다이렉트하므로 표기를 /cocktails 로 통일
 
 # 사이트 페이지 목록(메뉴 순서). 새 페이지는 여기에만 더한다: (키, 정적 href, 메뉴 이름, 배포 주소)
 # 정적 href 는 로컬 서버에서도 열리는 파일 이름, 배포 주소는 호스팅(Cloudflare)이 .html 을 308 로 돌리는 짧은 주소
-PAGES = [("index", "./", "위스키 티어표", "/"), ("cocktails", "cocktails.html", "칵테일 제조법", "/cocktails"), ("glossary", "glossary.html", "용어 사전", "/glossary")]
+PAGES = [("index", "./", "위스키 티어표", "/"), ("cocktails", "cocktails.html", "칵테일 제조법", "/cocktails"), ("glossary", "glossary.html", "용어 사전", "/glossary"),
+         ("learn", "learn.html", "그림으로 배우기", "/learn")]
 
 def nav_html(cur, built):
     """두 페이지 이상 만들어질 때만 메뉴를 넣는다(없는 페이지로 가는 죽은 링크 방지). 주소 보정 스크립트는 늘 넣는다"""
@@ -693,8 +696,9 @@ def load_glossary(bottles):
         return None, [f"glossary.json 읽기 실패: {e}"]
     return gs, check_glossary(gs, bottles)
 
-def render_glossary(gs):
+def render_glossary(gs, learn=None):
     by = {g["id"]: g for g in gs}; used = set(); secs = []; toc = []
+    pic = {gid: (l["id"], l["title"]) for l in (learn or []) for gid in l.get("glossary", [])}   # 용어 → 그림으로 배우기 장
     groups = [(n, [i for i in ids if i in by]) for n, ids in GL_GROUPS]
     rest = [g["id"] for g in gs if g["id"] not in {i for _, ids in GL_GROUPS for i in ids}]
     if rest: groups.append(("그 밖의 용어", rest))
@@ -707,11 +711,74 @@ def render_glossary(gs):
             src = "".join(f'<li>{"<a href=\"" + esc_attr(x["url"]) + "\" target=\"_blank\" rel=\"noopener\">" + esc_html(x["name"]) + "<span aria-hidden=\"true\"> ↗</span></a>" if x.get("url") else esc_html(x["name"])}</li>' for x in g["sources"])
             items.append(f'<article class="term" id="g-{i}" aria-labelledby="gh-{i}"><h3 id="gh-{i}">{esc_html(g["ko"])} <small lang="en">{esc_html(g["en"])}</small></h3>'
                          f'<p class="short">{esc_html(g["short"])}</p><p class="body">{esc_html(g["body"])}</p>'
-                         + (f'<p class="go"><a href="./#{esc_attr(g["filter"])}">티어표에서 보기 →</a></p>' if g["filter"] else "")
+                         + ((f'<p class="go">' + (f'<a href="./#{esc_attr(g["filter"])}">티어표에서 보기 →</a>' if g["filter"] else "")
+                             + (f'<a href="learn.html#l-{pic[i][0]}">그림으로 보기({esc_html(pic[i][1])}) →</a>' if i in pic else "") + '</p>') if (g["filter"] or i in pic) else "")
                          + f'<details class="src"><summary>근거 자료 {len(g["sources"])}건</summary><ul>{src}</ul></details></article>')
         secs.append(f'<section class="gsec" aria-labelledby="gs-{k}"><h2 id="gs-{k}">{esc_html(name)}</h2>{"".join(items)}</section>')
     with open(os.path.join(ROOT, "tools", "glossary_template.html"), encoding="utf-8") as f: t = f.read()
     return t.replace("__TOKENS__", tokens_css()).replace("__TOC__", "".join(toc)).replace("__TERMS__", "".join(secs)).replace("__COUNT__", str(len(gs)))
+
+# ───────────── 그림으로 배우는 위스키(learn.html, N2) ─────────────
+# data/learn.json + tools/learn_template.html 이 있을 때만 만든다. 그림은 art/learn/<art>.svg(PC 720×460)와 <art>-m.svg(휴대폰 360×880)를 둘 다 인라인으로 넣고 CSS 로 하나만 보인다
+LEARN_ART = os.path.join("art", "learn")
+LN_LINK = re.compile(r"^(\./#[\w=:%.,&가-힣-]*|#l-[a-z0-9-]+)$")
+
+def check_learn(ls, gl_ids):
+    if not isinstance(ls, list): return ["learn.json 은 배열이어야 함"]
+    errs, ids = [], [l.get("id") for l in ls if isinstance(l, dict)]
+    for i, n in collections.Counter(ids).items():
+        if n > 1: errs.append(f"그림 장 id 중복: {i}")
+    for l in ls:
+        if not isinstance(l, dict): errs.append(f"그림 장이 객체가 아님: {l!r}"); continue
+        lid = l.get("id") or "?"; e = lambda m: errs.append(f"그림 장 {lid}: {m}")
+        miss = [k for k in ("id", "title", "lead", "art", "paras", "evidence", "links", "glossary") if k not in l]
+        if miss: e(f"필수 필드 없음 {miss}"); continue
+        if not isinstance(l["id"], str) or not CK_SLUG.match(l["id"]): e("id 는 영문 소문자·숫자·하이픈만")
+        for k in ("title", "lead"):
+            if not isinstance(l[k], str) or not l[k].strip(): e(f"{k} 가 빈 값")
+        for suf in ("", "-m"):
+            if not os.path.exists(os.path.join(ROOT, LEARN_ART, f"{l['art']}{suf}.svg")): e(f"그림 파일 없음 {LEARN_ART}/{l['art']}{suf}.svg")
+        if not isinstance(l["paras"], list) or not l["paras"] or not all(isinstance(x, str) and x.strip() for x in l["paras"]): e("paras 는 문자열 배열(1개 이상)")
+        for x in l["evidence"] if isinstance(l["evidence"], list) else [None]:
+            if not isinstance(x, dict) or not x.get("what") or not x.get("src"): e(f"evidence 항목에 what·src 가 없음 ({x!r})")
+            elif x.get("url") is not None and not str(x["url"]).startswith("https://"): e(f"evidence url 은 https:// 또는 null ({x['url']!r})")
+        for x in l["links"] if isinstance(l["links"], list) else [None]:
+            if not isinstance(x, dict) or not x.get("text") or not LN_LINK.match(str(x.get("href", ""))): e(f"links 항목 오류(href 는 ./#… 또는 #l-…) ({x!r})")
+            elif x["href"].startswith("#l-") and x["href"][3:] not in ids: e(f"links 가 없는 장을 가리킴 {x['href']}")
+        bad = [g for g in l["glossary"] if gl_ids is not None and g not in gl_ids] if isinstance(l["glossary"], list) else ["(배열 아님)"]
+        if bad: e(f"glossary 에 용어 사전에 없는 id {bad}")
+    return errs
+
+def load_learn(gl_ids):
+    p = os.path.join(ROOT, "data", "learn.json")
+    if not os.path.exists(p): return None, []
+    try:
+        with open(p, encoding="utf-8") as f: ls = json.load(f)
+    except Exception as e:
+        return None, [f"learn.json 읽기 실패: {e}"]
+    return ls, check_learn(ls, gl_ids)
+
+def learn_svg(name):
+    with open(os.path.join(ROOT, LEARN_ART, name + ".svg"), encoding="utf-8") as f: t = f.read()
+    t = re.sub(r"<\?xml[^>]*\?>|<!DOCTYPE[^>]*>|<!--.*?-->", "", t, flags=re.S).strip()
+    if not t.startswith("<svg"): raise SystemExit(f"오류: {LEARN_ART}/{name}.svg 가 <svg> 로 시작하지 않음")
+    return t
+
+def render_learn(ls, gs, gl_on):
+    gk = {g["id"]: g["ko"] for g in (gs or [])}; toc, secs = [], []
+    for k, l in enumerate(ls, 1):
+        toc.append(f'<li><a href="#l-{l["id"]}"><b>{k}</b> {esc_html(l["title"])}</a></li>')
+        ev = "".join(f'<tr><td>{esc_html(x["what"])}</td><td>' + (f'<a href="{esc_attr(x["url"])}" target="_blank" rel="noopener">{esc_html(x["src"])}<span aria-hidden="true"> ↗</span></a>' if x.get("url") else esc_html(x["src"])) + "</td></tr>" for x in l["evidence"])
+        lk = "".join(f'<a href="{esc_attr(x["href"])}">{esc_html(x["text"])}{"" if x["href"].startswith("#l-") else " 티어 보기"} →</a>' for x in l["links"])
+        gls = "".join(f'<a href="glossary.html#g-{g}">{esc_html(gk.get(g, g))}</a>' for g in l["glossary"]) if gl_on else ""
+        secs.append(f'<section class="ch" id="l-{l["id"]}" aria-labelledby="lh-{l["id"]}"><p class="chn">그림 {k}</p><h2 id="lh-{l["id"]}">{esc_html(l["title"])}</h2><p class="lead">{esc_html(l["lead"])}</p>'
+                    f'<figure class="lart"><div class="pc">{learn_svg(l["art"])}</div><div class="mo">{learn_svg(l["art"] + "-m")}</div></figure>'
+                    + "".join(f"<p>{esc_html(x)}</p>" for x in l["paras"])
+                    + (f'<p class="to"><span>티어표에서 보기</span>{lk}</p>' if lk else "")
+                    + (f'<p class="to gl"><span>용어 사전</span>{gls}</p>' if gls else "")
+                    + f'<details class="ev"><summary>근거 자료 {len(l["evidence"])}건</summary><table><thead><tr><th scope="col">그림·설명의 내용</th><th scope="col">근거</th></tr></thead><tbody>{ev}</tbody></table></details></section>')
+    with open(os.path.join(ROOT, "tools", "learn_template.html"), encoding="utf-8") as f: t = f.read()
+    return t.replace("__TOKENS__", tokens_css()).replace("__TOC__", "".join(toc)).replace("__CHAPTERS__", "".join(secs)).replace("__WARN__", CK_WARN)
 
 def main():
     a = sys.argv[1:]
@@ -721,6 +788,8 @@ def main():
     ck_tpl = os.path.exists(os.path.join(ROOT, "tools", "cocktails_template.html"))
     gs, gerrs = load_glossary(bottles); errs = errs + gerrs
     gl_tpl = os.path.exists(os.path.join(ROOT, "tools", "glossary_template.html"))
+    ls, lerrs = load_learn({g["id"] for g in gs} if gs else None); errs = errs + lerrs
+    ln_tpl = os.path.exists(os.path.join(ROOT, "tools", "learn_template.html"))
     for e in errs: print("오류:", e)
     if errs: sys.exit(1)
     stats["trend"], tmsg = add_trends(ws)
@@ -740,10 +809,13 @@ def main():
               + ("" if ck_tpl else " · tools/cocktails_template.html 없음 — cocktails.html 을 만들지 않음"))
     if gs is None: print("용어 사전: data/glossary.json 없음 — glossary.html 을 만들지 않음")
     else: print(f"용어 사전 {len(gs)}항목 · 필터 연결 {sum(1 for g in gs if g['filter'])}항목" + ("" if gl_tpl else " · tools/glossary_template.html 없음 — glossary.html 을 만들지 않음"))
+    if ls is None: print("그림으로 배우기: data/learn.json 없음 — learn.html 을 만들지 않음")
+    else: print(f"그림으로 배우기 {len(ls)}장 · 근거 {sum(len(l['evidence']) for l in ls)}건" + ("" if ln_tpl else " · tools/learn_template.html 없음 — learn.html 을 만들지 않음"))
     if "--check" in a: return
     ck = cs is not None and ck_tpl   # 칵테일 페이지를 만들 때만 티어표에 사이트 메뉴와 칵테일 연결을 둔다
     gl = gs is not None and gl_tpl   # 용어 사전을 만들 때만 티어표에 ? 도움말을 둔다(자세히 → 링크가 죽지 않게)
-    built = {"index"} | ({"cocktails"} if ck else set()) | ({"glossary"} if gl else set())
+    lp = ls is not None and ln_tpl
+    built = {"index"} | ({"cocktails"} if ck else set()) | ({"glossary"} if gl else set()) | ({"learn"} if lp else set())
     if gl: stats["gl"] = {g["id"]: [g["ko"], g["short"]] for g in gs}
     if ck:   # 티어표 병 상세의 "이 종류로 만드는 칵테일"용: 이름·베이스·작은 그림 파일 유무만(그림은 상세를 열 때 img 로 불러 index 용량을 늘리지 않는다)
         stats["ck"] = [{"id": c["id"], "ko": c["ko"], "b": c["base"], "a": os.path.exists(os.path.join(ROOT, ART_DIR, f"{c['id']}-s.svg"))} for c in cs]
@@ -754,12 +826,15 @@ def main():
             f.write(full(site_nav(render_cocktails(cs, ws, cg), "cocktails", built), CK_HEAD))
     if gl:
         with open(os.path.join(ROOT, "glossary.html"), "w", encoding="utf-8") as f:
-            f.write(full(site_nav(render_glossary(gs), "glossary", built), GL_HEAD))
+            f.write(full(site_nav(render_glossary(gs, ls if lp else None), "glossary", built), GL_HEAD))
+    if lp:
+        with open(os.path.join(ROOT, "learn.html"), "w", encoding="utf-8") as f:
+            f.write(full(site_nav(render_learn(ls, gs, gl), "learn", built), LN_HEAD))
     today = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:   # 배포 주소는 PAGES 의 짧은 주소
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                 + "".join(f'  <url><loc>https://nidwolf.com{u}</loc><lastmod>{today}</lastmod></url>\n' for k, h, n, u in PAGES if k in built) + '</urlset>\n')
-    print("index.html 생성" + (" · cocktails.html 생성" if ck else "") + (" · glossary.html 생성" if gl else ""))
+    print("index.html 생성" + (" · cocktails.html 생성" if ck else "") + (" · glossary.html 생성" if gl else "") + (" · learn.html 생성" if lp else ""))
     if "--single" in a:
         p = a[a.index("--single") + 1]
         with open(p, "w", encoding="utf-8") as f: f.write(full(site_nav(render(ws, meta, bottles, True, stats), "index", {"index"})))   # 오프라인 보관용: 다른 페이지 링크 없음

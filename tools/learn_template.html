@@ -1,0 +1,58 @@
+<title>그림으로 배우는 위스키 — 종류·만드는 과정·통 숙성</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@700;900&display=swap">
+<style>
+/* 색 토큰은 build.py 가 tools/template.html 에서 그대로 가져온다(모든 페이지 공통). 그림(art/learn/*.svg)도 이 변수를 쓴다 */
+__TOKENS__
+
+*{box-sizing:border-box}
+html{scroll-padding-top:16px}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:940px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* 사이트 메뉴: 다른 페이지와 같은 모양 */
+.site{display:flex;flex-wrap:wrap;gap:4px 22px;border-bottom:1px solid var(--line);margin:0 0 22px;font-size:14.5px}
+.site a{color:var(--muted);text-decoration:none;padding:6px 0 9px;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:500}
+.site a:hover{color:var(--ink)}
+.site a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0;letter-spacing:-.01em;word-break:keep-all}
+.lede{color:var(--muted);margin:10px 0 0;max-width:62ch;word-break:keep-all}
+a{color:var(--accent)}
+.toc{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.toc a{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:5px 14px;background:var(--surface);color:var(--ink);text-decoration:none;font-size:14px}
+.toc a b{color:var(--accent)}
+.toc a:hover{border-color:var(--accent)}
+.ch{margin-top:44px;padding-top:24px;border-top:1px solid var(--line)}
+.chn{margin:0;font-size:13px;font-weight:700;color:var(--accent)}
+.ch h2{font-family:var(--display);font-size:26px;line-height:1.25;margin:2px 0 0;word-break:keep-all}
+.ch .lead{margin:6px 0 14px;font-weight:500;word-break:keep-all}
+.ch>p{max-width:68ch;word-break:keep-all}
+.lart{margin:0 0 14px}
+.lart svg{display:block;width:100%;height:auto}
+.lart .pc svg{max-width:900px}
+.lart .mo{display:none}
+.to{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;font-size:14px;font-weight:500;max-width:none!important}
+.to span{font-size:12.5px;color:var(--muted);font-weight:700;min-width:84px}
+.ev{margin-top:10px;font-size:13px;color:var(--muted)}
+.ev summary{cursor:pointer;width:max-content}
+.ev table{border-collapse:collapse;width:100%;margin-top:8px}
+.ev th,.ev td{border-top:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;word-break:keep-all}
+.ev th{font-weight:700;color:var(--ink)}
+.foot{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);word-break:keep-all}
+@media (max-width:560px){
+  .lart .pc{display:none}.lart .mo{display:block}   /* display:none 이라 숨긴 판은 보조 기술에서도 빠진다 */
+  .to span{min-width:0;width:100%}
+  .ch h2{font-size:22px}
+}
+</style>
+
+<div class="wrap">
+  __NAV__
+  <header>
+    <h1>그림으로 배우는 위스키</h1>
+    <p class="lede">위스키 종류, 만드는 과정, 통에서 보내는 시간을 그림 세 장으로 정리했습니다. 법으로 정한 내용은 법령 원문을, 관행은 백과사전을 근거로 달았고, 법 조건이 아닌 일반적인 경우에는 "대체로"를 붙였습니다.</p>
+  </header>
+  <ul class="toc" aria-label="그림 목록">__TOC__</ul>
+  __CHAPTERS__
+  <p class="foot">그림 속 "(예시)" 값은 실제 제품을 가리키지 않습니다. __WARN__</p>
+</div>

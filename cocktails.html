@@ -133,9 +133,9 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
 
 </head><body>
 <div class="wrap">
-  <nav class="site" aria-label="사이트 메뉴"><a href="./">위스키 티어표</a><a href="cocktails.html" aria-current="page">칵테일 제조법</a><a href="glossary.html">용어 사전</a></nav>
+  <nav class="site" aria-label="사이트 메뉴"><a href="./">위스키 티어표</a><a href="cocktails.html" aria-current="page">칵테일 제조법</a><a href="glossary.html">용어 사전</a><a href="learn.html">그림으로 배우기</a></nav>
   <script>/* 주소 보정(build.py 의 PAGES 로 생성). 배포 주소(nidwolf.com)에서는 *.html 링크를 짧은 주소로(308 리다이렉트를 건너뜀), 로컬 파일(file://)에서는 ./ 링크를 index.html 로(./ 는 폴더 목록이 열림) 바꾼다. 스크립트로 나중에 만드는 링크는 siteHref() 를 거친다 */
-(()=>{const P={"cocktails.html": "/cocktails", "glossary.html": "/glossary"},live=/(^|\.)nidwolf\.com$/.test(location.hostname),file=location.protocol==="file:";const f=h=>{if(live){const m=h.match(/^([a-z0-9-]+\.html)(.*)$/);if(m&&P[m[1]])return P[m[1]]+m[2]}else if(file&&h.startsWith("./"))return "index.html"+h.slice(2);return h};window.siteHref=f;const run=()=>document.querySelectorAll("a[href]").forEach(a=>{const h=a.getAttribute("href"),g=f(h);if(g!==h)a.setAttribute("href",g)});document.readyState==="loading"?document.addEventListener("DOMContentLoaded",run):run()})()</script>
+(()=>{const P={"cocktails.html": "/cocktails", "glossary.html": "/glossary", "learn.html": "/learn"},live=/(^|\.)nidwolf\.com$/.test(location.hostname),file=location.protocol==="file:";const f=h=>{if(live){const m=h.match(/^([a-z0-9-]+\.html)(.*)$/);if(m&&P[m[1]])return P[m[1]]+m[2]}else if(file&&h.startsWith("./"))return "index.html"+h.slice(2);return h};window.siteHref=f;const run=()=>document.querySelectorAll("a[href]").forEach(a=>{const h=a.getAttribute("href"),g=f(h);if(g!==h)a.setAttribute("href",g)});document.readyState==="loading"?document.addEventListener("DOMContentLoaded",run):run()})()</script>
   <header>
     <h1>위스키 칵테일 제조법</h1>
     <p class="lede">위스키로 만드는 칵테일을 잔 그림으로 정리했습니다. 잔 속 색 층은 재료를 넣는 순서(아래부터)이고, 층의 크기는 들어가는 양에 비례합니다. 비터스·설탕처럼 양을 ml로 재지 않는 재료는 잔 아래에 번호와 함께 따로 적었습니다.</p>

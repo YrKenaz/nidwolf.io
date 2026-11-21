@@ -348,9 +348,9 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 
 </head><body>
 <div class="wrap">
-  <nav class="site" aria-label="사이트 메뉴"><a href="./" aria-current="page">위스키 티어표</a><a href="cocktails.html">칵테일 제조법</a><a href="glossary.html">용어 사전</a></nav>
+  <nav class="site" aria-label="사이트 메뉴"><a href="./" aria-current="page">위스키 티어표</a><a href="cocktails.html">칵테일 제조법</a><a href="glossary.html">용어 사전</a><a href="learn.html">그림으로 배우기</a></nav>
   <script>/* 주소 보정(build.py 의 PAGES 로 생성). 배포 주소(nidwolf.com)에서는 *.html 링크를 짧은 주소로(308 리다이렉트를 건너뜀), 로컬 파일(file://)에서는 ./ 링크를 index.html 로(./ 는 폴더 목록이 열림) 바꾼다. 스크립트로 나중에 만드는 링크는 siteHref() 를 거친다 */
-(()=>{const P={"cocktails.html": "/cocktails", "glossary.html": "/glossary"},live=/(^|\.)nidwolf\.com$/.test(location.hostname),file=location.protocol==="file:";const f=h=>{if(live){const m=h.match(/^([a-z0-9-]+\.html)(.*)$/);if(m&&P[m[1]])return P[m[1]]+m[2]}else if(file&&h.startsWith("./"))return "index.html"+h.slice(2);return h};window.siteHref=f;const run=()=>document.querySelectorAll("a[href]").forEach(a=>{const h=a.getAttribute("href"),g=f(h);if(g!==h)a.setAttribute("href",g)});document.readyState==="loading"?document.addEventListener("DOMContentLoaded",run):run()})()</script>
+(()=>{const P={"cocktails.html": "/cocktails", "glossary.html": "/glossary", "learn.html": "/learn"},live=/(^|\.)nidwolf\.com$/.test(location.hostname),file=location.protocol==="file:";const f=h=>{if(live){const m=h.match(/^([a-z0-9-]+\.html)(.*)$/);if(m&&P[m[1]])return P[m[1]]+m[2]}else if(file&&h.startsWith("./"))return "index.html"+h.slice(2);return h};window.siteHref=f;const run=()=>document.querySelectorAll("a[href]").forEach(a=>{const h=a.getAttribute("href"),g=f(h);if(g!==h)a.setAttribute("href",g)});document.readyState==="loading"?document.addEventListener("DOMContentLoaded",run):run()})()</script>
   <header>
     <h1>위스키 종합 티어표</h1>
     <p class="lede">여러 위스키를 마셔 보고 싶은데 어떤 병이 좋은지 한눈에 찾기가 어려워 직접 만들어 보았습니다. 여러 매체와 커뮤니티에 흩어진 위스키 티어표·순위·평점을 AI로 모아 하나의 티어로 정리했습니다. 출처마다 다른 척도를 100점 기준으로 맞추고, 같은 매체의 평가는 한 표로 묶어 특정 매체에 치우치지 않게 계산합니다. 종류·숙성년수·피트·셰리·가격대 필터로 취향과 예산에 맞는 병을 찾아보세요. 티어와 별도로, 병이 얼마나 알려졌는지를 0~100점으로 나타낸 트렌드지수도 함께 보여 드립니다.</p>

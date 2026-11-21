@@ -1,0 +1,193 @@
+[
+ {
+  "id": "types",
+  "title": "위스키 종류 한눈에",
+  "lead": "위스키 이름은 어디서, 무엇으로, 어떤 방식으로 만들었는지에 따라 정해진다.",
+  "art": "1-types",
+  "paras": [
+   "스코틀랜드에서는 법이 위스키 이름을 다섯 가지(싱글몰트, 싱글 그레인, 블렌디드 몰트, 블렌디드 그레인, 블렌디드)로 정해 둔다. 그림에는 자주 보는 것을 중심으로 그렸다. 한 증류소에서 맥아 보리만으로 단식 증류기를 써서 만든 것이 싱글몰트다. 여러 증류소의 싱글몰트끼리 섞으면 블렌디드 몰트, 싱글몰트에 그레인 위스키를 섞으면 블렌디드가 된다. 어느 것이든 스코틀랜드의 오크통에서 3년 이상 숙성하고 40% 이상으로 병입해야 한다.",
+   "미국에서는 곡물 비율이 이름을 정한다. 옥수수가 51% 이상이면 버번, 호밀이 51% 이상이면 라이다. 둘 다 새로 안쪽을 그을린 오크통에서 숙성해야 한다.",
+   "아일랜드의 싱글 팟 스틸은 맥아 보리와 맥아가 아닌 보리를 함께 쓰는 아일랜드 고유의 방식이다. 일본에는 2021년에 업계 단체가 만든 '재패니즈 위스키' 표시 자율 기준이 있다. 두 곳의 세부 기준 원문은 이 사이트가 아직 확인하지 못했다."
+  ],
+  "evidence": [
+   {
+    "what": "5분류, 싱글몰트 조건, 3년·40%",
+    "src": "The Scotch Whisky Regulations 2009, 3조",
+    "url": "https://www.legislation.gov.uk/uksi/2009/2890/regulation/3"
+   },
+   {
+    "what": "그레인의 연속식 증류기(법 조건이 아니므로 \"대체로\")",
+    "src": "Wikipedia \"Scotch whisky\"",
+    "url": "https://en.wikipedia.org/wiki/Scotch_whisky"
+   },
+   {
+    "what": "버번·라이 51%, 새 그을린 오크통, 40%",
+    "src": "27 CFR §5.143",
+    "url": "https://www.law.cornell.edu/cfr/text/27/5.143"
+   },
+   {
+    "what": "싱글 팟 스틸(법 원문은 미확인)",
+    "src": "Wikipedia \"Irish whiskey\"",
+    "url": "https://en.wikipedia.org/wiki/Irish_whiskey"
+   },
+   {
+    "what": "재패니즈 자율 기준(기준 원문은 미확인)",
+    "src": "Wikipedia \"Japanese whisky\"",
+    "url": "https://en.wikipedia.org/wiki/Japanese_whisky"
+   }
+  ],
+  "links": [
+   {
+    "text": "싱글몰트 스카치",
+    "href": "./#type=SM"
+   },
+   {
+    "text": "블렌디드·블렌디드 몰트",
+    "href": "./#type=BL"
+   },
+   {
+    "text": "버번",
+    "href": "./#type=BB"
+   },
+   {
+    "text": "라이",
+    "href": "./#type=RY"
+   },
+   {
+    "text": "아이리시(싱글 팟 스틸)",
+    "href": "./#type=IR"
+   },
+   {
+    "text": "재패니즈",
+    "href": "./#type=JP"
+   }
+  ],
+  "glossary": [
+   "single-malt",
+   "blended",
+   "blended-malt",
+   "bourbon",
+   "rye",
+   "irish",
+   "japanese"
+  ]
+ },
+ {
+  "id": "process",
+  "title": "위스키가 만들어지는 길",
+  "lead": "보리가 병에 담기기까지 여섯 단계를 거친다(몰트위스키 기준).",
+  "art": "2-process",
+  "paras": [
+   "몰트위스키는 보리에 싹을 틔운 맥아에서 시작한다. 맥아를 말릴 때 피트(이탄)를 태우면 연기 성분이 배는데, 모든 위스키가 이렇게 하는 것은 아니다.",
+   "스코틀랜드 규정은 당화와 발효를 같은 증류소에서 하고, 곡물이 가진 효소로만 당을 만들고, 효모를 넣어서만 발효하도록 정한다. 증류는 94.8% 미만으로 해서 원료와 만드는 방식에서 온 향과 맛이 남게 한다. 몰트위스키는 단식 증류기로 대체로 두 번 증류한다.",
+   "증류한 원액은 오크통에서 숙성한다. 병에 담을 때 물로 도수를 맞추는 것이 보통이며, 물을 거의 타지 않고 담으면 캐스크 스트렝스라고 부른다."
+  ],
+  "evidence": [
+   {
+    "what": "② 같은 증류소, 곡물 자체 효소, ③ 효모만, ④ 94.8% 미만, ⑤ 3년, ⑥ 물·캐러멜만 첨가, 40%",
+    "src": "The Scotch Whisky Regulations 2009, 3조(1)(a)~(i)",
+    "url": "https://www.legislation.gov.uk/uksi/2009/2890/regulation/3"
+   },
+   {
+    "what": "① 피트로 맥아 말리기(선택)",
+    "src": "Wikipedia \"Peat\"",
+    "url": "https://en.wikipedia.org/wiki/Peat"
+   },
+   {
+    "what": "④ 대체로 두 번 증류",
+    "src": "Wikipedia \"Scotch whisky\"",
+    "url": "https://en.wikipedia.org/wiki/Scotch_whisky"
+   },
+   {
+    "what": "⑥ 캐스크 스트렝스(법적 정의 없음)",
+    "src": "Wikipedia \"Cask strength\"",
+    "url": "https://en.wikipedia.org/wiki/Cask_strength"
+   }
+  ],
+  "links": [
+   {
+    "text": "피트",
+    "href": "./#f=style:peat"
+   },
+   {
+    "text": "캐스크 스트렝스(CS)",
+    "href": "./#f=style:cs"
+   },
+   {
+    "text": "⑤ 숙성 → 그림 3 통에서 보내는 시간",
+    "href": "#l-cask"
+   }
+  ],
+  "glossary": [
+   "peat",
+   "cask-strength"
+  ]
+ },
+ {
+  "id": "cask",
+  "title": "통에서 보내는 시간",
+  "lead": "어떤 통에서 얼마나 오래 두었는지가 라벨의 숫자와 낱말로 적힌다.",
+  "art": "3-cask",
+  "paras": [
+   "스카치는 700리터 이하의 오크통에서 숙성해야 한다. 버번은 새로 그을린 통만 쓸 수 있어서, 한 번 쓴 버번통이 다른 위스키 숙성에 많이 쓰인다. 셰리나 포트 와인을 담았던 통도 쓰이고, 숙성 마지막에 다른 통으로 옮겨 짧게 더 숙성하는 것을 피니시라고 부른다.",
+   "스코틀랜드 규정은 위스키가 원료·만드는 방식·숙성에서 얻은 색·향·맛을 지니도록 정하고, 물 외에 넣을 수 있는 것은 캐러멜 색소뿐이다. 캐러멜 색소를 넣지 않았다는 뜻으로 '내추럴 컬러'라고 적는 병도 있다.",
+   "여러 해의 원액을 섞었다면 라벨의 숙성년수는 그 가운데 가장 어린 원액을 기준으로 적는다. 예를 들어 10년·12년·15년 원액을 섞으면 라벨에는 10년이라고 적는다. 숫자를 적지 않은 병을 NAS라고 부른다."
+  ],
+  "evidence": [
+   {
+    "what": "700리터, 숙성으로 얻은 색·향·맛 유지, 캐러멜 색소만 허용",
+    "src": "The Scotch Whisky Regulations 2009, 3조(1)(c)(g)(h)",
+    "url": "https://www.legislation.gov.uk/uksi/2009/2890/regulation/3"
+   },
+   {
+    "what": "버번은 새 그을린 통",
+    "src": "27 CFR §5.143",
+    "url": "https://www.law.cornell.edu/cfr/text/27/5.143"
+   },
+   {
+    "what": "한 번 쓴 버번통·셰리통·피니시(법 조건이 아니라 쓰임)",
+    "src": "Wikipedia \"Scotch whisky\"",
+    "url": "https://en.wikipedia.org/wiki/Scotch_whisky"
+   },
+   {
+    "what": "가장 어린 원액 기준",
+    "src": "The Scotch Whisky Regulations 2009, 12조",
+    "url": "https://www.legislation.gov.uk/uksi/2009/2890/regulation/12"
+   },
+   {
+    "what": "가장 어린 원액 기준(미국)",
+    "src": "27 CFR §5.74",
+    "url": "https://www.law.cornell.edu/cfr/text/27/5.74"
+   },
+   {
+    "what": "내추럴 컬러(법적 정의 없음)",
+    "src": "용어 사전 \"논칠필터 · 내추럴 컬러\"",
+    "url": null
+   }
+  ],
+  "links": [
+   {
+    "text": "버번 캐스크",
+    "href": "./#f=cask:bourbon"
+   },
+   {
+    "text": "포트·와인 피니시",
+    "href": "./#f=cask:wine"
+   },
+   {
+    "text": "셰리",
+    "href": "./#f=style:sherry"
+   },
+   {
+    "text": "숙성년수 미표기(NAS)",
+    "href": "./#f=age:nas"
+   }
+  ],
+  "glossary": [
+   "cask",
+   "finish",
+   "age-statement",
+   "ncf-natural-colour"
+  ]
+ }
+]
