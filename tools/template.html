@@ -27,6 +27,19 @@ h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);lin
 .lede b{color:var(--ink);font-weight:700}
 .lede.upd{margin-top:6px;font-size:.92em}
 h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0 0 6px}
+/* 머리 일러스트(hero.webp, 사용자 제공 장식 그림). PC에서 제목·소개글 오른쪽 빈 곳에만 둔다. 높이는 글 칸에 맞춰 머리 높이를 늘리지 않는다 */
+.hero{display:none}
+@media (min-width:900px){
+  header{display:grid;grid-template-columns:minmax(0,62ch) minmax(0,1fr);column-gap:28px}
+  header>:not(.hero){grid-column:1}
+  .hero{display:block;grid-column:2;grid-row:1/span 3;position:relative;min-width:0}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:0 40%;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 62%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 84%,transparent);
+    -webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 62%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 84%,transparent);mask-composite:intersect}
+  /* 밝은 바탕: 어두운 그림을 반전해 밝은 종이 위 갈색 선화처럼 보이게 하고, 곱하기 합성으로 바탕색에 녹인다 */
+  :root:not([data-theme="dark"]) .hero img{filter:invert(1) hue-rotate(180deg) brightness(1.1) saturate(1.4);mix-blend-mode:multiply}
+}
+@media (min-width:900px) and (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .hero img{filter:none;mix-blend-mode:normal} }
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
@@ -120,7 +133,7 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
 .dhead{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:center}
 .dhead.has-pic{grid-template-columns:120px minmax(0,1fr)}
 .dhead .pic{width:120px}
-.dhead h3{font-family:var(--display);font-size:22px;line-height:1.25;margin:0;text-wrap:balance}
+.dhead h3{font-family:var(--display);font-size:22px;line-height:1.25;margin:0;text-wrap:balance;word-break:keep-all}
 .en{color:var(--muted);font-size:13.5px;margin-top:2px}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:12px}
@@ -292,6 +305,7 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
     <h1>위스키 종합 티어표</h1>
     <p class="lede">여러 위스키를 마셔 보고 싶은데 어떤 병이 좋은지 한눈에 찾기가 어려워 직접 만들어 보았습니다. 여러 매체와 커뮤니티에 흩어진 위스키 티어표·순위·평점을 AI로 모아 하나의 티어로 정리했습니다. 출처마다 다른 척도를 100점 기준으로 맞추고, 같은 매체의 평가는 한 표로 묶어 특정 매체에 치우치지 않게 계산합니다. 종류·숙성년수·피트·셰리·가격대 필터로 취향과 예산에 맞는 병을 찾아보세요. 티어와 별도로, 병이 얼마나 알려졌는지를 0~100점으로 나타낸 트렌드지수도 함께 보여 드립니다.</p>
     <p class="lede upd"><span id="upd"></span><span class="mine" id="minestat" hidden></span></p>
+    <div class="hero" aria-hidden="true"><img src="hero.webp" alt="" width="1100" height="547" loading="eager" decoding="async"></div>
   </header>
 
   <div class="bar">
