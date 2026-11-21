@@ -292,6 +292,24 @@ def check_cocktail_groups(cs, gs):
             if ("groups" in x) != ("optional" in x): errs.append(f"{nm}: groups 와 optional 은 함께 넣는다")
     return errs
 
+def check_step_adds(c):
+    """만드는 법 단계-재료 대응(스크롤 연출용). 없으면 검사하지 않는다(임시로 모든 재료를 첫 단계에 둔다)"""
+    errs, e = [], None
+    if not any(k in c for k in ("step_adds", "ice_step", "garnish_step")): return errs
+    cid = c.get("id"); m = len(c.get("steps") or []); n = len(c.get("ingredients") or [])
+    sa = c.get("step_adds")
+    if not isinstance(sa, list) or len(sa) != m: errs.append(f"칵테일 {cid}: step_adds 는 steps 와 같은 길이({m})의 배열이어야 함")
+    else:
+        flat = [i for x in sa if isinstance(x, list) for i in x]
+        if any(not isinstance(x, list) for x in sa) or any(type(i) is not int for i in flat): errs.append(f"칵테일 {cid}: step_adds 의 각 칸은 재료 순번(정수) 배열")
+        elif sorted(flat) != list(range(n)): errs.append(f"칵테일 {cid}: step_adds 에 재료 순번 0~{n - 1} 이 빠짐없이 한 번씩 있어야 함 ({flat})")
+        elif flat != sorted(flat): errs.append(f"칵테일 {cid}: step_adds 의 재료 순번은 단계 순서대로 줄어들지 않아야 함 ({flat})")
+    ist = c.get("ice_step", -1)
+    if type(ist) is not int or not (-1 <= ist < m): errs.append(f"칵테일 {cid}: ice_step 은 -1(처음부터) 또는 0~{m - 1} ({ist!r})")
+    gst = c.get("garnish_step")
+    if gst is not None and (type(gst) is not int or not (0 <= gst < m)): errs.append(f"칵테일 {cid}: garnish_step 은 null 또는 0~{m - 1} ({gst!r})")
+    return errs
+
 def check_cocktails(cs):
     """cocktails.json 검증. 오류 문장 목록을 돌려준다"""
     if not isinstance(cs, list): return ["cocktails.json 은 배열이어야 함"]
@@ -325,6 +343,7 @@ def check_cocktails(cs):
             if x["kind"] not in ING_KINDS: e(f"재료 {j}({x['ko']}): kind 값 오류 {x['kind']!r}")
             if not isinstance(x["color"], str) or not HEX6.match(x["color"]): e(f"재료 {j}({x['ko']}): color 는 #rrggbb ({x['color']!r})")
             if not isinstance(x["amount"], str) or not x["amount"].strip(): e(f"재료 {j}({x['ko']}): amount 가 빈 값")
+        if isinstance(c["steps"], list) and isinstance(c["ingredients"], list): errs.extend(check_step_adds(c))
         if not isinstance(c["sources"], list): e("sources 는 배열")
         else:
             for s in c["sources"]:
@@ -580,23 +599,43 @@ def bottle_block(c, ws):
         g.append(f'<div class="bgrp"><p class="bgh">{TYPE_KO[t]}</p>' + (f'<ul class="bl">{li}</ul>' if li else "") + f'<a class="ball" href="./#type={t}">{TYPE_KO[t]} 전체 보기 →</a></div>')
     return f'<h4>이 칵테일에 쓰는 종류의 병</h4><p class="bnote">{CK_BOTTLE_RULE}</p>{"".join(g)}'
 
+def step_plan(c):
+    """스크롤 연출 계획: 단계 s(0 = 시작, k+1 = 만드는 법 k번째, m+1 = 꼬리). 재료마다 나타나는 단계, 얼음·가니시·김의 단계.
+    step_adds 가 없으면 임시로 모든 재료를 첫 단계, 얼음은 처음부터, 가니시는 마지막 단계에 둔다"""
+    m, n = len(c["steps"]), len(c["ingredients"])
+    sa = c.get("step_adds") or ([list(range(n))] + [[] for _ in range(m - 1)] if m else [])
+    ist = [0] * n
+    for k, xs in enumerate(sa):
+        for i in xs: ist[i] = k + 1
+    ice = c.get("ice_step", -1); ice = 0 if ice is None or ice < 0 else ice + 1
+    gst = c.get("garnish_step", (m - 1) if (c["garnish"] and "step_adds" not in c) else None)
+    garn = "" if gst is None else gst + 1
+    steam = ""
+    if c["method"] == "hot":   # 김은 뜨거운 재료(뜨거운·끓는·커피)가 들어간 단계부터, 없으면 마지막 재료가 들어간 단계부터
+        hot = [ist[i] for i, x in enumerate(c["ingredients"]) if re.search(r"뜨거운|끓는|커피", x["ko"]) or x["kind"] == "coffee"]
+        steam = min(hot) if hot else max(ist or [0])
+    return sa, ist, ice, garn, steam
+
 def cocktail_articles(cs, ws):
-    """레시피 본문(정적 HTML, JS 없이 전부 읽힘). 스크롤 연출용으로 단계 번호 data-s 를 단다:
-    0 빈 잔(제목·속성), 1..n 재료(넣는 순서, 그림의 data-i = s-1), n+1.. 만드는 법 한 줄씩, 그다음 가니시, 마지막 팁·병·출처"""
+    """레시피 본문(정적 HTML, JS 없이 전부 읽힘). 스크롤 연출은 만드는 법 중심: 단계 data-s = k+1 이 만드는 법 k번째이고,
+    그 단계에서 넣는 재료 줄(.adds, 연출 중에만 보임)과 그림의 재료 묶음(data-i)이 함께 나타난다. 마지막 data-s 는 가니시·팁·병·출처"""
     out = []
     for c in cs:
         num = lambda i: chr(0x2460 + i) if i < 20 else f"({i+1})"
-        n = len(c["ingredients"]); st0 = n + 1; gs = st0 + len(c["steps"]); last = gs + (1 if c["garnish"] else 0)
-        rows = "".join(f'<tr data-s="{i + 1}"><td class="no">{num(i)}</td><td><i class="sw" style="background:{x["color"]}"></i>{esc_html(x["ko"])} <small>{esc_html(x["en"])}</small></td><td class="amt">{esc_html(x["amount"])}</td></tr>' for i, x in enumerate(c["ingredients"]))
+        sa, ist, ice, garn, steam = step_plan(c); m = len(c["steps"]); last = m + 1
+        rows = "".join(f'<tr><td class="no">{num(i)}</td><td><i class="sw" style="background:{x["color"]}"></i>{esc_html(x["ko"])} <small>{esc_html(x["en"])}</small></td><td class="amt">{esc_html(x["amount"])}</td></tr>' for i, x in enumerate(c["ingredients"]))
         src = "".join(f'<li><a href="{esc_attr(s["url"])}" target="_blank" rel="noopener">{esc_html(s["name"])}<span aria-hidden="true"> ↗</span></a></li>' for s in c["sources"])
-        out.append(f'<article class="recipe" id="c-{c["id"]}" aria-labelledby="h-{c["id"]}" data-n="{n}" data-gs="{gs if c["garnish"] else ""}" data-last="{last}">'
+        def adds(k):
+            xs = sa[k] if k < len(sa) else []
+            return (f'<ul class="adds">' + "".join(f'<li><i class="sw" style="background:{c["ingredients"][i]["color"]}"></i>{num(i)} {esc_html(c["ingredients"][i]["ko"])} <b>{esc_html(c["ingredients"][i]["amount"])}</b></li>' for i in xs) + "</ul>") if xs else ""
+        out.append(f'<article class="recipe" id="c-{c["id"]}" aria-labelledby="h-{c["id"]}" data-ist="{",".join(map(str, ist))}" data-ice="{ice}" data-garn="{garn}" data-steam="{steam}" data-last="{last}">'
                    f'<figure class="big">{cocktail_art(c)}<figcaption>{CK_NOTE}</figcaption></figure>'
                    f'<div class="rtext"><h3 id="h-{c["id"]}" tabindex="-1">{esc_html(c["ko"])} <small>{esc_html(c["en"])}</small></h3>'
                    f'<p class="rmeta"><span>{GLASS_KO[c["glass"]]}</span><span>{METHOD_KO[c["method"]]}</span><span>{ICE_KO[c["ice"]]}</span><span>난이도 {DIFF_KO[c["difficulty"]]}</span>{"".join(f"<span>{esc_html(t)}</span>" for t in c["taste"])}</p>'
-                   f'<h4 data-s="1">재료 <small>넣는 순서</small></h4><table class="ing"><tbody>{rows}</tbody></table>'
-                   f'<h4 data-s="{st0}">만드는 법</h4><ol class="steps">{"".join(f"<li data-s=\"{st0 + k}\">{esc_html(t)}</li>" for k, t in enumerate(c["steps"]))}</ol>'
-                   + (f'<div data-s="{gs}"><h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p></div>' if c["garnish"] else "")
+                   f'<details class="ingall" open><summary><h4>재료 <small>넣는 순서</small></h4></summary><table class="ing"><tbody>{rows}</tbody></table></details>'
+                   f'<h4 class="sth">만드는 법</h4><ol class="steps">{"".join(f"<li data-s=\"{k + 1}\"><p class=\"stx\">{esc_html(t)}</p>{adds(k)}</li>" for k, t in enumerate(c["steps"]))}</ol>'
                    + f'<div class="rtail" data-s="{last}">'
+                   + (f'<h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p>' if c["garnish"] else "")
                    + (f'<p class="tip"><b>팁</b> {esc_html(c["tip"])}</p>' if c.get("tip") else "")
                    + bottle_block(c, ws)
                    + (f'<h4>출처</h4><ul class="srcl">{src}</ul>' if src else "")

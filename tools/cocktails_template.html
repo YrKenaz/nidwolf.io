@@ -99,47 +99,71 @@ a{color:var(--accent)}
 .srcl{margin:0;padding-left:1.2em;font-size:13.5px}
 .warn{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);word-break:keep-all}
 .js .recipes{display:none}
-/* 상세 펼침(카드가 있는 줄 바로 아래, 격자 전체 폭). 높이는 grid-template-rows 0fr→1fr 로 펼친다. 다 펼친 뒤에는 overflow 를 풀어 그림 sticky 가 동작하게 한다 */
+/* 상세 펼침(카드가 있는 줄 바로 아래, 격자 전체 폭). 높이는 grid-template-rows 0fr→1fr 로 펼친다. 다 펼친 뒤에는 overflow 를 풀어 sticky 가 동작하게 한다 */
 .cgrid>.cpanel{grid-column:1/-1;list-style:none;display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
 .cgrid>.cpanel.open{grid-template-rows:1fr}
 .cpin{min-height:0;overflow:hidden}
 .cpanel.done .cpin{overflow:visible}
-.cpbody{border:1px solid var(--accent);border-radius:14px;background:var(--surface);padding:14px 20px 24px;margin:2px 0 10px}
-.cptool{display:flex;justify-content:flex-end;gap:6px;margin-bottom:6px}
+.cpbody{border:1px solid var(--accent);border-radius:14px;background:var(--surface);padding:0 20px 24px;margin:2px 0 10px}
+/* 이름 띠: 스크롤과 관계없이 늘 보이는 칵테일 이름·속성과 단추(sticky) */
+.cpband{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:14px}
+.cpname{flex:1 1 260px;min-width:0}
+.cpname b{font-family:var(--display);font-size:20px;line-height:1.25;word-break:keep-all}
+.cpname small{color:var(--muted);font-size:13px;margin-left:6px}
+.cptags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.cptags span{border:1px solid var(--line);border-radius:999px;padding:0 8px;font-size:12px}
+.cptool{display:flex;gap:6px;flex:0 0 auto}
 .cpanel .recipe{border-top:0;padding:0}
-.cpanel .big{position:sticky;top:12px;align-self:start}
-.cpanel h3:focus{outline:none}
+.cpanel .big{position:sticky;top:calc(var(--bandh,60px) + 12px);align-self:start}
+.cpanel .rtext>h3{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}   /* 이름은 띠에 보이므로 본문 제목은 화면 낭독·포커스용으로만 */
+.cpanel .rtext>.rmeta{display:none}
 .ccard[aria-expanded="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
-/* 스크롤 연출: 단계(data-s)가 화면 기준선을 지나면 나타나고, 되돌리면 사라진다. 투명도·이동만 바꿔 레이아웃은 그대로 둔다(숨김 글도 화면 낭독기에는 읽힘) */
-.story [data-s]{transition:opacity .35s ease,transform .35s ease}
-.story [data-s].off{opacity:0;transform:translateY(14px)}
-.story .ing tr[data-s] td{padding-bottom:var(--sg,0px)}
-.story h4[data-s="1"]{margin-top:var(--s1,0px)}
+.adds{display:none}
+.ingall>summary{list-style:none;cursor:default}.ingall>summary::-webkit-details-marker{display:none}
+.ingall>summary h4{display:inline}
+/* 스크롤 연출(만드는 법 중심). 지금 단계 = 문장이 읽는 자리(PC 화면 가운데, 휴대폰은 위에 붙은 그림 아래 영역의 가운데)를 지난 마지막 단계.
+   지난 단계는 약하게, 다음 단계는 흐리게 미리 보인다. 투명도만 바꿔 레이아웃은 그대로(숨긴 글 없음) */
+.story .ingall{border:1px solid var(--line);border-radius:10px;padding:2px 12px;margin-bottom:6px}
+.story .ingall>summary{cursor:pointer;list-style:revert;padding:6px 0}
+.story .ingall>summary h4{margin:0}
+.story .adds{display:block;list-style:none;margin:8px 0 0;padding:0;font-size:13.5px}
+.story .adds li{margin:3px 0}
+.story .steps{padding-left:1.4em}
+.story .steps>li{min-height:var(--steph,220px);padding:8px 0 8px 12px;border-left:3px solid transparent;transition:opacity .2s ease,border-color .2s ease;opacity:.32}
+.story .steps>li.past{opacity:.6}
+.story .steps>li.now{opacity:1;border-left-color:var(--accent)}
+.story .steps>li.now .stx{font-weight:700}
+.story .rtail{transition:opacity .2s ease;opacity:.32}.story .rtail.now,.story .rtail.past{opacity:1}
+.story .sth{margin-top:var(--s1,0px)}
 .cphint{display:none}
-.story .cphint{display:block;margin:18px 0 0;font-size:13.5px;color:var(--muted)}
+.story .cphint{display:block;margin:10px 0 0;font-size:13.5px;color:var(--muted)}
 .story .cphint::after{content:" ↓";display:inline-block;animation:cpb 1.6s ease-in-out infinite}
 @keyframes cpb{50%{transform:translateY(4px)}}
-@media (prefers-reduced-motion:reduce){.story .cphint::after{animation:none}}
-.story .steps li{margin-bottom:var(--sg,0px)}
-.story .rtext>div[data-s]{margin-bottom:var(--sg,0px)}
-.big .cka-step,.big .cka-garnish,.big .cka-steam{transition:opacity .4s ease}
-.big .cka-step.off,.big .cka-garnish.off,.big .cka-steam.off{opacity:0}
+/* 그림: 재료(data-i)·얼음·가니시·김을 단계에 맞춰 켠다. 한 단계에 재료가 여럿이면 넣는 순서대로 짧은 시차 */
+.big .cka-step,.big .cka-garnish,.big .cka-steam,.big .cka-ice{transition:opacity .3s ease}
+.big .cka-step.off,.big .cka-garnish.off,.big .cka-steam.off,.big .cka-ice.off{opacity:0;transition-delay:0s!important}
 .big .cka-layer.off{opacity:1}
-.big .cka-layer>*{transform-box:view-box;transform-origin:0 var(--y0,0px);transition:transform .55s ease}   /* clip-path 는 묶음(g)에 걸려 있으므로 묶음이 아니라 안쪽 요소만 변형한다 */
-.big .cka-layer.off>*{transform:scaleY(0)}   /* 층은 경계 아래(data-y0)에서 위로 차오른다 */
-@media (prefers-reduced-motion:reduce){.cgrid>.cpanel,.story [data-s],.big .cka-step,.big .cka-layer>*{transition:none}}
-@media print{*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}}
+.big .cka-layer>*{transform-box:view-box;transform-origin:0 var(--y0,0px);transition:transform .35s ease;transition-delay:inherit}   /* clip-path 는 묶음(g)에 걸려 있으므로 안쪽만 변형한다 */
+.big .cka-layer.off>*{transform:scaleY(0);transition-delay:0s!important}
+.cpanel.jump .big *{transition:none!important}   /* 빠르게 여러 단계를 건너뛰면 즉시 반영 */
+@media (prefers-reduced-motion:reduce){.cgrid>.cpanel,.story .steps>li,.big .cka-step,.big .cka-layer>*{transition:none}.story .cphint::after{animation:none}}
+@media print{*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}.story .steps>li,.story .rtail{opacity:1!important}}
 @media (max-width:760px){
   .recipe{grid-template-columns:minmax(0,1fr);gap:14px}
   .big{max-width:420px}
+  /* 좁은 화면: 이름 띠 + 그림이 위에 붙는다(합쳐서 화면의 40% 이하) */
+  .cpanel .big{max-width:none;top:var(--bandh,52px);z-index:3;background:var(--surface);padding:4px 0 2px;border-bottom:1px solid var(--line)}
+  .cpanel .big>svg{max-height:36vh;width:auto;max-width:100%;margin:0 auto}
+  .cpanel.story .big>svg{max-height:26vh}
+  .cpanel.story .big figcaption{display:none}
+  .cpanel .big figcaption{font-size:11px;margin:2px 0 0}
 }
 @media (max-width:560px){
-  .cpbody{padding:10px 12px 20px;margin-inline:-4px}
-  .cpanel .big{top:0;z-index:2;background:var(--surface);padding:6px 0 2px;border-bottom:1px solid var(--line)}
-  .cpanel .big>svg{max-height:36vh;width:auto;max-width:100%;margin:0 auto}
-  .cpanel.story .big>svg{max-height:29vh}
-  .cpanel.story .big figcaption{display:none}   /* 연출 중에는 그림만 위에 붙이고 안내 문장은 맨 아래 전체 보기에서 */   /* 휴대폰: 위에 붙는 그림이 화면의 3분의 1 남짓만 차지 */
-  .cpanel .big figcaption{font-size:11px;margin:2px 0 0}
+  .cpbody{padding:0 12px 20px;margin-inline:-4px}
+  .cpband{padding:8px 0;margin-bottom:6px;gap:6px}
+  .cpname b{font-size:17px}.cptags{display:none}   /* 휴대폰 띠는 이름과 단추만 */
+  .cpname{flex-basis:0}
+  .cptool .chip{padding:3px 10px;font-size:12.5px}
   .cgrid{grid-template-columns:minmax(0,1fr)}
   .cgl{min-width:0;width:100%}
 }
@@ -199,7 +223,7 @@ apply();
 /* 상세: 카드를 누르면 그 줄 바로 아래로 펼친다. 주소는 #c=<id>(JS 없을 때 쓰는 #c-<id> 앵커도 받음), 뒤로 가기·같은 카드·접기·Esc 로 접힌다.
    본문 article 은 복사하지 않고 숨은 #recipes 에서 옮겨 왔다가 접을 때 제자리로 돌려놓는다(그림 안 id·clip-path 가 겹치지 않게) */
 var P=null,openId=null,pushed=false,lastCard=null,raf=0,stages=[];
-const RM=matchMedia("(prefers-reduced-motion: reduce)"),MOB=matchMedia("(max-width:560px)"),MKEY="nidwolf.ckstory.v1";
+const RM=matchMedia("(prefers-reduced-motion: reduce)"),MOB=matchMedia("(max-width:760px)"),MKEY="nidwolf.ckstory.v1";
 let mode="story";try{if(localStorage.getItem(MKEY)==="all")mode="all"}catch(e){}
 const story=()=>mode==="story"&&!RM.matches;
 document.querySelectorAll("#cgrid a[data-id]").forEach(a=>a.setAttribute("aria-expanded","false"));
@@ -212,39 +236,54 @@ function place(){if(!P)return;const li=liOf(openId);
   while(el){if(el!==P){if(!el.matches("li[data-o]"))break;if(!el.hidden){if(el.offsetTop!==top)break;last=el}}el=el.nextElementSibling}
   if(last.nextElementSibling!==P)last.after(P)}
 function open(id){const a=$("c-"+id);if(!a||openId===id&&P)return;if(P)collapse();
-  openId=id;const card=cardOf(id),nm=a.querySelector("h3").firstChild.textContent.trim();
+  openId=id;const card=cardOf(id),h3=a.querySelector("h3"),nm=h3.firstChild.textContent.trim(),en=(h3.querySelector("small")||{}).textContent||"";
   P=document.createElement("li");P.className="cpanel";P.setAttribute("role","region");P.setAttribute("aria-labelledby","h-"+id);
-  P.innerHTML=`<div class="cpin"><div class="cpbody"><div class="cptool">${RM.matches?"":`<button type="button" class="chip cpmode" aria-pressed="${mode==="all"}">전체 한 번에 보기</button>`}<button type="button" class="chip cpclose" aria-label="${esc(nm)} 접기">접기 ✕</button></div></div></div>`;
+  /* 이름 띠(sticky): 이름·영문·속성과 단추. 본문 제목은 화면 낭독·포커스용으로 남긴다 */
+  P.innerHTML=`<div class="cpin"><div class="cpbody"><div class="cpband"><div class="cpname" aria-hidden="true"><b>${esc(nm)}</b><small>${esc(en)}</small><span class="cptags">${a.querySelector(".rmeta").innerHTML}</span></div><div class="cptool">${RM.matches?"":`<button type="button" class="chip cpmode" aria-pressed="${mode==="all"}">전체 한 번에 보기</button>`}<button type="button" class="chip cpclose" aria-label="${esc(nm)} 접기">접기 ✕</button></div></div></div></div>`;
   a._ph=document.createComment("");a.before(a._ph);P.querySelector(".cpbody").append(a);
-  if(!a.querySelector(".cphint"))a.querySelector(".rmeta").insertAdjacentHTML("afterend",'<p class="cphint" aria-hidden="true">아래로 내리면 재료를 넣는 순서대로 잔이 채워집니다</p>');
-  liOf(id).after(P);place();if(card){card.setAttribute("aria-expanded","true")}
+  if(!a.querySelector(".cphint"))a.querySelector(".sth").insertAdjacentHTML("beforebegin",'<p class="cphint" aria-hidden="true">아래로 내리면 만드는 법 단계마다 그 단계에서 넣는 재료가 잔에 채워집니다</p>');
+  liOf(id).after(P);place();if(card)card.setAttribute("aria-expanded","true");
   setup();
-  const done=()=>P&&P.classList.add("done");
+  const toTop=b=>{if(P)scrollTo({top:Math.max(0,P.getBoundingClientRect().top+scrollY-8),behavior:b})};
+  const done=()=>{if(P){P.classList.add("done");toTop("auto");setup()}};   /* 펼침이 끝나 페이지 높이가 늘어난 뒤 다시 맞춘다(주소로 바로 열 때 위치가 모자라지 않게) */
   if(RM.matches){P.classList.add("open");done()}else{requestAnimationFrame(()=>requestAnimationFrame(()=>P&&P.classList.add("open")));setTimeout(done,450)}
-  const h=a.querySelector("h3");h&&h.focus({preventScroll:true});
-  requestAnimationFrame(()=>{if(P)scrollTo({top:Math.max(0,P.getBoundingClientRect().top+scrollY-8),behavior:RM.matches?"auto":"smooth"})})}
+  h3.focus({preventScroll:true});
+  requestAnimationFrame(()=>toTop(RM.matches?"auto":"smooth"))}
 function collapse(){if(!P)return;const a=P.querySelector("article");
-  a.querySelectorAll(".off").forEach(x=>x.classList.remove("off"));a.style.removeProperty("--sg");
+  a.querySelectorAll(".off,.now,.past").forEach(x=>x.classList.remove("off","now","past"));a.querySelectorAll(".big [style]").forEach(x=>x.style.transitionDelay="");
+  const d=a.querySelector(".ingall");if(d)d.open=true;["--s1","--steph","--bandh"].forEach(k=>a.style.removeProperty(k));
   if(a._ph){a._ph.replaceWith(a);a._ph=null}
-  const card=cardOf(openId);if(card)card.setAttribute("aria-expanded","false");P.remove();P=null;openId=null;stages=[]}
+  const card=cardOf(openId);if(card)card.setAttribute("aria-expanded","false");P.remove();P=null;openId=null;stages=[];lastCur=null}
+var lastCur=null;
+/* 읽는 자리: PC 는 화면 가운데, 좁은 화면은 위에 붙은 이름 띠·그림 아래 영역의 가운데 */
+function readLine(){if(!P)return innerHeight/2;if(!MOB.matches)return innerHeight*.5;
+  const top=(P.querySelector(".cpband").offsetHeight||0)+(P.querySelector(".big").offsetHeight||0);return top+(innerHeight-top)/2}
 function setup(){if(!P)return;const a=P.querySelector("article"),on=story();P.classList.toggle("story",on);
-  stages=[...a.querySelectorAll("[data-s]")];
+  P.style.setProperty("--bandh",P.querySelector(".cpband").offsetHeight+"px");
+  stages=[...a.querySelectorAll(".steps>li[data-s], .rtail[data-s]")];
   a.querySelectorAll(".big .cka-layer").forEach(g=>g.style.setProperty("--y0",(g.dataset.y0||0)+"px"));
-  a.style.setProperty("--sg","0px");a.style.setProperty("--s1","0px");
-  if(on){const H0=a.querySelector(".rtext").offsetHeight,N=Math.max(1,+a.dataset.last||stages.length),vh=innerHeight;   /* 연출 길이: 글 전체가 화면 약 2.2개 높이가 되게 단계 사이를 벌린다 */
-    a.style.setProperty("--sg",Math.round(Math.max(24,Math.min(vh*.18,(vh*2.2-H0)/N)))+"px");
-    /* 펼친 직후에는 빈 잔부터: 첫 재료 줄이 화면 기준선보다 아래에서 시작하도록 그 위를 띄운다 */
-    const f=a.querySelector('[data-s="1"]'),rt=a.querySelector(".rtext");if(f){const off=f.getBoundingClientRect().top-rt.getBoundingClientRect().top;
-      a.style.setProperty("--s1",Math.max(0,Math.round(vh*(MOB.matches?.8:.62)+28-off-(MOB.matches?a.querySelector(".big").offsetHeight+8:8)))+"px")}}
-  update()}
-function update(){raf=0;if(!P)return;const a=P.querySelector("article");let cur=1e9;
-  if(story()){const t=innerHeight*(MOB.matches?.8:.62);cur=0;stages.forEach(el=>{if(el.getBoundingClientRect().top<t)cur=Math.max(cur,+el.dataset.s)})}
-  stages.forEach(el=>el.classList.toggle("off",+el.dataset.s>cur));
-  const n=+a.dataset.n,k=Math.min(n,cur),gs=+a.dataset.gs||0;
-  a.querySelectorAll(".big .cka-step").forEach(g=>g.classList.toggle("off",+g.dataset.i>=k));   /* 재료 i 는 단계 i+1 에서 나타난다 */
-  a.querySelectorAll(".big .cka-garnish").forEach(g=>g.classList.toggle("off",gs?cur<gs:cur<=n));
-  a.querySelectorAll(".big .cka-steam").forEach(g=>g.classList.toggle("off",cur<=n));
-  a.dataset.cur=cur>=1e9?"all":cur}
+  const d=a.querySelector(".ingall");if(d)d.open=!on;   /* 연출 중에는 "재료 한눈에"를 접어 두고, 전체 보기에서는 펼친다 */
+  a.style.setProperty("--s1","0px");
+  if(on){const vh=innerHeight,stick=MOB.matches?(P.querySelector(".cpband").offsetHeight+P.querySelector(".big").offsetHeight):0;
+    /* 한 단계 = 휠 서너 칸(손가락 한 번) 정도: 단계 블록 최소 높이를 화면 높이에 맞춰 고정 범위로 */
+    a.style.setProperty("--steph",Math.round(Math.max(170,Math.min(300,(vh-stick)*.42)))+"px");
+    /* 펼친 직후에는 시작 상태: 첫 단계가 읽는 자리보다 조금 아래에서 시작하게 그 위를 띄운다 */
+    const f=a.querySelector('.steps>li[data-s="1"]');if(f){const rel=f.getBoundingClientRect().top-P.getBoundingClientRect().top;a.style.setProperty("--s1",Math.max(0,Math.round(readLine()+40-rel-8))+"px")}}
+  lastCur=null;update()}
+function update(){raf=0;if(!P)return;const a=P.querySelector("article"),on=story();let cur=1e9;
+  if(on){const t=readLine();cur=0;stages.forEach(el=>{if(el.getBoundingClientRect().top<t)cur=Math.max(cur,+el.dataset.s)})}
+  stages.forEach(el=>{const s=+el.dataset.s;el.classList.toggle("now",on&&s===cur);el.classList.toggle("past",on&&s<cur)});
+  if(lastCur!==null&&Math.abs(cur-lastCur)>1&&cur<1e9){P.classList.add("jump");requestAnimationFrame(()=>requestAnimationFrame(()=>P&&P.classList.remove("jump")))}
+  const ist=(a.dataset.ist||"").split(",").map(Number),seen={};
+  a.querySelectorAll(".big .cka-step").forEach(g=>{const i=+g.dataset.i,st=ist[i]||1,show=st<=cur;
+    if(show&&g.classList.contains("off")){const ord=ist.slice(0,i).filter(x=>x===st).length;g.style.transitionDelay=(lastCur===null||P.classList.contains("jump")?0:ord*.18)+"s"}   /* 같은 단계 안에서는 넣는 순서대로 시차 */
+    g.classList.toggle("off",!show)});
+  const at=k=>k!==""&&k!==undefined&&cur>=+k;
+  a.querySelectorAll(".big .cka-ice").forEach(g=>g.classList.toggle("off",!at(a.dataset.ice||"0")));
+  /* 가니시·김의 단계가 정해져 있지 않으면 마지막(꼬리) 단계에서 보인다 */
+  a.querySelectorAll(".big .cka-garnish").forEach(g=>g.classList.toggle("off",!at(a.dataset.garn||a.dataset.last)));
+  a.querySelectorAll(".big .cka-steam").forEach(g=>g.classList.toggle("off",!at(a.dataset.steam||a.dataset.last)));
+  a.dataset.cur=cur>=1e9?"all":cur;lastCur=cur}
 addEventListener("scroll",()=>{if(P&&!raf)raf=requestAnimationFrame(update)},{passive:true});
 let rz=0;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{if(P){place();setup()}},120)});
 function route(){const id=idOf();if(id)open(id);else if(P){collapse();if(lastCard){lastCard.focus({preventScroll:true});lastCard=null}}}
