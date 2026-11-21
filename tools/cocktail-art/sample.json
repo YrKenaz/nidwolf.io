@@ -1,0 +1,20 @@
+[
+{"id":"highball","ko":"하이볼","en":"Highball","base":["BL"],"glass":"highball","method":"build","ice":"cube","difficulty":1,"taste":["상쾌함"],
+ "ingredients":[
+  {"ko":"위스키","en":"Whisky","ml":45,"amount":"45ml","kind":"whiskey","color":"#c8781e"},
+  {"ko":"탄산수","en":"Soda water","ml":135,"amount":"135ml","kind":"soda","color":"#cfe9ee"}],
+ "garnish":["레몬 껍질"],"steps":[],"tip":"","sources":[]},
+{"id":"old-fashioned","ko":"올드 패션드","en":"Old Fashioned","base":["BB","RY"],"glass":"rocks","method":"stir","ice":"large","difficulty":2,"taste":["진함"],
+ "ingredients":[
+  {"ko":"각설탕","en":"Sugar cube","ml":null,"amount":"1개","kind":"sugar","color":"#f4efe2"},
+  {"ko":"앙고스투라 비터스","en":"Angostura bitters","ml":null,"amount":"2대시","kind":"bitters","color":"#8e2a1c"},
+  {"ko":"버번 위스키","en":"Bourbon","ml":45,"amount":"45ml","kind":"whiskey","color":"#b8651a"}],
+ "garnish":["오렌지 껍질","체리"],"steps":[],"tip":"","sources":[]},
+{"id":"whiskey-sour","ko":"위스키 사워","en":"Whiskey Sour","base":["BB"],"glass":"coupe","method":"shake","ice":"none","difficulty":2,"taste":["새콤함"],
+ "ingredients":[
+  {"ko":"버번 위스키","en":"Bourbon","ml":45,"amount":"45ml","kind":"whiskey","color":"#b8651a"},
+  {"ko":"레몬 주스","en":"Lemon juice","ml":25,"amount":"25ml","kind":"juice","color":"#f1dc5a"},
+  {"ko":"심플 시럽","en":"Simple syrup","ml":20,"amount":"20ml","kind":"syrup","color":"#f3ead0"},
+  {"ko":"달걀흰자","en":"Egg white","ml":null,"amount":"1개 분량","kind":"egg","color":"#fbf7ec"}],
+ "garnish":["체리"],"steps":[],"tip":"","sources":[]}
+]

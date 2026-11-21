@@ -9,7 +9,7 @@
     --fragment 경로   <head> 없는 조각 HTML(이미지 내장)을 만든다
     --check           index.html 을 쓰지 않고 검증·요약만 한다
 """
-import json, os, sys, re, base64, datetime, collections
+import json, os, sys, re, base64, datetime, collections, math
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # 사진 공개 기준(사용자 결정 2026-11-12): 사진이 있는 병이 전체 병 수의 이 비율 이상일 때만 화면에 사진을 싣는다.
@@ -155,17 +155,29 @@ def render(ws, meta, bottles, embed, stats):
     return t.replace("__DATA__", data).replace("__IMAGES__", json.dumps({"img": img, "src": src, "cr": cr}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
 
 DESC = "한국·영어권 위스키 티어표와 순위·평점 리스트를 100점 척도로 합산한 위스키 티어표. 종류·숙성년수·피트·셰리·CS·가격대별로 골라 볼 수 있습니다."
-HEAD = ('<!doctype html>\n<html lang="ko"><head><meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
-        f'<meta name="description" content="{DESC}">'
-        '<link rel="canonical" href="https://nidwolf.com/"><link rel="icon" href="/Nidwolf-ico.ico">'
-        f'<meta property="og:title" content="위스키 종합 티어표"><meta property="og:description" content="{DESC}">'
-        '<meta property="og:type" content="website"><meta property="og:url" content="https://nidwolf.com/">'
-        '<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>\n')
+CK_DESC = "버번·라이·스카치 등 위스키로 만드는 칵테일 제조법. 투명한 잔에 재료를 넣는 순서대로 양에 비례해 층층이 쌓은 그림으로 따라 하기 쉽게 보여 줍니다."
 
-def full(t):
+def head(title, desc, url):
+    return ('<!doctype html>\n<html lang="ko"><head><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
+            f'<meta name="description" content="{desc}">'
+            f'<link rel="canonical" href="{url}"><link rel="icon" href="/Nidwolf-ico.ico">'
+            f'<meta property="og:title" content="{title}"><meta property="og:description" content="{desc}">'
+            f'<meta property="og:type" content="website"><meta property="og:url" content="{url}">'
+            '<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>\n')
+
+HEAD = head("위스키 종합 티어표", DESC, "https://nidwolf.com/")
+CK_HEAD = head("위스키 칵테일 제조법", CK_DESC, "https://nidwolf.com/cocktails.html")
+
+SITE_NAV = re.compile(r'\n?  <nav class="site"[^\n]*</nav>')
+
+def site_nav(t, on):
+    """칵테일 페이지를 만들지 않는 빌드에서는 티어표의 사이트 메뉴를 빼서 죽은 링크가 생기지 않게 한다"""
+    return t if on else SITE_NAV.sub("", t, count=1)
+
+def full(t, hd=HEAD):
     t = t.replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "")
-    return HEAD + t.replace('<div class="wrap">', '</head><body>\n<div class="wrap">', 1) + "\n</body></html>\n"
+    return hd + t.replace('<div class="wrap">', '</head><body>\n<div class="wrap">', 1) + "\n</body></html>\n"
 
 # 트렌드지수 원자료: 재료 key → trends.json raw 의 대표 값. trends.json 에 "raw_keys" 가 있으면 그것을 쓴다
 RAW_KEYS = {"ds": "ds_reviews", "wiki": "wiki_en", "src": "src_en"}
@@ -198,9 +210,342 @@ def add_trends(ws):
     info.update(n=n, nods=nods, pending=sum(1 for k in tb if k not in {w["id"] for w in ws}))
     return info, f"트렌드지수 {n}병(국내 판매 자료 없음 {nods}) · 미등록 {info['pending']}병 건너뜀 · 측정 {t.get('measured')} · 산식 {t.get('formula')}"
 
+# ───────────── 칵테일 제조법 페이지(cocktails.html) ─────────────
+# data/cocktails.json(레시피)과 tools/cocktails_template.html 이 있을 때만 만든다. 잔 그림은 여기서 정적 SVG로 그린다(JS 없이도 보이게)
+GLASS_KO = {"rocks": "록스 잔", "highball": "하이볼 잔", "coupe": "쿠페 잔", "martini": "마티니 잔", "mug": "머그", "julep": "줄렙 컵", "wine": "와인 잔", "shot": "샷 잔"}
+METHOD_KO = {"build": "빌드(잔에 바로)", "stir": "스터(저어서)", "shake": "셰이크(흔들어서)", "hot": "따뜻하게"}
+ICE_KO = {"none": "얼음 없음", "cube": "각얼음", "large": "큰 얼음", "crushed": "간 얼음"}
+DIFF_KO = {1: "쉬움", 2: "보통", 3: "어려움"}
+TYPE_KO = {"SM": "싱글몰트 스카치", "BL": "블렌디드 스카치", "BB": "버번", "RY": "라이·아메리칸", "IR": "아이리시", "JP": "재패니즈", "WD": "월드"}
+ING_KINDS = {"whiskey", "liqueur", "vermouth", "juice", "syrup", "sugar", "soda", "bitters", "egg", "dairy", "coffee", "water", "other"}
+HEX6 = re.compile(r"^#[0-9a-fA-F]{6}$")
+CK_SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+
+def check_cocktails(cs):
+    """cocktails.json 검증. 오류 문장 목록을 돌려준다"""
+    if not isinstance(cs, list): return ["cocktails.json 은 배열이어야 함"]
+    errs = []
+    for i, n in collections.Counter(c.get("id") for c in cs if isinstance(c, dict)).items():
+        if n > 1: errs.append(f"칵테일 id 중복: {i}")
+    for c in cs:
+        if not isinstance(c, dict): errs.append(f"칵테일 항목이 객체가 아님: {c!r}"); continue
+        cid = c.get("id") or "?"; e = lambda m: errs.append(f"칵테일 {cid}: {m}")
+        miss = [k for k in ("id", "ko", "en", "base", "glass", "method", "ice", "difficulty", "taste", "ingredients", "garnish", "steps", "sources") if k not in c]
+        if miss: e(f"필수 필드 없음 {miss}"); continue
+        if not isinstance(c["id"], str) or not CK_SLUG.match(c["id"]): e("id 는 영문 소문자·숫자·하이픈만")
+        for k in ("ko", "en"):
+            if not isinstance(c[k], str) or not c[k].strip(): e(f"{k} 가 빈 문자열")
+        if not isinstance(c["base"], list) or not c["base"] or set(c["base"]) - TYPES: e(f"base 값 오류 {c['base']!r} (허용 {sorted(TYPES)})")
+        if c["glass"] not in GLASS_KO: e(f"glass 값 오류 {c['glass']!r}")
+        if c["method"] not in METHOD_KO: e(f"method 값 오류 {c['method']!r}")
+        if c["ice"] not in ICE_KO: e(f"ice 값 오류 {c['ice']!r}")
+        if type(c["difficulty"]) is not int or c["difficulty"] not in DIFF_KO: e(f"difficulty 는 1~3 정수 ({c['difficulty']!r})")
+        for k in ("taste", "garnish", "steps"):
+            if not isinstance(c[k], list) or not all(isinstance(x, str) and x.strip() for x in c[k]): e(f"{k} 는 문자열 배열")
+        if isinstance(c["steps"], list) and not c["steps"]: e("steps 가 비어 있음")
+        if "tip" in c and c["tip"] is not None and not isinstance(c["tip"], str): e("tip 은 문자열")
+        ing = c["ingredients"]
+        if not isinstance(ing, list) or not ing: e("ingredients 가 비어 있음"); ing = []
+        for j, x in enumerate(ing, 1):
+            if not isinstance(x, dict): e(f"재료 {j}: 객체가 아님"); continue
+            m = [k for k in ("ko", "en", "ml", "amount", "kind", "color") if k not in x]
+            if m: e(f"재료 {j}: 필드 없음 {m}"); continue
+            if x["ml"] is not None and (isinstance(x["ml"], bool) or not isinstance(x["ml"], (int, float)) or x["ml"] <= 0): e(f"재료 {j}({x['ko']}): ml 은 양수 또는 null ({x['ml']!r})")
+            if x["kind"] not in ING_KINDS: e(f"재료 {j}({x['ko']}): kind 값 오류 {x['kind']!r}")
+            if not isinstance(x["color"], str) or not HEX6.match(x["color"]): e(f"재료 {j}({x['ko']}): color 는 #rrggbb ({x['color']!r})")
+            if not isinstance(x["amount"], str) or not x["amount"].strip(): e(f"재료 {j}({x['ko']}): amount 가 빈 값")
+        if not isinstance(c["sources"], list): e("sources 는 배열")
+        else:
+            for s in c["sources"]:
+                if not isinstance(s, dict) or not s.get("name") or not str(s.get("url", "")).startswith("https://"): e(f"출처는 name 과 https:// url 이 있어야 함 ({s!r})")
+    return errs
+
+# 잔 안쪽 단면: y(바닥에서 높이) → 반지름 r. 회전체로 보고 층 경계를 부피로 나눈다
+#   H 안쪽 높이, wall 벽 두께, base 바닥 두께(텀블러형), stem 다리 길이(다리 있는 잔), foot 받침 반폭
+GLASS_SHAPES = {
+    "rocks":    dict(H=104, r=lambda t: 44 + 8 * t, wall=5, base=16),
+    "highball": dict(H=176, r=lambda t: 30 + 4 * t, wall=4, base=14),
+    "shot":     dict(H=72,  r=lambda t: 21 + 6 * t, wall=5, base=20),
+    "mug":      dict(H=118, r=lambda t: 42.0, wall=5, base=10, handle=True),
+    "julep":    dict(H=128, r=lambda t: 36 + 6 * t, wall=4, base=10, ridge=True),
+    "coupe":    dict(H=46,  r=lambda t: 64 * max(0.0, 2 * t - t * t) ** 0.5, wall=4, stem=82, foot=46),
+    "martini":  dict(H=76,  r=lambda t: 3 + 64 * t, wall=4, stem=86, foot=44),
+    "wine":     dict(H=92,  r=lambda t: 56 * t ** 0.5 * (1 - 0.32 * t * t), wall=4, stem=66, foot=42),
+}
+CK_FILL = 0.82          # 잔 부피 중 채우는 비율(모든 잔 공통). 층 비율은 이 안에서 재료 양에 비례
+CK_N = 400              # 단면 표본 수
+CK_GROUND, CK_CX, CK_W = 236, 100, 360
+
+def glass_geom(g):
+    s = GLASS_SHAPES[g]; H = s["H"]
+    ys = [H * i / CK_N for i in range(CK_N + 1)]
+    rs = [s["r"](y / H) for y in ys]
+    cum = [0.0]
+    for i in range(CK_N):   # 원뿔대 부피
+        h, a, b = ys[i + 1] - ys[i], rs[i], rs[i + 1]
+        cum.append(cum[-1] + math.pi * h * (a * a + a * b + b * b) / 3)
+    y0 = CK_GROUND - (s.get("base") or 0) - ((s["stem"] + 6) if s.get("stem") else 0)   # 안쪽 바닥의 SVG y
+    return dict(s=s, H=H, ys=ys, rs=rs, cum=cum, Y0=y0)
+
+def _r_at(G, y):
+    i = min(CK_N - 1, max(0, int(y / G["H"] * CK_N))); y1, y2 = G["ys"][i], G["ys"][i + 1]
+    return G["rs"][i] + (G["rs"][i + 1] - G["rs"][i]) * ((y - y1) / (y2 - y1) if y2 > y1 else 0)
+
+def _h_for_volume(G, v):
+    """안쪽 바닥부터 부피 v 가 차는 높이(표본 구간 안에서 선형 보간)"""
+    cum = G["cum"]
+    if v <= 0: return 0.0
+    if v >= cum[-1]: return G["H"]
+    lo, hi = 0, CK_N
+    while hi - lo > 1:
+        m = (lo + hi) // 2
+        (lo, hi) = (m, hi) if cum[m] <= v else (lo, m)
+    return G["ys"][lo] + (G["ys"][hi] - G["ys"][lo]) * (v - cum[lo]) / (cum[hi] - cum[lo])
+
+def volume_between(G, a, b):
+    """높이 a~b 사이 부피(검증용, 원뿔대 합)"""
+    n = 2000; tot = 0.0
+    for i in range(n):
+        y1, y2 = a + (b - a) * i / n, a + (b - a) * (i + 1) / n; r1, r2 = _r_at(G, y1), _r_at(G, y2)
+        tot += math.pi * (y2 - y1) * (r1 * r1 + r1 * r2 + r2 * r2) / 3
+    return tot
+
+def layer_bounds(G, mls):
+    """재료 양(ml) 목록 → 각 층의 (아래 높이, 위 높이). 경계는 부피 기준"""
+    tot = sum(mls); cap = G["cum"][-1] * CK_FILL; out, acc = [], 0.0
+    for m in mls:
+        a = _h_for_volume(G, cap * acc / tot); acc += m; b = _h_for_volume(G, cap * acc / tot)
+        out.append((a, b))
+    return out
+
+def _f(v): return f"{v:.1f}".rstrip("0").rstrip(".")
+
+def _side(G, a, b, sign, off=0.0):
+    """높이 a→b 를 따라가는 한쪽 벽의 점들(sign -1 왼쪽, +1 오른쪽)"""
+    pts, ys = [], [a] + [y for k, y in enumerate(G["ys"]) if k % 10 == 0 and a < y < b] + [b]   # 그릴 때는 40구간이면 충분(부피 계산은 400구간)
+    for y in ys: pts.append((CK_CX + sign * (_r_at(G, y) + off), G["Y0"] - y))
+    return pts
+
+def _poly(pts): return "M" + " L".join(f"{_f(x)},{_f(y)}" for x, y in pts) + "Z"
+
+def _rgb(h): return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+
+def _textw(t, fs=12):
+    return sum(fs * (1.0 if ord(ch) > 0x1100 else 0.58) for ch in t)
+
+def _garnish_svg(G, garnish):
+    if not garnish: return ""
+    g = " ".join(garnish); x = CK_CX + _r_at(G, G["H"]) + G["s"]["wall"] - 6; y = G["Y0"] - G["H"]; out = []
+    citrus = next(((c, k) for k, c in (("레몬", "#f4d53c"), ("라임", "#8cc63f"), ("오렌지", "#f39a2b"), ("자몽", "#f07b5a")) if k in g), None)
+    if citrus:
+        c = citrus[0]
+        if "껍질" in g.split(citrus[1], 1)[1][:4]:   # 껍질: 잔 가장자리에 걸친 꼬인 띠
+            out.append(f'<path d="M{_f(x-14)},{_f(y+8)} q8,-22 18,-6 q8,12 16,-8" fill="none" stroke="{c}" stroke-width="6" stroke-linecap="round"/>'
+                       f'<path d="M{_f(x-14)},{_f(y+8)} q8,-22 18,-6 q8,12 16,-8" fill="none" stroke="currentColor" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round"/>')
+        else:                                       # 조각·슬라이스: 잔에 꽂힌 둥근 단면
+            out.append(f'<g transform="translate({_f(x+2)},{_f(y-2)})"><circle r="13" fill="{c}" stroke="currentColor" stroke-width="2.4"/><circle r="9" fill="#fff8df" fill-opacity=".75"/>'
+                       + "".join(f'<line x1="0" y1="0" x2="{_f(9*math.cos(a))}" y2="{_f(9*math.sin(a))}" stroke="{c}" stroke-width="1.6"/>' for a in [k * math.pi / 3 for k in range(6)]) + "</g>")
+    if "체리" in g:
+        cx, cy = CK_CX - _r_at(G, G["H"]) * 0.35, y - 6
+        out.append(f'<path d="M{_f(cx)},{_f(cy-6)} q4,-16 14,-20" fill="none" stroke="#3d6b2a" stroke-width="2.4" stroke-linecap="round"/><circle cx="{_f(cx)}" cy="{_f(cy)}" r="7" fill="#b3122e" stroke="currentColor" stroke-width="2.2"/><circle cx="{_f(cx-2.5)}" cy="{_f(cy-2.5)}" r="1.8" fill="#fff" fill-opacity=".8"/>')
+    if "민트" in g:
+        cx, cy = CK_CX + 6, y - 8
+        out.append(f'<path d="M{_f(cx)},{_f(cy+10)} c-14,-4 -16,-18 -6,-24 c6,8 10,16 6,24z M{_f(cx)},{_f(cy+10)} c12,-6 18,-16 10,-24 c-8,6 -12,14 -10,24z" fill="#4caf50" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>')
+    return "".join(out)
+
+def _ice_svg(G, ice, htop):
+    if ice == "none" or htop <= 0: return ""
+    out, rnd = [], 0
+    def cube(cx, cy, s, rot):
+        return (f'<rect x="{_f(cx-s/2)}" y="{_f(cy-s/2)}" width="{_f(s)}" height="{_f(s)}" rx="{_f(s*0.22)}" transform="rotate({rot} {_f(cx)} {_f(cy)})" '
+                f'fill="#ffffff" fill-opacity=".16" stroke="#ffffff" stroke-opacity=".9" stroke-width="1.8"/>'
+                f'<rect x="{_f(cx-s/2-1.2)}" y="{_f(cy-s/2-1.2)}" width="{_f(s+2.4)}" height="{_f(s+2.4)}" rx="{_f(s*0.24)}" transform="rotate({rot} {_f(cx)} {_f(cy)})" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="1"/>')
+    if ice == "large":
+        r = _r_at(G, htop); s = min(46, r * 1.25, htop * 0.9)
+        out.append(cube(CK_CX, G["Y0"] - htop + s * 0.42, s, -6))
+    elif ice == "cube":
+        s = 22 if G["H"] > 60 else 16; rots = [-12, 8, -4, 14]
+        rows = [htop - s * 0.35, htop - s * 1.35] if G["H"] > 120 else [htop - s * 0.35]
+        for k, hy in enumerate(rows):
+            if hy - s / 2 < 4: continue
+            r = _r_at(G, hy) - 4; n = max(1, min(3, int((2 * r) // (s + 5))))
+            for j in range(n):
+                cx = CK_CX - (n - 1) * (s + 5) / 2 + j * (s + 5) + (k % 2) * 5
+                out.append(cube(cx, G["Y0"] - hy, s, rots[(j + k) % 4]))
+    else:  # crushed
+        import random
+        rg = random.Random(7)
+        for _ in range(int(G["H"] * 0.5)):
+            hy = htop - rg.random() * min(htop, G["H"] * 0.55); r = max(2, _r_at(G, hy) - 6)
+            out.append(cube(CK_CX + (rg.random() * 2 - 1) * r, G["Y0"] - hy, 6 + rg.random() * 4, rg.randint(-30, 30)))
+    return "".join(out)
+
+def glass_svg(c, labels=True):
+    """칵테일 하나의 잔 그림 SVG. labels=False 면 목록 카드용 작은 그림(라벨·칩 없음)"""
+    G = glass_geom(c["glass"]); s = G["s"]; H, Y0, w = G["H"], G["Y0"], s["wall"]
+    ings = c["ingredients"]; num = lambda i: chr(0x2460 + i) if i < 20 else f"({i+1})"
+    lay = [(i, x) for i, x in enumerate(ings) if x["ml"] is not None]
+    chips = [(i, x) for i, x in enumerate(ings) if x["ml"] is None]
+    tot = sum(x["ml"] for _, x in lay) or 1
+    bounds = layer_bounds(G, [x["ml"] for _, x in lay]) if lay else []
+    htop = bounds[-1][1] if bounds else 0
+    o = []
+    # 잔 몸통(유리 바탕): 바깥선 안쪽을 옅게 칠한다
+    if s.get("stem"):
+        L = _side(G, 0, H, -1, w)[::-1]; R = _side(G, 0, H, 1, w)
+        sw = 4.5; fy = CK_GROUND; ft = fy - 6; f = s["foot"]
+        body = L + [(CK_CX - sw, Y0 + w), (CK_CX - sw, ft), (CK_CX - f, ft + 1), (CK_CX - f, fy), (CK_CX + f, fy), (CK_CX + f, ft + 1), (CK_CX + sw, ft), (CK_CX + sw, Y0 + w)] + R
+    else:
+        L = _side(G, 0, H, -1, w)[::-1]; R = _side(G, 0, H, 1, w); b = s["base"]
+        body = L + [(CK_CX - _r_at(G, 0) - w, Y0 + b)] + [(CK_CX + _r_at(G, 0) + w, Y0 + b)] + R
+    if s.get("handle"):
+        # 손잡이는 왼쪽에 둔다(오른쪽은 라벨 지시선이 지나가는 자리)
+        xl = CK_CX - _r_at(G, 0) - w; ya, yb = Y0 - H * 0.82, Y0 - H * 0.2
+        hp = f"M{_f(xl+2)},{_f(ya)} C{_f(xl-34)},{_f(ya-4)} {_f(xl-34)},{_f(yb+4)} {_f(xl+2)},{_f(yb)}"
+        o.append(f'<path d="{hp}" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"/><path d="{hp}" fill="none" stroke="var(--bg)" stroke-width="6.5" stroke-linecap="round"/>'
+                 f'<path d="{hp}" fill="none" stroke="currentColor" stroke-opacity=".08" stroke-width="6.5" stroke-linecap="round"/>')
+    bodyd = "M" + " L".join(f"{_f(x)},{_f(y)}" for x, y in body)
+    o.append(f'<path d="{bodyd}Z" fill="currentColor" fill-opacity=".07" stroke="none"/>')
+    # 층: 넣는 순서대로 아래에서 위로, 부피 비례
+    for k, ((i, x), (a, bb)) in enumerate(zip(lay, bounds)):
+        o.append(f'<path d="{_poly(_side(G, a, bb, -1)[::-1] + _side(G, a, bb, 1))}" fill="{x["color"]}"/>')
+        if x["kind"] == "soda" and bb - a > 14:   # 탄산 거품
+            for j in range(int((bb - a) // 16)):
+                yy = a + 8 + j * 16; rr = _r_at(G, yy) * 0.55
+                for dx in ((-0.6, 0.15, 0.7) if j % 2 else (-0.25, 0.45)):
+                    o.append(f'<circle cx="{_f(CK_CX + dx * rr)}" cy="{_f(Y0 - yy)}" r="2.2" fill="none" stroke="#ffffff" stroke-opacity=".95" stroke-width="1.2"/>')
+    for k in range(1, len(lay)):   # 층 경계선: 색이 비슷하면 더 진하게(점선)
+        y = bounds[k][0]; r = _r_at(G, y)
+        c1, c2 = _rgb(lay[k - 1][1]["color"]), _rgb(lay[k][1]["color"]); near = sum((p - q) ** 2 for p, q in zip(c1, c2)) ** 0.5 < 70
+        o.append(f'<line x1="{_f(CK_CX - r)}" y1="{_f(Y0 - y)}" x2="{_f(CK_CX + r)}" y2="{_f(Y0 - y)}" stroke="currentColor" stroke-opacity="{".75" if near else ".3"}" stroke-width="{1.6 if near else 1.1}"{" stroke-dasharray=\"5 3\"" if near else ""}/>')
+    if lay:   # 맨 위 액면
+        r = _r_at(G, htop); o.append(f'<line x1="{_f(CK_CX - r)}" y1="{_f(Y0 - htop)}" x2="{_f(CK_CX + r)}" y2="{_f(Y0 - htop)}" stroke="currentColor" stroke-opacity=".55" stroke-width="1.4"/>')
+    o.append(_ice_svg(G, c["ice"], htop))
+    # 안쪽 선(가늘게), 바깥선(굵게), 유리 하이라이트
+    inner = _side(G, 0, H, -1)[::-1] + _side(G, 0, H, 1)
+    o.append(f'<path d="M{" L".join(f"{_f(x)},{_f(y)}" for x, y in inner)}" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="1.3" stroke-linejoin="round"/>')
+    o.append(f'<path d="{bodyd}" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>')
+    if s.get("ridge"):
+        for yy in (H - 10, 12):
+            r = _r_at(G, yy) + w; o.append(f'<line x1="{_f(CK_CX - r)}" y1="{_f(Y0 - yy)}" x2="{_f(CK_CX + r)}" y2="{_f(Y0 - yy)}" stroke="currentColor" stroke-opacity=".5" stroke-width="1.6"/>')
+    hl = [(CK_CX - _r_at(G, y) * 0.74, Y0 - y) for y in [H * (0.22 + 0.5 * k / 12) for k in range(13)] if _r_at(G, y) > 8]
+    if len(hl) > 2:
+        o.append(f'<path d="M{" L".join(f"{_f(x)},{_f(y)}" for x, y in hl)}" fill="none" stroke="#ffffff" stroke-opacity=".75" stroke-width="4" stroke-linecap="round"/>')
+        y = H * 0.82; o.append(f'<line x1="{_f(CK_CX - _r_at(G, y) * 0.74)}" y1="{_f(Y0 - y)}" x2="{_f(CK_CX - _r_at(G, y) * 0.74)}" y2="{_f(Y0 - y + 5)}" stroke="#ffffff" stroke-opacity=".75" stroke-width="4" stroke-linecap="round"/>')
+    o.append(_garnish_svg(G, c["garnish"]))
+    summ = "아래부터 " + ", ".join(f"{num(i)} {x['ko']} {x['amount']}({round(x['ml'] / tot * 100)}%)" for i, x in lay) if lay else "층으로 쌓는 재료 없음"
+    if chips: summ += ". 그 밖에 " + ", ".join(f"{num(i)} {x['ko']} {x['amount']}" for i, x in chips)
+    if not labels:
+        return f'<svg class="gl sm" viewBox="0 {_f(min(Y0 - H - 34, 40))} 200 {_f(CK_GROUND + 6 - min(Y0 - H - 34, 40))}" role="img" aria-label="{esc_attr(c["ko"])} 잔 그림. {esc_attr(summ)}"><title>{esc_html(summ)}</title>{"".join(o)}</svg>'
+    # 라벨: 층 가운데 높이를 목표로, 위에서부터 겹치지 않게 내려 배치하고 아래로 넘치면 다시 올린다
+    xedge = max(CK_CX + _r_at(G, y) + w for y in G["ys"])
+    LX = max(xedge + 26, 204); GAP = 32
+    tg = [Y0 - (a + bb) / 2 for a, bb in bounds][::-1]; items = lay[::-1]; bd = bounds[::-1]; ys = []
+    for t in tg: ys.append(max(t, (ys[-1] + GAP) if ys else 24))
+    for k in range(len(ys) - 1, -1, -1):
+        ys[k] = min(ys[k], (ys[k + 1] - GAP) if k + 1 < len(ys) else CK_GROUND - 14)
+    for (i, x), (a, bb), yl in zip(items, bd, ys):
+        ym = Y0 - (a + bb) / 2; xe = CK_CX + _r_at(G, (a + bb) / 2)
+        o.append(f'<path d="M{_f(xe)},{_f(ym)} L{_f(LX - 22)},{_f(ym)} L{_f(LX - 8)},{_f(yl)}" fill="none" stroke="currentColor" stroke-opacity=".6" stroke-width="1.2"/><circle cx="{_f(xe)}" cy="{_f(ym)}" r="2.6" fill="currentColor"/>')
+        # 라벨 칸을 넘는 긴 이름·양은 괄호 설명을 빼거나 ml 값으로 줄인다(재료 표에는 원문 그대로 나온다)
+        avail = CK_W - LX - 4; nm_, am = x["ko"], x["amount"]; pct = f" · {round(x['ml'] / tot * 100)}%"
+        if _textw(f"{num(i)} {nm_}", 13) > avail: nm_ = re.sub(r"\s*\(.*?\)", "", nm_).strip() or nm_
+        if _textw(am + pct, 12) > avail: am = f"{_f(x['ml'])}ml"
+        o.append(f'<text x="{_f(LX)}" y="{_f(yl - 2)}" class="lb">{num(i)} {esc_html(nm_)}</text><text x="{_f(LX)}" y="{_f(yl + 13)}" class="la">{esc_html(am)}{pct}</text>')
+    # ml 이 없는 재료: 잔 아래 칩(순서 번호 + 색 점 + 이름·양)
+    yb = CK_GROUND + 14; x0 = 12; cy = yb; rows = 0
+    if chips: rows = 1
+    for i, x in chips:
+        t = f"{num(i)} {x['ko']} {x['amount']}"; cw = _textw(t, 12) + 30
+        if x0 + cw > CK_W - 8 and x0 > 12: x0 = 12; cy += 30; rows += 1
+        o.append(f'<g class="chip"><rect x="{_f(x0)}" y="{_f(cy)}" width="{_f(cw)}" height="24" rx="12" fill="currentColor" fill-opacity=".06" stroke="currentColor" stroke-opacity=".45" stroke-width="1.2"/>'
+                 f'<circle cx="{_f(x0 + 13)}" cy="{_f(cy + 12)}" r="5" fill="{x["color"]}" stroke="currentColor" stroke-width="1.2"/><text x="{_f(x0 + 23)}" y="{_f(cy + 16.5)}" class="lc">{esc_html(t)}</text></g>')
+        x0 += cw + 8
+    top = min([Y0 - H - 36] + ([ys[0] - 18] if ys else [])); hgt = (cy + 30 if rows else CK_GROUND + 8) - top
+    return f'<svg class="gl" viewBox="0 {_f(top)} {CK_W} {_f(hgt)}" role="img" aria-label="{esc_attr(c["ko"])} 잔 그림. {esc_attr(summ)}"><title>{esc_html(summ)}</title>{"".join(o)}</svg>'
+
+def esc_html(t): return str(t).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+def esc_attr(t): return esc_html(t).replace('"', "&quot;")
+
+CK_NOTE = "그림은 넣는 순서(아래부터)와 양의 비율을 보여 줍니다. 실제로는 섞여서 색이 달라집니다."
+CK_WARN = "이 페이지는 만 19세 이상을 위한 정보입니다. 지나친 음주는 건강을 해칩니다. 임신 중에는 마시지 말고, 술을 마신 뒤에는 운전하지 마세요."   # 기획 제안 문구
+
+ART_DIR = os.path.join("art", "cocktails")   # 전담 그림: art/cocktails/<id>.svg(상세), <id>-s.svg(목록). 없으면 glass_svg 임시 그림
+
+def cocktail_art(c, small=False):
+    """잔 그림을 넣는 유일한 자리. 전담 그림 파일이 있으면 인라인으로 넣고(색 변수·title 이 살도록), 없으면 데이터로 그린 임시 그림을 쓴다"""
+    p = os.path.join(ROOT, ART_DIR, f"{c['id']}{'-s' if small else ''}.svg")
+    if os.path.exists(p):
+        with open(p, encoding="utf-8") as f: t = f.read()
+        t = re.sub(r"<\?xml[^>]*\?>|<!DOCTYPE[^>]*>|<!--.*?-->", "", t, flags=re.S).strip()
+        if not t.startswith("<svg"): raise SystemExit(f"오류: {p} 가 <svg> 로 시작하지 않음")
+        return t
+    return glass_svg(c, not small)
+
+def cocktail_cards(cs):
+    out = []
+    for c in cs:
+        out.append(f'<li data-base="{" ".join(c["base"])}" data-diff="{c["difficulty"]}" data-method="{c["method"]}"><a class="ccard" href="#c-{c["id"]}" data-id="{c["id"]}">'
+                   f'<span class="cfig">{cocktail_art(c, True)}</span><span class="cbody"><span class="cn">{esc_html(c["ko"])}</span><span class="ce">{esc_html(c["en"])}</span>'
+                   f'<span class="cm"><span class="df" title="난이도">{"●" * c["difficulty"]}{"○" * (3 - c["difficulty"])} {DIFF_KO[c["difficulty"]]}</span> · {esc_html(", ".join(TYPE_KO[b] for b in c["base"]))}</span>'
+                   f'<span class="tg">{"".join(f"<span>{esc_html(t)}</span>" for t in c["taste"])}</span></span></a></li>')
+    return "".join(out)
+
+def cocktail_articles(cs):
+    out = []
+    for c in cs:
+        num = lambda i: chr(0x2460 + i) if i < 20 else f"({i+1})"
+        rows = "".join(f'<tr><td class="no">{num(i)}</td><td><i class="sw" style="background:{x["color"]}"></i>{esc_html(x["ko"])} <small>{esc_html(x["en"])}</small></td><td class="amt">{esc_html(x["amount"])}</td></tr>' for i, x in enumerate(c["ingredients"]))
+        src = "".join(f'<li><a href="{esc_attr(s["url"])}" target="_blank" rel="noopener">{esc_html(s["name"])}<span aria-hidden="true"> ↗</span></a></li>' for s in c["sources"])
+        out.append(f'<article class="recipe" id="c-{c["id"]}" aria-labelledby="h-{c["id"]}">'
+                   f'<figure class="big">{cocktail_art(c)}<figcaption>{CK_NOTE}</figcaption></figure>'
+                   f'<div class="rtext"><h3 id="h-{c["id"]}" tabindex="-1">{esc_html(c["ko"])} <small>{esc_html(c["en"])}</small></h3>'
+                   f'<p class="rmeta"><span>{GLASS_KO[c["glass"]]}</span><span>{METHOD_KO[c["method"]]}</span><span>{ICE_KO[c["ice"]]}</span><span>난이도 {DIFF_KO[c["difficulty"]]}</span>{"".join(f"<span>{esc_html(t)}</span>" for t in c["taste"])}</p>'
+                   f'<h4>재료 <small>넣는 순서</small></h4><table class="ing"><tbody>{rows}</tbody></table>'
+                   f'<h4>만드는 법</h4><ol class="steps">{"".join(f"<li>{esc_html(t)}</li>" for t in c["steps"])}</ol>'
+                   + (f'<h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p>' if c["garnish"] else "")
+                   + (f'<p class="tip"><b>팁</b> {esc_html(c["tip"])}</p>' if c.get("tip") else "")
+                   + f'<p class="tolist">{"".join(f"<a href=\"./#type={b}\">{TYPE_KO[b]} 티어 보기 →</a>" for b in c["base"])}</p>'
+                   + (f'<h4>출처</h4><ul class="srcl">{src}</ul>' if src else "")
+                   + '</div></article>')
+    return "".join(out)
+
+def cocktail_filters(cs):
+    def grp(key, label, vals):
+        return (f'<div class="cg" role="group" aria-label="{label}"><span class="cgl">{label}</span>'
+                + "".join(f'<button type="button" class="chip" data-k="{key}" data-v="{v}" aria-pressed="false">{esc_html(t)}</button>' for v, t in vals) + "</div>")
+    bases = [b for b in ("BB", "RY", "SM", "BL", "IR", "JP", "WD") if any(b in c["base"] for c in cs)]
+    diffs = sorted({c["difficulty"] for c in cs}); meths = [m for m in METHOD_KO if any(c["method"] == m for c in cs)]
+    return (grp("base", "베이스", [(b, TYPE_KO[b]) for b in bases]) + grp("diff", "난이도", [(str(d), DIFF_KO[d]) for d in diffs])
+            + grp("method", "만드는 방식", [(m, METHOD_KO[m]) for m in meths]))
+
+def tokens_css():
+    """티어표 template.html 의 색 토큰(:root 와 다크 테마 정의)을 그대로 가져와 두 페이지가 같은 색을 쓰게 한다"""
+    with open(os.path.join(ROOT, "tools", "template.html"), encoding="utf-8") as f: t = f.read()
+    m = re.search(r"(:root\{.*?\n\}\n@media \(prefers-color-scheme: dark\)\{.*?\} \}\n:root\[data-theme=\"dark\"\]\{.*?\})", t, re.S)
+    if not m: raise SystemExit("오류: template.html 에서 색 토큰을 찾지 못함")
+    return m.group(1)
+
+def render_cocktails(cs):
+    with open(os.path.join(ROOT, "tools", "cocktails_template.html"), encoding="utf-8") as f: t = f.read()
+    return (t.replace("__TOKENS__", tokens_css()).replace("__FILTERS__", cocktail_filters(cs)).replace("__CARDS__", cocktail_cards(cs))
+             .replace("__RECIPES__", cocktail_articles(cs)).replace("__COUNT__", str(len(cs))).replace("__WARN__", CK_WARN))
+
+def load_cocktails():
+    """(레시피 목록 또는 None, 오류 목록). 파일이 없으면 칵테일 페이지를 만들지 않는다"""
+    p = os.path.join(ROOT, "data", "cocktails.json")
+    if not os.path.exists(p): return None, []
+    try:
+        with open(p, encoding="utf-8") as f: cs = json.load(f)
+    except Exception as e:
+        return None, [f"cocktails.json 읽기 실패: {e}"]
+    return cs, check_cocktails(cs)
+
 def main():
     a = sys.argv[1:]
     ws, meta, bottles, errs, stats = compute()
+    cs, cerrs = load_cocktails(); errs = errs + cerrs
+    ck_tpl = os.path.exists(os.path.join(ROOT, "tools", "cocktails_template.html"))
     for e in errs: print("오류:", e)
     if errs: sys.exit(1)
     stats["trend"], tmsg = add_trends(ws)
@@ -211,20 +556,30 @@ def main():
     print(f"옛 병 {len(v)}병(경계 계산 제외)" + (f": {', '.join(v)}" if v else ""))
     z = [w["id"] for w in ws if not w["obs"]]
     print(f"관측값 0건 {len(z)}병" + (f" (미평가 줄에 표시. 의도한 것이 아니면 관측값 누락을 확인할 것): {', '.join(z[:20])}{' …' if len(z) > 20 else ''}" if z else ""))
+    if cs is None: print("칵테일: data/cocktails.json 없음 — cocktails.html 을 만들지 않음")
+    else:
+        print(f"칵테일 {len(cs)}종 · 잔 {dict(collections.Counter(c['glass'] for c in cs))} · 출처 없는 레시피 {sum(1 for c in cs if not c['sources'])}종"
+              + ("" if ck_tpl else " · tools/cocktails_template.html 없음 — cocktails.html 을 만들지 않음"))
     if "--check" in a: return
+    ck = cs is not None and ck_tpl   # 칵테일 페이지를 만들 때만 티어표에 사이트 메뉴를 둔다
     with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
-        f.write(full(render(ws, meta, bottles, False, stats)))
+        f.write(full(site_nav(render(ws, meta, bottles, False, stats), ck)))
+    if ck:
+        with open(os.path.join(ROOT, "cocktails.html"), "w", encoding="utf-8") as f:
+            f.write(full(render_cocktails(cs), CK_HEAD))
+    today = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-                f'  <url><loc>https://nidwolf.com/</loc><lastmod>{datetime.date.today().isoformat()}</lastmod></url>\n</urlset>\n')
-    print("index.html 생성")
+                f'  <url><loc>https://nidwolf.com/</loc><lastmod>{today}</lastmod></url>\n'
+                + (f'  <url><loc>https://nidwolf.com/cocktails.html</loc><lastmod>{today}</lastmod></url>\n' if ck else "") + '</urlset>\n')
+    print("index.html 생성" + (" · cocktails.html 생성" if ck else ""))
     if "--single" in a:
         p = a[a.index("--single") + 1]
-        with open(p, "w", encoding="utf-8") as f: f.write(full(render(ws, meta, bottles, True, stats)))
+        with open(p, "w", encoding="utf-8") as f: f.write(full(site_nav(render(ws, meta, bottles, True, stats), False)))   # 오프라인 보관용: 다른 페이지 링크 없음
         print("단일 파일:", p)
     if "--fragment" in a:
         p = a[a.index("--fragment") + 1]
-        with open(p, "w", encoding="utf-8") as f: f.write(render(ws, meta, bottles, True, stats))
+        with open(p, "w", encoding="utf-8") as f: f.write(site_nav(render(ws, meta, bottles, True, stats), False))
         print("조각 파일:", p)
 
 if __name__ == "__main__":

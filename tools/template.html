@@ -36,12 +36,17 @@ h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0 0 6px}
   .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:0 50%;
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 62%,transparent),linear-gradient(180deg,transparent,#000 3%,#000 97%,transparent);
     -webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 62%,transparent),linear-gradient(180deg,transparent,#000 3%,#000 97%,transparent);mask-composite:intersect}
-  /* 밝은 바탕: 어두운 그림을 반전해 밝은 종이 위 갈색 선화처럼 보이게 하고, 곱하기 합성으로 바탕색에 녹인다 */
-  :root:not([data-theme="dark"]) .hero img{filter:invert(1) hue-rotate(180deg) brightness(1.1) saturate(1.4);mix-blend-mode:multiply}
+  /* 밝은 바탕: 어두운 그림을 반전해 밝은 종이 위 갈색 선화처럼 보이게 하고, 곱하기 합성으로 바탕색에 녹인다. brightness 는 반전된 그림 바탕을 순백(255)으로 밀어 곱하기 결과가 페이지 바탕과 같아지게 하는 값(1.1이면 옅은 민트 상자가 보임) */
+  :root:not([data-theme="dark"]) .hero img{filter:invert(1) hue-rotate(180deg) saturate(1.4) brightness(1.18);mix-blend-mode:multiply}
 }
 @media (min-width:900px) and (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .hero img{filter:none;mix-blend-mode:normal} }
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* 사이트 메뉴(페이지 이동: 티어표 ↔ 칵테일). 아래 보기 전환(상자형 단추 .views)과 구분되게 글자 탭 + 밑줄로 둔다. cocktails_template.html 과 같은 모양 */
+.site{display:flex;gap:22px;border-bottom:1px solid var(--line);margin:-8px 0 22px;font-size:14.5px}
+.site a{color:var(--muted);text-decoration:none;padding:6px 0 9px;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:500}
+.site a:hover{color:var(--ink)}
+.site a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
 
 /* 필터 바 */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-top:22px;padding-block:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
@@ -301,6 +306,7 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 </style>
 
 <div class="wrap">
+  <nav class="site" aria-label="사이트 메뉴"><a href="./" aria-current="page">위스키 티어표</a><a href="cocktails.html">칵테일 제조법</a></nav>
   <header>
     <h1>위스키 종합 티어표</h1>
     <p class="lede">여러 위스키를 마셔 보고 싶은데 어떤 병이 좋은지 한눈에 찾기가 어려워 직접 만들어 보았습니다. 여러 매체와 커뮤니티에 흩어진 위스키 티어표·순위·평점을 AI로 모아 하나의 티어로 정리했습니다. 출처마다 다른 척도를 100점 기준으로 맞추고, 같은 매체의 평가는 한 표로 묶어 특정 매체에 치우치지 않게 계산합니다. 종류·숙성년수·피트·셰리·가격대 필터로 취향과 예산에 맞는 병을 찾아보세요. 티어와 별도로, 병이 얼마나 알려졌는지를 0~100점으로 나타낸 트렌드지수도 함께 보여 드립니다.</p>

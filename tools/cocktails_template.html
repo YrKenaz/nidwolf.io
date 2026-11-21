@@ -1,0 +1,125 @@
+<title>위스키 칵테일 제조법 — 잔 그림으로 보는 재료 순서와 양</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@700;900&display=swap">
+<style>
+/* 색 토큰은 build.py 가 tools/template.html 에서 그대로 가져온다(두 페이지 공통) */
+__TOKENS__
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* 사이트 메뉴(페이지 이동). 티어표 안의 보기 전환(상자형 단추)과 구분되게 글자 탭 + 밑줄로 둔다 */
+.site{display:flex;gap:22px;border-bottom:1px solid var(--line);margin:0 0 22px;font-size:14.5px}
+.site a{color:var(--muted);text-decoration:none;padding:6px 0 9px;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:500}
+.site a:hover{color:var(--ink)}
+.site a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em;word-break:keep-all}
+.lede{color:var(--muted);margin:10px 0 0;max-width:62ch;word-break:keep-all}
+h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0 0 6px}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+.cbar{margin:22px 0 14px;display:flex;flex-direction:column;gap:8px}
+.cg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cgl{font-size:13px;color:var(--muted);min-width:76px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:13.5px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.cnt{font-size:13px;color:var(--muted)}
+.cgrid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.ccard{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;height:100%}
+.ccard:hover{border-color:var(--accent)}
+.ccard:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.cfig{flex:0 0 72px;color:var(--ink)}
+.gl{display:block;width:100%;height:auto;color:var(--ink);overflow:visible}
+.gl.sm{height:96px}
+.cfig>svg,.big>svg{display:block;width:100%;height:auto}   /* 전담 그림(art/cocktails/*.svg)도 같은 칸 크기로 */
+.cfig>svg{height:96px}
+.cbody{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cn{font-weight:700;font-size:16px;word-break:keep-all}
+.ce{font-size:12.5px;color:var(--muted)}
+.cm{font-size:12.5px;color:var(--muted);word-break:keep-all}
+.df{color:var(--ink)}
+.tg{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.tg span{font-size:11.5px;border:1px solid var(--line);border-radius:999px;padding:0 7px}
+.recipes{margin-top:40px}
+.recipe{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:28px;padding:24px 0;border-top:1px solid var(--line)}
+.big{margin:0}
+.big figcaption{font-size:12.5px;color:var(--muted);margin-top:6px;word-break:keep-all}
+.gl .lb{font-size:13px;font-weight:700;fill:currentColor}
+.gl .la{font-size:12px;fill:var(--muted)}
+.gl .lc{font-size:12px;fill:currentColor}
+.rtext h3{font-family:var(--display);font-size:24px;line-height:1.25;margin:0;word-break:keep-all}
+.rtext h3 small{display:block;font-family:var(--body);font-size:14px;font-weight:400;color:var(--muted)}
+.rtext h4{font-size:14px;margin:18px 0 6px}
+.rtext h4 small{font-weight:400;color:var(--muted)}
+.rmeta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0}
+.rmeta span{border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:12.5px}
+.ing{border-collapse:collapse;width:100%;font-size:14px}
+.ing td{border-top:1px solid var(--line);padding:6px 6px}
+.ing .no{width:2em;font-weight:700}
+.ing .amt{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ing small{color:var(--muted)}
+.sw{display:inline-block;width:11px;height:11px;border-radius:50%;border:1px solid var(--ink);margin-right:7px;vertical-align:-1px}
+.steps{margin:0;padding-left:1.4em}
+.steps li{margin:3px 0;word-break:keep-all}
+.tip{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;word-break:keep-all}
+.tolist{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;font-weight:500}
+.srcl{margin:0;padding-left:1.2em;font-size:13.5px}
+.warn{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);word-break:keep-all}
+dialog.cd{border:0;padding:0;background:var(--bg);color:var(--ink);border-radius:14px;width:min(980px,calc(100vw - 32px));max-height:calc(100dvh - 32px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+dialog.cd::backdrop{background:rgba(0,0,0,.55)}
+.cdb{padding:20px 24px 24px;overflow:auto;max-height:calc(100dvh - 32px)}
+.cdb .recipe{border-top:0;padding:0}
+.cdb h3:focus{outline:none}
+.cdb .close{display:block;margin:18px 0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 16px;cursor:pointer}
+.js .recipes{display:none}
+@media (max-width:760px){
+  .recipe{grid-template-columns:minmax(0,1fr);gap:14px}
+  .big{max-width:420px}
+}
+@media (max-width:560px){
+  .cgrid{grid-template-columns:minmax(0,1fr)}
+  dialog.cd{width:100vw;max-width:100vw;max-height:100dvh;height:100dvh;border-radius:0;margin:0}
+  .cdb{max-height:100dvh;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+  .cgl{min-width:0;width:100%}
+}
+</style>
+
+<div class="wrap">
+  <nav class="site" aria-label="사이트 메뉴"><a href="./">위스키 티어표</a><a href="cocktails.html" aria-current="page">칵테일 제조법</a></nav>
+  <header>
+    <h1>위스키 칵테일 제조법</h1>
+    <p class="lede">위스키로 만드는 칵테일을 잔 그림으로 정리했습니다. 잔 속 색 층은 재료를 넣는 순서(아래부터)이고, 층의 크기는 들어가는 양에 비례합니다. 비터스·설탕처럼 양을 ml로 재지 않는 재료는 잔 아래에 번호와 함께 따로 적었습니다.</p>
+  </header>
+  <div class="cbar" id="cbar" hidden>__FILTERS__<p class="cnt" id="cnt" role="status" aria-live="polite"></p></div>
+  <ul class="cgrid" id="cgrid">__CARDS__</ul>
+  <section class="recipes" id="recipes" aria-label="칵테일 제조법 전체"><h2>제조법</h2>__RECIPES__</section>
+  <p class="warn">__WARN__</p>
+</div>
+<dialog class="cd" id="cd" aria-labelledby="cdh"><div class="cdb" id="cdb"></div></dialog>
+<script>
+(()=>{
+const $=id=>document.getElementById(id),D=document.documentElement;D.classList.add("js");
+const N=__COUNT__,f={base:[],diff:[],method:[]};$("cbar").hidden=false;
+function apply(){let n=0;
+  document.querySelectorAll("#cgrid>li").forEach(li=>{const ok=(!f.base.length||li.dataset.base.split(" ").some(b=>f.base.includes(b)))&&(!f.diff.length||f.diff.includes(li.dataset.diff))&&(!f.method.length||f.method.includes(li.dataset.method));li.hidden=!ok;n+=ok});
+  $("cnt").textContent=n===N?`${N}종`:`${N}종 중 ${n}종`}
+$("cbar").addEventListener("click",e=>{const b=e.target.closest("[data-k]");if(!b)return;const a=f[b.dataset.k],i=a.indexOf(b.dataset.v);i<0?a.push(b.dataset.v):a.splice(i,1);b.setAttribute("aria-pressed",i<0);apply()});
+apply();
+/* 상세: #c=<id> (또는 JS 없을 때 쓰는 #c-<id>) 주소로 바로 열린다. 뒤로 가기로 닫힌다 */
+const dlg=$("cd");let pushed=false,lastCard=null;
+const idOf=()=>{const m=location.hash.match(/^#c[=-]([a-z0-9-]+)$/);return m&&$("c-"+m[1])?m[1]:null};
+function open(id){const a=$("c-"+id);
+  /* 본문을 복사해 창에 넣는다. 복사본의 id(그림 title 포함)는 원본과 겹치지 않게 "-d"를 붙이고, 제목만 cdh 로 둔다 */
+  $("cdb").innerHTML=a.outerHTML.replace(/ (id|aria-labelledby|aria-describedby)="([^"]+)"/g,' $1="$2-d"').split(`"h-${id}-d"`).join('"cdh"')+'<button class="close" type="button" data-close>닫기</button>';
+  if(!dlg.open)dlg.showModal();const h=$("cdh");h&&h.focus({preventScroll:true});$("cdb").scrollTop=0}
+function close(){if(dlg.open)dlg.close();if(lastCard){lastCard.focus();lastCard=null}}
+function route(){const id=idOf();id?open(id):close()}
+$("cgrid").addEventListener("click",e=>{const a=e.target.closest("a[data-id]");if(!a||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();lastCard=a;pushed=true;location.hash="c="+a.dataset.id});
+function leave(){if(pushed){pushed=false;history.back()}else{history.replaceState(null,"",location.pathname+location.search);close()}}
+dlg.addEventListener("click",e=>{if(e.target.closest("[data-close]")||e.target===dlg)leave()});
+dlg.addEventListener("cancel",e=>{e.preventDefault();leave()});
+addEventListener("hashchange",()=>{if(!idOf())pushed=false;route()});
+if(idOf())route();
+})();
+</script>
