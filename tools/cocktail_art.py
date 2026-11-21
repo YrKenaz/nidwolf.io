@@ -415,39 +415,39 @@ def title_text(c, lays):
 
 
 def glass_body(c, g, lays, top_h, uid, small=False):
+    """재료별로 켜고 끌 수 있게 묶는다(그리는 순서는 묶기 전과 같다).
+    cka-glass(뒤) → 재료마다 cka-layer → cka-ice → cka-glass(앞) → cka-steam → cka-garnish."""
     k, yb = g["knots"], g["yb"]
     ings = c["ingredients"]
     wall, cavity = glass_paths(g)
-    o = []
-    if c["glass"] == "mug":
-        o.append(handle(g))
-    o.append(f'<path class="cka-w" d="{wall}"/><path class="cka-g" d="{cavity}"/>')
+    clip = f"{uid}-c"
+    rmax = max(r for _, r in k) + 2
+    o = [f'<defs><clipPath id="{clip}"><path d="{cavity}"/></clipPath></defs>']
+    back = (handle(g) if c["glass"] == "mug" else "") + f'<path class="cka-w" d="{wall}"/><path class="cka-g" d="{cavity}"/>'
+    o.append(f'<g class="cka-glass cka-glass-back">{back}</g>')
     for n, (i, h0, h1) in enumerate(lays):
-        poly = side(k, h0, h1, -1) + side(k, h0, h1, 1)[::-1]
-        o.append(f'<polygon class="cka-l" fill="{ings[i]["color"]}" points="{pts((x, yb - h) for x, h in poly)}"/>')
-    for n, (i, h0, h1) in enumerate(lays):
+        y0, y1 = yb - h0, yb - h1
+        part = [f'<rect class="cka-l cka-fill" fill="{ings[i]["color"]}" x="{f(CX - rmax)}" y="{f(y1)}" width="{f(2 * rmax)}" height="{f(y0 - y1)}"/>']
         if ings[i].get("kind") == "soda":
-            o.append(f'<g class="cka-u">{bubbles(g, h0, h1)}</g>')
-    for n in range(1, len(lays)):
-        a, b = ings[lays[n - 1][0]], ings[lays[n][0]]
-        if similar(a["color"], b["color"]):
-            h = lays[n][1]
-            r = r_at(k, h)
-            o.append(f'<path class="cka-e" d="M{f(CX - r)},{f(yb - h)}H{f(CX + r)}"/>')
-    if top_h > 0:
-        r = r_at(k, top_h) - 6
-        o.append(f'<path class="cka-h" style="stroke-width:2;stroke-opacity:.5" d="M{f(CX - r)},{f(yb - top_h + 3)}H{f(CX + r * .4)}"/>')
+            part.append(f'<g class="cka-u">{bubbles(g, h0, h1)}</g>')
+        if n > 0 and similar(ings[lays[n - 1][0]]["color"], ings[i]["color"]):
+            r = r_at(k, h0)
+            part.append(f'<path class="cka-e" d="M{f(CX - r)},{f(y0)}H{f(CX + r)}"/>')
+        if n == len(lays) - 1 and top_h > 0:
+            r = r_at(k, top_h) - 6
+            part.append(f'<path class="cka-h" style="stroke-width:2;stroke-opacity:.5" d="M{f(CX - r)},{f(yb - top_h + 3)}H{f(CX + r * .4)}"/>')
+        o.append(f'<g class="cka-step cka-layer" data-i="{i}" data-y0="{f(y0)}" data-y1="{f(y1)}" clip-path="url(#{clip})">{"".join(part)}</g>')
     ice = ice_shapes(c, g, top_h)
     if ice:
-        o.append(f'<clipPath id="{uid}-c"><path d="{cavity}"/></clipPath><g class="cka-i" clip-path="url(#{uid}-c)">{ice}</g>')
-    o.append(highlight(g))
-    if c["glass"] == "julep":
-        o.append(julep_bands(g))
-    o.append(f'<path class="cka-o" d="{wall}"/>')
+        o.append(f'<g class="cka-i cka-ice" clip-path="url(#{clip})">{ice}</g>')
+    front = highlight(g) + (julep_bands(g) if c["glass"] == "julep" else "") + f'<path class="cka-o" d="{wall}"/>'
+    o.append(f'<g class="cka-glass cka-glass-front">{front}</g>')
     if not small:
         if c.get("method") == "hot":
-            o.append(steam(g))
-        o.append(garnish_svg(c, g))
+            o.append(f'<g class="cka-steam">{steam(g)}</g>')
+        gar = garnish_svg(c, g)
+        if gar:
+            o.append(f'<g class="cka-garnish">{gar}</g>')
     return "".join(o)
 
 
@@ -512,6 +512,7 @@ def labels(c, g, lays, top_h):
     o = []
     for r, y in zip(rows, ys):
         ing = r["ing"]
+        o.append(f'<g class="cka-step {"cka-label" if r["layer"] else "cka-chip"}" data-i="{r["n"]}">')
         top_line_y = y - (len(r["lines"]) - 1) * 9
         if r["layer"]:
             h0, h1 = by_idx[r["n"]]
@@ -538,6 +539,7 @@ def labels(c, g, lays, top_h):
                 else:
                     parts.append(html.escape(w_))
             o.append(f'<text class="cka-t" x="{f(r["tx"])}" y="{f(top_line_y + 5 + li * 18)}">{" ".join(parts)}</text>')
+        o.append('</g>')
     return "".join(o)
 
 
@@ -555,7 +557,7 @@ def render(c, small=False):
     else:
         vb = f"0 0 {W} {H}"
         extra = labels(c, g, lays, top_h) + (
-            f'<text class="cka-c" x="{CX}" y="{H - 10}">{GLASS_KO.get(c["glass"], "")} · {ICE_KO.get(c.get("ice", "none"), "")}</text>')
+            f'<g class="cka-cap"><text class="cka-c" x="{CX}" y="{H - 10}">{GLASS_KO.get(c["glass"], "")} · {ICE_KO.get(c.get("ice", "none"), "")}</text></g>')
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}" class="cka cka-{cid}" role="img" aria-labelledby="{uid}-t">'
             f'<title id="{uid}-t">{html.escape(title)}</title><style>{style}</style>{body}{extra}</svg>\n')
 
@@ -649,6 +651,45 @@ def preview(sheet, items):
               f'<div class="row">{det(pick(SAMPLE3) + pick(FOCUS))}</div>', mobile=True))
 
 
+STEPS_JS = r"""
+const sel=document.getElementById('pick'),box=document.getElementById('art'),info=document.getElementById('info');
+let step=0,total=0;
+function setup(id){box.innerHTML=document.getElementById('t-'+id).innerHTML;const svg=box.querySelector('svg');
+ svg.classList.add('stepping');
+ svg.querySelectorAll('.cka-layer').forEach(g=>{const r=g.querySelector('.cka-fill');r.style.transformOrigin='0px '+g.dataset.y0+'px';});
+ total=Math.max(...[...svg.querySelectorAll('.cka-step')].map(e=>+e.dataset.i))+1;step=0;show();}
+function show(){const svg=box.querySelector('svg');
+ svg.querySelectorAll('.cka-step').forEach(e=>e.classList.toggle('on',+e.dataset.i<step));
+ svg.classList.toggle('done',step>=total);
+ info.textContent=step>=total?'완성 (가니시 표시)':step+' / '+total+' 재료';}
+document.getElementById('next').onclick=()=>{if(step<total){step++;show();}};
+document.getElementById('reset').onclick=()=>{step=0;show();};
+sel.onchange=()=>setup(sel.value);
+const h=location.hash.slice(1).split('/');if(h[0])sel.value=h[0];setup(sel.value);
+if(h[1]){step=+h[1];const svg=box.querySelector('svg');svg.classList.add('instant');show();}
+"""
+STEPS_CSS = """
+.stepping .cka-step{opacity:0;transition:opacity .5s}
+.stepping .cka-step.on{opacity:1}
+.stepping .cka-layer .cka-fill{transform-box:view-box;transform:scaleY(0);transition:transform .8s ease-out}
+.stepping .cka-layer.on .cka-fill{transform:scaleY(1)}
+.stepping .cka-garnish,.stepping .cka-steam{opacity:0;transition:opacity .5s}
+.stepping.done .cka-garnish,.stepping.done .cka-steam{opacity:1}
+.instant *{transition:none!important}
+#art{max-width:420px}#art svg{width:100%;display:block}button,select{font:inherit;padding:6px 12px;margin-right:6px}
+"""
+
+
+def steps_test(items):
+    opts = "".join(f'<option value="{c["id"]}">{html.escape(c["ko"])}</option>' for c in items)
+    tpl = "".join(f'<template id="t-{c["id"]}">{render(c)}</template>' for c in items)
+    doc = (f'<!doctype html><html lang="ko" data-theme="dark"><meta charset="utf-8"><title>차례 표시 시험</title>'
+           f'<style>{TOKENS}{STEPS_CSS}</style><body><h2>재료 차례 표시 시험</h2>'
+           f'<p><select id="pick">{opts}</select><button id="next">다음 재료</button><button id="reset">처음부터</button> <span id="info"></span></p>'
+           f'<div class="card" id="art"></div>{tpl}<script>{STEPS_JS}</script></body></html>')
+    write(os.path.join(ROOT, "tools", "cocktail-art", "steps-test.html"), doc)
+
+
 def main():
     ap = argparse.ArgumentParser(description="칵테일 잔 그림 생성")
     ap.add_argument("--data", default=os.path.join(ROOT, "data", "cocktails.json"))
@@ -678,6 +719,7 @@ def main():
         for c in sheet:
             write(os.path.join(ROOT, "tools", "cocktail-art", f'{c["id"]}.svg'), render(c))
         preview(sheet, items)
+        steps_test(items)
         print("시험 그림·미리보기 → tools/cocktail-art/")
 
 

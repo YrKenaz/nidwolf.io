@@ -581,22 +581,26 @@ def bottle_block(c, ws):
     return f'<h4>이 칵테일에 쓰는 종류의 병</h4><p class="bnote">{CK_BOTTLE_RULE}</p>{"".join(g)}'
 
 def cocktail_articles(cs, ws):
+    """레시피 본문(정적 HTML, JS 없이 전부 읽힘). 스크롤 연출용으로 단계 번호 data-s 를 단다:
+    0 빈 잔(제목·속성), 1..n 재료(넣는 순서, 그림의 data-i = s-1), n+1.. 만드는 법 한 줄씩, 그다음 가니시, 마지막 팁·병·출처"""
     out = []
     for c in cs:
         num = lambda i: chr(0x2460 + i) if i < 20 else f"({i+1})"
-        rows = "".join(f'<tr><td class="no">{num(i)}</td><td><i class="sw" style="background:{x["color"]}"></i>{esc_html(x["ko"])} <small>{esc_html(x["en"])}</small></td><td class="amt">{esc_html(x["amount"])}</td></tr>' for i, x in enumerate(c["ingredients"]))
+        n = len(c["ingredients"]); st0 = n + 1; gs = st0 + len(c["steps"]); last = gs + (1 if c["garnish"] else 0)
+        rows = "".join(f'<tr data-s="{i + 1}"><td class="no">{num(i)}</td><td><i class="sw" style="background:{x["color"]}"></i>{esc_html(x["ko"])} <small>{esc_html(x["en"])}</small></td><td class="amt">{esc_html(x["amount"])}</td></tr>' for i, x in enumerate(c["ingredients"]))
         src = "".join(f'<li><a href="{esc_attr(s["url"])}" target="_blank" rel="noopener">{esc_html(s["name"])}<span aria-hidden="true"> ↗</span></a></li>' for s in c["sources"])
-        out.append(f'<article class="recipe" id="c-{c["id"]}" aria-labelledby="h-{c["id"]}">'
+        out.append(f'<article class="recipe" id="c-{c["id"]}" aria-labelledby="h-{c["id"]}" data-n="{n}" data-gs="{gs if c["garnish"] else ""}" data-last="{last}">'
                    f'<figure class="big">{cocktail_art(c)}<figcaption>{CK_NOTE}</figcaption></figure>'
                    f'<div class="rtext"><h3 id="h-{c["id"]}" tabindex="-1">{esc_html(c["ko"])} <small>{esc_html(c["en"])}</small></h3>'
                    f'<p class="rmeta"><span>{GLASS_KO[c["glass"]]}</span><span>{METHOD_KO[c["method"]]}</span><span>{ICE_KO[c["ice"]]}</span><span>난이도 {DIFF_KO[c["difficulty"]]}</span>{"".join(f"<span>{esc_html(t)}</span>" for t in c["taste"])}</p>'
-                   f'<h4>재료 <small>넣는 순서</small></h4><table class="ing"><tbody>{rows}</tbody></table>'
-                   f'<h4>만드는 법</h4><ol class="steps">{"".join(f"<li>{esc_html(t)}</li>" for t in c["steps"])}</ol>'
-                   + (f'<h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p>' if c["garnish"] else "")
+                   f'<h4 data-s="1">재료 <small>넣는 순서</small></h4><table class="ing"><tbody>{rows}</tbody></table>'
+                   f'<h4 data-s="{st0}">만드는 법</h4><ol class="steps">{"".join(f"<li data-s=\"{st0 + k}\">{esc_html(t)}</li>" for k, t in enumerate(c["steps"]))}</ol>'
+                   + (f'<div data-s="{gs}"><h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p></div>' if c["garnish"] else "")
+                   + f'<div class="rtail" data-s="{last}">'
                    + (f'<p class="tip"><b>팁</b> {esc_html(c["tip"])}</p>' if c.get("tip") else "")
                    + bottle_block(c, ws)
                    + (f'<h4>출처</h4><ul class="srcl">{src}</ul>' if src else "")
-                   + '</div></article>')
+                   + '</div></div></article>')
     return "".join(out)
 
 def cocktail_filters(cs):

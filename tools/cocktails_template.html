@@ -98,21 +98,49 @@ a{color:var(--accent)}
 .ball{display:inline-block;font-size:14px;font-weight:500;margin-top:2px}
 .srcl{margin:0;padding-left:1.2em;font-size:13.5px}
 .warn{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);word-break:keep-all}
-dialog.cd{border:0;padding:0;background:var(--bg);color:var(--ink);border-radius:14px;width:min(980px,calc(100vw - 32px));max-height:calc(100dvh - 32px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
-dialog.cd::backdrop{background:rgba(0,0,0,.55)}
-.cdb{padding:20px 24px 24px;overflow:auto;max-height:calc(100dvh - 32px)}
-.cdb .recipe{border-top:0;padding:0}
-.cdb h3:focus{outline:none}
-.cdb .close{display:block;margin:18px 0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 16px;cursor:pointer}
 .js .recipes{display:none}
+/* 상세 펼침(카드가 있는 줄 바로 아래, 격자 전체 폭). 높이는 grid-template-rows 0fr→1fr 로 펼친다. 다 펼친 뒤에는 overflow 를 풀어 그림 sticky 가 동작하게 한다 */
+.cgrid>.cpanel{grid-column:1/-1;list-style:none;display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
+.cgrid>.cpanel.open{grid-template-rows:1fr}
+.cpin{min-height:0;overflow:hidden}
+.cpanel.done .cpin{overflow:visible}
+.cpbody{border:1px solid var(--accent);border-radius:14px;background:var(--surface);padding:14px 20px 24px;margin:2px 0 10px}
+.cptool{display:flex;justify-content:flex-end;gap:6px;margin-bottom:6px}
+.cpanel .recipe{border-top:0;padding:0}
+.cpanel .big{position:sticky;top:12px;align-self:start}
+.cpanel h3:focus{outline:none}
+.ccard[aria-expanded="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+/* 스크롤 연출: 단계(data-s)가 화면 기준선을 지나면 나타나고, 되돌리면 사라진다. 투명도·이동만 바꿔 레이아웃은 그대로 둔다(숨김 글도 화면 낭독기에는 읽힘) */
+.story [data-s]{transition:opacity .35s ease,transform .35s ease}
+.story [data-s].off{opacity:0;transform:translateY(14px)}
+.story .ing tr[data-s] td{padding-bottom:var(--sg,0px)}
+.story h4[data-s="1"]{margin-top:var(--s1,0px)}
+.cphint{display:none}
+.story .cphint{display:block;margin:18px 0 0;font-size:13.5px;color:var(--muted)}
+.story .cphint::after{content:" ↓";display:inline-block;animation:cpb 1.6s ease-in-out infinite}
+@keyframes cpb{50%{transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){.story .cphint::after{animation:none}}
+.story .steps li{margin-bottom:var(--sg,0px)}
+.story .rtext>div[data-s]{margin-bottom:var(--sg,0px)}
+.big .cka-step,.big .cka-garnish,.big .cka-steam{transition:opacity .4s ease}
+.big .cka-step.off,.big .cka-garnish.off,.big .cka-steam.off{opacity:0}
+.big .cka-layer.off{opacity:1}
+.big .cka-layer>*{transform-origin:0 var(--y0,0px);transition:transform .55s ease}
+.big .cka-layer.off>*{transform:scaleY(0)}   /* 층은 경계 아래(data-y0)에서 위로 차오른다 */
+@media (prefers-reduced-motion:reduce){.cgrid>.cpanel,.story [data-s],.big .cka-step,.big .cka-layer>*{transition:none}}
+@media print{*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}}
 @media (max-width:760px){
   .recipe{grid-template-columns:minmax(0,1fr);gap:14px}
   .big{max-width:420px}
 }
 @media (max-width:560px){
+  .cpbody{padding:10px 12px 20px;margin-inline:-4px}
+  .cpanel .big{top:0;z-index:2;background:var(--surface);padding:6px 0 2px;border-bottom:1px solid var(--line)}
+  .cpanel .big>svg{max-height:36vh;width:auto;max-width:100%;margin:0 auto}
+  .cpanel.story .big>svg{max-height:29vh}
+  .cpanel.story .big figcaption{display:none}   /* 연출 중에는 그림만 위에 붙이고 안내 문장은 맨 아래 전체 보기에서 */   /* 휴대폰: 위에 붙는 그림이 화면의 3분의 1 남짓만 차지 */
+  .cpanel .big figcaption{font-size:11px;margin:2px 0 0}
   .cgrid{grid-template-columns:minmax(0,1fr)}
-  dialog.cd{width:100vw;max-width:100vw;max-height:100dvh;height:100dvh;border-radius:0;margin:0}
-  .cdb{max-height:100dvh;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px))}
   .cgl{min-width:0;width:100%}
 }
 </style>
@@ -129,7 +157,6 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
   <section class="recipes" id="recipes" aria-label="칵테일 제조법 전체"><h2>제조법</h2>__RECIPES__</section>
   <p class="warn">__WARN__</p>
 </div>
-<dialog class="cd" id="cd" aria-labelledby="cdh"><div class="cdb" id="cdb"></div></dialog>
 <script>
 (()=>{
 const $=id=>document.getElementById(id),D=document.documentElement;D.classList.add("js");
@@ -162,25 +189,73 @@ function apply(){let n=0,a=0,b=0;const on=active(),G=$("cgrid"),items=[...G.quer
     head("0","바로 만들 수 있음",a,"지금 켠 재료로 바로 만들 수 있는 칵테일은 없습니다.");head("1","하나만 더 있으면",b,"재료가 하나만 빠진 칵테일은 없습니다.");
     const c=n-a-b;if(c)head("2","그 밖의 칵테일",c,"")}
   $("cnt").textContent=(n===N?`${N}종`:`${N}종 중 ${n}종`)+(on?` · 바로 만들 수 있음 ${a} · 하나만 더 있으면 ${b}`:"");
+  panelSync();
   if(kb){$("bon").textContent=on?`바로 ${a} · 하나 더 ${b}`:have.size?`${have.size}개 켬`:"";kb.querySelectorAll("[data-g]").forEach(x=>x.setAttribute("aria-pressed",have.has(x.dataset.g)))}}
 if(kb)kb.addEventListener("click",e=>{const c=e.target.closest("[data-g]"),t=e.target.id;
   if(c){const g=c.dataset.g;have.has(g)?have.delete(g):have.add(g)}else if(t==="bcommon")Object.keys(BG).forEach(g=>{if(BG[g][2])have.add(g)});else if(t==="bnone")have.clear();else return;
   save();apply()});
 $("cbar").addEventListener("click",e=>{const b=e.target.closest("[data-k]");if(!b)return;const a=f[b.dataset.k],i=a.indexOf(b.dataset.v);i<0?a.push(b.dataset.v):a.splice(i,1);b.setAttribute("aria-pressed",i<0);apply()});
 apply();
-/* 상세: #c=<id> (또는 JS 없을 때 쓰는 #c-<id>) 주소로 바로 열린다. 뒤로 가기로 닫힌다 */
-const dlg=$("cd");let pushed=false,lastCard=null;
+/* 상세: 카드를 누르면 그 줄 바로 아래로 펼친다. 주소는 #c=<id>(JS 없을 때 쓰는 #c-<id> 앵커도 받음), 뒤로 가기·같은 카드·접기·Esc 로 접힌다.
+   본문 article 은 복사하지 않고 숨은 #recipes 에서 옮겨 왔다가 접을 때 제자리로 돌려놓는다(그림 안 id·clip-path 가 겹치지 않게) */
+var P=null,openId=null,pushed=false,lastCard=null,raf=0,stages=[];
+const RM=matchMedia("(prefers-reduced-motion: reduce)"),MOB=matchMedia("(max-width:560px)"),MKEY="nidwolf.ckstory.v1";
+let mode="story";try{if(localStorage.getItem(MKEY)==="all")mode="all"}catch(e){}
+const story=()=>mode==="story"&&!RM.matches;
+document.querySelectorAll("#cgrid a[data-id]").forEach(a=>a.setAttribute("aria-expanded","false"));
 const idOf=()=>{const m=location.hash.match(/^#c[=-]([a-z0-9-]+)$/);return m&&$("c-"+m[1])?m[1]:null};
-function open(id){const a=$("c-"+id);
-  /* 본문을 복사해 창에 넣는다. 복사본의 id(그림 title 포함)는 원본과 겹치지 않게 "-d"를 붙이고, 제목만 cdh 로 둔다 */
-  $("cdb").innerHTML=a.outerHTML.replace(/ (id|aria-labelledby|aria-describedby)="([^"]+)"/g,' $1="$2-d"').split(`"h-${id}-d"`).join('"cdh"')+'<button class="close" type="button" data-close>닫기</button>';
-  if(!dlg.open)dlg.showModal();const h=$("cdh");h&&h.focus({preventScroll:true});$("cdb").scrollTop=0}
-function close(){if(dlg.open)dlg.close();if(lastCard){lastCard.focus();lastCard=null}}
-function route(){const id=idOf();id?open(id):close()}
-$("cgrid").addEventListener("click",e=>{const a=e.target.closest("a[data-id]");if(!a||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();lastCard=a;pushed=true;location.hash="c="+a.dataset.id});
-function leave(){if(pushed){pushed=false;history.back()}else{history.replaceState(null,"",location.pathname+location.search);close()}}
-dlg.addEventListener("click",e=>{if(e.target.closest("[data-close]")||e.target===dlg)leave()});
-dlg.addEventListener("cancel",e=>{e.preventDefault();leave()});
+const cardOf=id=>document.querySelector(`#cgrid a[data-id="${id}"]`),liOf=id=>{const a=cardOf(id);return a&&a.parentElement};
+function panelSync(){if(P)place()}
+function place(){if(!P)return;const li=liOf(openId);
+  if(!li||li.hidden){if(idOf())history.replaceState(null,"",location.pathname+location.search);pushed=false;collapse();return}   /* 필터로 걸러지면 접는다 */
+  const top=li.offsetTop;let last=li,el=li.nextElementSibling;
+  while(el){if(el!==P){if(!el.matches("li[data-o]"))break;if(!el.hidden){if(el.offsetTop!==top)break;last=el}}el=el.nextElementSibling}
+  if(last.nextElementSibling!==P)last.after(P)}
+function open(id){const a=$("c-"+id);if(!a||openId===id&&P)return;if(P)collapse();
+  openId=id;const card=cardOf(id),nm=a.querySelector("h3").firstChild.textContent.trim();
+  P=document.createElement("li");P.className="cpanel";P.setAttribute("role","region");P.setAttribute("aria-labelledby","h-"+id);
+  P.innerHTML=`<div class="cpin"><div class="cpbody"><div class="cptool">${RM.matches?"":`<button type="button" class="chip cpmode" aria-pressed="${mode==="all"}">전체 한 번에 보기</button>`}<button type="button" class="chip cpclose" aria-label="${esc(nm)} 접기">접기 ✕</button></div></div></div>`;
+  a._ph=document.createComment("");a.before(a._ph);P.querySelector(".cpbody").append(a);
+  if(!a.querySelector(".cphint"))a.querySelector(".rmeta").insertAdjacentHTML("afterend",'<p class="cphint" aria-hidden="true">아래로 내리면 재료를 넣는 순서대로 잔이 채워집니다</p>');
+  liOf(id).after(P);place();if(card){card.setAttribute("aria-expanded","true")}
+  setup();
+  const done=()=>P&&P.classList.add("done");
+  if(RM.matches){P.classList.add("open");done()}else{requestAnimationFrame(()=>requestAnimationFrame(()=>P&&P.classList.add("open")));setTimeout(done,450)}
+  const h=a.querySelector("h3");h&&h.focus({preventScroll:true});
+  requestAnimationFrame(()=>{if(P)scrollTo({top:Math.max(0,P.getBoundingClientRect().top+scrollY-8),behavior:RM.matches?"auto":"smooth"})})}
+function collapse(){if(!P)return;const a=P.querySelector("article");
+  a.querySelectorAll(".off").forEach(x=>x.classList.remove("off"));a.style.removeProperty("--sg");
+  if(a._ph){a._ph.replaceWith(a);a._ph=null}
+  const card=cardOf(openId);if(card)card.setAttribute("aria-expanded","false");P.remove();P=null;openId=null;stages=[]}
+function setup(){if(!P)return;const a=P.querySelector("article"),on=story();P.classList.toggle("story",on);
+  stages=[...a.querySelectorAll("[data-s]")];
+  a.querySelectorAll(".big .cka-layer").forEach(g=>g.style.setProperty("--y0",(g.dataset.y0||0)+"px"));
+  a.style.setProperty("--sg","0px");a.style.setProperty("--s1","0px");
+  if(on){const H0=a.querySelector(".rtext").offsetHeight,N=Math.max(1,+a.dataset.last||stages.length),vh=innerHeight;   /* 연출 길이: 글 전체가 화면 약 2.2개 높이가 되게 단계 사이를 벌린다 */
+    a.style.setProperty("--sg",Math.round(Math.max(24,Math.min(vh*.18,(vh*2.2-H0)/N)))+"px");
+    /* 펼친 직후에는 빈 잔부터: 첫 재료 줄이 화면 기준선보다 아래에서 시작하도록 그 위를 띄운다 */
+    const f=a.querySelector('[data-s="1"]'),rt=a.querySelector(".rtext");if(f){const off=f.getBoundingClientRect().top-rt.getBoundingClientRect().top;
+      a.style.setProperty("--s1",Math.max(0,Math.round(vh*(MOB.matches?.8:.62)+28-off-(MOB.matches?a.querySelector(".big").offsetHeight+8:8)))+"px")}}
+  update()}
+function update(){raf=0;if(!P)return;const a=P.querySelector("article");let cur=1e9;
+  if(story()){const t=innerHeight*(MOB.matches?.8:.62);cur=0;stages.forEach(el=>{if(el.getBoundingClientRect().top<t)cur=Math.max(cur,+el.dataset.s)})}
+  stages.forEach(el=>el.classList.toggle("off",+el.dataset.s>cur));
+  const n=+a.dataset.n,k=Math.min(n,cur),gs=+a.dataset.gs||0;
+  a.querySelectorAll(".big .cka-step").forEach(g=>g.classList.toggle("off",+g.dataset.i>=k));   /* 재료 i 는 단계 i+1 에서 나타난다 */
+  a.querySelectorAll(".big .cka-garnish").forEach(g=>g.classList.toggle("off",gs?cur<gs:cur<=n));
+  a.querySelectorAll(".big .cka-steam").forEach(g=>g.classList.toggle("off",cur<=n));
+  a.dataset.cur=cur>=1e9?"all":cur}
+addEventListener("scroll",()=>{if(P&&!raf)raf=requestAnimationFrame(update)},{passive:true});
+let rz=0;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{if(P){place();setup()}},120)});
+function route(){const id=idOf();if(id)open(id);else if(P){collapse();if(lastCard){lastCard.focus({preventScroll:true});lastCard=null}}}
+function leave(){if(pushed){pushed=false;history.back()}else{history.replaceState(null,"",location.pathname+location.search);route()}}
+$("cgrid").addEventListener("click",e=>{
+  if(e.target.closest(".cpclose")){leave();return}
+  const m=e.target.closest(".cpmode");if(m){mode=mode==="story"?"all":"story";try{localStorage.setItem(MKEY,mode)}catch(err){}m.setAttribute("aria-pressed",mode==="all");setup();return}
+  const a=e.target.closest("a[data-id]");if(!a||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();
+  if(openId===a.dataset.id){leave();return}
+  lastCard=a;if(P){history.replaceState(null,"","#c="+a.dataset.id);open(a.dataset.id)}else{pushed=true;location.hash="c="+a.dataset.id}});   /* 펼친 채 다른 카드로 바꿀 때는 방문 기록을 쌓지 않는다 */
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&P&&!e.defaultPrevented){lastCard=lastCard||cardOf(openId);leave()}});
 addEventListener("hashchange",()=>{if(!idOf())pushed=false;route()});
 if(idOf())route();
 })();
