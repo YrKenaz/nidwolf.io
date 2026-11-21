@@ -1235,5 +1235,16 @@
 {"bottle": "glenlivet-12", "source": "whiskyfun", "value": 86.2, "raw": "80 points · Glenlivet 12 yo ‘Double Oak’ (40%, OB, +/-2025) · 2026-07-16 Serge Valentin"},
 {"bottle": "glenlivet-12", "source": "dramface", "value": 85.8, "raw": "Score: 4/10 (2023-12), 5/10 (2024-02) 평균 4.5 · Glenlivet 12yo Double Oak — Dramface 리뷰 2건"},
 {"bottle": "glenlivet-18", "source": "whiskyfun", "value": 87.5, "raw": "82 points · Glenlivet 18 yo 'Batch Reserve' (40%, OB, +/-2023) · 2024-03-11 Serge Valentin"},
-{"bottle": "glenturret-12", "source": "dramface", "value": 90.5, "raw": "Score: 7/10 · Glenturret 12yo (2021 Release) — Dramface · 2022"}
+{"bottle": "glenturret-12", "source": "dramface", "value": 90.5, "raw": "Score: 7/10 · Glenturret 12yo (2021 Release) — Dramface · 2022"},
+{"bottle": "torabhaig-taigh", "source": "dramface", "value": 90.5, "raw": "Score: 7/10, 7/10 (리뷰어 2명 평균 7) · Torabhaig Taigh — Dramface · 2026"},
+{"bottle": "octomore-16-1", "source": "whiskyfun", "value": 90.9, "raw": "87 points · Octomore 5 yo 2019/2025 'Edition 16.1' (59.3%, OB, 1st fill bourbon) · 2025-11-21 Serge Valentin"},
+{"bottle": "dallasdhu-10-gm", "source": "whiskyfun", "value": 86.2, "raw": "80 points · Dallas Dhu 10 yo (40%, G&M OB) · 2004-06-29 시음"},
+{"bottle": "springbank-12-100proof-samaroli", "source": "whiskyfun", "value": 97.8, "raw": "98 (2004-12 Serge), 98 (2021-02-15 Serge), 97 (2019-02-16 Angus), 97 (2022-07-28 Angus) 평균 97.5 · Springbank 12 yo 100 proof (57.1%, OB, imported by Samaroli, early 80's, 2400 bottles)"},
+{"bottle": "glengarioch-1971-samaroli", "source": "whiskyfun", "value": 96.8, "raw": "96 (2004-07-30 Serge), 96 (2022-07-28 Angus) 평균 96 · Glen Garioch 1971 (59.6%, Samaroli, 2280 bottles, sherry, 75cl)"},
+{"bottle": "brora-1972-rms", "source": "whiskyfun", "value": 96.8, "raw": "96 (2005-02-21), 96 (2016-10-10) 평균 96 · Brora 22 yo 1972/1995 (61.1%, Rare Malts)"},
+{"bottle": "laphroaig-1974-lmdw", "source": "whiskyfun", "value": 95.8, "raw": "95 (2005-09-18), 94 (2015-02-05) 평균 94.5 · Laphroaig 31 yo 1974/2005 (49.7%, OB for La Maison du Whisky, sherry, 910 bottles)"},
+{"bottle": "bowmore-1964-black-final", "source": "whiskyfun", "value": 93.5, "raw": "91 points · Bowmore ‘Black’ 1964/1995 (49%, OB, final edition) · 2004-12-06 시음"},
+{"bottle": "portellen-1982-mos-diamonds", "source": "whiskyfun", "value": 94.2, "raw": "92 points · Port Ellen 32 yo 1982/2014 (57.9%, Malts of Scotland, Diamonds, bourbon hogshead, cask #MoS 14021, 145 bottles) · 2014-06-04 시음"},
+{"bottle": "balvenie-15sb-sherry", "source": "whiskyfun", "value": 88.2, "raw": "84 (cask #16293, 2014 병입, 2014-08-21 시음), 82 (cask #2052, 2018년경 병입, 2018-04-12 시음) 평균 83 · Balvenie 15 yo 'Single Barrel Sherry Cask' (47.8%, OB) · Serge Valentin"},
+{"bottle": "balvenie-15sb-sherry", "source": "whiskynotes", "value": 92.8, "raw": "Score: 89/100 · Balvenie 15 yo Single Barrel ‘Sherry Cask’ (47,8%, OB 2015, cask #12093, max. 650 btl.) · 2015-04-07"}
 ]

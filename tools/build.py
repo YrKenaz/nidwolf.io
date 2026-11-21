@@ -91,6 +91,7 @@ def compute():
                 errs.append(f"{b['id']}: {lic} 사진인데 img_author 가 없음")
         # 관측값이 0건인 병(출처 제외·평가 출처 없이 등록된 병)은 지우지 않고 '미평가'로 둔다.
         # gm 이 비어 있으므로 사전 평균·병 내 표준편차·티어 백분위 모수에 들어가지 않는다(점수형 출처 없는 병과 같은 경로)
+        if "vintage" in b and not isinstance(b["vintage"], bool): errs.append(f"{b['id']}: vintage 는 true/false 만 허용 ({b['vintage']!r})")
         o = by.get(b["id"], [])
         g = collections.defaultdict(list)
         for x in o:
@@ -98,14 +99,19 @@ def compute():
         rows.append((b, o, [sum(v) / len(v) for v in g.values()]))
     if errs: return [], {}, bottles, errs, {}
     # 종류별 사전 평균, 병 내 표준편차(독립 출처 2곳 이상인 병으로 추정)
+    # 옛 병(vintage: true, 지금은 구하기 어려운 수집가용 병)은 사전 평균·병 내 표준편차·티어 경계 모수에서 모두 뺀다(사용자 결정 2026-11-21).
+    # 옛 병이 있든 없든 다른 병의 점수·티어·경계가 같아야 한다. 옛 병 자신은 같은 수식으로 점수를 내고, 나머지 병으로 정한 경계에 대어 티어를 정한다
     tm = collections.defaultdict(list); ss = df = 0
     for b, o, gm in rows:
-        if gm:
+        if gm and not b.get("vintage"):
             m = sum(gm) / len(gm); tm[b["type"]].append(m)
             if len(gm) > 1: ss += sum((x - m) ** 2 for x in gm); df += len(gm) - 1
     prior = {t: sum(v) / len(v) for t, v in tm.items()}
+    allm = [x for v in tm.values() for x in v]
+    for b, o, gm in rows:   # 옛 병만 있는 종류: 옛 병이 아닌 병 전체 평균을 사전 평균으로 쓴다
+        if gm and b["type"] not in prior: prior[b["type"]] = sum(allm) / len(allm) if allm else sum(gm) / len(gm)
     sd = (ss / df) ** 0.5 if df else 2.0
-    set_tiers([round((sum(gm) + prior[b["type"]] * K) / (len(gm) + K), 1) for b, o, gm in rows if gm])
+    set_tiers([round((sum(gm) + prior[b["type"]] * K) / (len(gm) + K), 1) for b, o, gm in rows if gm and not b.get("vintage")])
     out = []
     for b, o, gm in rows:
         n = len(gm)
@@ -115,7 +121,8 @@ def compute():
              "age": b["age"], "abv": b["abv"], "style": b["style"], "cask": b["cask"], "spec": b["spec"],
              "beg": b["beginner"], "price": b["price"], "pname": b["price_product"], "pdate": b.get("price_date"), "pml": b.get("price_ml"),
              "dsu": b.get("ds_url"), "wp": b.get("img_page"),   # 사진 보기 링크용. 사진 공개 기준과 무관하게 내보낸다(사진 자체는 싣지 않음)
-             "ds": [b["ds_rating"], b["ds_reviews"]] if b.get("ds_rating") else None}
+             "ds": [b["ds_rating"], b["ds_reviews"]] if b.get("ds_rating") else None,
+             "vin": bool(b.get("vintage"))}
         if n == 0:
             w.update(score=None, tier="N", flag="none", lo=None, hi=None, bt=None)
         else:
@@ -200,6 +207,8 @@ def main():
     c = collections.Counter(w["tier"] for w in ws)
     print(f"{len(ws)}병 · 출처 {len(meta)}개 · " + " ".join(f"{t}{c[t]}" for t, _ in TIERS) + f" 미평가{c['N']}" + f" · 잠정 {sum(1 for w in ws if w['flag']=='prov')} 경계 {sum(1 for w in ws if w['flag']=='border')} 확정 {sum(1 for w in ws if w['flag']=='firm')} · 경계 {stats['tiers']} · 병 내 sd {stats['sd']} · 사전 평균 {stats['prior']}" + f" · 이미지 {sum(1 for b in bottles if b.get('img'))}장({photo_coverage(bottles) * 100:.1f}%, " + (f"기준 {PHOTO_MIN_COVERAGE * 100:g}% 이상이라 화면에 실음" if photos_on(bottles) else f"기준 {PHOTO_MIN_COVERAGE * 100:g}% 미만이라 화면에 싣지 않음") + "".join(f", {k} {v}" for k, v in collections.Counter(b.get("img_license") or "라이선스 없음" for b in bottles if b.get("img")).most_common()) + ")")
     print(tmsg)
+    v = [w["id"] for w in ws if w["vin"]]
+    print(f"옛 병 {len(v)}병(경계 계산 제외)" + (f": {', '.join(v)}" if v else ""))
     z = [w["id"] for w in ws if not w["obs"]]
     print(f"관측값 0건 {len(z)}병" + (f" (미평가 줄에 표시. 의도한 것이 아니면 관측값 누락을 확인할 것): {', '.join(z[:20])}{' …' if len(z) > 20 else ''}" if z else ""))
     if "--check" in a: return

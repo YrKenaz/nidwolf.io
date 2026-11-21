@@ -111,7 +111,7 @@
  {"brand": "Kilchoman", "match": ["Kilchoman"], "wiki": "Kilchoman distillery", "sure": true},
  {"brand": "Kilkerran", "match": ["Kilkerran"], "wiki": "Glengyle distillery", "sure": true},
  {"brand": "Kingsbarns", "match": ["Kingsbarns"], "wiki": "Kingsbarns distillery", "sure": true},
- {"brand": "Bruichladdich", "match": ["Bruichladdich", "Port Charlotte"], "wiki": "Bruichladdich distillery", "sure": true},
+ {"brand": "Bruichladdich", "match": ["Bruichladdich", "Port Charlotte", "Octomore"], "wiki": "Bruichladdich distillery", "sure": true},
  {"brand": "Lagavulin", "match": ["Lagavulin"], "wiki": "Lagavulin distillery", "sure": true},
  {"brand": "Laphroaig", "match": ["Laphroaig"], "wiki": "Laphroaig distillery", "sure": true},
  {"brand": "Larceny", "match": ["Larceny"], "wiki": null, "sure": false, "note": "문서 없음(제조사 Heaven Hill 문서만 있음)"},
@@ -206,5 +206,10 @@
  {"brand": "Tamnavulin", "match": ["Tamnavulin"], "wiki": "Tamnavulin distillery", "sure": true},
  {"brand": "Suntory Old / Royal", "match": ["Suntory Old", "Suntory Royal"], "wiki": "Suntory", "sure": false, "note": "회사 문서"},
  {"brand": "The Glenlee", "match": ["The Glenlee"], "wiki": null, "sure": false, "note": "문서 없음"},
- {"brand": "Smoky Scot", "match": ["Smoky Scot"], "wiki": null, "sure": false, "note": "문서 없음"}
+ {"brand": "Smoky Scot", "match": ["Smoky Scot"], "wiki": null, "sure": false, "note": "문서 없음"},
+ {"brand": "Torabhaig", "match": ["Torabhaig"], "wiki": "Torabhaig distillery", "sure": true},
+ {"brand": "West Cork", "match": ["West Cork"], "wiki": null, "sure": false, "note": "문서 없음"},
+ {"brand": "Brora", "match": ["Brora"], "wiki": "Brora distillery", "sure": true},
+ {"brand": "Port Ellen", "match": ["Port Ellen"], "wiki": "Port Ellen distillery", "sure": true},
+ {"brand": "Dallas Dhu", "match": ["Dallas Dhu"], "wiki": "Dallas Dhu distillery", "sure": true}
 ]
