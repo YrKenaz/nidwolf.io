@@ -169,11 +169,25 @@ def head(title, desc, url):
 HEAD = head("위스키 종합 티어표", DESC, "https://nidwolf.com/")
 CK_HEAD = head("위스키 칵테일 제조법", CK_DESC, "https://nidwolf.com/cocktails")   # 호스팅이 cocktails.html → /cocktails 로 308 리다이렉트하므로 표기를 /cocktails 로 통일
 
-SITE_NAV = re.compile(r'\n?  <nav class="site"[^\n]*</nav>(?:\n  <script>/\* 배포 주소[^\n]*\n[^\n]*</script>)?')   # 메뉴 뒤의 /cocktails 주소 바꾸기 스크립트까지 함께 뺀다
+# 사이트 페이지 목록(메뉴 순서). 새 페이지는 여기에만 더한다: (키, 정적 href, 메뉴 이름, 배포 주소)
+# 정적 href 는 로컬 서버에서도 열리는 파일 이름, 배포 주소는 호스팅(Cloudflare)이 .html 을 308 로 돌리는 짧은 주소
+PAGES = [("index", "./", "위스키 티어표", "/"), ("cocktails", "cocktails.html", "칵테일 제조법", "/cocktails")]
 
-def site_nav(t, on):
-    """칵테일 페이지를 만들지 않는 빌드에서는 티어표의 사이트 메뉴를 빼서 죽은 링크가 생기지 않게 한다"""
-    return t if on else SITE_NAV.sub("", t, count=1)
+def nav_html(cur, built):
+    """두 페이지 이상 만들어질 때만 메뉴를 넣는다(없는 페이지로 가는 죽은 링크 방지). 주소 보정 스크립트는 늘 넣는다"""
+    ps = [x for x in PAGES if x[0] in built]
+    links = "".join(f'<a href="{h}"' + (' aria-current="page"' if k == cur else "") + f'>{n}</a>' for k, h, n, _ in ps) if len(ps) > 1 else ""
+    pretty = {h: u for k, h, n, u in PAGES if h != "./"}
+    js = ('<script>/* 주소 보정(build.py 의 PAGES 로 생성). 배포 주소(nidwolf.com)에서는 *.html 링크를 짧은 주소로(308 리다이렉트를 건너뜀), '
+          '로컬 파일(file://)에서는 ./ 링크를 index.html 로(./ 는 폴더 목록이 열림) 바꾼다. 스크립트로 나중에 만드는 링크는 siteHref() 를 거친다 */\n'
+          f'(()=>{{const P={json.dumps(pretty)},live=/(^|\\.)nidwolf\\.com$/.test(location.hostname),file=location.protocol==="file:";'
+          'const f=h=>{if(live){const m=h.match(/^([a-z0-9-]+\\.html)(.*)$/);if(m&&P[m[1]])return P[m[1]]+m[2]}else if(file&&h.startsWith("./"))return "index.html"+h.slice(2);return h};'
+          'window.siteHref=f;const run=()=>document.querySelectorAll("a[href]").forEach(a=>{const h=a.getAttribute("href"),g=f(h);if(g!==h)a.setAttribute("href",g)});'
+          'document.readyState==="loading"?document.addEventListener("DOMContentLoaded",run):run()})()</script>')
+    return (f'<nav class="site" aria-label="사이트 메뉴">{links}</nav>\n  ' if links else "") + js
+
+def site_nav(t, cur, built):
+    return t.replace("__NAV__", nav_html(cur, built), 1)
 
 def full(t, hd=HEAD):
     t = t.replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "")
@@ -491,7 +505,24 @@ def cocktail_cards(cs):
                    f'<span class="tg">{"".join(f"<span>{esc_html(t)}</span>" for t in c["taste"])}</span></span></a></li>')
     return "".join(out)
 
-def cocktail_articles(cs):
+CK_PRICE_MAX = 100000   # "이 칵테일에 쓰는 종류의 병": 데일리샷 가격 상한(원). 칵테일 재료로 고가 병이 앞에 나오는 어색함을 막는다
+CK_BOTTLES = 5          # 종류마다 보여 줄 병 수
+CK_BOTTLE_RULE = (f"티어표에서 같은 종류 병 중 데일리샷 가격 {CK_PRICE_MAX // 10000}만 원 이하(700·750ml)인 병을 점수순으로 {CK_BOTTLES}병까지 보여 줍니다. "
+                  "옛 병과 미평가 병은 뺐습니다. 티어 점수는 주로 그대로 마셨을 때의 평가를 모은 것으로, 칵테일용 평가가 아닙니다.")
+
+def cocktail_bottles(ws, t):
+    """종류 t 의 병 중 칵테일 상세에 보여 줄 병(빌드 때 계산). 화면 규칙은 CK_BOTTLE_RULE 에 그대로 적는다"""
+    xs = [w for w in ws if w["type"] == t and not w["vin"] and w["tier"] != "N" and w["price"] and w["price"] <= CK_PRICE_MAX and w["pml"] in (None, 700, 750)]
+    return sorted(xs, key=lambda w: (-w["score"], w["ko"]))[:CK_BOTTLES]
+
+def bottle_block(c, ws):
+    g = []
+    for t in c["base"]:
+        li = "".join(f'<li><a href="./#b={w["id"]}"><span class="bt" data-t="{w["tier"]}">{w["tier"]}</span><span class="bn">{esc_html(w["ko"])}</span><span class="bp">{w["price"]:,}원</span></a></li>' for w in cocktail_bottles(ws, t))
+        g.append(f'<div class="bgrp"><p class="bgh">{TYPE_KO[t]}</p>' + (f'<ul class="bl">{li}</ul>' if li else "") + f'<a class="ball" href="./#type={t}">{TYPE_KO[t]} 전체 보기 →</a></div>')
+    return f'<h4>이 칵테일에 쓰는 종류의 병</h4><p class="bnote">{CK_BOTTLE_RULE}</p>{"".join(g)}'
+
+def cocktail_articles(cs, ws):
     out = []
     for c in cs:
         num = lambda i: chr(0x2460 + i) if i < 20 else f"({i+1})"
@@ -505,7 +536,7 @@ def cocktail_articles(cs):
                    f'<h4>만드는 법</h4><ol class="steps">{"".join(f"<li>{esc_html(t)}</li>" for t in c["steps"])}</ol>'
                    + (f'<h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p>' if c["garnish"] else "")
                    + (f'<p class="tip"><b>팁</b> {esc_html(c["tip"])}</p>' if c.get("tip") else "")
-                   + f'<p class="tolist">{"".join(f"<a href=\"./#type={b}\">{TYPE_KO[b]} 티어 보기 →</a>" for b in c["base"])}</p>'
+                   + bottle_block(c, ws)
                    + (f'<h4>출처</h4><ul class="srcl">{src}</ul>' if src else "")
                    + '</div></article>')
     return "".join(out)
@@ -526,10 +557,10 @@ def tokens_css():
     if not m: raise SystemExit("오류: template.html 에서 색 토큰을 찾지 못함")
     return m.group(1)
 
-def render_cocktails(cs):
+def render_cocktails(cs, ws):
     with open(os.path.join(ROOT, "tools", "cocktails_template.html"), encoding="utf-8") as f: t = f.read()
     return (t.replace("__TOKENS__", tokens_css()).replace("__FILTERS__", cocktail_filters(cs)).replace("__CARDS__", cocktail_cards(cs))
-             .replace("__RECIPES__", cocktail_articles(cs)).replace("__COUNT__", str(len(cs))).replace("__WARN__", CK_WARN))
+             .replace("__RECIPES__", cocktail_articles(cs, ws)).replace("__COUNT__", str(len(cs))).replace("__WARN__", CK_WARN))
 
 def load_cocktails():
     """(레시피 목록 또는 None, 오류 목록). 파일이 없으면 칵테일 페이지를 만들지 않는다"""
@@ -561,12 +592,15 @@ def main():
         print(f"칵테일 {len(cs)}종 · 잔 {dict(collections.Counter(c['glass'] for c in cs))} · 출처 없는 레시피 {sum(1 for c in cs if not c['sources'])}종"
               + ("" if ck_tpl else " · tools/cocktails_template.html 없음 — cocktails.html 을 만들지 않음"))
     if "--check" in a: return
-    ck = cs is not None and ck_tpl   # 칵테일 페이지를 만들 때만 티어표에 사이트 메뉴를 둔다
+    ck = cs is not None and ck_tpl   # 칵테일 페이지를 만들 때만 티어표에 사이트 메뉴와 칵테일 연결을 둔다
+    built = {"index"} | ({"cocktails"} if ck else set())
+    if ck:   # 티어표 병 상세의 "이 종류로 만드는 칵테일"용: 이름·베이스·작은 그림 파일 유무만(그림은 상세를 열 때 img 로 불러 index 용량을 늘리지 않는다)
+        stats["ck"] = [{"id": c["id"], "ko": c["ko"], "b": c["base"], "a": os.path.exists(os.path.join(ROOT, ART_DIR, f"{c['id']}-s.svg"))} for c in cs]
     with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8") as f:
-        f.write(full(site_nav(render(ws, meta, bottles, False, stats), ck)))
+        f.write(full(site_nav(render(ws, meta, bottles, False, stats), "index", built)))
     if ck:
         with open(os.path.join(ROOT, "cocktails.html"), "w", encoding="utf-8") as f:
-            f.write(full(render_cocktails(cs), CK_HEAD))
+            f.write(full(site_nav(render_cocktails(cs, ws), "cocktails", built), CK_HEAD))
     today = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -575,11 +609,11 @@ def main():
     print("index.html 생성" + (" · cocktails.html 생성" if ck else ""))
     if "--single" in a:
         p = a[a.index("--single") + 1]
-        with open(p, "w", encoding="utf-8") as f: f.write(full(site_nav(render(ws, meta, bottles, True, stats), False)))   # 오프라인 보관용: 다른 페이지 링크 없음
+        with open(p, "w", encoding="utf-8") as f: f.write(full(site_nav(render(ws, meta, bottles, True, stats), "index", {"index"})))   # 오프라인 보관용: 다른 페이지 링크 없음
         print("단일 파일:", p)
     if "--fragment" in a:
         p = a[a.index("--fragment") + 1]
-        with open(p, "w", encoding="utf-8") as f: f.write(site_nav(render(ws, meta, bottles, True, stats), False))
+        with open(p, "w", encoding="utf-8") as f: f.write(site_nav(render(ws, meta, bottles, True, stats), "index", {"index"}))
         print("조각 파일:", p)
 
 if __name__ == "__main__":

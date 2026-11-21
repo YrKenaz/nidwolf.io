@@ -214,6 +214,12 @@ h3[tabindex]:focus{outline:none}
 .unv{display:inline-block;border:1px dashed var(--muted);color:var(--muted);border-radius:999px;font-size:10.5px;padding:0 6px;margin-left:4px;font-weight:400;vertical-align:1px}
 
 /* 트렌드지수: 티어 점수와 다른 지표임을 보이도록 점선 테두리·파란 계열로 구분한다 */
+.ckl{border-top:1px solid var(--line);padding-top:12px}
+.ckl h4{font-size:14px;margin:0 0 8px}
+.ckl ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.ckl a{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:3px 10px 3px 4px;color:var(--ink);text-decoration:none;font-size:13.5px;background:var(--surface);min-height:36px}
+.ckl a:hover{border-color:var(--accent)}
+.ckl img{width:22px;height:33px;object-fit:contain}
 .trend{border:1px dashed var(--trend);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
 .trhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
 .trhead h4{margin:0;font-size:14px;color:var(--trend)}
@@ -306,9 +312,7 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 </style>
 
 <div class="wrap">
-  <nav class="site" aria-label="사이트 메뉴"><a href="./" aria-current="page">위스키 티어표</a><a href="cocktails.html" id="nav-ck">칵테일 제조법</a></nav>
-  <script>/* 배포 주소(nidwolf.com)에서는 호스팅이 cocktails.html → /cocktails 로 308 리다이렉트하므로 처음부터 /cocktails 로 보낸다. 로컬 파일(file://)에서는 ./ 가 폴더 목록으로 열리므로 index.html 로 */
-  if(/(^|\.)nidwolf\.com$/.test(location.hostname))document.getElementById("nav-ck").href="/cocktails";else if(location.protocol==="file:")document.querySelector('.site a[href="./"]').setAttribute("href","index.html")</script>
+  __NAV__
   <header>
     <h1>위스키 종합 티어표</h1>
     <p class="lede">여러 위스키를 마셔 보고 싶은데 어떤 병이 좋은지 한눈에 찾기가 어려워 직접 만들어 보았습니다. 여러 매체와 커뮤니티에 흩어진 위스키 티어표·순위·평점을 AI로 모아 하나의 티어로 정리했습니다. 출처마다 다른 척도를 100점 기준으로 맞추고, 같은 매체의 평가는 한 표로 묶어 특정 매체에 치우치지 않게 계산합니다. 종류·숙성년수·피트·셰리·가격대 필터로 취향과 예산에 맞는 병을 찾아보세요. 티어와 별도로, 병이 얼마나 알려졌는지를 0~100점으로 나타낸 트렌드지수도 함께 보여 드립니다.</p>
@@ -479,11 +483,17 @@ function detail(id){
     ${trendBox(w)}
     ${rows?`<div class="srcs">${rows}</div>`:`<p class="note srcs-empty">이 병을 다룬 평가 출처가 아직 없어 티어를 매기지 않았습니다. 출처가 모이면 점수가 생깁니다.</p>`}
     <p class="note">${rows?"막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.":""}</p>
+    ${ckBox(w)}
     <button class="close" type="button" data-close>닫기</button>`;
   if(IMG.img[w.id])$("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<p class="credit">${credit(w)}</p>`);
   {const pl=photoLinks(w);if(pl)$("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",pl)}
   $("dbody").querySelector(".dhead").insertAdjacentHTML("afterend",`<div class="acts" id="dacts" role="group" aria-label="내 기록과 비교">${dacts(w)}</div>`);
   return true}
+/* 이 종류로 만드는 칵테일(칵테일 페이지를 만든 빌드에서만 DATA.stats.ck 가 있다). 옛 병에는 두지 않는다.
+   작은 잔 그림은 index 에 싣지 않고 상세를 열 때 art/cocktails/<id>-s.svg 를 img 로 불러 온다(그림 파일이 없으면 이름만) */
+function ckBox(w){const ck=DATA.stats.ck;if(!ck||w.vin)return"";const xs=ck.filter(c=>c.b.includes(w.type));if(!xs.length)return"";
+  const href=h=>window.siteHref?siteHref(h):h,tn=esc(TNAME[w.type]);
+  return `<section class="ckl" aria-label="이 종류로 만드는 칵테일"><h4>이 종류(${tn})로 만드는 칵테일</h4><ul>`+xs.map(c=>`<li><a href="${esc(href("cocktails.html#c="+c.id))}">${c.a?`<img src="art/cocktails/${c.id}-s.svg" alt="" width="28" height="42" loading="lazy" decoding="async">`:""}<span>${esc(c.ko)}</span></a></li>`).join("")+`</ul></section>`}
 function trendBox(w){
   if(!TR)return "";
   const t=w.tr,head=`<div class="trhead"><h4>트렌드지수<small>얼마나 알려졌는지(누적 인지도) · 티어 점수와 별개</small></h4>`;

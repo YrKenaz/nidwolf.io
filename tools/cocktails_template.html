@@ -63,7 +63,19 @@ a{color:var(--accent)}
 .steps{margin:0;padding-left:1.4em}
 .steps li{margin:3px 0;word-break:keep-all}
 .tip{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;word-break:keep-all}
-.tolist{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;font-weight:500}
+/* 이 칵테일에 쓰는 종류의 병(빌드 때 티어표에서 고른 병, 규칙은 .bnote 에 적는다) */
+.bnote{font-size:12.5px;color:var(--muted);margin:0 0 8px;word-break:keep-all}
+.bgrp{margin:0 0 10px}
+.bgh{font-size:13px;font-weight:700;margin:0 0 4px}
+.bl{list-style:none;margin:0 0 4px;padding:0;display:flex;flex-direction:column}
+.bl a{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 4px;border-top:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:14px}
+.bl a:hover .bn{text-decoration:underline}
+.bt{display:inline-block;min-width:22px;text-align:center;border-radius:4px;font-size:12px;font-weight:700;padding:1px 4px}
+.bt[data-t="S"]{background:var(--t-s);color:var(--t-dark-ink)}.bt[data-t="A"]{background:var(--t-a);color:var(--t-dark-ink)}.bt[data-t="B"]{background:var(--t-b);color:var(--t-dark-ink)}
+.bt[data-t="C"]{background:var(--t-c);color:var(--t-light-ink)}.bt[data-t="D"]{background:var(--t-d);color:var(--t-light-ink)}.bt[data-t="E"]{background:var(--t-e);color:var(--t-light-ink)}
+.bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bp{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ball{display:inline-block;font-size:14px;font-weight:500;margin-top:2px}
 .srcl{margin:0;padding-left:1.2em;font-size:13.5px}
 .warn{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);word-break:keep-all}
 dialog.cd{border:0;padding:0;background:var(--bg);color:var(--ink);border-radius:14px;width:min(980px,calc(100vw - 32px));max-height:calc(100dvh - 32px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
@@ -86,7 +98,7 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
 </style>
 
 <div class="wrap">
-  <nav class="site" aria-label="사이트 메뉴"><a href="./">위스키 티어표</a><a href="cocktails.html" aria-current="page">칵테일 제조법</a></nav>
+  __NAV__
   <header>
     <h1>위스키 칵테일 제조법</h1>
     <p class="lede">위스키로 만드는 칵테일을 잔 그림으로 정리했습니다. 잔 속 색 층은 재료를 넣는 순서(아래부터)이고, 층의 크기는 들어가는 양에 비례합니다. 비터스·설탕처럼 양을 ml로 재지 않는 재료는 잔 아래에 번호와 함께 따로 적었습니다.</p>
@@ -98,11 +110,6 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
 </div>
 <dialog class="cd" id="cd" aria-labelledby="cdh"><div class="cdb" id="cdb"></div></dialog>
 <script>
-/* 주소 보정: 배포 주소(nidwolf.com)에서는 이 페이지 자신을 /cocktails 로(호스팅의 308 리다이렉트를 건너뜀),
-   로컬 파일(file://)에서는 티어표 링크 ./ 가 폴더 목록으로 열리므로 index.html 로 바꾼다. 정적 href 는 배포용 ./ 그대로 둔다 */
-(()=>{const live=/(^|\.)nidwolf\.com$/.test(location.hostname),file=location.protocol==="file:";
-  document.querySelectorAll('a[href="cocktails.html"],a[href^="./"]').forEach(a=>{const h=a.getAttribute("href");
-    if(h==="cocktails.html"){if(live)a.href="/cocktails"}else if(file)a.setAttribute("href","index.html"+h.slice(2))})})();
 (()=>{
 const $=id=>document.getElementById(id),D=document.documentElement;D.classList.add("js");
 const N=__COUNT__,f={base:[],diff:[],method:[]};$("cbar").hidden=false;
