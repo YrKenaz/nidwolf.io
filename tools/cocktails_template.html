@@ -19,6 +19,26 @@ h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);lin
 h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0 0 6px}
 button{font:inherit;color:inherit}
 a{color:var(--accent)}
+/* 가진 재료로 찾기 */
+.kbar{margin:22px 0 0;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 14px}
+.kbar>summary{cursor:pointer;padding:11px 0;font-weight:700;font-size:15px}
+.kbar[open]>summary{border-bottom:1px solid var(--line);margin-bottom:10px}
+.bon{font-weight:400;font-size:13px;color:var(--muted);margin-left:6px}
+.bnote2{font-size:13px;color:var(--muted);margin:0 0 8px;word-break:keep-all}
+.bbtn{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+.bmsg{font-size:12.5px;color:var(--muted)}
+.bgr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 9px}
+.bwrap{display:inline-flex;align-items:center;gap:4px}
+.btier{font-size:12px;text-decoration:none;color:var(--accent);white-space:nowrap}
+.btier:hover{text-decoration:underline}
+.cgrid>.sech{grid-column:1/-1;list-style:none;margin:10px 0 -2px}
+.cgrid>.sech h3{font-size:15px;margin:0}.cgrid>.sech h3 small{font-weight:400;color:var(--muted);margin-left:4px}
+.cgrid>.sech p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+.cgrid>li.dim>.ccard{opacity:.45}
+.cgrid>li.dim>.ccard:hover,.cgrid>li.dim>.ccard:focus-visible{opacity:1}
+.cgrid>li{display:flex;flex-direction:column;gap:4px}
+.miss{margin:0;font-size:12.5px;padding:0 4px;word-break:keep-all}
+.miss a{margin-left:6px;white-space:nowrap}
 .cbar{margin:22px 0 14px;display:flex;flex-direction:column;gap:8px}
 .cg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .cgl{font-size:13px;color:var(--muted);min-width:76px}
@@ -103,6 +123,7 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
     <h1>위스키 칵테일 제조법</h1>
     <p class="lede">위스키로 만드는 칵테일을 잔 그림으로 정리했습니다. 잔 속 색 층은 재료를 넣는 순서(아래부터)이고, 층의 크기는 들어가는 양에 비례합니다. 비터스·설탕처럼 양을 ml로 재지 않는 재료는 잔 아래에 번호와 함께 따로 적었습니다.</p>
   </header>
+  __BAR__
   <div class="cbar" id="cbar" hidden>__FILTERS__<p class="cnt" id="cnt" role="status" aria-live="polite"></p></div>
   <ul class="cgrid" id="cgrid">__CARDS__</ul>
   <section class="recipes" id="recipes" aria-label="칵테일 제조법 전체"><h2>제조법</h2>__RECIPES__</section>
@@ -113,9 +134,38 @@ dialog.cd::backdrop{background:rgba(0,0,0,.55)}
 (()=>{
 const $=id=>document.getElementById(id),D=document.documentElement;D.classList.add("js");
 const N=__COUNT__,f={base:[],diff:[],method:[]};$("cbar").hidden=false;
-function apply(){let n=0;
-  document.querySelectorAll("#cgrid>li").forEach(li=>{const ok=(!f.base.length||li.dataset.base.split(" ").some(b=>f.base.includes(b)))&&(!f.diff.length||f.diff.includes(li.dataset.diff))&&(!f.method.length||f.method.includes(li.dataset.method));li.hidden=!ok;n+=ok});
-  $("cnt").textContent=n===N?`${N}종`:`${N}종 중 ${n}종`}
+/* 가진 재료로 찾기(N5). 묶음 데이터 {id:[이름, 종류 줄, 흔한 것, 티어표 종류]}. 고른 묶음은 localStorage nidwolf.bar.v1 {"g":[…]}에만 두고 주소에는 넣지 않는다 */
+const BG=(()=>{try{return JSON.parse($("bgdata").textContent)}catch(e){return null}})(),kb=$("kbar"),KEY="nidwolf.bar.v1";
+const TK={BB:"버번",RY:"라이·아메리칸",SM:"싱글몰트 스카치",BL:"블렌디드 스카치",IR:"아이리시",JP:"재패니즈"};
+let have=new Set(),stOK=true;
+if(BG&&kb){kb.hidden=false;let sv=null;
+  try{sv=JSON.parse(localStorage.getItem(KEY)||"null");localStorage.setItem(KEY+".t","1");localStorage.removeItem(KEY+".t")}catch(e){stOK=false}
+  have=new Set(sv&&Array.isArray(sv.g)?sv.g.filter(g=>BG[g]):Object.keys(BG).filter(g=>BG[g][2]));   /* 처음에는 흔한 것만 켠 상태 */
+  if(!stOK)$("bmsg").textContent="이 브라우저는 저장을 막아 두어, 고른 재료는 페이지를 닫으면 사라집니다."}
+const save=()=>{if(stOK)try{localStorage.setItem(KEY,JSON.stringify({g:[...have]}))}catch(e){}};
+/* 흔한 것(설탕·꿀 등)만 켠 상태에서는 구분하지 않는다: 흔하지 않은 재료를 하나라도 켜야 "바로/하나 더"로 나눈다 */
+const active=()=>!!BG&&[...have].some(g=>BG[g]&&!BG[g][2]);
+const href=h=>window.siteHref?siteHref(h):h,esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function missHTML(r){const ts=[...new Set(r.map(g=>BG[g]&&BG[g][3]).filter(Boolean))];
+  const lk=!ts.length?"":ts.length>2?`<a href="${href("./")}">티어표에서 위스키 고르기 →</a>`:ts.map(t=>`<a href="${href("./#type="+t)}">${TK[t]} 티어 →</a>`).join("");
+  return `<p class="miss"><b>하나만 더:</b> ${esc(r.map(g=>BG[g]?BG[g][0]:g).join(" 또는 "))}${lk?" "+lk:""}</p>`}
+document.querySelectorAll("#cgrid>li").forEach((li,i)=>li.dataset.o=i);
+function apply(){let n=0,a=0,b=0;const on=active(),G=$("cgrid"),items=[...G.querySelectorAll(":scope>li[data-o]")];
+  G.querySelectorAll(":scope>.sech").forEach(x=>x.remove());
+  items.forEach(li=>{const ok=(!f.base.length||li.dataset.base.split(" ").some(b=>f.base.includes(b)))&&(!f.diff.length||f.diff.includes(li.dataset.diff))&&(!f.method.length||f.method.includes(li.dataset.method));
+    li.hidden=!ok;n+=ok;li.classList.remove("dim");const m=li.querySelector(".miss");if(m)m.remove();li.dataset.lv="3";
+    if(on&&ok){const miss=(li.dataset.req||"").split(";").filter(Boolean).map(r=>r.split("|")).filter(r=>!r.some(g=>have.has(g)));
+      li.dataset.lv=String(Math.min(2,miss.length));if(!miss.length)a++;else if(miss.length===1){b++;li.insertAdjacentHTML("beforeend",missHTML(miss[0]))}else li.classList.add("dim")}});
+  items.sort((x,y)=>(on?x.dataset.lv-y.dataset.lv:0)||x.dataset.o-y.dataset.o).forEach(li=>G.append(li));
+  if(on){const head=(lv,t,k,empty)=>{const first=items.find(li=>!li.hidden&&li.dataset.lv===lv);const h=document.createElement("li");h.className="sech";
+      h.innerHTML=`<h3>${t} <small>${k}종</small></h3>`+(k?"":`<p>${empty}</p>`);first?G.insertBefore(h,first):(lv!=="2"&&G.insertBefore(h,items.find(li=>!li.hidden&&+li.dataset.lv>+lv)||null))};
+    head("0","바로 만들 수 있음",a,"지금 켠 재료로 바로 만들 수 있는 칵테일은 없습니다.");head("1","하나만 더 있으면",b,"재료가 하나만 빠진 칵테일은 없습니다.");
+    const c=n-a-b;if(c)head("2","그 밖의 칵테일",c,"")}
+  $("cnt").textContent=(n===N?`${N}종`:`${N}종 중 ${n}종`)+(on?` · 바로 만들 수 있음 ${a} · 하나만 더 있으면 ${b}`:"");
+  if(kb){$("bon").textContent=on?`바로 ${a} · 하나 더 ${b}`:have.size?`${have.size}개 켬`:"";kb.querySelectorAll("[data-g]").forEach(x=>x.setAttribute("aria-pressed",have.has(x.dataset.g)))}}
+if(kb)kb.addEventListener("click",e=>{const c=e.target.closest("[data-g]"),t=e.target.id;
+  if(c){const g=c.dataset.g;have.has(g)?have.delete(g):have.add(g)}else if(t==="bcommon")Object.keys(BG).forEach(g=>{if(BG[g][2])have.add(g)});else if(t==="bnone")have.clear();else return;
+  save();apply()});
 $("cbar").addEventListener("click",e=>{const b=e.target.closest("[data-k]");if(!b)return;const a=f[b.dataset.k],i=a.indexOf(b.dataset.v);i<0?a.push(b.dataset.v):a.splice(i,1);b.setAttribute("aria-pressed",i<0);apply()});
 apply();
 /* 상세: #c=<id> (또는 JS 없을 때 쓰는 #c-<id>) 주소로 바로 열린다. 뒤로 가기로 닫힌다 */

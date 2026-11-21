@@ -249,6 +249,46 @@ ING_KINDS = {"whiskey", "liqueur", "vermouth", "juice", "syrup", "sugar", "soda"
 HEX6 = re.compile(r"^#[0-9a-fA-F]{6}$")
 CK_SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
+CK_GROUP_KINDS = ["술", "리큐어", "주스·과일", "시럽·설탕", "탄산·음료", "기타"]   # "가진 재료로 찾기" 칩 줄 순서
+# 위스키 재료 묶음 → 티어표 종류(빠진 위스키에서 티어표로 가는 링크). 테네시는 라이·아메리칸, 아일라는 싱글몰트
+CK_GROUP_TYPE = {"bourbon": "BB", "rye": "RY", "tennessee": "RY", "scotch-blended": "BL", "scotch-malt": "SM", "scotch-islay": "SM", "irish": "IR", "japanese": "JP"}
+
+def load_cocktail_groups():
+    p = os.path.join(ROOT, "data", "cocktail_groups.json")
+    if not os.path.exists(p): return None, []
+    try:
+        with open(p, encoding="utf-8") as f: gs = json.load(f)
+    except Exception as e:
+        return None, [f"cocktail_groups.json 읽기 실패: {e}"]
+    errs = []
+    if not isinstance(gs, list): return None, ["cocktail_groups.json 은 배열이어야 함"]
+    for i, n in collections.Counter(g.get("id") for g in gs if isinstance(g, dict)).items():
+        if n > 1: errs.append(f"재료 묶음 id 중복: {i}")
+    for g in gs:
+        if not isinstance(g, dict) or not all(k in g for k in ("id", "ko", "kind", "common")): errs.append(f"재료 묶음 필드 없음: {g!r}"); continue
+        if not isinstance(g["id"], str) or not CK_SLUG.match(g["id"]): errs.append(f"재료 묶음 {g['id']!r}: id 는 영문 소문자·숫자·하이픈만")
+        if g["kind"] not in CK_GROUP_KINDS: errs.append(f"재료 묶음 {g['id']}: kind 값 오류 {g['kind']!r} (허용 {CK_GROUP_KINDS})")
+        if not isinstance(g["common"], bool): errs.append(f"재료 묶음 {g['id']}: common 은 true/false")
+        if not isinstance(g["ko"], str) or not g["ko"].strip(): errs.append(f"재료 묶음 {g['id']}: ko 가 빈 값")
+    return gs, errs
+
+def check_cocktail_groups(cs, gs):
+    """재료의 groups(그중 하나만 있어도 됨)·optional 검사. 묶음 파일이 없는데 groups 를 쓰면 오류"""
+    errs, ids = [], {g["id"] for g in (gs or []) if isinstance(g, dict) and "id" in g}
+    for c in cs if isinstance(cs, list) else []:
+        for j, x in enumerate(c.get("ingredients") or [], 1):
+            if not isinstance(x, dict): continue
+            nm = f"칵테일 {c.get('id')}: 재료 {j}({x.get('ko')})"
+            if "groups" in x:
+                if gs is None: errs.append(f"{nm}: groups 가 있는데 data/cocktail_groups.json 이 없음"); continue
+                if not isinstance(x["groups"], list) or not x["groups"]: errs.append(f"{nm}: groups 는 묶음 id 배열(1개 이상)")
+                else:
+                    bad = [g for g in x["groups"] if g not in ids]
+                    if bad: errs.append(f"{nm}: cocktail_groups.json 에 없는 묶음 {bad}")
+            if "optional" in x and not isinstance(x["optional"], bool): errs.append(f"{nm}: optional 은 true/false ({x['optional']!r})")
+            if ("groups" in x) != ("optional" in x): errs.append(f"{nm}: groups 와 optional 은 함께 넣는다")
+    return errs
+
 def check_cocktails(cs):
     """cocktails.json 검증. 오류 문장 목록을 돌려준다"""
     if not isinstance(cs, list): return ["cocktails.json 은 배열이어야 함"]
@@ -513,7 +553,8 @@ def cocktail_art(c, small=False):
 def cocktail_cards(cs):
     out = []
     for c in cs:
-        out.append(f'<li data-base="{" ".join(c["base"])}" data-diff="{c["difficulty"]}" data-method="{c["method"]}"><a class="ccard" href="#c-{c["id"]}" data-id="{c["id"]}">'
+        req = ";".join("|".join(x["groups"]) for x in c["ingredients"] if x.get("groups") and not x.get("optional"))   # 가진 재료로 찾기: 꼭 필요한 재료(| 는 그중 하나)
+        out.append(f'<li data-base="{" ".join(c["base"])}" data-diff="{c["difficulty"]}" data-method="{c["method"]}"' + (f' data-req="{req}"' if req else "") + f'><a class="ccard" href="#c-{c["id"]}" data-id="{c["id"]}">'
                    f'<span class="cfig">{cocktail_art(c, True)}</span><span class="cbody"><span class="cn">{esc_html(c["ko"])}</span><span class="ce">{esc_html(c["en"])}</span>'
                    f'<span class="cm"><span class="df" title="난이도">{"●" * c["difficulty"]}{"○" * (3 - c["difficulty"])} {DIFF_KO[c["difficulty"]]}</span> · {esc_html(", ".join(TYPE_KO[b] for b in c["base"]))}</span>'
                    f'<span class="tg">{"".join(f"<span>{esc_html(t)}</span>" for t in c["taste"])}</span></span></a></li>')
@@ -571,9 +612,25 @@ def tokens_css():
     if not m: raise SystemExit("오류: template.html 에서 색 토큰을 찾지 못함")
     return m.group(1)
 
-def render_cocktails(cs, ws):
+def bar_block(gs):
+    """가진 재료로 찾기(JS 가 있을 때만 보임). 묶음 칩을 kind 줄로, 위스키 칩 옆에는 티어표 같은 종류 링크"""
+    if not gs: return ""
+    rows = []
+    for k in CK_GROUP_KINDS:
+        xs = [g for g in gs if g["kind"] == k]
+        if not xs: continue
+        rows.append(f'<div class="bgr" role="group" aria-label="{k}"><span class="cgl">{k}</span>' + "".join(
+            f'<span class="bwrap"><button type="button" class="chip bchip" data-g="{g["id"]}" aria-pressed="false">{esc_html(g["ko"])}</button>'
+            + (f'<a class="btier" href="./#type={CK_GROUP_TYPE[g["id"]]}" title="티어표에서 {TYPE_KO[CK_GROUP_TYPE[g["id"]]]} 보기">티어 →</a>' if g["id"] in CK_GROUP_TYPE else "") + "</span>" for g in xs) + "</div>")
+    data = json.dumps({g["id"]: [g["ko"], g["kind"], g["common"], CK_GROUP_TYPE.get(g["id"])] for g in gs}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return (f'<details class="kbar" id="kbar" hidden><summary>가진 재료로 찾기 <span class="bon" id="bon"></span></summary>'
+            '<p class="bnote2">가진 술과 재료를 켜면, 지금 바로 만들 수 있는 칵테일과 재료가 하나만 더 있으면 되는 칵테일을 앞으로 모아 보여 줍니다. 물·정향처럼 없어도 되는 재료는 따지지 않습니다. 고른 재료는 이 브라우저에만 저장되고 공유 주소에는 들어가지 않습니다.</p>'
+            '<p class="bbtn"><button type="button" class="chip" id="bcommon">흔한 것 모두 켜기</button><button type="button" class="chip" id="bnone">모두 끄기</button><span class="bmsg" id="bmsg" role="status"></span></p>'
+            f'{"".join(rows)}</details><script type="application/json" id="bgdata">{data}</script>')
+
+def render_cocktails(cs, ws, gs=None):
     with open(os.path.join(ROOT, "tools", "cocktails_template.html"), encoding="utf-8") as f: t = f.read()
-    return (t.replace("__TOKENS__", tokens_css()).replace("__FILTERS__", cocktail_filters(cs)).replace("__CARDS__", cocktail_cards(cs))
+    return (t.replace("__TOKENS__", tokens_css()).replace("__FILTERS__", cocktail_filters(cs)).replace("__BAR__", bar_block(gs)).replace("__CARDS__", cocktail_cards(cs))
              .replace("__RECIPES__", cocktail_articles(cs, ws)).replace("__COUNT__", str(len(cs))).replace("__WARN__", CK_WARN))
 
 def load_cocktails():
@@ -660,6 +717,7 @@ def main():
     a = sys.argv[1:]
     ws, meta, bottles, errs, stats = compute()
     cs, cerrs = load_cocktails(); errs = errs + cerrs
+    cg, cgerrs = load_cocktail_groups(); errs = errs + cgerrs + (check_cocktail_groups(cs, cg) if cs is not None else [])
     ck_tpl = os.path.exists(os.path.join(ROOT, "tools", "cocktails_template.html"))
     gs, gerrs = load_glossary(bottles); errs = errs + gerrs
     gl_tpl = os.path.exists(os.path.join(ROOT, "tools", "glossary_template.html"))
@@ -678,6 +736,7 @@ def main():
     if cs is None: print("칵테일: data/cocktails.json 없음 — cocktails.html 을 만들지 않음")
     else:
         print(f"칵테일 {len(cs)}종 · 잔 {dict(collections.Counter(c['glass'] for c in cs))} · 출처 없는 레시피 {sum(1 for c in cs if not c['sources'])}종"
+              + (f" · 재료 묶음 {len(cg)}개(흔한 것 {sum(1 for g in cg if g['common'])})" if cg else "")
               + ("" if ck_tpl else " · tools/cocktails_template.html 없음 — cocktails.html 을 만들지 않음"))
     if gs is None: print("용어 사전: data/glossary.json 없음 — glossary.html 을 만들지 않음")
     else: print(f"용어 사전 {len(gs)}항목 · 필터 연결 {sum(1 for g in gs if g['filter'])}항목" + ("" if gl_tpl else " · tools/glossary_template.html 없음 — glossary.html 을 만들지 않음"))
@@ -692,7 +751,7 @@ def main():
         f.write(full(site_nav(render(ws, meta, bottles, False, stats), "index", built)))
     if ck:
         with open(os.path.join(ROOT, "cocktails.html"), "w", encoding="utf-8") as f:
-            f.write(full(site_nav(render_cocktails(cs, ws), "cocktails", built), CK_HEAD))
+            f.write(full(site_nav(render_cocktails(cs, ws, cg), "cocktails", built), CK_HEAD))
     if gl:
         with open(os.path.join(ROOT, "glossary.html"), "w", encoding="utf-8") as f:
             f.write(full(site_nav(render_glossary(gs), "glossary", built), GL_HEAD))
