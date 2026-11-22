@@ -169,6 +169,14 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
 .method{margin-top:44px;display:flex;flex-direction:column;gap:14px}
 .method p{margin:0;max-width:68ch}
 #trendm{display:flex;flex-direction:column;gap:12px;border-top:1px dashed var(--trend);padding-top:16px}
+/* 방법 도해(art/site/*.svg 인라인): 900px 초과에서는 글 오른쪽 칸, 이하에서는 글 아래. 높이는 그리드가 글·그림 중 큰 쪽에 맞춘다 */
+.mrow{display:flex;flex-direction:column;gap:14px}
+.mtx{display:flex;flex-direction:column;gap:14px;min-width:0}
+#trendm .mtx{gap:12px}
+.mart{margin:0;display:flex;flex-direction:column;gap:14px}
+.mart svg{display:block;width:100%;max-width:400px;height:auto}
+@media (max-width:900px){ #trendm .mrow{gap:12px} #trendm .mtx{display:contents} #trendm .mtx .lim{order:2} #trendm .mart{order:1} }
+@media (min-width:901px){ .mrow{display:grid;grid-template-columns:minmax(0,68ch) minmax(260px,400px);column-gap:40px;align-items:start} }
 .mh{font-family:var(--display);font-size:18px;margin:0;color:var(--trend)}
 .formula{font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px;max-width:68ch}
 .scale{display:flex;flex-wrap:wrap;gap:6px}
@@ -389,17 +397,19 @@ body.has-tray .totop{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 
   <section class="method">
     <h2>점수 산출 방식</h2>
+    <div class="mrow"><div class="mtx">
     <p>출처마다 형식이 달라서 먼저 100점 척도로 맞춥니다. 점수표와 평점은 점수를 그대로(메타 평점은 공통 병 기준으로 선형 변환) 쓰고, 순위 리스트는 1위부터 마지막 순위까지를 일정 구간에 고르게 폅니다.</p>
     <div class="formula">종합 점수 = (매체 그룹별 점수의 합 + 종류별 사전 평균) ÷ (독립 출처 수 + 1)</div>
     <p><b>같은 매체는 한 표.</b> 한 매체가 낸 여러 리스트는 먼저 평균해 하나의 독립 출처로 셉니다. <b>추천 목록은 점수에 넣지 않습니다.</b> 순서 없는 추천 목록에 고정 점수를 주면 좋은 병의 점수를 깎기 때문에 ‘매체 추천 N회’로만 표시합니다. <b>사전 평균은 종류별</b>로 둡니다(<span id="prior"></span>). 출처가 적은 병일수록 이 값 쪽으로 당겨집니다.</p>
     <p><b>확신도.</b> 독립 출처가 1곳뿐이면 ‘잠정’입니다. 2곳 이상이어도 점수 ± 표준오차(병 내 표준편차 <span id="sdv"></span>점 ÷ √(출처 수 + 1))가 티어 경계를 넘으면 ‘경계’로 표시합니다. 지금은 출처 수가 적어 대부분의 병이 잠정이거나 경계입니다. 티어는 점수 상위부터 5·15·25·25·20·10% 비율로 나누며, 경계 점수는 갱신할 때마다 다시 계산합니다. ‘옛 병’ 표시가 붙은 병(지금은 구하기 어려운 수집가용 옛 병)은 티어 경계와 종류별 사전 평균 계산에서 빼고, 같은 수식으로 낸 자기 점수를 그 경계에 대어 티어만 정합니다.</p>
+    </div>__ART_METHOD__</div>
     <div class="scale" id="scale"></div>
     <div class="tw"><table>
       <thead><tr><th>출처</th><th>매체 그룹</th><th>형식</th><th>반영 방식</th><th class="n">병 수</th></tr></thead>
       <tbody id="stable"></tbody>
     </table></div>
     <p>상세 필터의 속성은 다음 기준으로 붙였습니다. 숙성년수는 라벨 표기 기준이고 표기가 없으면 NAS입니다. 피트는 훈연 향이 뚜렷한 제품(약피트 포함), 셰리는 셰리 캐스크 숙성·피니시가 풍미의 중심인 제품, CS는 캐스크 스트렝스·배럴 프루프로 표기된 제품입니다. 도수는 표준 병입 도수이고 CS 제품은 배치마다 다릅니다. 가격은 수집일 기준 데일리샷 판매가이며 용량·구형 여부가 섞여 있어 대략적인 구간으로만 보세요. 입문 추천은 입문자 추천 글과 저가·가성비 리스트에 오른 병입니다.</p>
-    <div id="trendm" hidden></div>
+    <div id="trendm" hidden><h3 class="mh">트렌드지수</h3><div class="mrow"><div class="mtx" id="trendtx"></div>__ART_TREND__</div></div>
     <p class="note"><span id="imgnote">병 사진은 싣지 않습니다. 대신 병 상세 창에서 사진을 볼 수 있는 외부 페이지(데일리샷 상품 페이지, 위키미디어 공용)로 연결합니다.</span> 데일리샷 이용자 평점은 참고 정보이며 점수에 넣지 않습니다. 점수는 취향과 가격을 반영하지 않은 참고용 지표입니다.</p>
     <details class="adv credits" id="credits" hidden><summary>사진 출처 <span class="on" id="crn"></span></summary><ol class="crlist" id="crlist"></ol></details>
   </section>
@@ -834,11 +844,10 @@ function methods(){credits();
     const li=k=>{const full=(TR.materials&&TR.materials[k])||k,sh=mat(k),rest=full.slice(sh.length).replace(/^[.。\s]+/,"").trim();return `${esc(sh)} <b>${wt[k]}</b>${rest?` (${esc(rest)})`:""}`};
     const nd=W.filter(nods).length,nt=W.filter(w=>w.tr).length;
     $("trendm").hidden=false;
-    $("trendm").innerHTML=`<h3 class="mh">트렌드지수</h3>
-      <p>병이 얼마나 알려져 있는지를 0~100점으로 나타낸 <b>누적 인지도</b> 지표입니다. <b>티어·종합 점수·확신도 계산에는 넣지 않습니다.</b> 맛이나 품질 평가가 아니라, 얼마나 많이 팔리고 이야기되는지를 가늠하는 참고 값입니다. ${nt}병에 값이 있고 ${esc(TR.measured||"")}에 측정했습니다.</p>
+    $("trendtx").innerHTML=`<p>병이 얼마나 알려져 있는지를 0~100점으로 나타낸 <b>누적 인지도</b> 지표입니다. <b>티어·종합 점수·확신도 계산에는 넣지 않습니다.</b> 맛이나 품질 평가가 아니라, 얼마나 많이 팔리고 이야기되는지를 가늠하는 참고 값입니다. ${nt}병에 값이 있고 ${esc(TR.measured||"")}에 측정했습니다.</p>
       <p><b>재료와 비중</b> (합 ${ks.reduce((a,k)=>a+wt[k],0)}): ${ks.map(li).join(" · ")}.${dom.length?` 이 가운데 ${dom.map(k=>esc(mat(k))).join("·")}는 국내 점수, 나머지는 해외 점수로 따로 보입니다.`:""}</p>
       ${TR.formula_note?`<div class="formula">${esc(TR.formula_note)}</div>`:""}
-      <p><b>한계.</b> 위키백과 조회수는 병이 아니라 브랜드(증류소) 문서 단위라 같은 브랜드 병끼리는 해외 점수가 비슷하게 나옵니다. 데일리샷에서 찾지 못한 병(${nd}병)은 국내 점수가 0으로 들어가 해외에서 알려진 병도 지수가 낮게 나오므로 ‘국내 판매 자료 없음’으로 표시합니다. 같은 병의 용량·패키지·구형 상품은 합쳐서 셉니다.</p>`}}
+      <p class="lim"><b>한계.</b> 위키백과 조회수는 병이 아니라 브랜드(증류소) 문서 단위라 같은 브랜드 병끼리는 해외 점수가 비슷하게 나옵니다. 데일리샷에서 찾지 못한 병(${nd}병)은 국내 점수가 0으로 들어가 해외에서 알려진 병도 지수가 낮게 나오므로 ‘국내 판매 자료 없음’으로 표시합니다. 같은 병의 용량·패키지·구형 상품은 합쳐서 셉니다.</p>`}}
 $("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.type=b.dataset.k;chips();groups();render();syncHash()});
 $("q").addEventListener("input",e=>{state.q=e.target.value.trim();groups();render();syncHash()});
 $("multi").addEventListener("change",e=>{state.multi=e.target.checked;groups();render();syncHash()});

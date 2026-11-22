@@ -164,7 +164,41 @@ def render(ws, meta, bottles, embed, stats):
     data = json.dumps({"whiskies": ws, "meta": meta, "updated": updated, "stats": stats}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     with open(os.path.join(ROOT, "tools", "template.html"), encoding="utf-8") as f:
         t = f.read()
+    t = t.replace("__ART_METHOD__", method_fig("score", "tier")).replace("__ART_TREND__", method_fig("trend"))
     return t.replace("__DATA__", data).replace("__IMAGES__", json.dumps({"img": img, "src": src, "cr": cr}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
+
+SITE_ART = os.path.join("art", "site")   # 티어표 하단 '점수 산출 방식'·'트렌드지수' 옆 도해(이미지 담당 산출물). 없으면 그 칸을 비운다
+def method_svg(name):
+    p = os.path.join(ROOT, SITE_ART, f"{name}.svg")
+    if not os.path.exists(p): return ""
+    with open(p, encoding="utf-8") as f: s = f.read().strip()
+    return s[s.find("<svg"):] if "<svg" in s else ""
+
+def method_fig(*names):
+    s = "".join(method_svg(n) for n in names)
+    return f'<figure class="mart">{s}</figure>' if s else ""
+
+def check_method_art():
+    """도해 속 숫자가 실제 값과 맞는지 본다. trend.svg 의 재료 비중(큰 숫자 3개·'합 N')은 data/trends.json weights 와,
+    tier.svg 의 비율(5%·15%…)은 SHARE 와 비교한다. 어긋나면 메시지 목록을 돌려준다(그림은 tools/cocktail-art/method_art.py 로 다시 만든다)."""
+    out = []
+    tr = method_svg("trend"); tp = os.path.join(ROOT, "data", "trends.json")
+    if tr and os.path.exists(tp):
+        try:
+            with open(tp, encoding="utf-8") as f: wt = json.load(f).get("weights") or {}
+        except Exception: wt = {}
+        got = [int(x) for x in re.findall(r'font-size:16px">(\d+)</text>', tr)]
+        sm = re.search(r">합 (\d+)</text>", tr)
+        want = [int(v) for v in wt.values()]
+        if wt and (got != want or (sm and int(sm.group(1)) != sum(want))):
+            out.append(f"art/site/trend.svg 의 비중 {'/'.join(map(str, got))}(합 {sm.group(1) if sm else '?'})이 trends.json weights {'/'.join(map(str, want))}(합 {sum(want)})와 다름 — python3 -B tools/cocktail-art/method_art.py 로 다시 만들 것")
+    ti = method_svg("tier")
+    if ti:
+        got = [int(x) for x in re.findall(r'>(\d+)%</text>', ti)]
+        want = [round(s * 100) for _, s in SHARE]
+        if got != want:
+            out.append(f"art/site/tier.svg 의 티어 비율 {'·'.join(map(str, got))}%가 build.py SHARE {'·'.join(map(str, want))}%와 다름 — 그림을 다시 만들 것")
+    return out
 
 DESC = "한국·영어권 위스키 티어표와 순위·평점 리스트를 100점 척도로 합산한 위스키 티어표. 종류·숙성년수·피트·셰리·CS·가격대별로 골라 볼 수 있습니다."
 CK_DESC = "버번·라이·스카치 등 위스키로 만드는 칵테일 제조법. 투명한 잔에 재료를 넣는 순서대로 양에 비례해 층층이 쌓은 그림으로 따라 하기 쉽게 보여 줍니다."
@@ -834,6 +868,10 @@ def main():
     gl_tpl = os.path.exists(os.path.join(ROOT, "tools", "glossary_template.html"))
     ls, lerrs = load_learn({g["id"] for g in gs} if gs else None); errs = errs + lerrs
     ln_tpl = os.path.exists(os.path.join(ROOT, "tools", "learn_template.html"))
+    aw = check_method_art()
+    if "--check" in a: errs = errs + aw   # 점검에서는 도해 숫자 어긋남도 오류로 친다. 일반 빌드는 경고만 하고 계속한다
+    else:
+        for e in aw: print("경고:", e)
     for e in errs: print("오류:", e)
     if errs: sys.exit(1)
     stats["trend"], tmsg = add_trends(ws)
