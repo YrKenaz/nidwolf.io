@@ -636,7 +636,7 @@ def cocktail_articles(cs, ws):
                    f'<details class="ingall" open><summary><h4>재료 <small>넣는 순서</small></h4></summary><table class="ing"><tbody>{rows}</tbody></table></details>'
                    f'<h4 class="sth">만드는 법</h4><ol class="steps">{"".join(f"<li data-s=\"{k + 1}\"><p class=\"stx\">{esc_html(t)}</p>{adds(k)}</li>" for k, t in enumerate(c["steps"]))}</ol>'
                    + f'<div class="rtail" data-s="{last}">'
-                   + (f'<h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p>' if c["garnish"] else "")
+                   + (f'<div class="rgarn"><h4>가니시</h4><p>{esc_html(", ".join(c["garnish"]))}</p></div>' if c["garnish"] else "")   # 연출 중 garnish_step 에서 또렷해진다
                    + (f'<p class="tip"><b>팁</b> {esc_html(c["tip"])}</p>' if c.get("tip") else "")
                    + bottle_block(c, ws)
                    + (f'<h4>출처</h4><ul class="srcl">{src}</ul>' if src else "")

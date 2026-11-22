@@ -121,17 +121,17 @@ a{color:var(--accent)}
 .adds{display:none}
 .ingall>summary{list-style:none;cursor:default}.ingall>summary::-webkit-details-marker{display:none}
 .ingall>summary h4{display:inline}
-/* 스크롤 연출(21차, 장면 고정): 연출 중에는 그림과 "만드는 법" 목록을 무대(.cpstage, sticky)로 옮겨 화면에 고정하고,
-   무대를 감싼 트랙(.cptrack)의 스크롤 진행도로 단계를 바꾼다. 글은 움직이지 않고 투명도만 바뀐다(레이아웃 이동 없음).
-   아직 안 온 단계는 거의 보이지 않게(자리는 확보), 지난 단계는 또렷하게, 지금 단계는 굵게 + 강조색 세로선. 마지막 단계 뒤에는 고정이 풀리고 꼬리가 이어진다 */
+/* 스크롤 연출(21·22차): 연출 중에는 [무대(그림 + 만드는 법) + 꼬리(재료 표·가니시·팁·병·출처)]를 한 묶음(.cpblock, sticky)으로 이름 띠 바로 아래에 고정한다.
+   트랙(.cptrack) 높이 = 묶음 높이 + 단계 수 × 한 단계라서, 단계를 다 넘기면 고정이 풀리며 묶음이 그대로 올라가 꼬리가 이어진다(트랙 끝 빈 공간 없음).
+   무대는 내용 높이(위아래 18px)이고, 무대 아래는 꼬리 내용이 채운다. 글은 움직이지 않고 투명도만 바뀐다 */
 .cptrack{position:relative}
-.cpstage{position:sticky;top:var(--stagetop,60px);height:var(--stageh,70vh);display:flex;flex-direction:column;justify-content:center;padding:8px 0}
-.cpstin{width:100%;max-width:1060px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px 44px;align-items:center;max-height:100%;min-height:0}
+.cpblock{position:sticky;top:var(--bandh,60px)}
+.cpstage{padding:6px 0 18px}
+.cpstin{width:100%;max-width:1060px;margin:0 auto;display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px 36px;align-items:center}
 .cpfig .big{position:static;margin:0}
-.cpfig .big>svg{max-height:calc(var(--stageh,70vh)*.66);width:auto;max-width:100%;margin:0 auto}
-@media (min-width:1600px){.cpstin{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}}   /* 큰 화면: 그림 칸을 넓혀 그림을 키운다(페이지 폭 안에서) */
-.cpfig .big figcaption{font-size:12px;text-align:center;margin-top:4px}
-.cplist{position:relative;overflow:hidden;max-height:calc(var(--stageh,70vh) - 24px);min-height:0}
+.cpfig .big>svg{height:var(--figh,480px);width:auto;max-width:100%;margin:0 auto}
+.cpfig .big figcaption{font-size:12px;text-align:center;margin-top:4px;max-width:44ch;margin-inline:auto}
+.cplist{position:relative;overflow:hidden;max-height:var(--listmax,none);min-height:0}
 .cplin{transition:transform .3s ease}
 .cplist .sth{margin:0 0 8px}
 .cpingl{border:0;background:none;color:var(--accent);font:inherit;font-size:13px;padding:6px 0 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
@@ -141,7 +141,13 @@ a{color:var(--accent)}
 .cpprog i.on{background:var(--accent)}
 .cpprog b{font-weight:500}
 .story .recipe{display:block}
-.story .rtext{max-width:1060px;margin:18px auto 0}
+.story .rtext{max-width:1060px;margin:0 auto}
+.story .rtext>*{transition:opacity .3s ease;opacity:.5}   /* 꼬리는 처음부터 보이되 약하게, 마지막 단계 뒤 또렷하게(가니시 글은 가니시 단계에서) */
+.story .rtext.done>*{opacity:1}
+.story .rtext>.rtail{opacity:1}
+.story .rtail>*{transition:opacity .3s ease;opacity:.5}
+.story .rtail>.rgarn.lit,.story .rtext.done .rtail>*{opacity:1}
+@media (min-width:1600px){.story .stx{font-size:17px}.story .adds{font-size:14.5px}.story .cplist .sth{font-size:16px}}   /* 넓은 화면: 목록 글자를 한 단계 키워 그림과 무게를 맞춘다 */
 .story .ingall{border:1px solid var(--line);border-radius:10px;padding:2px 12px;margin-bottom:6px}
 .story .ingall>summary{cursor:pointer;list-style:revert;padding:6px 0}
 .story .ingall>summary h4{margin:0}
@@ -169,7 +175,7 @@ a{color:var(--accent)}
 .big .cka-layer.off>*{transform:scaleY(0);transition-delay:0s!important}
 .cpanel.jump .big *{transition:none!important}   /* 빠르게 여러 단계를 건너뛰면 즉시 반영 */
 @media (prefers-reduced-motion:reduce){.cgrid>.cpanel,.story .steps>li,.cplin,.big .cka-step,.big .cka-layer>*,.cphelp{transition:none}.cphelp .arr{animation:none}}
-@media print{.cphelp{display:none!important}*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}.story .steps>li{opacity:1!important}}
+@media print{.cphelp{display:none!important}*{transition:none!important}.off{opacity:1!important;transform:none!important}.big .cka-layer.off>*{transform:none!important}.cptool{display:none}.story .steps>li,.story .rtext>*,.story .rtail>*{opacity:1!important}}
 @media (max-width:760px){
   .recipe{grid-template-columns:minmax(0,1fr);gap:14px}
   .big{max-width:420px}
@@ -177,12 +183,10 @@ a{color:var(--accent)}
   .cpanel .big{max-width:none;top:var(--bandh,52px);z-index:3;background:var(--surface);padding:4px 0 2px;border-bottom:1px solid var(--line)}
   .cpanel .big>svg{max-height:36vh;width:auto;max-width:100%;margin:0 auto}
   /* 좁은 화면의 무대: 그림(위) + 목록(아래)이 한 화면에. 목록이 넘치면 안쪽에서 지금 단계가 보이게 살짝 올린다 */
-  .cpstage{justify-content:flex-start;padding:4px 0}
-  .cpstin{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100%;gap:6px;align-items:stretch}
+  .cpstage{padding:2px 0 12px}
+  .cpstin{grid-template-columns:minmax(0,1fr);gap:6px;align-items:stretch}
   .cpfig .big{border-bottom:1px solid var(--line);padding:0 0 4px;background:none}
-  .cpfig .big>svg{max-height:calc(var(--stageh,70vh)*.3)}
   .cpfig .big figcaption{font-size:10.5px;line-height:1.35;margin:1px 0 0}   /* 셰이커 단계에서 잔이 차는 어색함을 덜도록 안내 문장은 연출 중에도 작게 */
-  .cplist{max-height:none}
   .cpanel .big figcaption{font-size:11px;margin:2px 0 0}
 }
 @media (max-width:560px){
@@ -278,7 +282,7 @@ function open(id){const a=$("c-"+id);if(!a||openId===id&&P)return;if(P)collapse(
   h3.focus({preventScroll:true});helpShow();
   requestAnimationFrame(()=>toTop(RM.matches?"auto":"smooth"))}
 function collapse(){if(!P)return;unwrap();const a=P.querySelector("article");
-  a.querySelectorAll(".off,.now,.past").forEach(x=>x.classList.remove("off","now","past"));a.querySelectorAll(".big [style]").forEach(x=>x.style.transitionDelay="");
+  a.querySelectorAll(".off,.now,.past,.done,.lit").forEach(x=>x.classList.remove("off","now","past","done","lit"));a.querySelectorAll(".big [style]").forEach(x=>x.style.transitionDelay="");
   const d=a.querySelector(".ingall");if(d)d.open=true;const lin=a.querySelector(".cplin");if(lin)lin.style.transform="";
   if(a._ph){a._ph.replaceWith(a);a._ph=null}
   const card=cardOf(openId);if(card)card.setAttribute("aria-expanded","false");P.remove();P=null;openId=null;stages=[];lastCur=null;helpHide()}
@@ -290,12 +294,13 @@ function helpShow(){if(help||!P||!P.classList.contains("story"))return;try{if(lo
   help.addEventListener("click",e=>{if(e.target.closest("button")){try{localStorage.setItem(HKEY,"off")}catch(err){}helpHide()}})}
 function helpHide(){if(!help)return;const h=help;help=null;h.classList.remove("show");setTimeout(()=>h.remove(),RM.matches?0:260)}
 /* 무대 만들기: 그림과 "만드는 법"을 무대로 옮긴다(제자리 표시를 남겨 두었다가 unwrap 으로 돌려놓음). 꼬리(재료 표·가니시·팁·병·출처)는 무대 뒤 문서 흐름 */
-var moved=[],per=0,mSteps=0,off0=0;
+var moved=[],per=0,mSteps=0,ro=null;
 function mv(el,to){if(!el)return;const ph=document.createComment("");el.before(ph);moved.push([el,ph]);to.append(el)}
-function unwrap(){if(!P)return;P.querySelectorAll(".big svg[data-vb]").forEach(v=>{v.setAttribute("viewBox",v.dataset.vb);delete v.dataset.vb});for(let k=moved.length-1;k>=0;k--)moved[k][1].replaceWith(moved[k][0]);moved=[];P.querySelectorAll(".cptrack").forEach(x=>x.remove())}
+function unwrap(){if(!P)return;if(ro){ro.disconnect();ro=null}document.body.style.paddingBottom="";P.querySelectorAll(".big svg[data-vb]").forEach(v=>{v.setAttribute("viewBox",v.dataset.vb);delete v.dataset.vb});for(let k=moved.length-1;k>=0;k--)moved[k][1].replaceWith(moved[k][0]);moved=[];P.querySelectorAll(".cptrack").forEach(x=>x.remove())}
 function wrap(a){const tr=document.createElement("div");tr.className="cptrack";
-  tr.innerHTML='<div class="cpstage"><div class="cpstin"><div class="cpfig"></div><div class="cplist"><div class="cplin"></div></div></div></div>';
+  tr.innerHTML='<div class="cpblock"><div class="cpstage"><div class="cpstin"><div class="cpfig"></div><div class="cplist"><div class="cplin"></div></div></div></div></div>';
   a.prepend(tr);mv(a.querySelector(".big"),tr.querySelector(".cpfig"));const lin=tr.querySelector(".cplin");mv(a.querySelector(".sth"),lin);mv(a.querySelector(".steps"),lin);
+  mv(a.querySelector(".rtext"),tr.querySelector(".cpblock"));   /* 꼬리도 같은 묶음에: 무대 바로 아래에 붙어 함께 고정되고, 고정이 풀리면 이어서 읽힌다 */
   lin.insertAdjacentHTML("beforeend",'<button type="button" class="cpingl">재료 넣는 순서 한눈에 보기 ↓</button>');
   /* 그림 파일은 가니시·김 자리로 위쪽 여백이 있어 잔이 작게 보인다. 무대에서는 보이는 범위를 실제 그림 범위(전부 켠 상태 기준)로 잘라 키운다 */
   const v=tr.querySelector(".big svg");if(v&&v.getBBox){try{const b=v.getBBox(),pd=6;if(b.width>0&&b.height>0){v.dataset.vb=v.getAttribute("viewBox");v.setAttribute("viewBox",`${(b.x-pd).toFixed(1)} ${(b.y-pd).toFixed(1)} ${(b.width+pd*2).toFixed(1)} ${(b.height+pd*2).toFixed(1)}`)}}catch(e){}}
@@ -307,14 +312,20 @@ function setup(){if(!P)return;unwrap();const a=P.querySelector("article"),on=sto
   a.querySelectorAll(".big .cka-layer").forEach(g=>g.style.setProperty("--y0",(g.dataset.y0||0)+"px"));
   const d=a.querySelector(".ingall");if(d)d.open=!on;   /* 연출 중에는 "재료 넣는 순서"를 접어 꼬리 쪽에 두고, 전체 보기에서는 펼친다 */
   stages=[...a.querySelectorAll(".steps>li[data-s]")];mSteps=stages.length;
-  if(on){const tr=wrap(a),vh=innerHeight,full=vh-bh-6,stageH=MOB.matches?full:Math.min(full,900);   /* 아주 높은 화면에서는 무대 높이를 줄여 화면 세로 가운데에 고정(그림과 글이 흩어지지 않게) */
-    const stTop=bh+Math.round((full-stageH)/2);P.style.setProperty("--stageh",stageH+"px");P.style.setProperty("--stagetop",stTop+"px");
-    off0=Math.max(0,stTop-bh-22);   /* 무대를 가운데에 고정하면 펼친 직후부터 이미 고정된다: 그만큼은 진행으로 치지 않고 트랙에 더한다 */
-    /* 한 단계 = 화면 높이의 약 30%(휠 2~3칸). 트랙 = 무대 + 단계 수 × 한 단계 + 반 단계(마지막 단계를 잠시 보여 주는 여유) */
-    per=Math.round(Math.max(150,Math.min(340,vh*.3)));tr.style.height=(stageH+per*(mSteps+.5)+off0)+"px"}
+  if(on){const tr=wrap(a),vh=innerHeight,avail=vh-bh;
+    /* 무대는 내용 높이: 그림 높이는 화면에 맞춰 정하고(휴대폰은 띠 아래의 30%), 무대가 띠 아래 화면에 다 들어오게 목록 높이를 제한한다 */
+    const figH=MOB.matches?Math.round(avail*.3):Math.round(Math.max(300,Math.min(520,avail-140)));
+    P.style.setProperty("--figh",figH+"px");P.style.setProperty("--listmax",(MOB.matches?Math.max(150,avail-figH-96):avail-60)+"px");
+    per=Math.round(Math.max(150,Math.min(340,vh*.3)));
+    const blk=tr.querySelector(".cpblock"),fit=()=>{if(!P||!tr.isConnected)return;tr.style.height=(blk.offsetHeight+per*(mSteps+.5))+"px";
+      /* 페이지 끝 가까운 카드는 문서가 짧아 고정이 풀릴 만큼 스크롤되지 않을 수 있다: 모자라는 만큼 페이지 맨 아래에 임시 여백 */
+      document.body.style.paddingBottom="";const need=tr.getBoundingClientRect().bottom+scrollY-(bh+blk.offsetHeight)+innerHeight-document.documentElement.scrollHeight;
+      if(need>0)document.body.style.paddingBottom=Math.ceil(need)+"px"};fit();
+    if(window.ResizeObserver){ro=new ResizeObserver(fit);ro.observe(blk)}   /* 재료 표를 펼치는 등으로 묶음 높이가 바뀌면 트랙도 맞춘다 */
+    if(tr.querySelector(".cpstage").offsetHeight>avail+2){unwrap();P.classList.remove("story");const d2=a.querySelector(".ingall");if(d2)d2.open=true}}   /* 무대가 화면에 안 들어가면 정적 표시 */
   lastCur=null;update()}
 function update(){raf=0;if(!P)return;const a=P.querySelector("article"),on=P.classList.contains("story");let cur=1e9;
-  if(on){const tr=P.querySelector(".cptrack"),st=parseFloat(P.style.getPropertyValue("--stagetop"))||P.querySelector(".cpband").offsetHeight,sc=st-tr.getBoundingClientRect().top-off0;   /* 트랙 안에서 무대가 고정된 뒤 지난 거리 */
+  if(on){const tr=P.querySelector(".cptrack"),st=P.querySelector(".cpband").offsetHeight,sc=st-tr.getBoundingClientRect().top;   /* 트랙 안에서 무대가 고정된 뒤 지난 거리 */
     cur=Math.max(0,Math.min(mSteps,Math.floor(sc/per)))}
   stages.forEach(el=>{const s=+el.dataset.s;el.classList.toggle("now",on&&s===cur);el.classList.toggle("past",on&&s<cur)});
   if(lastCur!==null&&Math.abs(cur-lastCur)>1&&cur<1e9){P.classList.add("jump");requestAnimationFrame(()=>requestAnimationFrame(()=>P&&P.classList.remove("jump")))}
@@ -332,6 +343,8 @@ function update(){raf=0;if(!P)return;const a=P.querySelector("article"),on=P.cla
   /* 가니시·김의 단계가 정해져 있지 않으면 마지막 단계에서 보인다 */
   a.querySelectorAll(".big .cka-garnish").forEach(g=>g.classList.toggle("off",!at(a.dataset.garn||endS)));
   a.querySelectorAll(".big .cka-steam").forEach(g=>g.classList.toggle("off",!at(a.dataset.steam||endS)));
+  const rt=a.querySelector(".rtext");if(rt)rt.classList.toggle("done",!on||cur>=mSteps);
+  const rg=a.querySelector(".rgarn");if(rg)rg.classList.toggle("lit",!on||at(a.dataset.garn||endS));
   a.dataset.cur=cur>=1e9?"all":cur;lastCur=cur;
   if(!on||cur>=2)helpHide()}
 addEventListener("scroll",()=>{if(P&&!raf)raf=requestAnimationFrame(update)},{passive:true});
