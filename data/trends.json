@@ -1,6 +1,7 @@
 {
  "version": 1,
  "measured": "2026-11-21",
+ "measured_wiki": "2026-11-11",
  "formula": "B",
  "formula_note": "트렌드지수 = 재료별 부분 점수의 가중 평균(0~100). 부분 점수 = 100×(ln(1+x)−ln(1+lo))÷(ln(1+hi)−ln(1+lo)). 티어 점수 계산에는 쓰지 않는다.",
  "weights": {"ds": 70, "wiki": 18, "src": 12},

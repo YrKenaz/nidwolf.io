@@ -16,24 +16,26 @@ NAS는 git·빌드를 하지 않고 저장소 키도 갖지 않는다. 커밋·�
 ```
 # 1) PC: 입력 만들기 (병을 더하거나 별칭·브랜드 표를 고친 뒤에는 다시 만든다)
 python3 -B tools/worker/make_input.py
-scp tools/worker/collect.py nas:nidwolf-worker/
-scp tools/worker/in/bottles_min.json nas:nidwolf-worker/in/
+server/deploy_worker.sh                                  # collect.py 배포 (Whiskey/server/, 서버관리 담당)
+server/push_input.sh tools/worker/in/bottles_min.json    # 입력 올리기
 
-# 2) NAS: 수집 (예약 작업). 파이썬은 /var/packages/py3k/target/usr/local/bin/python3
-python3 collect.py                      # 위키만(기본)
-python3 collect.py --stages ds,wiki     # 데일리샷 포함. 사용자 승인 뒤에만
-python3 collect.py --resume             # 끝나지 않은 가장 최근 실행을 이어서
-python3 collect.py --plan               # 요청 없이 계획만 출력
-python3 collect.py --limit 3            # 단계마다 3건만(설치 시험용)
+# 2) NAS: 수집 (작업 스케줄러 → run.sh → python3.8 -I collect.py --in in --out out)
+#    인자가 이것뿐이면 위키만 돈다. 손으로 시험할 때:
+python3.8 -I collect.py --in in --out out --plan       # 요청 없이 계획만 출력
+python3.8 -I collect.py --in in --out out --limit 3    # 단계마다 3건만(설치 시험용)
+#    데일리샷을 켤 때(사용자 승인 뒤에만): in/config.json 에 {"stages": ["wiki", "ds"]}
 
-# 3) PC: 결과 가져와 합치기
-scp -r nas:nidwolf-worker/out/2026-11-25 tools/worker/out/
+# 3) PC: 결과 가져와 합치기 (DONE 파일이 있는 날짜 폴더만 쓴다)
+server/pull_output.sh tools/worker                       # tools/worker/out/<날짜>/ 로 받음
 python3 -B tools/worker/merge.py tools/worker/out/2026-11-25 --dry-run   # 바뀔 내용 확인
 python3 -B tools/worker/merge.py tools/worker/out/2026-11-25             # 반영
 python3 -B tools/build.py --check
 ```
 
-소요 시간(587병, 위키 문서 169개 기준): 위키 약 17분(6초 간격), 데일리샷 약 26분(2초 간격).
+소요 시간(587병 기준): 위키는 병이 아니라 문서 단위로 한 번씩만 받는다(169개). 문서당 간격 6초 + 응답 약 1초로 약 20분.
+데일리샷은 병당 검색 1~3회, 간격 2초 + 응답 1~2초로 40~50분으로 예상한다(실측 전).
+run.sh의 실행 상한이 40분이라, 수집기는 35분(`max_minutes`)이 지나면 항목 사이에서 스스로 멈추고(상태 partial, 종료 코드 0)
+다음 실행이 같은 날짜 폴더를 이어서 채운다. 데일리샷을 켜면 한 번에 끝나지 않으므로 상한을 늘리거나 두 번 돌려야 한다.
 시범 실행(PC, 위키 문서 7개)의 최대 메모리는 약 23MB였다.
 
 ## 수집기가 지키는 것
@@ -41,7 +43,9 @@ python3 -B tools/build.py --check
 - 요청 간격: 데일리샷 2초, 위키미디어 6초. 한 번에 한 요청.
 - 401·403·429 또는 예상과 다른 응답이면 그 자리에서 멈춘다(종료 코드 2). 다시 시도하지 않고, 뒤 단계도 돌리지 않는다.
 - 그 밖의 오류는 그 항목만 `failed.jsonl`에 적고 넘어간다. 연달아 5번이면 멈춘다(종료 코드 3).
-- 받은 것은 항목마다 한 줄로 바로 적는다. 중간에 끊겨도 `--resume`이나 같은 `--date`로 이어서 받는다(이미 받은 항목은 건너뜀).
+- 받은 것은 항목마다 한 줄로 바로 적는다. 받는 동안 파일 이름은 `*.jsonl.part`이고 그 단계가 끝나면 `*.jsonl`로 바뀐다. 켜 둔 단계가 모두 끝나면 마지막에 `DONE` 파일이 생긴다.
+- 이어 하기는 자동이다. 가장 최근 날짜 폴더에 `DONE`이 없고 8일 안이며 위키 조회 구간이 같으면 그 폴더를 이어서 채운다(이미 받은 항목은 건너뜀). `--new`를 주면 오늘 날짜로 새로 시작한다.
+- 단일 파일이고 표준 라이브러리만 쓴다(`python3.8 -I` 격리 모드에서 돈다).
 - User-Agent는 `trend_collect.py`와 같은 값이다. 위키미디어용에만 사이트 주소가 들어가고, 개인 정보는 없다.
 - `ds` 단계는 기본으로 꺼져 있다. 데일리샷 약관 확인이 끝나기 전에는 NAS에서 켜지 않는다.
 
@@ -60,7 +64,13 @@ python3 -B tools/build.py --check
 - `wiki.jsonl`: `{"title","resolved","missing","views","window":[시작,끝],"at"}` (조회 기록이 없으면 `"no_data": true`)
 - `ds.jsonl`: `{"id","queries","rows":[{"pid","name","en","sub","reviews","rating","sales","price","vol","service"}],"truncated","at"}`
 - `failed.jsonl`: `{"stage","key","error","at"}`
-- `run.log`, `summary.json`(`status`: done | partial | blocked | stopped | running, 단계별 `total`·`already`·`ok`·`failed`)
+- `run.log`, `summary.json`(`status`: done | partial | blocked | stopped | running, 단계별 `total`·`already`·`ok`·`failed`), `DONE`(완료 표시)
+- 종료 코드: 0 정상(시간 한도로 멈춘 것 포함), 2 차단, 3 연속 오류, 1 입력 오류. run.sh는 0이 아닌 값을 모두 실패(1)로 적는다.
+
+### 설정 `in/config.json` (없어도 됨)
+```
+{"stages": ["wiki", "ds"], "max_minutes": 35}
+```
 
 ### `data/price_history.json`
 ```
@@ -83,7 +93,10 @@ python3 -B tools/build.py --check
 
 - 변경 기록은 **직전 병합 때의 상태**(`state/last.json`)와 지금을 비교해 만든다. 그 사이에 손으로 더한 병·평가도 다음 병합 때 new·tier로 잡힌다. 티어는 `build.py`의 `compute()` 결과를 쓴다.
 - 트렌드지수는 전 병을 다시 계산한다. 상한은 그대로 둔다(`--rescale ds,wiki,src`로 지정한 재료만 다시 잡음).
-- 끝까지 돌지 못한 단계의 자료는 쓰지 않는다(`--allow-partial`로 풀 수 있음).
+- 완료 표시(`DONE`)가 없는 폴더는 병합하지 않는다(종료 코드 1). 끝나지 않은 자료라도 쓰려면 `--allow-partial`.
+- 같은 날짜 폴더가 이미 완료돼 있으면 수집기는 아무것도 받지 않고 0으로 끝난다.
+- 위키를 갱신한 병합은 `trends.json` 머리의 `measured_wiki`(위키 조회수를 잰 날)를 그 날짜로 바꾼다. `measured`는 데일리샷을 다시 잰 병합에서만 바뀐다.
+- 미리 보기 요약에 "리뷰 수·평점이 새로 채워지는 병 N"이 따로 나온다.
 - 가격을 자동으로 반영하지 않고 "확인 필요"로 빼는 경우
   - 직전보다 40% 넘게 바뀜
   - 가격 상품이 검색 결과에서 사라짐, 또는 같은 병으로 보던 상품이 하나도 없음(이때는 리뷰 수도 기존 값 유지)

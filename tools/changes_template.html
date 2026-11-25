@@ -38,6 +38,16 @@ a{color:var(--accent)}
 .t-S{background:var(--t-s);color:var(--t-dark-ink)} .t-A{background:var(--t-a);color:var(--t-dark-ink)} .t-B{background:var(--t-b);color:var(--t-dark-ink)}
 .t-C{background:var(--t-c);color:var(--t-light-ink)} .t-D{background:var(--t-d);color:var(--t-light-ink)} .t-E{background:var(--t-e);color:var(--t-light-ink)} .t-N{background:var(--bar);color:var(--ink)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* 이번 주 많이 본 병(S7): 순위만, 횟수 숫자 없음 */
+.views{margin-top:26px;padding:14px 18px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.views h2{font-family:var(--display);font-size:19px;margin:0}
+.views h2 small{font-family:var(--body);font-size:12.5px;font-weight:500;color:var(--muted);margin-left:6px;white-space:nowrap;display:inline-block}
+.views ol{margin:8px 0 0;padding-left:1.6em;columns:2 240px;column-gap:28px}
+.views li{padding:3px 0;break-inside:avoid;font-variant-numeric:tabular-nums}
+.views li::marker{color:var(--muted);font-weight:700}
+.views a.nm{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;word-break:keep-all}
+.views a.nm:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.vnote{margin:8px 0 0;font-size:12.5px;color:var(--muted);word-break:keep-all}
 .empty{margin-top:28px;padding:18px;border:1px dashed var(--line);border-radius:10px;color:var(--muted)}
 .foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);word-break:keep-all}
 </style>
@@ -49,6 +59,7 @@ a{color:var(--accent)}
     <p class="lede">티어표를 갱신할 때마다 측정일별로 새로 들어온 병, 티어가 바뀐 병, 데일리샷 가격과 트렌드지수가 바뀐 병을 모읍니다. 최근 12주치(지금 __WEEKS__회)를 보여 줍니다. 병 이름을 누르면 티어표의 병 상세가 열립니다.</p>
     <p class="why">__TIERLINK__는 점수 상위부터 백분위로 나누기 때문에 병이 추가되면 점수가 그대로여도 경계에 걸린 병이 오르내릴 수 있습니다.</p>
   </header>
+  __VIEWS__
   __DAYS__
   <p class="foot">가격은 데일리샷 판매가 기준이며 측정일의 가격이라 지금 가격과 다를 수 있습니다. 트렌드지수는 병이 얼마나 알려졌는지를 나타내는 참고 값이며 티어 계산에 넣지 않습니다.</p>
 </div>

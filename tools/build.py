@@ -324,6 +324,51 @@ def chg_latest(cs):
     d = max(c["date"] for c in cs)
     return {"d": d, "n": sum(1 for c in cs if c["date"] == d)}
 
+# ── 많이 본 병(S7). 집계는 Cloudflare Pages Functions(functions/api/v.js·top.js)+D1, 빌드는 tools/fetch_views.py 가 받은 data/views.json 만 읽는다.
+# 티어·종합 점수·트렌드지수 계산에는 넣지 않는다. 횟수는 화면에 싣지 않고 순위만 보인다
+VW_MIN, VW_TOP, VW_SHOW_MIN = 5, 10, 5   # 이 횟수 미만인 병은 제외 / 상위 몇 개 / 순위에 든 병이 이보다 적으면 구역 없음
+IDS_JS = os.path.join("functions", "api", "_ids.js")
+
+def load_views():
+    """data/views.json: {"week": "YYYY-MM-DD" 또는 null, "to": 선택, "top": [[병 id, 횟수], …]}. 없으면 (None, [])"""
+    p = os.path.join(ROOT, "data", "views.json")
+    if not os.path.exists(p): return None, []
+    try:
+        with open(p, encoding="utf-8") as f: v = json.load(f)
+    except Exception as e: return None, [f"views.json 읽기 실패({e.__class__.__name__})"]
+    errs = []
+    if not isinstance(v, dict) or not isinstance(v.get("top"), list): return None, ["views.json: {\"week\", \"top\": [[id, 횟수], …]} 형식이 아님"]
+    if v.get("week") is not None and not _date_ok(v.get("week")): errs.append(f"views.json: week 가 YYYY-MM-DD 나 null 이 아님({v.get('week')!r})")
+    if v.get("to") is not None and not _date_ok(v.get("to")): errs.append(f"views.json: to 가 YYYY-MM-DD 가 아님({v.get('to')!r})")
+    for x in v["top"]:
+        if not (isinstance(x, list) and len(x) == 2 and isinstance(x[0], str) and isinstance(x[1], int) and not isinstance(x[1], bool) and x[1] >= 0):
+            errs.append(f"views.json: top 의 항목 {x!r} 이 [병 id, 0 이상 정수]가 아님"); break
+    return v, errs
+
+def views_block(v, ws):
+    """changes.html 맨 위 "이번 주 많이 본 병": 횟수 VW_MIN 이상·지금 목록에 있는 병만, 순위만(숫자 없음). VW_SHOW_MIN 개 미만이면 빈 문자열"""
+    if not v or not v.get("week"): return ""
+    by = {w["id"]: w for w in ws}
+    xs = [by[i] for i, n in v["top"] if n >= VW_MIN and i in by][:VW_TOP]
+    if len(xs) < VW_SHOW_MIN: return ""
+    li = "".join(f'<li><a class="nm" href="./#b={esc_attr(w["id"])}">{esc_attr(w["ko"])}</a></li>' for w in xs)
+    rng = f'{v["week"]} ~ {v["to"]}' if v.get("to") else f'{v["week"]}부터 7일'
+    return (f'<section class="views" aria-labelledby="vh"><h2 id="vh">이번 주 많이 본 병 <small>{rng}</small></h2><ol>{li}</ol>'
+            '<p class="vnote">티어표에서 병 상세를 연 횟수의 순위입니다. 평가가 아니며 티어·종합 점수·트렌드지수 계산에 넣지 않습니다.</p></section>')
+
+def write_ids_js(bottles):
+    """functions/api/v.js 가 대조할 유효 병 id 목록(옛 병·미평가 병 포함). functions/api 폴더가 있을 때만 쓴다"""
+    d = os.path.join(ROOT, "functions", "api")
+    if not os.path.isdir(d): return None
+    ids = sorted(b["id"] for b in bottles)
+    s = ("// build.py 가 data/bottles.json 으로 만드는 파일 — 손으로 고치지 않는다. functions/api/v.js 가 병 id 를 대조한다\n"
+         f"export const IDS = new Set({json.dumps(ids, separators=(',', ':'))});\n")
+    p = os.path.join(ROOT, IDS_JS)
+    old = open(p, encoding="utf-8").read() if os.path.exists(p) else None
+    if old != s:
+        with open(p, "w", encoding="utf-8") as f: f.write(s)
+    return len(ids)
+
 CHG_DESC = "위스키 종합 티어표에서 측정일마다 새로 들어온 병, 티어가 바뀐 병, 데일리샷 가격과 트렌드지수가 바뀐 병을 모아 보여 줍니다."
 CH_HEAD = head("위스키 티어표 — 최근 바뀐 것", CHG_DESC, "https://nidwolf.com/changes")
 CHG_TITLE = {"new": "새로 들어온 병", "tier": "티어가 바뀐 병", "price": "가격이 바뀐 병", "trend": "트렌드지수가 바뀐 병", "removed": "목록에서 빠진 병"}
@@ -331,7 +376,7 @@ CHG_TITLE = {"new": "새로 들어온 병", "tier": "티어가 바뀐 병", "pri
 def _fmt_num(v):
     return f"{v:,.1f}".rstrip("0").rstrip(".") if isinstance(v, float) else f"{v:,}"
 
-def render_changes(cs, ws, gl):
+def render_changes(cs, ws, gl, views=None):
     """changes.html: 측정일(최근 먼저)마다 종류별 목록. 병 이름은 티어표 상세 ./#b=<id> 로 잇는다(빠진 병은 링크 없음)"""
     by = {w["id"]: w for w in ws}
     def name(c):
@@ -374,7 +419,7 @@ def render_changes(cs, ws, gl):
     tl = '<a href="glossary.html#g-tier">티어</a>' if gl else "티어"
     with open(os.path.join(ROOT, "tools", "changes_template.html"), encoding="utf-8") as f: t = f.read()
     return (t.replace("__TOKENS__", tokens_css()).replace("__DAYS__", body).replace("__TIERLINK__", tl)
-             .replace("__WEEKS__", str(len(days))))
+             .replace("__WEEKS__", str(len(days))).replace("__VIEWS__", views_block(views, ws)))
 
 # 트렌드지수 원자료: 재료 key → trends.json raw 의 대표 값. trends.json 에 "raw_keys" 가 있으면 그것을 쓴다
 RAW_KEYS = {"ds": "ds_reviews", "wiki": "wiki_en", "src": "src_en"}
@@ -1004,6 +1049,7 @@ def main():
     ph, perrs = load_price_history(bids); errs = errs + perrs
     chs, cherrs = load_changes(bids); errs = errs + cherrs
     ch_tpl = os.path.exists(os.path.join(ROOT, "tools", "changes_template.html"))
+    vw, vwerrs = load_views(); errs = errs + vwerrs
     aw = check_method_art()
     if "--check" in a: errs = errs + aw   # 점검에서는 도해 숫자 어긋남도 오류로 친다. 일반 빌드는 경고만 하고 계속한다
     else:
@@ -1037,6 +1083,8 @@ def main():
     else:
         cc = collections.Counter(c["type"] for c in chs)
         print(f"바뀐 것 {len(chs)}건 · 측정일 {len({c['date'] for c in chs})}개 · " + " ".join(f"{CHG_TITLE[k]} {cc[k]}" for k in CHG_TYPES) + ("" if ch_tpl else " · tools/changes_template.html 없음 — changes.html 을 만들지 않음"))
+    if vw is None: print("많이 본 병: data/views.json 없음 — 순위 구역 없음")
+    else: print(f"많이 본 병 {vw.get('week')} · 상위 {len(vw['top'])}병 · {VW_MIN}회 이상 {sum(1 for x in vw['top'] if x[1] >= VW_MIN)}병" + ("" if chs is not None and ch_tpl else " · changes.html 을 만들지 않아 표시 안 함"))
     if "--check" in a: return
     ck = cs is not None and ck_tpl   # 칵테일 페이지를 만들 때만 티어표에 사이트 메뉴와 칵테일 연결을 둔다
     gl = gs is not None and gl_tpl   # 용어 사전을 만들 때만 티어표에 ? 도움말을 둔다(자세히 → 링크가 죽지 않게)
@@ -1061,7 +1109,9 @@ def main():
             f.write(full(site_nav(render_learn(ls, gs, gl), "learn", built), LN_HEAD))
     if chp:
         with open(os.path.join(ROOT, "changes.html"), "w", encoding="utf-8") as f:
-            f.write(full(site_nav(render_changes(chs, ws, gl), "changes", built), CH_HEAD))
+            f.write(full(site_nav(render_changes(chs, ws, gl, vw), "changes", built), CH_HEAD))
+    ni = write_ids_js(bottles)
+    if ni: print(f"{IDS_JS} 갱신({ni}병)")
     today = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:   # 배포 주소는 PAGES 의 짧은 주소
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

@@ -143,7 +143,9 @@ def main():
     usable = {s for s, v in stages.items() if v.get("status") == "done" or "--allow-partial" in args}
     skipped = sorted(set(stages) - usable)
     if not os.path.exists(os.path.join(raw_dir, "DONE")) and "--allow-partial" not in args:
-        print("주의: 이 폴더에는 완료 표시(DONE)가 없습니다. 끝난 단계의 자료만 씁니다.")
+        print("이 폴더에는 완료 표시(DONE)가 없어 병합하지 않습니다. 수집이 끝나지 않았거나 덜 받은 폴더입니다.")
+        print("끝나지 않은 자료라도 쓰려면 --allow-partial 을 붙이세요.")
+        return 1
 
     bottles = wlib.load(os.path.join(DATA, "bottles.json"))
     old_bottles_text = wlib.bottles_text(bottles)
@@ -184,6 +186,8 @@ def main():
                         field_changes.append((b["id"], k, b.get(k), v))
                     b[k] = v
         new_bottles_text = wlib.bottles_text(bottles)
+        filled = sorted({f[0] for f in field_changes if f[1] == "ds_reviews" and f[2] is None and f[3] is not None})
+        emptied = sorted({f[0] for f in field_changes if f[1] == "ds_reviews" and f[2] is not None and f[3] is None})
 
         # 트렌드지수: 전 병 다시 계산. 상한은 기존 값을 쓴다(--rescale로 지정한 재료만 다시 잡는다)
         tmp_trends = os.path.join(tmp, "trends.json")
@@ -191,7 +195,8 @@ def main():
         real_work, tc.WORK = tc.WORK, tmp
         try:
             ok = tc.stage_score(bottles, {"refresh": False, "only": None, "keep_scales": True, "freeze": False, "rescale": rescale,
-                                          "recompute": None, "out_path": tmp_trends, "no_reports": dry})
+                                          "recompute": None, "out_path": tmp_trends, "no_reports": dry,
+                                          "measured_wiki": date if "wiki" in usable else None})
         finally:
             if dry:
                 tc.WORK = real_work
@@ -239,6 +244,9 @@ def main():
         print("위키: 받은 문서 %d, 값이 바뀐 문서 %d" % (wiki_n, wiki_changed))
         print("데일리샷: 받은 병 %d, bottles.json에서 바뀌는 값 %d건(가격 %d, 리뷰 수 %d, 평점 %d, 상품명 %d)" % (
             ds_n, len(field_changes), *(sum(1 for f in field_changes if f[1] == k) for k in ("price", "ds_reviews", "ds_rating", "price_product"))))
+        print("   리뷰 수·평점이 새로 채워지는 병 %d%s / 5건 미만이 되어 비워지는 병 %d%s" % (
+            len(filled), (" (%s%s)" % (", ".join(filled[:10]), " …" if len(filled) > 10 else "")) if filled else "",
+            len(emptied), (" (%s)" % ", ".join(emptied[:10])) if emptied else ""))
         print("트렌드지수: 지수가 바뀌는 병 %d, 원자료가 바뀌는 병 %d, 상한 %s" % (len(trend_moves), raw_moves, json.dumps(new_trends["scales"])))
         print("   원자료 항목별 바뀌는 병 수: %s / 점검 표시가 바뀌는 병 %d%s" % (
             ", ".join("%s %d" % (k, len(v)) for k, v in sorted(raw_by_key.items())) or "없음", len(flag_moves),
@@ -256,7 +264,7 @@ def main():
             print("   [%s] %s: %s%s" % (c["kind"], c["key"], c["why"], (" (%s → %s)" % (c.get("old"), c.get("new"))) if c["kind"] == "price" else ""))
         report = {"date": date, "dry_run": dry, "stages_used": sorted(usable), "stages_skipped": skipped,
                   "wiki": {"received": wiki_n, "changed": wiki_changed}, "ds": {"received": ds_n},
-                  "bottle_field_changes": field_changes, "trend_moves": trend_moves, "trend_raw_changes": raw_by_key, "trend_flag_changes": flag_moves, "price_points": points,
+                  "bottle_field_changes": field_changes, "ds_newly_filled": filled, "ds_emptied": emptied, "trend_moves": trend_moves, "trend_raw_changes": raw_by_key, "trend_flag_changes": flag_moves, "price_points": points,
                   "new_records": new_records, "needs_check": checks}
         tc.save(os.path.join(raw_dir, "merge_preview.json" if dry else "merge_result.json"), report, indent=1)
         if dry:

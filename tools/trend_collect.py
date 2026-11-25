@@ -503,6 +503,8 @@ def stage_score(bottles, opts):
     doc_head = {
         "version": 1,
         "measured": time.strftime("%Y-%m-%d"),
+        # 위키 조회수를 마지막으로 다시 잰 날. 병합 도구가 넘겨주면 그 날짜, 아니면 기존 값을 잇는다.
+        "measured_wiki": opts.get("measured_wiki") or load(out_path, {}).get("measured_wiki"),
         "formula": formula,
         "formula_note": "트렌드지수 = 재료별 부분 점수의 가중 평균(0~100). 부분 점수 = 100×(ln(1+x)−ln(1+lo))÷(ln(1+hi)−ln(1+lo)). 티어 점수 계산에는 쓰지 않는다.",
         "weights": w,

@@ -428,6 +428,14 @@ def main():
                                                  len([b for b in inp["bottles"] if b.get("queries")]) * PAUSE_DS * 1.3 // 60 + 1))
         return 0
 
+    done_path = os.path.join(out_root, date, "DONE")
+    if os.path.exists(done_path):       # 같은 날짜가 이미 끝나 있으면 다시 받지 않는다
+        with open(done_path, encoding="utf-8") as f:
+            had = set(f.read().split()[-1].split(",")) if os.path.getsize(done_path) else set()
+        if set(stages) <= had:
+            print("%s %s 폴더는 이미 완료(DONE)돼 있어 아무것도 받지 않음" % (now(), date))
+            return 0
+        os.remove(done_path)            # 단계를 더 켰으면 완료 표시를 내리고 남은 단계만 받는다
     run = Run(os.path.join(out_root, date))
     run.summary["status"] = "running"
     run.summary["input_made"] = inp.get("made")

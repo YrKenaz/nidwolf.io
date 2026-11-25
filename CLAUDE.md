@@ -156,6 +156,14 @@ tools/collect-2026-11/  최초 수집에 쓴 스크립트와 중간 산출물(�
 - **S4 `changes.html`(`/changes`, 메뉴 `바뀐 것`):** `render_changes()`가 측정일(최근 먼저)마다 새로 들어온 병(현재 티어·점수) → 티어가 바뀐 병(▲▼, from → to) → 가격(±원, ±%) → 트렌드지수(±점) → 빠진 병(링크 없음) 순서로 쓴다. 병 이름은 `./#b=<id>`로 연결한다. 머리말에 백분위 경계 설명 한 줄을 두고, 용어 사전을 만든 빌드면 `glossary.html#g-tier`로 연결한다. 기록이 0건이면 "아직 기록된 변동이 없습니다." 티어표 갱신 줄 옆 "최근 바뀐 것 N건 →"은 가장 최근 측정일의 건수다(`DATA.stats.chg`, 0건이면 없음, `--single`·`--fragment`에는 넣지 않음). 템플릿은 `tools/changes_template.html`(`__TOKENS__`·`__NAV__`·`__DAYS__`·`__TIERLINK__`·`__WEEKS__`).
 - 메뉴가 5개라 휴대폰(360~390px)에서는 두 줄로 접힌다(가로 스크롤 없음).
 
+## 많이 본 병 (S7, 25차, 2026-11-25)
+
+- **집계는 Cloudflare Pages Functions + D1.** `functions/api/v.js`(POST `/api/v`, 본문은 병 id 하나)와 `functions/api/top.js`(GET `/api/top`, 최근 7일 UTC 합계 상위 50, `Cache-Control: public, max-age=3600`)가 있고, `_routes.json`이 함수를 `/api/*`에만 돌려 정적 요청은 무료 한도에 들지 않는다. D1 표 `v(d, id, n)`은 첫 쓰기에서 "no such table"이 나면 한 번 만들고 다시 시도한다. `env.DB`(바인딩 이름 `DB`)가 없으면 `/api/v`는 204, `/api/top`은 `{"week":null,"top":[]}`. 설정 안내는 `H:\Dev\Tier\Whiskey\docs\server\03-많이-본-병-설계와-Cloudflare-설정.md`.
+- **`/api/v`가 받는 것:** POST만(그 밖 405). `Origin`이 같은 출처여야 하고, `Sec-Fetch-Site`가 있으면 `same-origin`이어야 한다(아니면 403). 본문 64바이트 이하(아니면 413). id 형식 `^[a-z0-9-]{1,60}$`이면서 `functions/api/_ids.js` 목록에 있어야 한다(아니면 400). User-Agent가 없거나 크롤러 패턴이면 세지 않고 204. 병당 하루 상한 200(`CAP`). IP·UA·쿠키·리퍼러는 저장하지도 로그로 남기지도 않는다. 함수 코드에 `console.*`를 쓰지 않는다. `/api/top`은 호출 20번에 한 번꼴로 120일 지난 행을 지운다(Cron 없음).
+- **`functions/api/_ids.js`는 `build.py`가 `bottles.json`으로 만든다(`write_ids_js`, 옛 병·미평가 병 포함).** 병을 더하거나 지운 빌드는 이 파일도 함께 커밋해야 새 병이 세어진다. `functions/api` 폴더가 없으면 만들지 않는다.
+- **프런트(`viewBeacon`):** 병 상세를 열 때(공유 주소로 바로 열린 상세 포함) `navigator.sendBeacon("/api/v", id)`. 조건은 https이면서 `nidwolf.com`·`*.nidwolf.com`일 때만, `doNotTrack==="1"`·`globalPrivacyControl===true`가 아닐 때만, 같은 탭·같은 병·같은 UTC 날짜에 한 번만(sessionStorage `nidwolf.v1.<날짜>.<id>`). 로컬·`--single`·`--fragment`에서는 보내지 않는다. 방법 구역 끝에 개인정보 안내(`#viewnote`).
+- **표시:** `tools/fetch_views.py`가 `/api/top`을 받아 `data/views.json`(`{"week","to","top":[[id,n],…]}`)으로 쓴다. 실패하거나 집계가 비면 기존 파일을 둔다. `build.py`는 이 파일이 있을 때만 `changes.html` 맨 위에 "이번 주 많이 본 병" 상위 10을 순위만(횟수 숫자 없음) 싣는다. 5회 미만인 병은 빼고, 남은 병이 5개 미만이면 구역을 내지 않는다(`VW_MIN`·`VW_TOP`·`VW_SHOW_MIN`). `--check`에서 형식을 검사한다. **이 횟수는 티어·종합 점수·트렌드지수 계산에 넣지 않는다.** 트렌드지수 재료로 쓸지는 사용자 결정 사항이다.
+
 ## 지켜야 할 것
 
 - **근거 없는 값은 넣지 않는다.** 점수·순위는 원문에서 확인한 값만 쓴다. "이 병은 보통 90점대" 같은 모델의 기억은 관측값이 아니다. 확인하지 못했으면 넣지 않는다.
