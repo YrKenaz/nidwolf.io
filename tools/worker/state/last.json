@@ -22,7 +22,7 @@
 "aberfeldy-16": {
 "tier": "D",
 "price": 109000,
-"trend": 56,
+"trend": 55,
 "ko": "애버펠디 16년"
 },
 "aberlour-12": {
@@ -148,7 +148,7 @@
 "arran-18": {
 "tier": "A",
 "price": 399000,
-"trend": 22,
+"trend": 21,
 "ko": "아란 18년"
 },
 "arran-amarone": {
@@ -190,7 +190,7 @@
 "auchentoshan-3w": {
 "tier": "D",
 "price": 53900,
-"trend": 59,
+"trend": 58,
 "ko": "오켄토션 쓰리우드"
 },
 "aultmore-12": {
@@ -226,7 +226,7 @@
 "ballantines-12": {
 "tier": "E",
 "price": 58000,
-"trend": 60,
+"trend": 59,
 "ko": "발렌타인 12년"
 },
 "ballantines-17": {
@@ -328,7 +328,7 @@
 "benromach-cs": {
 "tier": "B",
 "price": 330000,
-"trend": 20,
+"trend": 19,
 "ko": "벤로막 CS"
 },
 "benromach-organic": {
@@ -352,7 +352,7 @@
 "bigpeat": {
 "tier": "C",
 "price": 109900,
-"trend": 39,
+"trend": 38,
 "ko": "빅피트"
 },
 "bigpeat-12": {
@@ -442,7 +442,7 @@
 "bulleit": {
 "tier": "C",
 "price": 53000,
-"trend": 45,
+"trend": 44,
 "ko": "불렛 버번"
 },
 "bulleit-10": {
@@ -484,7 +484,7 @@
 "bushmills-10": {
 "tier": "D",
 "price": 86100,
-"trend": 73,
+"trend": 72,
 "ko": "부쉬밀 10년"
 },
 "bushmills-12": {
@@ -496,7 +496,7 @@
 "bushmills-16": {
 "tier": "B",
 "price": 159000,
-"trend": 46,
+"trend": 45,
 "ko": "부쉬밀 16년"
 },
 "bushmills-original": {
@@ -580,13 +580,13 @@
 "cb-spice-tree": {
 "tier": "C",
 "price": 94000,
-"trend": 19,
+"trend": 18,
 "ko": "컴파스박스 스파이스 트리"
 },
 "cc-12": {
 "tier": "E",
 "price": 45000,
-"trend": 56,
+"trend": 55,
 "ko": "캐나디언 클럽 12년"
 },
 "cc-premium": {
@@ -874,7 +874,7 @@
 "ew-black": {
 "tier": "D",
 "price": 27900,
-"trend": 80,
+"trend": 79,
 "ko": "에반 윌리엄스 블랙"
 },
 "ew-sib": {
@@ -922,13 +922,13 @@
 "fuji-grain": {
 "tier": "B",
 "price": 120000,
-"trend": 10,
+"trend": 9,
 "ko": "후지 싱글 그레인"
 },
 "gauldrons": {
 "tier": "E",
 "price": 139000,
-"trend": 18,
+"trend": 17,
 "ko": "골드론"
 },
 "george-dickel-12": {
@@ -1006,7 +1006,7 @@
 "glenelgin-12": {
 "tier": "D",
 "price": 78000,
-"trend": 21,
+"trend": 20,
 "ko": "글렌엘긴 12년"
 },
 "glenfarclas-10": {
@@ -1048,7 +1048,7 @@
 "glenfarclas-25": {
 "tier": "B",
 "price": 312597,
-"trend": 41,
+"trend": 40,
 "ko": "글렌파클라스 25년"
 },
 "glenfiddich-12": {
@@ -1096,7 +1096,7 @@
 "glengarioch-12": {
 "tier": "A",
 "price": 92000,
-"trend": 46,
+"trend": 45,
 "ko": "글렌기리 12년"
 },
 "glengarioch-fr": {
@@ -1120,7 +1120,7 @@
 "glengoyne-12": {
 "tier": "C",
 "price": 96000,
-"trend": 55,
+"trend": 54,
 "ko": "글렌고인 12년"
 },
 "glengoyne-15": {
@@ -1138,7 +1138,7 @@
 "glengoyne-21": {
 "tier": "A",
 "price": 600000,
-"trend": 35,
+"trend": 34,
 "ko": "글렌고인 21년"
 },
 "glengoyne-25": {
@@ -1258,7 +1258,7 @@
 "glenmorangie-tokyo": {
 "tier": "B",
 "price": 250000,
-"trend": 52,
+"trend": 51,
 "ko": "글렌모렌지 테일 오브 도쿄"
 },
 "glenmorangie-x": {
@@ -1432,7 +1432,7 @@
 "hp-15": {
 "tier": "B",
 "price": 142000,
-"trend": 31,
+"trend": 30,
 "ko": "하이랜드파크 15년"
 },
 "hp-18": {
@@ -1798,7 +1798,7 @@
 "laphroaig-25": {
 "tier": "A",
 "price": 1049000,
-"trend": 30,
+"trend": 29,
 "ko": "라프로익 25년"
 },
 "laphroaig-cairdeas": {
@@ -1828,7 +1828,7 @@
 "laphroaig-select": {
 "tier": "D",
 "price": 60000,
-"trend": 51,
+"trend": 50,
 "ko": "라프로익 셀렉트"
 },
 "laphroaig-triplewood": {
@@ -1948,13 +1948,13 @@
 "machrie-moor": {
 "tier": "D",
 "price": 143000,
-"trend": 43,
+"trend": 42,
 "ko": "마크리무어"
 },
 "makers": {
 "tier": "E",
 "price": 44900,
-"trend": 89,
+"trend": 88,
 "ko": "메이커스 마크"
 },
 "makers-46": {
@@ -2272,7 +2272,7 @@
 "redbreast-15": {
 "tier": "A",
 "price": 96796,
-"trend": 56,
+"trend": 55,
 "ko": "레드브레스트 15년"
 },
 "redbreast-21": {
@@ -2440,7 +2440,7 @@
 "strathmill-12": {
 "tier": "D",
 "price": 149000,
-"trend": 26,
+"trend": 25,
 "ko": "스트라스밀 12년"
 },
 "suntory-ao": {
@@ -2488,7 +2488,7 @@
 "talisker-storm": {
 "tier": "B",
 "price": 75000,
-"trend": 64,
+"trend": 63,
 "ko": "탈리스커 스톰"
 },
 "tamdhu-12": {
@@ -2554,13 +2554,13 @@
 "tomatin-14": {
 "tier": "C",
 "price": 156500,
-"trend": 26,
+"trend": 25,
 "ko": "토마틴 14년"
 },
 "tomatin-15": {
 "tier": "D",
 "price": 127000,
-"trend": 18,
+"trend": 17,
 "ko": "토마틴 15년"
 },
 "tomatin-cs": {
@@ -2626,7 +2626,7 @@
 "weller-12": {
 "tier": "A",
 "price": 290000,
-"trend": 42,
+"trend": 41,
 "ko": "웰러 12년"
 },
 "weller-sr": {
@@ -2764,7 +2764,7 @@
 "yoichi-10": {
 "tier": "A",
 "price": 420000,
-"trend": 20,
+"trend": 19,
 "ko": "닛카 요이치 10년"
 },
 "ardbeg-wee-beastie": {
@@ -2812,7 +2812,7 @@
 "balvenie-16": {
 "tier": "B",
 "price": 269000,
-"trend": 61,
+"trend": 60,
 "ko": "발베니 16년 프렌치 오크"
 },
 "aberlour-14": {
@@ -2824,7 +2824,7 @@
 "oldpulteney-18": {
 "tier": "B",
 "price": 245000,
-"trend": 31,
+"trend": 30,
 "ko": "올드 풀트니 18년"
 },
 "oban-littlebay": {
@@ -2896,7 +2896,7 @@
 "bladnoch-vinaya": {
 "tier": "B",
 "price": 88000,
-"trend": 62,
+"trend": 63,
 "ko": "블라드녹 비나야"
 },
 "bladnoch-14": {
@@ -2998,7 +2998,7 @@
 "yamazaki-25": {
 "tier": "B",
 "price": 11480000,
-"trend": 14,
+"trend": 13,
 "ko": "야마자키 25년"
 },
 "chichibu-first10": {
@@ -3130,7 +3130,7 @@
 "starward-twofold": {
 "tier": "D",
 "price": 59900,
-"trend": 30,
+"trend": 29,
 "ko": "스타워드 투폴드"
 },
 "highcoast-hav": {
@@ -3196,7 +3196,7 @@
 "kyro-rye": {
 "tier": "B",
 "price": null,
-"trend": 19,
+"trend": 18,
 "ko": "쿠로 몰트 라이"
 },
 "millstone-100": {
@@ -3268,7 +3268,7 @@
 "edradour-12cs": {
 "tier": "N",
 "price": null,
-"trend": 55,
+"trend": 54,
 "ko": "에드라두어 12년 CS"
 },
 "jd-sib-bs": {
@@ -3466,7 +3466,7 @@
 "hibiki-30": {
 "tier": "N",
 "price": 6200000,
-"trend": 12,
+"trend": 11,
 "ko": "히비키 30년"
 },
 "balvenie-15sb-sherry": {
