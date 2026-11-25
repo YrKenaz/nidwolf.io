@@ -222,7 +222,7 @@ CK_HEAD = head("위스키 칵테일 제조법", CK_DESC, "https://nidwolf.com/co
 # 사이트 페이지 목록(메뉴 순서). 새 페이지는 여기에만 더한다: (키, 정적 href, 메뉴 이름, 배포 주소)
 # 정적 href 는 로컬 서버에서도 열리는 파일 이름, 배포 주소는 호스팅(Cloudflare)이 .html 을 308 로 돌리는 짧은 주소
 PAGES = [("index", "./", "위스키 티어표", "/"), ("cocktails", "cocktails.html", "칵테일 제조법", "/cocktails"), ("glossary", "glossary.html", "용어 사전", "/glossary"),
-         ("learn", "learn.html", "그림으로 배우기", "/learn")]
+         ("learn", "learn.html", "그림으로 배우기", "/learn"), ("changes", "changes.html", "바뀐 것", "/changes")]
 
 def nav_html(cur, built):
     """두 페이지 이상 만들어질 때만 메뉴를 넣는다(없는 페이지로 가는 죽은 링크 방지). 주소 보정 스크립트는 늘 넣는다"""
@@ -243,6 +243,138 @@ def site_nav(t, cur, built):
 def full(t, hd=HEAD):
     t = t.replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "")
     return hd + t.replace('<div class="wrap">', '</head><body>\n<div class="wrap">', 1) + "\n</body></html>\n"
+
+# ── 가격 변동(S3)·바뀐 것(S4). 자료는 트렌드 담당(NAS 일꾼)이 만든다. 파일이 없으면 관련 화면을 만들지 않는다
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+PH_MAX = 104   # price_history.json 의 병당 최대 점 수(주 1회 × 2년)
+PH_KEEP = 12   # index.html 에는 병마다 최근 12점만 싣는다
+CHG_TYPES = ("new", "tier", "price", "trend", "removed")   # 화면에 보이는 순서
+TIER_ORDER = "SABCDEN"
+
+def _date_ok(s):
+    if not isinstance(s, str) or not DATE_RE.match(s): return False
+    try: datetime.date.fromisoformat(s); return True
+    except ValueError: return False
+
+def load_price_history(ids):
+    """data/price_history.json: {"<병 id>": [["YYYY-MM-DD", 원], …]} 측정일 오름차순. 없으면 (None, [])"""
+    p = os.path.join(ROOT, "data", "price_history.json")
+    if not os.path.exists(p): return None, []
+    try:
+        with open(p, encoding="utf-8") as f: ph = json.load(f)
+    except Exception as e: return None, [f"price_history.json 읽기 실패({e.__class__.__name__})"]
+    if not isinstance(ph, dict): return None, ["price_history.json: 최상위가 {병 id: [[날짜, 가격], …]} 객체가 아님"]
+    errs = []
+    for k, pts in ph.items():
+        if k not in ids: errs.append(f"price_history.json: bottles.json 에 없는 병 id {k}"); continue
+        if not isinstance(pts, list) or not pts: errs.append(f"price_history.json {k}: 점 목록이 비었거나 목록이 아님"); continue
+        if len(pts) > PH_MAX: errs.append(f"price_history.json {k}: 점 {len(pts)}개(최대 {PH_MAX})")
+        prev = ""
+        for x in pts:
+            if not (isinstance(x, list) and len(x) == 2 and _date_ok(x[0]) and isinstance(x[1], int) and not isinstance(x[1], bool) and x[1] > 0):
+                errs.append(f"price_history.json {k}: 형식이 [\"YYYY-MM-DD\", 양의 정수 원]이 아닌 점 {x!r}"); break
+            if x[0] <= prev: errs.append(f"price_history.json {k}: 측정일이 오름차순이 아님({prev} 다음 {x[0]})"); break
+            prev = x[0]
+    return ph, errs
+
+def ph_stats(ph, order):
+    """index.html 용 압축: 점이 2개 이상인 병만, 최근 PH_KEEP 점.
+    d = 공통 날짜 축(오름차순), u = 값 단위(모든 가격이 100원 단위면 100, 아니면 1).
+    v = 병 목록(DATA.whiskies) 순서와 같은 배열. 이력이 없는 병은 0, 있는 병은 [첫 점의 날짜 번호, 첫 값, 다음 날짜 값−직전 값, …]
+    — 날짜 축을 한 칸씩 따라가며 그 병의 측정이 없는 날은 null. 병 id 를 다시 싣지 않아 용량이 작다"""
+    keep = {k: v[-PH_KEEP:] for k, v in ph.items() if len(v) >= 2}
+    d = sorted({x[0] for v in keep.values() for x in v}); ix = {s: i for i, s in enumerate(d)}
+    u = 100 if all(x[1] % 100 == 0 for v in keep.values() for x in v) else 1
+    out = {}
+    for k, v in keep.items():
+        m = {ix[x[0]]: x[1] // u for x in v}; i0, i1 = ix[v[0][0]], ix[v[-1][0]]
+        row, prev = [i0, m[i0]], m[i0]
+        for i in range(i0 + 1, i1 + 1):
+            if i in m: row.append(m[i] - prev); prev = m[i]
+            else: row.append(None)
+        out[k] = row
+    return {"d": d, "u": u, "v": [out.get(k, 0) for k in order]} if out else None
+
+def load_changes(ids):
+    """data/changes.json: [{"date","type","id","from","to"}, …] 최근 12주치. 없으면 (None, [])"""
+    p = os.path.join(ROOT, "data", "changes.json")
+    if not os.path.exists(p): return None, []
+    try:
+        with open(p, encoding="utf-8") as f: cs = json.load(f)
+    except Exception as e: return None, [f"changes.json 읽기 실패({e.__class__.__name__})"]
+    if not isinstance(cs, list): return None, ["changes.json: 최상위가 목록이 아님"]
+    errs, num = [], (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool))
+    for i, c in enumerate(cs):
+        w = f"changes.json [{i}]"
+        if not isinstance(c, dict): errs.append(f"{w}: 객체가 아님"); continue
+        if not _date_ok(c.get("date")): errs.append(f"{w}: date 가 YYYY-MM-DD 가 아님({c.get('date')!r})")
+        ty = c.get("type")
+        if ty not in CHG_TYPES: errs.append(f"{w}: type {ty!r} 은 {'/'.join(CHG_TYPES)} 가운데 하나여야 함"); continue
+        if not isinstance(c.get("id"), str) or not c["id"]: errs.append(f"{w}: id 없음"); continue
+        if ty != "removed" and c["id"] not in ids: errs.append(f"{w}: bottles.json 에 없는 병 id {c['id']}(removed 만 허용)")
+        fr, to = c.get("from"), c.get("to")
+        if ty == "tier" and not (fr in list(TIER_ORDER) and to in list(TIER_ORDER) and fr != to): errs.append(f"{w}: tier 의 from/to 는 서로 다른 티어 글자(S~E, N)여야 함")
+        if ty == "price" and not (isinstance(fr, int) and isinstance(to, int) and fr > 0 and to > 0 and fr != to): errs.append(f"{w}: price 의 from/to 는 서로 다른 양의 정수(원)여야 함")
+        if ty == "trend" and not (num(fr) and num(to) and fr != to): errs.append(f"{w}: trend 의 from/to 는 서로 다른 숫자여야 함")
+    return cs, errs
+
+def chg_latest(cs):
+    """가장 최근 측정일과 그날의 건수(티어표 머리말 링크용)"""
+    if not cs: return None
+    d = max(c["date"] for c in cs)
+    return {"d": d, "n": sum(1 for c in cs if c["date"] == d)}
+
+CHG_DESC = "위스키 종합 티어표에서 측정일마다 새로 들어온 병, 티어가 바뀐 병, 데일리샷 가격과 트렌드지수가 바뀐 병을 모아 보여 줍니다."
+CH_HEAD = head("위스키 티어표 — 최근 바뀐 것", CHG_DESC, "https://nidwolf.com/changes")
+CHG_TITLE = {"new": "새로 들어온 병", "tier": "티어가 바뀐 병", "price": "가격이 바뀐 병", "trend": "트렌드지수가 바뀐 병", "removed": "목록에서 빠진 병"}
+
+def _fmt_num(v):
+    return f"{v:,.1f}".rstrip("0").rstrip(".") if isinstance(v, float) else f"{v:,}"
+
+def render_changes(cs, ws, gl):
+    """changes.html: 측정일(최근 먼저)마다 종류별 목록. 병 이름은 티어표 상세 ./#b=<id> 로 잇는다(빠진 병은 링크 없음)"""
+    by = {w["id"]: w for w in ws}
+    def name(c):
+        w = by.get(c["id"])
+        if not w: return f'<span class="nm">{esc_attr(c.get("ko") or c.get("name") or c["id"])}</span>'
+        return f'<a class="nm" href="./#b={esc_attr(w["id"])}">{esc_attr(w["ko"])}</a>'
+    def tag(w):
+        return f'<span class="tt t-{w["tier"]}">{"미평가" if w["tier"] == "N" else w["tier"]}</span>' if w else ""
+    def line(c):
+        w, ty, fr, to = by.get(c["id"]), c["type"], c.get("from"), c.get("to")
+        if ty == "new": d = f'{tag(w)}<span class="dv">{"" if not w or w["score"] is None else str(w["score"]) + "점"}</span>'
+        elif ty == "tier":
+            up = TIER_ORDER.index(to) < TIER_ORDER.index(fr)
+            d = f'<span class="dv {"up" if up else "dn"}"><span aria-hidden="true">{"▲" if up else "▼"}</span><span class="sr">{"오름" if up else "내림"}</span> {fr} → {to}</span>'
+        elif ty == "price":
+            df = to - fr; pc = df / fr * 100
+            d = f'<span class="dv">{fr:,}원 → {to:,}원 <b>{"+" if df > 0 else "−"}{abs(df):,}원</b> ({"+" if df > 0 else "−"}{abs(pc):.1f}%)</span>'
+        elif ty == "trend":
+            df = round(to - fr, 1)
+            d = f'<span class="dv">{_fmt_num(fr)} → {_fmt_num(to)} <b>{"+" if df > 0 else "−"}{_fmt_num(abs(df))}</b></span>'
+        else: d = ""
+        return f"<li>{name(c)}{d}</li>"
+    def key(c):
+        ty, fr, to = c["type"], c.get("from"), c.get("to")
+        if ty == "price": return -abs((to - fr) / fr)
+        if ty == "trend": return -abs(to - fr)
+        if ty == "tier": return (TIER_ORDER.index(to) - TIER_ORDER.index(fr), TIER_ORDER.index(to))
+        return 0
+    days = sorted({c["date"] for c in cs}, reverse=True)
+    secs = []
+    for d in days:
+        g = [c for c in cs if c["date"] == d]
+        parts = []
+        for ty in CHG_TYPES:
+            xs = sorted((c for c in g if c["type"] == ty), key=lambda c: (key(c), by[c["id"]]["ko"] if c["id"] in by else c["id"]))
+            if not xs: continue
+            parts.append(f'<section class="cg"><h3>{CHG_TITLE[ty]} <small>{len(xs)}</small></h3><ul>{"".join(line(c) for c in xs)}</ul></section>')
+        secs.append(f'<section class="day" id="d-{d}" aria-labelledby="h-{d}"><h2 id="h-{d}">{d} 측정 <small>{len(g)}건</small></h2>{"".join(parts)}</section>')
+    body = "".join(secs) or '<p class="empty">아직 기록된 변동이 없습니다.</p>'
+    tl = '<a href="glossary.html#g-tier">티어</a>' if gl else "티어"
+    with open(os.path.join(ROOT, "tools", "changes_template.html"), encoding="utf-8") as f: t = f.read()
+    return (t.replace("__TOKENS__", tokens_css()).replace("__DAYS__", body).replace("__TIERLINK__", tl)
+             .replace("__WEEKS__", str(len(days))))
 
 # 트렌드지수 원자료: 재료 key → trends.json raw 의 대표 값. trends.json 에 "raw_keys" 가 있으면 그것을 쓴다
 RAW_KEYS = {"ds": "ds_reviews", "wiki": "wiki_en", "src": "src_en"}
@@ -868,6 +1000,10 @@ def main():
     gl_tpl = os.path.exists(os.path.join(ROOT, "tools", "glossary_template.html"))
     ls, lerrs = load_learn({g["id"] for g in gs} if gs else None); errs = errs + lerrs
     ln_tpl = os.path.exists(os.path.join(ROOT, "tools", "learn_template.html"))
+    bids = {b["id"] for b in bottles}
+    ph, perrs = load_price_history(bids); errs = errs + perrs
+    chs, cherrs = load_changes(bids); errs = errs + cherrs
+    ch_tpl = os.path.exists(os.path.join(ROOT, "tools", "changes_template.html"))
     aw = check_method_art()
     if "--check" in a: errs = errs + aw   # 점검에서는 도해 숫자 어긋남도 오류로 친다. 일반 빌드는 경고만 하고 계속한다
     else:
@@ -893,11 +1029,22 @@ def main():
     else: print(f"용어 사전 {len(gs)}항목 · 필터 연결 {sum(1 for g in gs if g['filter'])}항목" + ("" if gl_tpl else " · tools/glossary_template.html 없음 — glossary.html 을 만들지 않음"))
     if ls is None: print("그림으로 배우기: data/learn.json 없음 — learn.html 을 만들지 않음")
     else: print(f"그림으로 배우기 {len(ls)}장 · 근거 {sum(len(l['evidence']) for l in ls)}건" + ("" if ln_tpl else " · tools/learn_template.html 없음 — learn.html 을 만들지 않음"))
+    if ph is None: print("가격 이력: data/price_history.json 없음 — 병 상세에 가격 변동을 넣지 않음")
+    else:
+        np = collections.Counter(min(len(v), 3) for v in ph.values())
+        print(f"가격 이력 {len(ph)}병 · 점 1개 {np[1]}병 · 2개 {np[2]}병 · 3개 이상 {np[3]}병 · 측정일 {len({x[0] for v in ph.values() for x in v})}개")
+    if chs is None: print("바뀐 것: data/changes.json 없음 — changes.html 을 만들지 않음")
+    else:
+        cc = collections.Counter(c["type"] for c in chs)
+        print(f"바뀐 것 {len(chs)}건 · 측정일 {len({c['date'] for c in chs})}개 · " + " ".join(f"{CHG_TITLE[k]} {cc[k]}" for k in CHG_TYPES) + ("" if ch_tpl else " · tools/changes_template.html 없음 — changes.html 을 만들지 않음"))
     if "--check" in a: return
     ck = cs is not None and ck_tpl   # 칵테일 페이지를 만들 때만 티어표에 사이트 메뉴와 칵테일 연결을 둔다
     gl = gs is not None and gl_tpl   # 용어 사전을 만들 때만 티어표에 ? 도움말을 둔다(자세히 → 링크가 죽지 않게)
     lp = ls is not None and ln_tpl
-    built = {"index"} | ({"cocktails"} if ck else set()) | ({"glossary"} if gl else set()) | ({"learn"} if lp else set())
+    chp = chs is not None and ch_tpl
+    built = {"index"} | ({"changes"} if chp else set()) | ({"cocktails"} if ck else set()) | ({"glossary"} if gl else set()) | ({"learn"} if lp else set())
+    if ph and (phs := ph_stats(ph, [w["id"] for w in ws])): stats["ph"] = phs   # 병 상세의 가격 변동(점 2개 이상인 병만, 최근 PH_KEEP 점)
+    if chp and chs: stats["chg"] = chg_latest(chs)   # 티어표 머리말의 "최근 바뀐 것 N건 →"(기록이 없으면 링크 없음)
     if gl: stats["gl"] = {g["id"]: [g["ko"], g["short"]] for g in gs}
     if ck:   # 티어표 병 상세의 "이 종류로 만드는 칵테일"용: 이름·베이스·작은 그림 파일 유무만(그림은 상세를 열 때 img 로 불러 index 용량을 늘리지 않는다)
         stats["ck"] = [{"id": c["id"], "ko": c["ko"], "b": c["base"], "a": os.path.exists(os.path.join(ROOT, ART_DIR, f"{c['id']}-s.svg"))} for c in cs]
@@ -912,11 +1059,15 @@ def main():
     if lp:
         with open(os.path.join(ROOT, "learn.html"), "w", encoding="utf-8") as f:
             f.write(full(site_nav(render_learn(ls, gs, gl), "learn", built), LN_HEAD))
+    if chp:
+        with open(os.path.join(ROOT, "changes.html"), "w", encoding="utf-8") as f:
+            f.write(full(site_nav(render_changes(chs, ws, gl), "changes", built), CH_HEAD))
     today = datetime.date.today().isoformat()
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:   # 배포 주소는 PAGES 의 짧은 주소
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                 + "".join(f'  <url><loc>https://nidwolf.com{u}</loc><lastmod>{today}</lastmod></url>\n' for k, h, n, u in PAGES if k in built) + '</urlset>\n')
-    print("index.html 생성" + (" · cocktails.html 생성" if ck else "") + (" · glossary.html 생성" if gl else "") + (" · learn.html 생성" if lp else ""))
+    print("index.html 생성" + (" · changes.html 생성" if chp else "") + (" · cocktails.html 생성" if ck else "") + (" · glossary.html 생성" if gl else "") + (" · learn.html 생성" if lp else ""))
+    stats.pop("chg", None)   # 오프라인 파일·조각에는 다른 페이지가 없으므로 "최근 바뀐 것" 링크를 넣지 않는다
     if "--single" in a:
         p = a[a.index("--single") + 1]
         with open(p, "w", encoding="utf-8") as f: f.write(full(site_nav(render(ws, meta, bottles, True, stats), "index", {"index"})))   # 오프라인 보관용: 다른 페이지 링크 없음

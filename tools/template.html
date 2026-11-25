@@ -89,6 +89,15 @@ button,input{font:inherit;color:inherit}
 .facts div{min-width:0}
 .facts dt{font-size:11.5px;color:var(--muted)}
 .facts dd{margin:0;font-size:14px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+/* 가격 변동(S3): 직전 측정 대비 변화와 최근 측정 선 그래프. 값은 DATA.stats.ph(build.py ph_stats) */
+.facts .phd{display:block;font-size:12.5px;color:var(--muted)}
+.facts .phd b{color:var(--ink);font-weight:700}
+.facts div.phw{grid-column:1/-1}
+.spark{display:block;width:100%;max-width:220px;min-width:160px;height:auto;margin-top:2px;color:var(--accent)}
+.spark text{font-size:10.5px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.spark .now{fill:var(--ink);font-weight:700}
+.phnote{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+.upd .chg{margin-left:10px;white-space:nowrap}
 
 /* 티어 행 */
 .tiers{display:flex;flex-direction:column;gap:10px;margin-top:18px}
@@ -550,7 +559,7 @@ function detail(id){
   $("dbody").innerHTML=`<div class="dhead${IMG.img[w.id]?" has-pic":""}">${IMG.img[w.id]?`<div class="pic">${pic(w)}</div>`:""}<div><h3 id="dname" tabindex="-1">${esc(w.ko)}</h3><div class="en">${esc(w.en)}</div>
     <div class="tags"><span class="tag tt" style="background:var(${bg});color:var(${fg})">${w.tier==="N"?"미평가":w.tier+" 티어"}</span><span class="tag">${FL[w.flag]}${gq(["tier"],"확신도")}</span>${w.rec?`<span class="tag">매체 추천 ${w.rec}회</span>`:""}${w.vin?`<span class="tag vin">옛 병${gq(["trend-vintage"],"옛 병")}</span>`:""}<span class="tag">${esc(TNAME[w.type])}</span>${w.region?`<span class="tag">${esc(w.region)}</span>`:""}${[...w.style.map(v=>"style:"+v),...w.cask.map(v=>"cask:"+v),...w.spec.map(v=>"spec:"+v)].map(k=>`<span class="tag">${esc(LBL[k])}</span>`).join("")}${w.beg?'<span class="tag">입문 추천</span>':""}</div>
     <div class="big"><b>${w.score==null?"–":w.score.toFixed(1)}</b><span>${w.score==null?(w.obs.length?"점수형 출처가 아직 없습니다":"평가 출처가 아직 없습니다"):`종합 점수 · 독립 출처 ${w.n}곳 · 오차 범위 ${w.lo.toFixed(1)}–${w.hi.toFixed(1)}`}</span></div>${w.vin?'<p class="vnote">지금은 구하기 어려운 옛 병입니다. 티어 경계와 종류별 평균 계산에는 넣지 않았습니다.</p>':""}</div></div>
-    <dl class="facts">${lnFact(w)}<div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv==null?"정보 없음":w.abv+"%"+(w.style.includes("cs")?" 안팎 (배치별 상이)":"")}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price)+(w.pml?` (${vol(w.pml)} 기준)`:""):"정보 없음"}</dd></div>${w.ds?`<div><dt>데일리샷 이용자 평점</dt><dd>★ ${w.ds[0].toFixed(1)} (${w.ds[1].toLocaleString("ko-KR")}명)</dd></div>`:""}${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
+    <dl class="facts">${lnFact(w)}<div><dt>숙성년수</dt><dd>${w.age?w.age+"년":"미표기(NAS)"}</dd></div><div><dt>도수</dt><dd>${w.abv==null?"정보 없음":w.abv+"%"+(w.style.includes("cs")?" 안팎 (배치별 상이)":"")}</dd></div><div><dt>데일리샷 가격</dt><dd>${w.price?won(w.price)+(w.pml?` (${vol(w.pml)} 기준)`:""):"정보 없음"}${phDelta(w)}</dd></div>${phSpark(w)}${w.ds?`<div><dt>데일리샷 이용자 평점</dt><dd>★ ${w.ds[0].toFixed(1)} (${w.ds[1].toLocaleString("ko-KR")}명)</dd></div>`:""}${w.pname?`<div><dt>가격 기준 상품</dt><dd>${esc(w.pname)}</dd></div>`:""}</dl>
     ${trendBox(w)}
     ${rows?`<div class="srcs">${rows}</div>`:`<p class="note srcs-empty">이 병을 다룬 평가 출처가 아직 없어 티어를 매기지 않았습니다. 출처가 모이면 점수가 생깁니다.</p>`}
     <p class="note">${rows?"막대는 출처별 환산 점수(76–98점 구간)입니다. 같은 매체의 리스트는 평균해 한 표로 셉니다.":""}</p>
@@ -832,8 +841,26 @@ function credits(){
   $("imgnote").textContent="병 사진은 위키미디어 공용의 자유 이용 사진만 쓰며, 사진마다 저작자와 라이선스를 표시합니다. 맞는 사진이 없는 병은 사진 없이 표시합니다.";
   $("credits").hidden=false;$("crn").textContent=ws.length+"장";
   $("crlist").innerHTML=ws.map(w=>`<li>${credit(w,true)}</li>`).join("")}
+/* 가격 변동(S3): 이력은 build.py 가 점 2개 이상인 병만 최근 12점으로 압축해 싣는다(형식은 build.py ph_stats 설명: d 날짜 축, u 단위, v 첫 날짜 번호·첫 값·직전 대비 차이, 측정 없는 날 null).
+   사실만 적는다(구매 권유 문구 금지). 점 2개면 숫자만, 3개 이상이면 선 그래프를 더한다 */
+const PH=DATA.stats.ph||null,PHI=new Map();if(PH)DATA.whiskies.forEach((w,i)=>{if(PH.v[i])PHI.set(w.id,PH.v[i])});
+function phPts(w){const v=PHI.get(w.id);if(!v)return null;let c=v[1];const o=[[PH.d[v[0]],c*PH.u]];
+  for(let j=2;j<v.length;j++)if(v[j]!=null){c+=v[j];o.push([PH.d[v[0]+j-1],c*PH.u])}return o}
+const phDay=(a,b)=>a.slice(0,4)===b.slice(0,4)?b.slice(5):b;
+function phDelta(w){const p=phPts(w);if(!p)return"";const [a,b]=p.slice(-2),df=b[1]-a[1],rng=`(${a[0]} → ${phDay(a[0],b[0])})`;
+  return `<span class="phd">${df?`지난번보다 <b>${df>0?"+":"−"}${won(Math.abs(df))}</b>`:"지난번과 변동 없음"} ${rng}</span>`}
+function phSpark(w){const p=phPts(w);if(!p)return"";const note=`<span class="phnote">데일리샷 판매가 기준, 측정일의 가격이며 지금 가격과 다를 수 있습니다.</span>`;
+  if(p.length<3)return `<div class="phw"><dt>가격 변동</dt><dd>${note}</dd></div>`;
+  const vs=p.map(x=>x[1]),lo=Math.min(...vs),hi=Math.max(...vs),cur=vs[vs.length-1],W=220,H=74,L=4,R=W-4,T=18,B=H-16,n=p.length;
+  const X=i=>L+(R-L)*i/(n-1),Y=v=>hi===lo?(T+B)/2:B-(B-T)*(v-lo)/(hi-lo),f=v=>Math.round(v/100)/100+"만";
+  const pts=p.map((x,i)=>`${X(i).toFixed(1)},${Y(x[1]).toFixed(1)}`).join(" "),il=vs.indexOf(lo),ih=vs.indexOf(hi);
+  const lab=(i,v,cl,up)=>{const x=X(i),an=i===0?"start":i===n-1?"end":"middle";return `<text x="${x.toFixed(1)}" y="${up?Y(v)-4:Y(v)+12}" text-anchor="${an}"${cl?` class="${cl}"`:""}>${f(v)}</text>`};
+  const al=`최근 ${n}회 측정(${p[0][0]} ~ ${p[n-1][0]}): 최저 ${won(lo)}, 최고 ${won(hi)}, 현재 ${won(cur)}`;
+  const tx=hi===lo?lab(n-1,cur,"now",true):(hi!==cur?lab(ih,hi,"",true):"")+(lo!==cur?lab(il,lo,"",false):"")+lab(n-1,cur,"now",cur>=(lo+hi)/2);
+  return `<div class="phw"><dt>가격 변동 <small>(최근 ${n}회 측정)</small></dt><dd><svg class="spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="${al}"><title>${al}</title><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${p.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(x[1]).toFixed(1)}" r="${i===n-1?3.2:1.8}" fill="currentColor"/>`).join("")}${tx}</svg><span class="phnote">최저 ${won(lo)} · 최고 ${won(hi)} · 현재 ${won(cur)}</span>${note}</dd></div>`}
 function methods(){credits();
   $("upd").textContent=`${W.length}병 · 출처 ${Object.keys(META).length}곳 · ${DATA.updated} 갱신`;
+  const CG=DATA.stats.chg;if(CG&&CG.n){const l=document.createElement("a");l.className="chg";l.href=(window.siteHref||(h=>h))("changes.html");l.textContent=`최근 바뀐 것 ${CG.n}건 →`;l.title=`${CG.d} 측정 기준`;$("upd").after(l)}
   const PN={SM:"싱글몰트",BL:"블렌디드",BB:"버번",RY:"라이·아메리칸",IR:"아이리시",JP:"재패니즈",WD:"월드"};
   $("prior").textContent=Object.entries(DATA.stats.prior).map(([k,v])=>`${PN[k]} ${v.toFixed(1)}`).join(", ");
   $("sdv").textContent=DATA.stats.sd.toFixed(1);

@@ -377,7 +377,8 @@ def stage_score(bottles, opts):
     brands = load(os.path.join(ROOT, "tools", "trend_brands.json"), [])
     sources = load(os.path.join(ROOT, "data", "sources.json"))
     obs = load(os.path.join(ROOT, "data", "observations.json"))
-    out_path = os.path.join(ROOT, "data", "trends.json")
+    # out_path: 병합 도구(tools/worker/merge.py)가 미리 보기용으로 다른 곳에 쓰게 할 때만 준다.
+    out_path = opts.get("out_path") or os.path.join(ROOT, "data", "trends.json")
     # 데일리샷 검색 결과는 저장돼 있지 않지만 기존 trends.json에 값이 있는 병(등록 전에 리뷰 수를 잰 병)은
     # 그 리뷰 수를 그대로 쓰고, 위키·매체 재료와 점수만 다른 병과 같은 방식으로 다시 계산한다.
     prev = load(out_path, {}).get("bottles", {})
@@ -529,7 +530,8 @@ def stage_score(bottles, opts):
     json.load(open(out_path, encoding="utf-8"))
     print("저장:", out_path, "/ 산식", formula, "/ 기준", json.dumps(scales, ensure_ascii=False))
 
-    write_reports(bottles, ds, result)
+    if not opts.get("no_reports"):
+        write_reports(bottles, ds, result)
     return True
 
 

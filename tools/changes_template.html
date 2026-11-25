@@ -1,0 +1,54 @@
+<title>위스키 티어표 — 최근 바뀐 것</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@700;900&display=swap">
+<style>
+/* 색 토큰은 build.py 가 tools/template.html 에서 그대로 가져온다(모든 페이지 공통) */
+__TOKENS__
+
+*{box-sizing:border-box}
+html{scroll-padding-top:16px}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+/* 사이트 메뉴: 다른 페이지와 같은 모양 */
+.site{display:flex;flex-wrap:wrap;gap:4px 22px;border-bottom:1px solid var(--line);margin:0 0 22px;font-size:14.5px}
+.site a{color:var(--muted);text-decoration:none;padding:6px 0 9px;border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:500}
+.site a:hover{color:var(--ink)}
+.site a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0;letter-spacing:-.01em;word-break:keep-all}
+.lede{color:var(--muted);margin:10px 0 0;max-width:62ch;word-break:keep-all}
+a{color:var(--accent)}
+.why{margin:16px 0 0;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:14px;max-width:68ch;word-break:keep-all}
+.day{margin-top:34px}
+.day>h2{font-family:var(--display);font-size:22px;margin:0;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.day>h2 small,.cg h3 small{font-family:var(--body);font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
+.cg{margin-top:16px}
+.cg h3{font-size:16px;margin:0 0 4px}
+.cg ul{list-style:none;margin:0;padding:0}
+.cg li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.cg .nm{font-weight:500;word-break:keep-all;flex:1 1 220px;min-width:0}
+.cg a.nm{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.cg a.nm:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.dv{font-variant-numeric:tabular-nums;font-size:14px;color:var(--muted);display:inline-flex;gap:6px;align-items:baseline}
+.dv b{color:var(--ink)}
+.dv.up span[aria-hidden],.dv.dn span[aria-hidden]{font-size:12px}
+.dv.up{color:var(--ink)} .dv.up span[aria-hidden]{color:var(--accent)}
+.dv.dn{color:var(--ink)} .dv.dn span[aria-hidden]{color:var(--t-a)}
+.tt{display:inline-block;padding:1px 8px;border-radius:4px;font-size:12.5px;font-weight:700}
+.t-S{background:var(--t-s);color:var(--t-dark-ink)} .t-A{background:var(--t-a);color:var(--t-dark-ink)} .t-B{background:var(--t-b);color:var(--t-dark-ink)}
+.t-C{background:var(--t-c);color:var(--t-light-ink)} .t-D{background:var(--t-d);color:var(--t-light-ink)} .t-E{background:var(--t-e);color:var(--t-light-ink)} .t-N{background:var(--bar);color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.empty{margin-top:28px;padding:18px;border:1px dashed var(--line);border-radius:10px;color:var(--muted)}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);word-break:keep-all}
+</style>
+
+<div class="wrap">
+  __NAV__
+  <header>
+    <h1>최근 바뀐 것</h1>
+    <p class="lede">티어표를 갱신할 때마다 측정일별로 새로 들어온 병, 티어가 바뀐 병, 데일리샷 가격과 트렌드지수가 바뀐 병을 모읍니다. 최근 12주치(지금 __WEEKS__회)를 보여 줍니다. 병 이름을 누르면 티어표의 병 상세가 열립니다.</p>
+    <p class="why">__TIERLINK__는 점수 상위부터 백분위로 나누기 때문에 병이 추가되면 점수가 그대로여도 경계에 걸린 병이 오르내릴 수 있습니다.</p>
+  </header>
+  __DAYS__
+  <p class="foot">가격은 데일리샷 판매가 기준이며 측정일의 가격이라 지금 가격과 다를 수 있습니다. 트렌드지수는 병이 얼마나 알려졌는지를 나타내는 참고 값이며 티어 계산에 넣지 않습니다.</p>
+</div>

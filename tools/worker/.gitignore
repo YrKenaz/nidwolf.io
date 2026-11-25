@@ -1,0 +1,4 @@
+out/
+backup/
+in/pilot*.json
+__pycache__/
